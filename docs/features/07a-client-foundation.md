@@ -463,6 +463,40 @@ Vitest in `apps/client` with `environment: 'node'` for adapter logic that does n
    not awaited; a failed write deletes its `.partial` immediately.
 4. `react-native-libsodium: true` is in `allowBuilds` (recorded in dependencies.md).
 
+## 8b. Review 1 additions (2026-11-12)
+
+1. **KeyVault auth mode is recorded at store time.** `storeMasterKey` writes SecureStore key
+   `kodakiko.mkauth.<accountHash>` = `'biometric' | 'device'` (the mode actually used). `loadMasterKey`
+   calls `LocalAuthentication.authenticateAsync` unless the recorded mode is `'biometric'` (missing →
+   treat as `'device'`); `forget` deletes both keys. Rationale: expo-secure-store takes
+   `requireAuthentication` from the stored item, so checking current enrollment could skip all
+   authentication after a fingerprint is enrolled later.
+2. **Only real invalidation forgets the key.** `getItemAsync` → `null` (invalidated or absent) →
+   `forget`, return `null`. Any thrown error (cancel, lockout, "already in progress", not in
+   foreground) → return `null` **without** `forget`. A stored value that fails `bytesSchema` or is not
+   `KEY_BYTES` long → `forget`, return `null`.
+3. Biometric capability = `SecureStore.canUseBiometricAuthentication()` (BIOMETRIC_STRONG, what
+   `requireAuthentication` needs), for both the store decision and `capabilities().biometric`;
+   `expo-local-authentication` is still used for the device-credential prompt.
+4. The hardening plugin removes `android.permission.SYSTEM_ALERT_WINDOW` and
+   `android.permission.VIBRATE` from the **main** manifest's `uses-permission` list (not via
+   `blockedPermissions`, which would also strip the debug manifest). Plugin test; checklist line:
+   `apkanalyzer manifest permissions app-release.apk` shows neither.
+5. `Retry-After` is capped: `Math.min(seconds × MS_PER_SECOND, HTTP_RETRY_AFTER_MAX_MS = 60_000)`.
+6. Web FileStore takes optional `onPersistResult?: (granted: boolean) => void`; the composition
+   root stores the result in kv `device.storagePersisted`.
+7. Web RowStore: `openDB` gets `blocking: () => { close; database = null }` and `terminated: () =>
+   { database = null }`; `deleteDB(name, { blocked })` rejects with a clear error instead of hanging.
+8. `objectFileName` / `partialFileName` throw `MalformedPayloadError` unless the id matches
+   `ID_PATTERN`.
+9. Retry tests assert exactly: `calls` has length `HTTP_RETRY_ATTEMPTS` and the sleeps equal
+   `[250, 500]`, for both the 5xx and the network-failure case.
+10. The diagnostics screen builds its own RowStore/FileStore instances for self-tests (never the
+    app's shared ones).
+11. Local helper scripts live in the repository-root `scripts/local/` (gitignored); no
+    `apps/client/scripts/local/`; any local static server must normalize paths and refuse `..`.
+12. The web Argon2 worker also handles `onmessageerror` (fails all pending requests).
+
 ## 9. Steps
 
 1. App config, plugin, package deps; `expo prebuild --platform android`; report `minSdkVersion`.
