@@ -1,0 +1,11 @@
+appId: com.x42697262.kodakiko
+---
+- extendedWaitUntil:
+    visible:
+      id: welcome.title
+    timeout: 180000
+- tapOn:
+    id: welcome.serverLabel
+- inputText: ${SERVER_INPUT}
+- tapOn:
+    id: welcome.continue

@@ -371,6 +371,18 @@ part loading with `waitAfterMs` and `adb`; `SHA256SUMS` matches the fixture file
    the Android runner, its bundler script and `common/*.yaml`.
 5. Smoke flows. Spec 07b starts by writing U-01 to U-05 (red).
 
+## 10a. Implementation answers (2026-11-12)
+
+1. `signUpThroughUi(page, invite, credentials)` (third parameter `{ username, password }`).
+2. `unlockThroughUi` fills `lock.password` and presses Enter (no submit id).
+3. `tests/ui` depends on the `@kodakiko/client` workspace package now; spec 07b adds `src/testing.ts`
+   and its `./testing` export. Until then `test-ids.test.ts` imports the client file by relative path.
+4. esbuild bundles every sidecar (`flows/U-NN.flow.ts`) and its seeds into `run.mjs` (dynamic import
+   glob); intended.
+5. Facts: `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03`;
+   Playwright 1.64.1 installs Chrome Headless Shell 156.0.8078.4 (`chromium_headless_shell-1248`);
+   Maestro 2.12.1 unpacks to `~/.maestro-kodakiko/2.12.1/maestro/bin/maestro`.
+
 ## 11. Verification checklist
 
 - [ ] `pnpm ui:web` runs `U-00` green in both projects; the HTML report opens.

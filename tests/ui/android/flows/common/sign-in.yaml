@@ -1,0 +1,14 @@
+appId: com.x42697262.kodakiko
+---
+- tapOn:
+    id: signIn.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: signIn.password
+- inputText: ${PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: home.signedInAs
+    timeout: 60000

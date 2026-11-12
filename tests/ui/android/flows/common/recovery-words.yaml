@@ -1,0 +1,30 @@
+appId: com.x42697262.kodakiko
+---
+- evalScript: ${output.words = []; output.i = 1}
+- repeat:
+    times: 24
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: recoveryKey.word.${output.i}
+      - copyTextFrom:
+          id: recoveryKey.word.${output.i}
+      - evalScript: ${output.words.push(maestro.copiedText); output.i = output.i + 1}
+- copyTextFrom:
+    id: recoveryKey.confirmLabel.0
+- evalScript: ${output.pos = parseInt(maestro.copiedText.replace(/\D/g, ''), 10)}
+- tapOn:
+    id: recoveryKey.confirmField.0
+- inputText: ${output.words[output.pos - 1]}
+- copyTextFrom:
+    id: recoveryKey.confirmLabel.1
+- evalScript: ${output.pos = parseInt(maestro.copiedText.replace(/\D/g, ''), 10)}
+- tapOn:
+    id: recoveryKey.confirmField.1
+- inputText: ${output.words[output.pos - 1]}
+- copyTextFrom:
+    id: recoveryKey.confirmLabel.2
+- evalScript: ${output.pos = parseInt(maestro.copiedText.replace(/\D/g, ''), 10)}
+- tapOn:
+    id: recoveryKey.confirmField.2
+- inputText: ${output.words[output.pos - 1]}

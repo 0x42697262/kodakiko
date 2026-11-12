@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "types": ["node"], "lib": ["ES2023", "DOM", "DOM.Iterable"] },
+  "include": ["support", "web", "scripts", "android"],
+  "exclude": ["android/dist", "reports"]
+}

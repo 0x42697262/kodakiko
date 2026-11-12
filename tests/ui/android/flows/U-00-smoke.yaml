@@ -1,0 +1,9 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: welcome.title
+    timeout: 180000

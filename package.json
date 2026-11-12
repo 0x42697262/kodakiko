@@ -9,7 +9,9 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "ui:web": "pnpm --filter @kodakiko/ui-tests test:web",
+    "ui:android": "pnpm --filter @kodakiko/ui-tests test:android"
   },
   "devDependencies": {
     "@types/node": "catalog:",

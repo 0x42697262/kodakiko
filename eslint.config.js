@@ -21,6 +21,7 @@ export default tseslint.config(
       'apps/client/public/workers/**',
       'apps/client/public/media-sw.js',
       'docs/**',
+      'tests/ui/reports/**',
     ],
   },
   ...tseslint.configs.recommended,

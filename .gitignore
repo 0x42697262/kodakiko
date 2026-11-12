@@ -23,3 +23,5 @@ apps/client/public/media-sw.js
 .pi/implementer/sessions/
 
 apps/server/test/.garage-test-key.json
+
+tests/ui/reports/

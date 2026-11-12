@@ -1,0 +1,9 @@
+header {
+  Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  X-Content-Type-Options "nosniff"
+  Referrer-Policy "no-referrer"
+  Permissions-Policy "camera=(self), microphone=(self), geolocation=(self)"
+  Cross-Origin-Resource-Policy "same-origin"
+  Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' {$CSP_SCRIPT_HASHES}; worker-src 'self'; connect-src 'self' {$S3_PUBLIC_ORIGIN}; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
+  -Server
+}
