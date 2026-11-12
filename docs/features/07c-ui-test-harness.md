@@ -383,6 +383,33 @@ part loading with `waitAfterMs` and `adb`; `SHA256SUMS` matches the fixture file
    Playwright 1.64.1 installs Chrome Headless Shell 156.0.8078.4 (`chromium_headless_shell-1248`);
    Maestro 2.12.1 unpacks to `~/.maestro-kodakiko/2.12.1/maestro/bin/maestro`.
 
+## 10b. Android emulator networking (D-81, 2026-11-12)
+
+Measured on the `akon` emulator (API 34, x86_64): `adb reverse` forwards nothing (device-side
+`127.0.0.1:<port>` gets no answer, also to Metro and after an adb server restart), while the emulator's
+host alias `10.0.2.2` reaches host services bound to `127.0.0.1` (F-AND-02). The Android flows therefore
+use `10.0.2.2`, not `adb reverse`:
+
+1. `infra/compose/ui/Caddyfile`: the site address becomes `http://:9580` (any Host header; the
+   emulator sends `10.0.2.2:9580`).
+2. Client: `LOCAL_HTTP_HOSTS` gains `10.0.2.2` (still only when `allowLocalHttp`, i.e. `__DEV__`;
+   the debug network config already allows cleartext to it).
+3. Android runner: starts the API with environment overrides `PUBLIC_BASE_URL=http://10.0.2.2:9580`
+   and `S3_PUBLIC_ENDPOINT=http://10.0.2.2:9581` (invite URLs and presigned URLs must be reachable from
+   the emulator; `REQUIRE_HTTPS=false` already allows http); `startStack` takes optional
+   `apiEnvOverrides`. `apply-bucket-cors` keeps using `.env.ui` (CORS is irrelevant for native).
+   The web runner is unchanged (`localhost`).
+4. `flows/common/connect.yaml`: `SERVER_INPUT` is `http://10.0.2.2:9580` (or the invite URL, which
+   now starts with that origin). The runner no longer sets `adb reverse` for 9580/9581; Metro is
+   reached by the debug build's default `10.0.2.2:8081`.
+5. Android "offline" (§4.3) becomes: stop the UI stack's Caddy container
+   (`docker compose -p kodakiko-ui stop caddy-ui`) and start it again afterwards.
+6. Run the Android runner with the system `adb` (outside `nix develop`): mixing the Nix `adb` with
+   the system one restarts the adb server.
+
+Physical devices still need `adb reverse` (or a LAN address); that path is documented in
+`docs/development.md` and not used by the automated flows.
+
 ## 11. Verification checklist
 
 - [ ] `pnpm ui:web` runs `U-00` green in both projects; the HTML report opens.
