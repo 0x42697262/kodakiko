@@ -247,6 +247,37 @@ test Garage (variables set by the harness).
    'pendingExists'`; `confirm` falls back to `headObject` when the multipart upload is gone;
    `AppDeps.objectStore` required; the objects service takes a `logger`.
 
+## 10c. Review 1 additions (2026-11-12)
+
+1. **Signed sizes.** `presignPut(key, sizeBytes, ttl)` and `presignPart(key, uploadId, partNumber,
+   partSizeBytes, ttl)` pass `ContentLength` to `PutObjectCommand` / `UploadPartCommand` (last part:
+   `size − partBytes × (n − 1)`), so the signature covers `content-length` and a different body size
+   is rejected (403). Integration test: PUT with a different size than declared → 403.
+2. **Abort-stale race.** New repository method `markPendingDeleting(trx, id, deleteAfter): Promise<boolean>`
+   (`WHERE state = 'pending'`); `abort-stale-uploads` runs it in a transaction first and calls
+   `abortMultipartUpload` only when it returned true.
+3. **URL lifetime vs row lifetime.** Every path that moves a row to `deleting` (size mismatch in
+   `confirm`, abort-stale, explicit abort) sets `delete_after = now + max(OBJECT_GRACE_DAYS days,
+   UPLOAD_URL_TTL_SECONDS)` (never `now`; `OBJECT_GRACE_DAYS` may be 0), so no issued URL outlives
+   its row. A re-issue caps the URL TTL at
+   `created_at + PENDING_UPLOAD_HOURS − now` and refuses with `409 ID_CONFLICT` when that is ≤ 0. Tests: mismatch → `delete_after` ≥ now + grace; re-issue near
+   expiry → TTL capped; past expiry → 409.
+4. `isNotFound` treats only `NoSuchKey` / `NotFound` as missing; `NoSuchBucket` →
+   `StorageUnavailableError` (503).
+5. Setting the multipart upload id is conditional: `UPDATE … SET multipart_upload_id = $1 WHERE id
+   = $2 AND multipart_upload_id IS NULL RETURNING id`; no row → abort the just-created upload and use
+   the stored id.
+6. `reconcile-usage` recomputes and sets each user's `used_bytes` inside one transaction holding
+   that user's row `FOR UPDATE` (the same lock presign takes).
+7. `collect-objects`: a `deleting` row with a `multipart_upload_id` and no `uploaded_at` is aborted
+   (404-tolerant) before `deleteObject`; `deleteRow … WHERE state = 'deleting' RETURNING size_bytes`
+   and `used_bytes` is adjusted only when a row came back (idempotent under overlapping runs).
+8. `isTransient` is false for `StorageUnavailableError`, `ObjectMissingError`, `UploadMissingError`.
+9. `parts` / `confirm` take the mode from `multipart_upload_id !== null` and the part size from a new
+   column `part_size_bytes` (nullable int, migration `0002_objects_part_size`, set at presign), not
+   from current settings.
+10. The presign-rate count runs inside the reservation transaction after the user row lock.
+
 ## 11. Steps
 
 1. Contract + core equality test. 2. Settings group + rules + unit tests. 3. Backoff, domain +

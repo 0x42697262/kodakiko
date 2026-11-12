@@ -241,6 +241,7 @@ CREATE TABLE objects (
   size_bytes           bigint NOT NULL CHECK (size_bytes >= 40),
   state                text NOT NULL CHECK (state IN ('pending', 'uploaded', 'deleting')),
   multipart_upload_id  text NULL,
+  part_size_bytes      integer NULL,          -- added by migration 0002_objects_part_size (spec 05 §10c)
   created_at           timestamptz NOT NULL,
   uploaded_at          timestamptz NULL,
   delete_after         timestamptz NULL,

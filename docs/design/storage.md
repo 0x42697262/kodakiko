@@ -14,9 +14,9 @@ The server talks to object storage through one interface
 ```ts
 export interface ObjectStore {
   readonly headObject: (key: string) => Promise<{ sizeBytes: number; etag: string } | null>;
-  readonly presignPut: (key: string, expiresInSeconds: number) => Promise<string>;
+  readonly presignPut: (key: string, sizeBytes: number, expiresInSeconds: number) => Promise<string>;
   readonly createMultipartUpload: (key: string) => Promise<string>;
-  readonly presignPart: (key: string, uploadId: string, partNumber: number, expiresInSeconds: number) => Promise<string>;
+  readonly presignPart: (key: string, uploadId: string, partNumber: number, partSizeBytes: number, expiresInSeconds: number) => Promise<string>;
   readonly listParts: (key: string, uploadId: string) => Promise<readonly UploadedPart[]>;
   readonly completeMultipartUpload: (key: string, uploadId: string, parts: readonly CompletedPart[]) => Promise<{ etag: string }>;
   readonly abortMultipartUpload: (key: string, uploadId: string) => Promise<void>;
@@ -206,6 +206,9 @@ the same core stream functions (`crypto.md` §7.3).
 Network rules (D-61): thumbnails download on any network; originals on demand on any network;
 pinned originals prefetch on Wi-Fi only; uploads above the configurable threshold (default 100 MiB) wait for Wi-Fi when the setting is on
 (spec 14 §7). Cache cap `0` = no limit (D-67).
+
+Presigned PUT and part URLs sign the exact `Content-Length` (`ContentLength` in the command), so a URL
+cannot upload a different size and cannot resize an object later (spec 05 §10c).
 
 Cache presence is tracked in `objects.localState`. A gallery scroll requests thumbnails with bounded
 concurrency (`constants.THUMBNAIL_FETCH_CONCURRENCY`, default 6); a miss downloads, decrypts and
