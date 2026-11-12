@@ -5,6 +5,7 @@ import { deviceLabel } from '../adapters/device-label/device-label';
 import { createGlobalStore, type GlobalStore } from '../adapters/global-store/global-store';
 import { createFileStore } from '../adapters/filestore/filestore';
 import { createHttpClient, type HttpClient } from '../adapters/http/http';
+import { consoleLogger } from '../adapters/logger';
 import { createRandomId } from '../adapters/ids';
 import { createKeyVault } from '../adapters/keyvault/keyvault';
 import { createLifecycle, type Lifecycle } from '../adapters/lifecycle/lifecycle';
@@ -12,6 +13,8 @@ import { createRowStore } from '../adapters/rowstore/rowstore';
 import { createServerUrlStore, type ServerUrlStore } from '../adapters/server-url/server-url';
 import { createSessionStore, type SessionStore } from '../adapters/session/session-store';
 import { loadSodium } from '../adapters/sodium/sodium';
+import { requestNotificationPermission } from '../adapters/uploader/notification-permission';
+import { createUploader, type Uploader } from '../adapters/uploader/uploader';
 import type { FileStore } from '../adapters/filestore/filestore';
 import type { KeyVault } from '../adapters/keyvault/keyvault';
 import type { RowStore } from '../adapters/rowstore/rowstore';
@@ -19,7 +22,14 @@ import { APP_ROUTES } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
+import type { EntryKeys } from '../services/keys/entry-keys';
+import { createSyncStack } from '../services/sync/create-sync-stack';
+import type { NotificationPrompt } from '../services/sync/notification-prompt';
+import type { SyncService } from '../services/sync/sync-service';
+import type { UploadCoordinator } from '../services/sync/uploads';
 import { EN } from '../text/en';
+import { bindAccountLifecycle } from './account-lifecycle';
+import { createEventBus, type AppEventBus, type AppEvents } from './events';
 import {
   createAccountState,
   createObservable,
@@ -30,6 +40,10 @@ import {
 export type Services = {
   readonly auth: AuthService;
   readonly config: ConfigService;
+  readonly sync: SyncService;
+  readonly uploads: UploadCoordinator;
+  readonly entryKeys: EntryKeys;
+  readonly notificationPrompt: NotificationPrompt;
 };
 
 export type AppContext = {
@@ -47,6 +61,8 @@ export type AppContext = {
   readonly activeAccountKey: Observable<string | null>;
   readonly inviteToken: Observable<string | null>;
   readonly globalStore: GlobalStore;
+  readonly events: AppEventBus;
+  readonly uploader: Uploader;
   readonly services: Services;
 };
 
@@ -104,6 +120,31 @@ export async function createAppContext(): Promise<AppContext> {
     showSecuring: () => router.push(APP_ROUTES.securing),
     dismissSecuring: () => router.back(),
   });
+  const events = createEventBus<AppEvents>();
+  const uploader = createUploader({ fileStore });
+  const stack = createSyncStack({
+    sodium,
+    http,
+    rowStore,
+    fileStore,
+    uploader,
+    events,
+    clock: systemClock,
+    lifecycle,
+    accountState,
+    onSessionInvalid: () => accountState.set({ kind: 'signedOut' }),
+    log: consoleLogger,
+    requestNotificationPermission,
+  });
+  bindAccountLifecycle(accountState, {
+    onUnlocked: stack.sync.start,
+    onLeftUnlocked: () => {
+      stack.sync.stop();
+      stack.entryKeys.clear();
+      const kind = accountState.get().kind;
+      if (kind === 'signedOut' || kind === 'noServer') uploader.cancelAll().catch(() => undefined);
+    },
+  });
   await auth.restore();
   return {
     sodium,
@@ -120,6 +161,15 @@ export async function createAppContext(): Promise<AppContext> {
     activeAccountKey,
     inviteToken,
     globalStore,
-    services: { auth, config },
+    events,
+    uploader,
+    services: {
+      auth,
+      config,
+      sync: stack.sync,
+      uploads: stack.uploads,
+      entryKeys: stack.entryKeys,
+      notificationPrompt: stack.notificationPrompt,
+    },
   };
 }

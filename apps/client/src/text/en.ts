@@ -107,6 +107,20 @@ export const EN = {
   'diagnostics.selfTestFailed': (name: string, message: string) => `${name}: failed (${message})`,
   'diagnostics.selfTestCheck': (name: string) => `check failed: ${name}`,
   'diagnostics.failed': (message: string) => `Failed: ${message}`,
+  'keys.accountLocked': 'The journal is locked.',
+  'keys.unavailable': 'The key for this item is not available on this device.',
+  'sync.resyncLoop': 'The server keeps asking for a full resync.',
+  'sync.offline': "Offline. Changes will sync when you're connected.",
+  'sync.dead': (count: number) => `Couldn't sync ${count} ${count === 1 ? 'item' : 'items'}.`,
+  'sync.retry': 'Retry',
+  'sync.waitingForWifi': (count: number) =>
+    `Waiting for Wi-Fi to upload ${count} large ${count === 1 ? 'item' : 'items'}.`,
+  'sync.allowNotifications': 'Allow notifications to see upload progress.',
+  'sync.uploadMissingFile': 'An upload file is missing on this device.',
+  'sync.diagnosticsUploadTest': 'Upload test object',
+  'sync.diagnosticsUploadTestNoHome': 'The home journal has not synced to this device yet.',
+  'sync.diagnosticsUploadTestResult': (objectId: string, sizeBytes: number) =>
+    `Queued ${sizeBytes} bytes as ${objectId}`,
 } as const;
 
 export type TextKey = keyof typeof EN;

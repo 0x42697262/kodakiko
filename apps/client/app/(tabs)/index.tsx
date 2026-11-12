@@ -1,5 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 import { useAccountState, useAppContext } from '../../src/composition/app-context';
+import { SyncStatusBanner } from '../../src/features/sync/sync-status-banner';
 import { EN } from '../../src/text/en';
 import { Button } from '../../src/ui/Button';
 import { Screen } from '../../src/ui/Screen';
@@ -13,6 +14,7 @@ export default function GalleryPlaceholder() {
   const username = state.kind === 'unlocked' ? state.username : '';
   return (
     <Screen testID="home.screen">
+      <SyncStatusBanner />
       <Text testID="home.signedInAs" style={[styles.title, { color: colors.text }]}>
         {EN['home.signedInAs'](username)}
       </Text>

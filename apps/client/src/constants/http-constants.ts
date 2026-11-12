@@ -11,6 +11,9 @@ export const HTTP_STATUS = Object.freeze({
   noContent: 204,
   multipleChoices: 300,
   unauthorized: 401,
+  forbidden: 403,
+  notFound: 404,
+  conflict: 409,
   tooManyRequests: 429,
   serverErrorMin: 500,
 });

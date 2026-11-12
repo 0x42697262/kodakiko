@@ -1,19 +1,28 @@
 import { startKdfParams, type Sodium } from '@kodakiko/core';
-import { systemClock } from './adapters/clock';
+import { systemClock, type Clock } from './adapters/clock';
 import { createHttpClient } from './adapters/http/http';
 import { createRandomId } from './adapters/ids';
 import { createKeyVault } from './adapters/keyvault/keyvault.web';
+import type { FileStore } from './adapters/filestore/filestore';
+import type { RowStore } from './adapters/rowstore/rowstore';
+import type { Uploader } from './adapters/uploader/uploader';
 import { createMemoryFileStore } from './adapters/memory/memory-file-store';
 import { createMemoryGlobalStore } from './adapters/memory/memory-global-store';
 import { createMemoryRowStore } from './adapters/memory/memory-row-store';
 import { createMemorySessionStore } from './adapters/memory/memory-session-store';
+import { silentLogger, type Logger } from './adapters/logger';
+import type { Lifecycle } from './adapters/lifecycle/lifecycle';
+import { createWebUploader } from './adapters/uploader/uploader.web';
+import { bindAccountLifecycle } from './composition/account-lifecycle';
 import { createAccountState, createObservable } from './composition/account-state';
+import { createEventBus, type AppEventBus, type AppEvents } from './composition/events';
 import { TEST_DEVICE_LABEL } from './constants/testing-constants';
 import {
   createAuthService,
   type AuthService,
   type AuthServiceContext,
 } from './services/auth-service';
+import { createSyncStack, type SyncStack } from './services/sync/create-sync-stack';
 
 export type TestAuthContextInput = {
   readonly baseUrl: string;
@@ -70,6 +79,64 @@ export function createTestAuthContext(input: TestAuthContextInput): TestAuthCont
     dismissSecuring: () => undefined,
   };
   return { ...context, auth: createAuthService(context) };
+}
+
+export type TestClientContextInput = {
+  readonly baseUrl: string;
+  readonly fetcher: typeof fetch;
+  readonly sodium: Sodium;
+  readonly clock: Clock;
+  readonly log?: Logger;
+  readonly random?: () => number;
+};
+
+export type TestClientContext = TestAuthContext &
+  SyncStack & {
+    readonly events: AppEventBus;
+    readonly uploader: Uploader;
+    readonly rowStore: RowStore;
+    readonly fileStore: FileStore;
+  };
+
+const FAKE_LIFECYCLE: Lifecycle = {
+  afterInteractions: async () => undefined,
+  subscribeActive: () => () => undefined,
+  subscribeOnline: () => () => undefined,
+};
+
+export async function createTestClientContext(
+  input: TestClientContextInput,
+): Promise<TestClientContext> {
+  const auth = createTestAuthContext({
+    baseUrl: input.baseUrl,
+    fetcher: input.fetcher,
+    sodium: input.sodium,
+  });
+  const events = createEventBus<AppEvents>();
+  const uploader = createWebUploader({ fileStore: auth.fileStore, fetcher: input.fetcher });
+  const stack = createSyncStack({
+    sodium: input.sodium,
+    http: auth.http,
+    rowStore: auth.rowStore,
+    fileStore: auth.fileStore,
+    uploader,
+    events,
+    clock: input.clock,
+    lifecycle: FAKE_LIFECYCLE,
+    accountState: auth.accountState,
+    onSessionInvalid: () => auth.accountState.set({ kind: 'signedOut' }),
+    log: input.log ?? silentLogger,
+    requestNotificationPermission: null,
+    ...(input.random === undefined ? {} : { random: input.random }),
+  });
+  bindAccountLifecycle(auth.accountState, {
+    onUnlocked: () => undefined,
+    onLeftUnlocked: () => {
+      stack.sync.stop();
+      stack.entryKeys.clear();
+    },
+  });
+  return { ...auth, ...stack, events, uploader };
 }
 
 export { createWrappersSodium } from './adapters/sodium/sodium-wrappers';

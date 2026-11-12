@@ -8,7 +8,8 @@
     "verify": "pnpm lint && pnpm typecheck && pnpm test",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --filter '!@kodakiko/e2e' test",
+    "test:e2e": "pnpm --filter @kodakiko/e2e test",
     "format": "prettier --write .",
     "ui:web": "pnpm --filter @kodakiko/ui-tests test:web",
     "ui:android": "pnpm --filter @kodakiko/ui-tests test:android"

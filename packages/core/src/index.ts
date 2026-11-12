@@ -1,2 +1,4 @@
 export * from './account/index.ts';
 export * from './crypto/index.ts';
+export * from './domain/index.ts';
+export * from './sync/index.ts';

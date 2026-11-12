@@ -18,6 +18,10 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: cancelDeletion.submit
+- extendedWaitUntil:
+    visible:
+      id: (lock\.title|home\.signedInAs)
+    timeout: 60000
 - runFlow:
     when:
       visible:

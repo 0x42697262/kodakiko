@@ -4,7 +4,8 @@
   "type": "module",
   "main": "expo-router/entry",
   "exports": {
-    "./testing": "./src/testing.ts"
+    "./testing": "./src/testing.ts",
+    "./test-support": "./test/support/index.ts"
   },
   "scripts": {
     "typecheck": "tsc -p .",
@@ -24,6 +25,7 @@
     "@expo/metro-runtime": "catalog:",
     "@kodakiko/contract": "workspace:*",
     "@kodakiko/core": "workspace:*",
+    "@kodakiko/native-upload": "workspace:*",
     "@shopify/flash-list": "catalog:",
     "expo": "catalog:",
     "expo-constants": "catalog:",

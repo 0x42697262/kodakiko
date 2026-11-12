@@ -41,6 +41,9 @@ export function createMemoryFileStore(): FileStore {
       objects = null;
     },
     nativeUri: () => null,
-    readBlob: async (objectId) => new Blob([stored(objectId).slice()]),
+    readBlob: async (objectId) => {
+      const bytes = current().get(objectId);
+      return bytes === undefined ? null : new Blob([bytes.slice()]);
+    },
   };
 }

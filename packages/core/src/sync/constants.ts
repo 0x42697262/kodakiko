@@ -1,0 +1,14 @@
+export const PUSH_CONCURRENCY = 4;
+export const MAX_ATTEMPTS = 8;
+export const BACKOFF_BASE_MS = 2000;
+export const BACKOFF_CAP_MS = 900_000;
+export const PULL_PAGE_LIMIT = 500;
+export const SYNC_INTERVAL_MS = 60_000;
+export const SYNC_DEBOUNCE_MS = 2000;
+export const UPLOAD_PART_CONCURRENCY = 3;
+export const BACKOFF_FACTOR = 2;
+export const MS_PER_SECOND = 1000;
+export const NOT_FOUND_STATUS = 404;
+export const UNAUTHORIZED_STATUS = 401;
+export const TOO_MANY_REQUESTS_STATUS = 429;
+export const SERVER_ERROR_STATUS_MIN = 500;

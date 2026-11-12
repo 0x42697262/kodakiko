@@ -1,0 +1,8 @@
+<resources>
+  <string name="upload_channel_name">Uploads</string>
+  <string name="upload_notification_title">Uploading to your journal</string>
+  <plurals name="upload_notification_items_left">
+    <item quantity="one">%d item left</item>
+    <item quantity="other">%d items left</item>
+  </plurals>
+</resources>

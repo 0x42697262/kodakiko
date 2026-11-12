@@ -9,6 +9,7 @@ export * from './ids.ts';
 export * from './limits.ts';
 export * from './media.ts';
 export * from './objects.ts';
+export * from './outbox.ts';
 export * from './payloads.ts';
 export * from './routes.ts';
 export * from './sync.ts';

@@ -41,12 +41,20 @@ export class ApiError extends Error {
   readonly code: ErrorCode;
   readonly details: unknown;
   readonly requestId: string | null;
-  constructor(status: number, code: ErrorCode, details: unknown, requestId: string | null) {
+  readonly retryAfterSeconds: number | null;
+  constructor(
+    status: number,
+    code: ErrorCode,
+    details: unknown,
+    requestId: string | null,
+    retryAfterSeconds: number | null = null,
+  ) {
     super(EN['http.apiError'](code));
     this.status = status;
     this.code = code;
     this.details = details;
     this.requestId = requestId;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }
 
@@ -143,17 +151,29 @@ export function createHttpClient(deps: HttpClientDeps): HttpClient {
     return backoffDelay(retryIndex);
   }
 
+  function retryAfterSeconds(raw: RawResponse): number | null {
+    const header = raw.headers.get(HTTP_HEADERS.retryAfter);
+    const seconds = header === null || header.trim() === '' ? Number.NaN : Number(header);
+    return Number.isFinite(seconds) && seconds >= 0 ? seconds : null;
+  }
+
   function failure(raw: RawResponse): ApiError {
     const parsedBody = parseJson(raw.text);
     const parsedError = parsedBody.ok ? errorResponseSchema.safeParse(parsedBody.value) : null;
     if (parsedError?.success !== true) {
-      return new ApiError(raw.status, 'INTERNAL', null, raw.headers.get(HTTP_HEADERS.requestId));
+      return new ApiError(
+        raw.status,
+        'INTERNAL',
+        null,
+        raw.headers.get(HTTP_HEADERS.requestId),
+        retryAfterSeconds(raw),
+      );
     }
     const { code, details, requestId } = parsedError.data.error;
     if (raw.status === HTTP_STATUS.unauthorized && SESSION_INVALID_CODES.includes(code)) {
       deps.onSessionInvalid();
     }
-    return new ApiError(raw.status, code, details, requestId);
+    return new ApiError(raw.status, code, details, requestId, retryAfterSeconds(raw));
   }
 
   function success<Response>(raw: RawResponse, schema: z.ZodType<Response>): Response {

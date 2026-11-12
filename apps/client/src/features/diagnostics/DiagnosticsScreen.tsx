@@ -11,6 +11,7 @@ import { useTheme } from '../../ui/theme';
 import { measureKdf, runVectors } from './diagnostics-runs';
 import { fileStoreSelfTest } from './filestore-self-test';
 import { rowStoreSelfTest } from './rowstore-self-test';
+import { enqueueUploadSelfTest, scheduleUploadSelfTestCleanup } from './upload-self-test';
 
 type Action = { readonly key: StaticTextKey; readonly run: () => Promise<readonly string[]> };
 
@@ -19,7 +20,8 @@ function describeFailure(error: unknown): string {
 }
 
 export function DiagnosticsScreen() {
-  const { sodium, lifecycle } = useAppContext();
+  const app = useAppContext();
+  const { sodium, lifecycle } = app;
   const rowStore = useMemo(() => createRowStore({ sodium }), [sodium]);
   const fileStore = useMemo(() => createFileStore({ sodium }), [sodium]);
   const { colors } = useTheme();
@@ -65,6 +67,33 @@ export function DiagnosticsScreen() {
       run: async () => {
         await fileStoreSelfTest(fileStore);
         return [EN['diagnostics.selfTestPassed'](EN['diagnostics.fileStoreSelfTest'])];
+      },
+    },
+    {
+      key: 'sync.diagnosticsUploadTest',
+      run: async () => {
+        const state = app.accountState.get();
+        if (state.kind !== 'unlocked') throw new Error(EN['keys.accountLocked']);
+        const result = await enqueueUploadSelfTest({
+          sodium,
+          rowStore: app.rowStore,
+          fileStore: app.fileStore,
+          entryKeys: app.services.entryKeys,
+          userId: state.userId,
+          randomId: app.randomId,
+          clock: app.clock,
+        });
+        scheduleUploadSelfTestCleanup(
+          {
+            rowStore: app.rowStore,
+            uploads: app.services.uploads,
+            clock: app.clock,
+            onEnqueued: app.services.sync.notifyLocalWrite,
+          },
+          result.entryId,
+        );
+        app.services.sync.notifyLocalWrite();
+        return [EN['sync.diagnosticsUploadTestResult'](result.objectId, result.sizeBytes)];
       },
     },
   ];

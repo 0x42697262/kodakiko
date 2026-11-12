@@ -1,0 +1,23 @@
+{
+  "name": "@kodakiko/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kodakiko/client": "workspace:*",
+    "@kodakiko/contract": "workspace:*",
+    "@kodakiko/core": "workspace:*",
+    "@kodakiko/server": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "libsodium-wrappers-sumo": "catalog:",
+    "pg": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
