@@ -403,7 +403,10 @@ use `10.0.2.2`, not `adb reverse`:
    now starts with that origin). The runner no longer sets `adb reverse` for 9580/9581; Metro is
    reached by the debug build's default `10.0.2.2:8081`.
 5. Android "offline" (§4.3) becomes: stop the UI stack's Caddy container
-   (`docker compose -p kodakiko-ui stop caddy-ui`) and start it again afterwards.
+   (`docker compose -p kodakiko-ui stop caddy-ui`) and start it again afterwards. Sidecar parts get an
+   optional field `caddy?: 'stop' | 'start'`, executed by the runner after the part's `adb` commands
+   (validated by `parseSidecar`; unit-tested).
+7. `RATE_LIMITS_ENABLED=false` also accepts the `PUBLIC_BASE_URL` host `10.0.2.2` (spec 03 settings row).
 6. Run the Android runner with the system `adb` (outside `nix develop`): mixing the Nix `adb` with
    the system one restarts the adb server.
 
