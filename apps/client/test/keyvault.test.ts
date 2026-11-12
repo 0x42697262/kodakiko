@@ -11,6 +11,8 @@ const ACCOUNT_KEY = 'journal.example.test/user-a';
 const ACCOUNT_HASH = '0123456789abcdef';
 const MASTER_KEY_ITEM = `kodakiko.mk.${ACCOUNT_HASH}`;
 const AUTH_MODE_ITEM = `kodakiko.mkauth.${ACCOUNT_HASH}`;
+const ENROLLED_NONE = 0;
+const ENROLLED_SECRET = 1;
 const PROMPT = 'Unlock Kodakiko';
 const MASTER_KEY = Uint8Array.from({ length: KEY_BYTES }, (_value, index) => index + 1);
 
@@ -22,6 +24,7 @@ type Harness = {
     authenticateResult: 'success' | 'cancel' | 'throw';
     getItemFailure: 'none' | 'throw';
     authenticateCalls: number;
+    enrolledLevel: number;
   };
   readonly vault: ReturnType<typeof createSecureKeyVault>;
 };
@@ -34,6 +37,7 @@ function buildHarness(canUseBiometric: boolean): Harness {
     authenticateResult: 'success',
     getItemFailure: 'none',
     authenticateCalls: 0,
+    enrolledLevel: ENROLLED_SECRET,
   };
   const secureStore: SecureStorePort = {
     canUseBiometricAuthentication: () => state.canUseBiometric,
@@ -52,6 +56,7 @@ function buildHarness(canUseBiometric: boolean): Harness {
     },
   };
   const localAuthentication: LocalAuthenticationPort = {
+    getEnrolledLevelAsync: async () => state.enrolledLevel,
     authenticateAsync: async () => {
       state.authenticateCalls += 1;
       if (state.authenticateResult === 'throw') throw new Error('lockout');
@@ -163,5 +168,24 @@ describe('secure key vault', () => {
     await harness.vault.storeMasterKey(ACCOUNT_KEY, MASTER_KEY);
     await harness.vault.forget(ACCOUNT_KEY);
     expect(harness.items.size).toBe(0);
+  });
+
+  it('stores nothing and reports not persistent when the device has no secure screen lock', async () => {
+    const harness = buildHarness(false);
+    harness.state.enrolledLevel = ENROLLED_NONE;
+    await harness.vault.storeMasterKey(ACCOUNT_KEY, MASTER_KEY);
+    expect(harness.items.size).toBe(0);
+    await expect(harness.vault.capabilities()).resolves.toEqual({
+      persistent: false,
+      biometric: false,
+    });
+  });
+
+  it('loads null without prompting when the device has no secure screen lock', async () => {
+    const harness = buildHarness(false);
+    await harness.vault.storeMasterKey(ACCOUNT_KEY, MASTER_KEY);
+    harness.state.enrolledLevel = ENROLLED_NONE;
+    await expect(harness.vault.loadMasterKey(ACCOUNT_KEY, PROMPT)).resolves.toBeNull();
+    expect(harness.state.authenticateCalls).toBe(0);
   });
 });

@@ -8,21 +8,25 @@ export type Submission = {
   readonly submit: (action: () => Promise<void>) => Promise<void>;
 };
 
-export function useSubmit(): Submission {
+export function useSubmit(onFailure?: () => void): Submission {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
 
-  const submit = useCallback(async (action: () => Promise<void>) => {
-    setBusy(true);
-    setError(null);
-    try {
-      await action();
-    } catch (caught) {
-      setError(caught instanceof AuthError ? caught : new AuthError('generic'));
-    } finally {
-      setBusy(false);
-    }
-  }, []);
+  const submit = useCallback(
+    async (action: () => Promise<void>) => {
+      setBusy(true);
+      setError(null);
+      try {
+        await action();
+      } catch (caught) {
+        setError(caught instanceof AuthError ? caught : new AuthError('generic'));
+        onFailure?.();
+      } finally {
+        setBusy(false);
+      }
+    },
+    [onFailure],
+  );
 
   const clearError = useCallback(() => setError(null), []);
   return { busy, error, clearError, submit };

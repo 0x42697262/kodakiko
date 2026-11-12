@@ -22,6 +22,7 @@ export type SecureStorePort = {
 };
 
 export type LocalAuthenticationPort = {
+  readonly getEnrolledLevelAsync: () => Promise<number>;
   readonly authenticateAsync: (options: {
     readonly promptMessage: string;
   }) => Promise<{ readonly success: boolean }>;
@@ -32,6 +33,8 @@ export type SecureKeyVaultDeps = {
   readonly localAuthentication: LocalAuthenticationPort;
   readonly accountHash: (accountKey: string) => string;
 };
+
+const ENROLLED_LEVEL_NONE = 0;
 
 function decodeMasterKey(stored: string): Uint8Array | null {
   const parsed = bytesSchema.safeParse(stored);
@@ -71,12 +74,24 @@ export function createSecureKeyVault(deps: SecureKeyVaultDeps): KeyVault {
     }
   }
 
+  async function hasSecureScreenLock(): Promise<boolean> {
+    try {
+      return (await localAuthentication.getEnrolledLevelAsync()) !== ENROLLED_LEVEL_NONE;
+    } catch {
+      return false;
+    }
+  }
+
   return {
-    capabilities: async () => ({
-      persistent: true,
-      biometric: secureStore.canUseBiometricAuthentication(),
-    }),
+    capabilities: async () => {
+      const locked = await hasSecureScreenLock();
+      return {
+        persistent: locked,
+        biometric: locked && secureStore.canUseBiometricAuthentication(),
+      };
+    },
     storeMasterKey: async (accountKey, masterKey) => {
+      if (!(await hasSecureScreenLock())) return;
       const biometric = secureStore.canUseBiometricAuthentication();
       const mode = biometric ? KEY_AUTH_MODES.biometric : KEY_AUTH_MODES.device;
       await secureStore.setItemAsync(modeItem(accountKey), mode);
@@ -85,6 +100,7 @@ export function createSecureKeyVault(deps: SecureKeyVaultDeps): KeyVault {
       });
     },
     loadMasterKey: async (accountKey, prompt) => {
+      if (!(await hasSecureScreenLock())) return null;
       const biometric = (await readMode(accountKey)) === KEY_AUTH_MODES.biometric;
       if (!biometric && !(await authenticated(prompt))) return null;
       let stored: string | null;

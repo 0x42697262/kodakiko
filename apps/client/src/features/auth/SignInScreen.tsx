@@ -24,7 +24,7 @@ export function SignInScreen() {
   );
   const [password, setPassword] = useState('');
   const [keepSignedIn, setKeepSignedIn] = useState(false);
-  const { busy, error, submit } = useSubmit();
+  const { busy, error, submit } = useSubmit(() => setPassword(''));
   const banner = error === null ? null : errorBanner(error);
 
   const signIn = () =>
@@ -41,6 +41,7 @@ export function SignInScreen() {
       )}
       <TextField
         testID="signIn.username"
+        selectOnFocus
         label={EN['signIn.username']}
         value={username}
         onChangeText={setUsername}

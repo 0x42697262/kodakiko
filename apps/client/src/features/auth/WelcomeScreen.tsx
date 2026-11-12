@@ -42,6 +42,7 @@ function ServerForm() {
       )}
       <TextField
         testID="welcome.serverLabel"
+        selectOnFocus
         label={EN['welcome.serverLabel']}
         value={input}
         onChangeText={setInput}

@@ -15,11 +15,12 @@ export function Banner({ testID, kind, message }: BannerProps) {
   const accent = { info: colors.primary, warning: colors.textMuted, error: colors.danger }[kind];
   return (
     <View
-      testID={testID}
       accessibilityRole={kind === 'error' ? 'alert' : 'text'}
       style={[styles.container, { backgroundColor: colors.surface, borderColor: accent }]}
     >
-      <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
+      <Text testID={testID} style={[styles.message, { color: colors.text }]}>
+        {message}
+      </Text>
     </View>
   );
 }

@@ -7,6 +7,8 @@ import {
   ADB_DEVICES_HEADER,
   ADB_DEVICE_STATE,
   ADB_TIMEOUT_MS,
+  APP_ID,
+  APP_SETTLE_MS,
   ANDROID_API_ENV_OVERRIDES,
   ANDROID_EMULATOR_HINT,
   ANDROID_FLOWS_SOURCE_DIRECTORY,
@@ -192,6 +194,8 @@ async function runFlow(id: string): Promise<boolean> {
   const sidecar = await loadSidecar(id);
   const seeded = (await sidecar.seed?.(ANDROID_PROJECT_NAME)) ?? {};
   const environment = { [DEFAULT_SERVER_INPUT_NAME]: ANDROID_WEB_ORIGIN, ...seeded };
+  await adb(['shell', 'am', 'force-stop', APP_ID]);
+  await pause(APP_SETTLE_MS);
   for (const part of sidecar.parts) {
     try {
       await runPart(part, environment);

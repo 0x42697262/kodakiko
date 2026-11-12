@@ -14,6 +14,7 @@ type TextFieldProps = {
   readonly onSubmit?: () => void;
   readonly multiline?: boolean;
   readonly showLabel?: boolean;
+  readonly selectOnFocus?: boolean;
 };
 
 export function TextField({
@@ -28,6 +29,7 @@ export function TextField({
   onSubmit,
   multiline = false,
   showLabel = true,
+  selectOnFocus = false,
 }: TextFieldProps) {
   const { colors } = useTheme();
   return (
@@ -41,6 +43,7 @@ export function TextField({
         secureTextEntry={secureTextEntry}
         autoCapitalize={autoCapitalize}
         autoCorrect={false}
+        selectTextOnFocus={selectOnFocus}
         multiline={multiline}
         onSubmitEditing={onSubmit}
         submitBehavior={multiline ? 'newline' : 'submit'}

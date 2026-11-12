@@ -129,6 +129,7 @@ export const WEB_REPORT_DIRECTORY = 'web';
 export const WEB_RESULTS_DIRECTORY = 'web-results';
 
 export const ADB_COMMAND = 'adb';
+export const APP_SETTLE_MS = 2_000;
 export const ADB_TIMEOUT_MS = 60_000;
 export const ADB_DEVICE_STATE = 'device';
 export const ADB_DEVICES_HEADER = 'List of devices attached';

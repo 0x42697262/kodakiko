@@ -18,7 +18,9 @@ export function Screen({ testID, children, scroll = false }: ScreenProps) {
       style={[styles.root, { backgroundColor: theme.colors.background }]}
     >
       {scroll ? (
-        <ScrollView contentContainerStyle={styles.content}>{children}</ScrollView>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          {children}
+        </ScrollView>
       ) : (
         <View style={styles.content}>{children}</View>
       )}

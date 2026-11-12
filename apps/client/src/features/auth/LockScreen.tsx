@@ -18,7 +18,7 @@ export function LockScreen() {
   const state = useAccountState();
   const [password, setPassword] = useState('');
   const [passwordShown, setPasswordShown] = useState(!platformTraits.deviceUnlock);
-  const { busy, error, submit } = useSubmit();
+  const { busy, error, submit } = useSubmit(() => setPassword(''));
   const leftLock = state.kind !== 'locked';
 
   useEffect(() => {

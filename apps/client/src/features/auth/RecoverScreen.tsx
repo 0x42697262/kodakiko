@@ -20,7 +20,10 @@ export function RecoverScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [touched, setTouched] = useState(false);
-  const { busy, error, submit } = useSubmit();
+  const { busy, error, submit } = useSubmit(() => {
+    setNewPassword('');
+    setConfirm('');
+  });
   const hints = passwordHints(newPassword, username, touched);
   const mismatch = touched && confirm !== newPassword;
   const banner = error === null ? null : errorBanner(error);
@@ -42,6 +45,7 @@ export function RecoverScreen() {
       )}
       <TextField
         testID="recover.username"
+        selectOnFocus
         label={EN['recover.username']}
         value={username}
         onChangeText={setUsername}

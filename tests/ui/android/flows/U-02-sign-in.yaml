@@ -19,11 +19,9 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: signIn.username
-- eraseText: 100
 - inputText: ${UNKNOWN_USERNAME}
 - tapOn:
     id: signIn.password
-- eraseText: 100
 - inputText: ${OTHER_PASSWORD}
 - tapOn:
     id: signIn.submit
@@ -34,11 +32,9 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: signIn.username
-- eraseText: 100
 - inputText: ${USERNAME}
 - tapOn:
     id: signIn.password
-- eraseText: 100
 - inputText: ${PASSWORD}
 - tapOn:
     id: signIn.submit

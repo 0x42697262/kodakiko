@@ -18,6 +18,17 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: cancelDeletion.submit
+- runFlow:
+    when:
+      visible:
+        id: lock.title
+    commands:
+      - tapOn:
+          id: lock.unlockPassword
+      - tapOn:
+          id: lock.password
+      - inputText: ${PASSWORD}
+      - pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: home.signedInAs

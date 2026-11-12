@@ -59,6 +59,7 @@ export function SignUpScreen() {
       ) : null}
       <TextField
         testID="signUp.username"
+        selectOnFocus
         label={EN['signUp.username']}
         value={username}
         onChangeText={setUsername}

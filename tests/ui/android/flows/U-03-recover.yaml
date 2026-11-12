@@ -15,9 +15,17 @@ appId: com.x42697262.kodakiko
 - tapOn:
     id: recover.newPassword
 - inputText: ${NEW_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: recover.confirm
 - tapOn:
     id: recover.confirm
 - inputText: ${NEW_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: recover.submit
 - tapOn:
     id: recover.submit
 - extendedWaitUntil:
@@ -42,7 +50,6 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: signIn.password
-- eraseText: 100
 - inputText: ${NEW_PASSWORD}
 - tapOn:
     id: signIn.submit
