@@ -68,12 +68,21 @@ function stripHeredocBodies(command: string): string {
 	return command.replace(HEREDOC, (whole) => whole.slice(0, whole.indexOf("\n")));
 }
 
-function checkBashWrites(cwd: string, rawCommand: string): string | null {
+const LEADING_CD = /^\s*cd\s+([^\s;&|]+)\s*(?:&&|;)/;
+
+function checkBashWrites(rootCwd: string, rawCommand: string): string | null {
 	const command = stripHeredocBodies(rawCommand);
+	const cdMatch = LEADING_CD.exec(command);
+	const cwd = cdMatch?.[1] ? resolve(rootCwd, cdMatch[1].replace(/^~(?=\/|$)/, process.env.HOME ?? "/nonexistent-home")) : rootCwd;
+	if (relative(rootCwd, cwd).startsWith("..")) {
+		const outside = /(?:[0-9]?>{1,2}|&>)\s*(?!&|\/dev\/null|\/tmp\/)\S/.test(command);
+		if (outside) return "writing after `cd` to a directory outside the repository is not allowed";
+	}
 	for (const match of command.matchAll(REDIRECT_TARGET)) {
 		const target = match[1] ?? match[2];
 		if (!target) continue;
-		const reason = checkPath(cwd, target.replace(/^['"]|['"]$/g, ""));
+		const unquoted = target.replace(/^['"]|['"]$/g, "").replace(/^~(?=\/|$)/, process.env.HOME ?? "/nonexistent-home");
+		const reason = checkPath(rootCwd, resolve(cwd, unquoted));
 		if (reason) return `shell redirect: ${reason}`;
 	}
 	for (const match of command.matchAll(FILE_MUTATORS)) {
