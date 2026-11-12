@@ -143,7 +143,7 @@ Pinned by digest when first pulled; the digest is recorded here in the same comm
 |---|---|---|---|
 | `postgres` | `17` @ `sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f` (pulled 2026-11-12) | recorded | database (`deployment.md` §2), also the test database (spec 03) |
 | `dxflrs/garage` | `v2.5.0` @ `sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5` (linux/amd64, pulled 2026-11-12) | recorded | object storage (F-S3-02) |
-| `caddy` | `2` builder + runtime | to record | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
+| `caddy` | `2` builder + runtime; runtime `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03` (pulled 2026-11-12, used by the UI stack) | runtime recorded; builder to record (spec 21) | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
 | `node` | `22-bookworm-slim` | to record | server runtime and build stages (spec 21) |
 | `caddy` | `2-builder` | to record | xcaddy build with `CADDY_VERSION` and `DNS_MODULE` pinned (spec 21, D-68) |
 | `rclone/rclone` | latest 1.x at pull time | to record | bucket backups (spec 21, operations guide) |
