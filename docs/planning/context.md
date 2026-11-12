@@ -326,6 +326,7 @@ were answered (D-24..D-29).
 
 ## Next step
 
-1. Implementation starts with spec 01 (Sonnet), phase 1 (D-73), test first (D-72); order in
-   `docs/features/README.md` (07c before 07b).
-2. Opus keeps reviewing: each finished spec's report and checklist come back before the next spec.
+1. Sonnet implements spec 01 (`docs/features/01-scaffolding.md`), following `AGENTS.md` §"Sonnet:
+   each session".
+2. The programmer passes Sonnet's report to Opus; Opus reviews the code against the spec, then the
+   next spec starts.
