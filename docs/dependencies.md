@@ -34,7 +34,9 @@ catalogMode: strict
   script). When `pnpm install` stops with `ERR_PNPM_IGNORED_BUILDS` for another package, Sonnet
   adds it **only if that package is on this allowlist**, with `true` if its build is needed for the
   app to run (native binary download) and `false` otherwise, and records the line here. Anything
-  else stops the work.
+  else stops the work. Recorded so far: `react-native-libsodium: true` (2026-11-12, spec 07a; its
+  postinstall unpacks the bundled prebuilt libsodium, `tar -xzf libsodium/build.tgz`, needed by the
+  Android build).
 - `packageManager` in the root `package.json`: `pnpm@12.17.0` (2026-10-30, compliant).
 
 ## Allowlist

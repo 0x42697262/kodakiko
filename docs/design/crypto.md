@@ -295,8 +295,12 @@ table, then parses with the Zod schema from `packages/contract`. Exact signature
 
     C          = 2^exponent plaintext bytes per chunk
     nonce_i    = noncePrefix (16) || uint56_be(i) (7) || finalFlag (1: 0x01 for i = n-1, else 0x00)
-    AD         = the 24 header bytes
+    AD         = utf8(lowercase hex of the 24 header bytes)   48 ASCII bytes (D-79)
     ct_i       = aeadEncrypt(pt_i, AD, nonce_i, variantKey)        length |pt_i| + 16
+
+    Rule (D-79): every AEAD additional data in Kodakiko is valid UTF-8 text, because the Android
+    libsodium wrapper (react-native-libsodium 1.7.0) accepts additional data only as a JS string
+    (F-LIB-29). Hex keeps the encoding injective, so the whole header stays bound.
     variantKey = kdfDerive(32, variantId, "kdkmedia", mediaKey)    variantId 1 original, 2 thumbnail
 
 Rules (as age, F-CRY-02):

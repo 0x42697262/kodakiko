@@ -9,6 +9,7 @@ saveExact: true
 strictDepBuilds: true
 allowBuilds:
   esbuild: true
+  react-native-libsodium: true
 catalogMode: strict
 
 catalog:

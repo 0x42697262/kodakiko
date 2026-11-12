@@ -256,7 +256,8 @@ with these exact behaviors:
 | `createStreamEncryptor(sodium, key, P)` | builds header + layout; `encryptNext(chunk)` encrypts chunk `i` with `isFinal = (i === n − 1)`; expects length `C` for non-final, `P − C·(n − 1)` for the final chunk, else `InvalidChunkError`; calling after the last chunk → `InvalidChunkError`; `isDone()` true after the last chunk |
 | `createStreamDecryptor(sodium, key, header, expectedP)` | layout from `expectedP` and the header's exponent; `decryptNext(ct)` decrypts index `i` with `isFinal = (i === n − 1)`; expects ciphertext length `C + 16` for non-final, final length = `P − C·(n − 1) + 16`, else `MalformedObjectError`; after the last chunk → `InvalidChunkError`; `finish()` throws `TruncatedObjectError` if `i < n` |
 
-The header is the AEAD additional data for every chunk (crypto.md §7.1).
+The AEAD additional data for every chunk is `streamAdditionalData(header)` = UTF-8 bytes of the
+lowercase hex of the 24 header bytes (48 ASCII bytes; crypto.md §7.1, D-79).
 
 ## 9. Recovery words
 
@@ -469,6 +470,14 @@ it.
    header mutation after `createStreamEncryptor` does not change later chunks; 31-byte stream key →
    `InvalidKeyLengthError`; exponent 99 in `streamLayout` → `MalformedObjectError`; a vector file
    with `format: 2` → all its cases fail.
+
+## 13b. Change D-79 (2026-11-12, found in spec 07a)
+
+`stream.ts` exports `streamAdditionalData(header: Uint8Array): Uint8Array` (lowercase hex, UTF-8
+encoded; `HEX_CHARS_PER_BYTE` from `constants.ts`); `encryptChunk` / `decryptChunk` pass it as the
+AEAD additional data instead of the raw header. Regenerate the vectors (`stream.json` digests and
+prefixes change; everything else is identical) and commit them. Tests: `streamAdditionalData` of a
+known header equals the expected 48-character hex string; the existing stream tests pass unchanged.
 
 ## 14. Steps
 

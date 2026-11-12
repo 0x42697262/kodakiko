@@ -160,6 +160,10 @@ apps/client/
   are rethrown as core `DecryptionError`. Before relying on `crypto_secretstream`-free functions,
   the adapter asserts at load that every needed function exists on `lib` and throws a clear error
   naming the missing one (catches wrapper regressions).
+- AEAD additional data on native (D-79, F-LIB-29): the wrapper accepts only strings, so
+  `sodium.native.ts` passes `utf8Decode(ad)` and first checks `bytesEqual(utf8Encode(utf8Decode(ad)),
+  ad)`, throwing `MalformedPayloadError` when the bytes are not valid UTF-8 (cannot happen with core's
+  AD; it guards against silent corruption). Node/web adapters pass the bytes unchanged.
 - `sodium-wrappers.ts` (platform-neutral): `createWrappersSodium(lib: typeof
   import('libsodium-wrappers-sumo'), argon2id: Sodium['argon2id']): Sodium` maps every other port
   method to the wrapper library (crypto.md §2) and rethrows decrypt/open failures as
@@ -446,6 +450,18 @@ Vitest in `apps/client` with `environment: 'node'` for adapter logic that does n
    null), a write that throws midway leaves no final file and the next `open` removes the
    `.partial`, `delete`, `destroy`.
 4. Core-level logic (none new here).
+
+## 8a. Implementation answers (2026-11-12)
+
+1. RN 0.88 removed `InteractionManager`: `lifecycle.native.ts` uses `requestIdleCallback`.
+2. `newArchEnabled` is omitted from `app.config.ts` (not in the SDK 58 type; New Architecture is
+   always on).
+3. Accepted: the `./server-url.ts` explicit import plus the zero-argument overload;
+   `HTTP_RETRY_ATTEMPTS = 3` total attempts; server timestamps as ISO strings, local ones as epoch
+   milliseconds; `AccountState.unlocked` carries `username`; `AppContext.activeAccountKey`;
+   `onSessionInvalid` → `signedOut`; native `subscribeOnline` is a no-op; web `storage.persist()`
+   not awaited; a failed write deletes its `.partial` immediately.
+4. `react-native-libsodium: true` is in `allowBuilds` (recorded in dependencies.md).
 
 ## 9. Steps
 
