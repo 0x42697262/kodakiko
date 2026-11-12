@@ -235,6 +235,18 @@ range`; `getObjectStream`; cleanup. The suite must pass for a provider before it
 (spec 21 release checklist item 12). The same suite runs in the normal integration run against the
 test Garage (variables set by the harness).
 
+## 10b. Implementation answers (2026-11-12)
+
+1. `BUCKET_CORS_RULE.headers` = `['range', 'content-type']` (lowercase, F-S3-08).
+2. The multipart `UploadPlan` carries `sizeBytes` (needed by `partsComplete` for the last-part size).
+3. The `MAX_UPLOAD_BYTES ≤ MULTIPART_PART_BYTES × 10000` settings rule stays although current
+   bounds cannot violate it; no failing-case test.
+4. Garage keys get `--owner` (F-S3-06, D-78).
+5. Accepted: `markUploaded(trx, id, now, replacedDeleteAfter)`; `PendingExists` → `ID_CONFLICT`;
+   const `objectsRepository` with `insertPending` returning `'inserted' | 'idConflict' |
+   'pendingExists'`; `confirm` falls back to `headObject` when the multipart upload is gone;
+   `AppDeps.objectStore` required; the objects service takes a `logger`.
+
 ## 11. Steps
 
 1. Contract + core equality test. 2. Settings group + rules + unit tests. 3. Backoff, domain +

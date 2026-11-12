@@ -140,7 +140,7 @@ Pinned by digest when first pulled; the digest is recorded here in the same comm
 | Image | Tag | Digest | Purpose |
 |---|---|---|---|
 | `postgres` | `17` @ `sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f` (pulled 2026-11-12) | recorded | database (`deployment.md` §2), also the test database (spec 03) |
-| `dxflrs/garage` | `v2.5.0` | to record | object storage (F-S3-02) |
+| `dxflrs/garage` | `v2.5.0` @ `sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5` (linux/amd64, pulled 2026-11-12) | recorded | object storage (F-S3-02) |
 | `caddy` | `2` builder + runtime | to record | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
 | `node` | `22-bookworm-slim` | to record | server runtime and build stages (spec 21) |
 | `caddy` | `2-builder` | to record | xcaddy build with `CADDY_VERSION` and `DNS_MODULE` pinned (spec 21, D-68) |

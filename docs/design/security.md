@@ -138,3 +138,7 @@ Concrete checks, to be mirrored in each feature spec (guidelines 11):
    MK (manual test with a debug build that can dump the key for comparison).
 9. `allowBackup=false`: `adb backup` produces no app data (once per release, manual).
 10. Headers: `curl -I https://<host>/` shows HSTS, CSP, nosniff, no-referrer.
+
+Limitation (D-78): the API's storage key owns the bucket (needed to apply the CORS rule). A
+compromised API host can change bucket settings as well as delete objects; backups (rclone to a
+separate remote) are the recovery path.

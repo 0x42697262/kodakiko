@@ -59,7 +59,7 @@ function checkPath(cwd: string, path: string): string | null {
 }
 
 const REDIRECT_TARGET = /(?:^|[^<>&0-9=-])(?:[0-9]?>{1,2}|&>)\s*(?!&)([^\s;&|<>()]+)|\btee\s+(?:-a\s+)?([^\s;&|<>()]+)/g;
-const FILE_MUTATORS = /\b(mv|cp|ln|install|truncate|touch|sed\s+-i|perl\s+-p?i)\b([^|;&]*)/g;
+const FILE_MUTATORS = /\b(mv|cp|ln|install|truncate|touch|sed\s+-i|perl\s+-p?i)\b([^|;&\n]*)/g;
 const PROTECTED_TOKEN = /(^|[\s'"=])(\.\/)?(docs\/|AGENTS\.md\b|\.pi\/|\.git\/|pnpm-workspace\.yaml\b|~\/|\/(?!tmp\/|dev\/null)[\w.-]+\/)/;
 
 const HEREDOC = /<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n\s*\2\s*(?=\n|$)/g;
@@ -70,10 +70,33 @@ function stripHeredocBodies(command: string): string {
 
 const LEADING_CD = /^\s*cd\s+([^\s;&|]+)\s*(?:&&|;)/;
 
-const QUOTED = /'[^']*'|"(?:[^"\\]|\\.)*"/g;
+function mapQuoted(command: string, map: (quoted: string) => string): string {
+	let out = "";
+	let index = 0;
+	while (index < command.length) {
+		const char = command[index] ?? "";
+		if (char === "\\" && index + 1 < command.length) {
+			out += command.slice(index, index + 2);
+			index += 2;
+			continue;
+		}
+		if (char === "'" || char === '"') {
+			let end = index + 1;
+			while (end < command.length && command[end] !== char) {
+				end += char === '"' && command[end] === "\\" ? 2 : 1;
+			}
+			out += map(command.slice(index, end + 1));
+			index = end + 1;
+			continue;
+		}
+		out += char;
+		index += 1;
+	}
+	return out;
+}
 
 function neutralizeQuotedOperators(command: string): string {
-	return command.replace(QUOTED, (quoted) => quoted.replace(/[<>;|&]/g, " "));
+	return mapQuoted(command, (quoted) => quoted.replace(/[<>;|&]/g, " "));
 }
 
 function checkBashWrites(rootCwd: string, rawCommand: string): string | null {
@@ -92,7 +115,7 @@ function checkBashWrites(rootCwd: string, rawCommand: string): string | null {
 		if (reason) return `shell redirect: ${reason}`;
 	}
 	for (const match of command.matchAll(FILE_MUTATORS)) {
-		const unquotedArgs = (match[2] ?? "").replace(/'[^']*'|"[^"]*"/g, " ");
+		const unquotedArgs = mapQuoted(match[2] ?? "", () => " ");
 		if (PROTECTED_TOKEN.test(unquotedArgs)) return `\`${match[1]}\` touching a protected path or a path outside the repository; stop and ask`;
 	}
 	return null;

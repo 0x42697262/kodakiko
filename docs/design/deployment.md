@@ -51,7 +51,7 @@ F-S3-05; B2 and R2 take the same rule through their consoles or S3 API):
 |---|---|
 | AllowedOrigins | `https://kodakiko.<domain>` (exactly one origin, no wildcard) |
 | AllowedMethods | `GET`, `PUT`, `HEAD` |
-| AllowedHeaders | `Range`, `Content-Type` |
+| AllowedHeaders | `range`, `content-type` (lowercase: Garage v2.5.0 matches them case-sensitively and browsers send lowercase names, F-S3-08) |
 | ExposeHeaders | `Content-Range`, `Content-Length`, `Accept-Ranges` |
 | MaxAgeSeconds | 3600 |
 
