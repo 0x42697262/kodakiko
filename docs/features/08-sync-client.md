@@ -400,6 +400,40 @@ Scenarios:
    → B logs `sync.rollback_rejected` and keeps its newer blob.
 8. Resync: prune tombstones with a moved clock → B (old cursor) resyncs and ends identical to A.
 
+## 5a. Implementation decisions and review 1 (2026-11-12)
+
+Decisions: the diagnostics upload self-test creates a real `createEntry` with one ~200 MiB random
+original (a presign needs a media row); when its object is `uploaded`, it enqueues `deleteEntry` for
+that entry so nothing stays in the journal. Root `test` excludes `@kodakiko/e2e`; root `test:e2e`
+runs it. U-05's wait uses the id regex (07c §10c).
+
+Review additions (all test-first):
+1. **Lost create response.** `createEntry`: if `serverPendingRevision ≥ 1` the POST is skipped and the
+   server copy becomes the base (`revision 1`); on `409 ID_CONFLICT`, `GET /entries/{id}` — owned →
+   record its blob/revision as the base and continue (a local edit is pushed by its own
+   `updateEntryMeta` with that base). e2e case: drop the POST response, edit, sync → synced.
+2. **Merge vs concurrent edit.** `conflict.resolve` re-checks inside its write transaction that the
+   entry's `metadataBlob` and `baseRevision` are unchanged; otherwise it returns `'retry'` and resolves
+   again.
+3. **Rollback guard on 409.** `REVISION_CONFLICT` with `details.revision <= base` → log
+   `sync.rollback_rejected`, no resolve, conflict failure.
+4. **Interrupted resync.** The resync wipe transaction also drops the collection's orphaned local
+   entries except `pending_create` / `pending_update` ones and any entry with queued outbox items;
+   restart overflow throws instead of `break`.
+5. **Native queue.** `UploadService` tracks the last `startId`, uses `stopSelfResult(lastStartId)` and
+   re-checks `hasPending()`; `onTimeout` drains the queue and marks those jobs `FAILED`;
+   `TimeoutHandlerTest` covers it. Progress counts bytes per part attempt (subtracted on failure), never
+   above 100%.
+6. Unexpected executor errors count attempts and go `dead` at `MAX_ATTEMPTS` (`UNKNOWN_ERROR_CODE`);
+   `AccountLockedError` does not count.
+7. Confirm: `404 NOT_FOUND` → re-presign and resubmit; `401` → return without marking anything.
+8. `entry-keys`: a `generation` counter incremented by `clear()`; a resolution finishing in an older
+   generation wipes its key and throws `AccountLockedError`; `mediaKey` calls `requireAccount()` first.
+9. e2e imports server internals only through `@kodakiko/server/testing` (re-export the prune job,
+   test constants and global setup there).
+10. `429` is always `retry` (never `dead`).
+11. `deleteEntry` is in `DROP_REMOVES_ENTRY`.
+
 ## 6. Data model
 
 `data-model.md` §4 already lists the columns of §3.3. If the implementation needs any column not
