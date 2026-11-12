@@ -9,10 +9,10 @@ import type { Settings } from '../config/settings.ts';
 import type { ObjectState, ObjectVariant } from '../domain/enums.ts';
 import { AppError } from '../domain/errors.ts';
 import {
-  abandonedDeleteAfter,
   chooseUploadMode,
   deleteAfter,
   expectedPartBytes,
+  objectDeleteAfter,
   objectKey,
   partsComplete,
   quotaAllows,
@@ -344,7 +344,7 @@ export function createObjectsService(deps: ObjectsServiceDeps) {
       await objectsRepository.markDeleting(
         db,
         row.id,
-        abandonedDeleteAfter(now, storage.objectGraceDays, storage.uploadUrlTtlSeconds),
+        objectDeleteAfter(now, storage),
       );
       throw new AppError('UPLOAD_SIZE_MISMATCH');
     }

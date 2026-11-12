@@ -5,14 +5,20 @@ import { buildApp } from './app.ts';
 import { EXIT_CODES } from './config/constants.ts';
 import { loadSettings } from './config/settings.ts';
 import { SettingsError } from './domain/errors.ts';
+import { objectsRepository } from './adapters/db/objects-repository.ts';
 import { abortStaleUploadsJob } from './jobs/abort-stale-uploads.ts';
 import { collectObjectsJob } from './jobs/collect-objects.ts';
+import { eraseAccountsJob } from './jobs/erase-accounts.ts';
 import { expireSessionsJob } from './jobs/expire-sessions.ts';
+import { pruneTombstonesJob } from './jobs/prune-tombstones.ts';
+import { purgeTrashJob } from './jobs/purge-trash.ts';
 import { reconcileUsageJob } from './jobs/reconcile-usage.ts';
 import { createScheduler } from './jobs/scheduler.ts';
 import { systemClock as clock } from './platform/clock.ts';
 import { exitWith, fatalLine, onShutdownSignal } from './platform/process.ts';
+import { createEntriesService } from './services/entries-service.ts';
 import { bucketCheck } from './services/readiness.ts';
+import { createSequenceService } from './services/sequence-service.ts';
 import { LOG_EVENTS } from './text/events.ts';
 
 try {
@@ -27,11 +33,22 @@ try {
   const readinessChecks = [databaseCheck(db), bucketCheck(objectStore)];
   const app = await buildApp({ settings, db, clock, readinessChecks, objectStore });
   const enabled = settings.jobs.enabled;
+  const entriesService = createEntriesService({
+    db,
+    settings,
+    clock,
+    objectsRepository,
+    sequenceService: createSequenceService(),
+    logger: app.log,
+  });
   const jobs = [
     expireSessionsJob(settings),
     collectObjectsJob(settings, objectStore, app.log),
     abortStaleUploadsJob(settings, objectStore, app.log),
     reconcileUsageJob(settings, app.log),
+    purgeTrashJob(settings, entriesService, app.log),
+    eraseAccountsJob(settings, app.log),
+    pruneTombstonesJob(settings),
   ];
   const scheduler = createScheduler({ db, clock, logger: app.log, jobs, enabled });
   scheduler.start();

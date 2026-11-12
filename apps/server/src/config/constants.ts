@@ -65,12 +65,16 @@ export const BEARER_PREFIX = 'Bearer ';
 export const JOB_TICK_MS = 15 * SECOND_MS;
 export const JOB_TIMEOUT_MS = 5 * MINUTE_MS;
 export const JOB_BATCH_SIZE = 500;
+export const COLLECTIONS_PAGE_MAX = 200;
+export const COLLECTIONS_PAGE_DEFAULT = 100;
+export const DIFF_PAGE_DEFAULT = 500;
+export const COLLATION_C = 'C';
+export const COLLATE_KEYWORD = 'collate';
 export const SESSION_TOUCH_INTERVAL_MINUTES = 5;
 
 export const HSTS_MAX_AGE_SECONDS = 63072000;
 export const INT8_OID = 20;
 
-export const TRASH_DAYS_DEFAULT = 30;
 export const PUBLIC_CONFIG_API_VERSION = 1;
 
 export const TRUSTED_PROXY_PRESETS = Object.freeze(['loopback', 'linklocal', 'uniquelocal']);
@@ -133,6 +137,13 @@ export const SETTINGS_DEFAULTS = Object.freeze({
   jobCollectObjectsIntervalMinutes: 10,
   jobAbortStaleUploadsIntervalMinutes: 60,
   jobReconcileUsageIntervalMinutes: 1440,
+  maxEntryMetadataBytes: 524288,
+  maxDiffPageSize: 500,
+  trashDays: 30,
+  tombstoneRetentionDays: 90,
+  jobPurgeTrashIntervalMinutes: 60,
+  jobEraseAccountsIntervalMinutes: 60,
+  jobPruneTombstonesIntervalMinutes: 1440,
 } as const);
 
 export const SETTINGS_BOUNDS = Object.freeze({
@@ -157,6 +168,10 @@ export const SETTINGS_BOUNDS = Object.freeze({
   uploadUrlTtlSecondsMax: 604800,
   downloadUrlTtlSecondsMin: 60,
   downloadUrlTtlSecondsMax: 86400,
+  maxEntryMetadataBytesMin: 1024,
+  maxDiffPageSizeMin: 10,
+  maxDiffPageSizeMax: 2000,
+  tombstoneRetentionDaysMin: 7,
 });
 
 export const SECONDS_PER_HOUR = 3600;
@@ -191,6 +206,9 @@ export const REFERRER_POLICY = 'no-referrer';
 export const CORP_POLICY = 'same-origin';
 
 export const HTTP_STATUS = Object.freeze({
+  ok: 200,
+  created: 201,
+  noContent: 204,
   notFound: 404,
   tooManyRequests: 429,
   serverErrorMin: 500,
@@ -244,6 +262,8 @@ export const USERS_USERNAME_CONSTRAINT = 'users_username_key';
 export const USERS_ID_CONSTRAINT = 'users_pkey';
 export const COLLECTIONS_ID_CONSTRAINT = 'collections_pkey';
 export const OBJECTS_ID_CONSTRAINT = 'objects_pkey';
+export const ENTRIES_ID_CONSTRAINT = 'entries_pkey';
+export const MEDIA_ID_CONSTRAINT = 'media_pkey';
 export const OBJECTS_PENDING_VARIANT_CONSTRAINT = 'objects_one_pending_per_variant';
 
 export const CLI_FLAGS = Object.freeze({

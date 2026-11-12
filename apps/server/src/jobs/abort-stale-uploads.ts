@@ -2,7 +2,7 @@ import { objectsRepository } from '../adapters/db/objects-repository.ts';
 import type { ObjectStore } from '../adapters/storage/object-store.ts';
 import { JOB_BATCH_SIZE, JOB_TIMEOUT_MS } from '../config/constants.ts';
 import type { Settings } from '../config/settings.ts';
-import { abandonedDeleteAfter, staleUploadCutoff } from '../domain/objects.ts';
+import { objectDeleteAfter, staleUploadCutoff } from '../domain/objects.ts';
 import type { EventLogger } from '../platform/event-logger.ts';
 import { LOG_EVENTS } from '../text/events.ts';
 import { JOB_LOCK_IDS } from './keys.ts';
@@ -24,7 +24,7 @@ export function abortStaleUploadsJob(
     run: async ({ db, now, signal }) => {
       const cutoff = staleUploadCutoff(now, storage.pendingUploadHours);
       const stale = await objectsRepository.selectStalePending(db, cutoff, JOB_BATCH_SIZE);
-      const deleteAfter = abandonedDeleteAfter(now, storage.objectGraceDays, storage.uploadUrlTtlSeconds);
+      const deleteAfter = objectDeleteAfter(now, storage);
       let processed = 0;
       for (const row of stale) {
         if (signal.aborted) break;

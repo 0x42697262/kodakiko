@@ -22,5 +22,9 @@ export const LOG_EVENTS = Object.freeze({
   objectDeleteFailed: 'object.delete_failed',
   objectAbortFailed: 'object.abort_failed',
   usageReconciled: 'usage.reconciled',
+  entryCreated: 'entry.created',
+  entryDeleted: 'entry.deleted',
+  entryPurged: 'entry.purged',
+  accountErased: 'account.erased',
   securityRateLimitsDisabled: 'security.rate_limits_disabled',
 });

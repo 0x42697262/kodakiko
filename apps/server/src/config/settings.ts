@@ -50,7 +50,13 @@ export type Settings = {
     readonly maxUploadBytes: number;
     readonly defaultQuotaBytes: number;
     readonly maxCollectionMetadataBytes: number;
+    readonly maxEntryMetadataBytes: number;
   };
+  readonly sync: {
+    readonly maxDiffPageSize: number;
+    readonly tombstoneRetentionDays: number;
+  };
+  readonly entries: { readonly trashDays: number };
   readonly auth: {
     readonly fakeParamsSecret: Uint8Array;
     readonly sessionIdleDays: number;
@@ -67,6 +73,9 @@ export type Settings = {
     readonly collectObjectsIntervalMs: number;
     readonly abortStaleUploadsIntervalMs: number;
     readonly reconcileUsageIntervalMs: number;
+    readonly purgeTrashIntervalMs: number;
+    readonly eraseAccountsIntervalMs: number;
+    readonly pruneTombstonesIntervalMs: number;
   };
 };
 
@@ -295,6 +304,37 @@ const envSchema = z
       1,
       Number.MAX_SAFE_INTEGER,
     ),
+    MAX_ENTRY_METADATA_BYTES: integer(
+      SETTINGS_DEFAULTS.maxEntryMetadataBytes,
+      SETTINGS_BOUNDS.maxEntryMetadataBytesMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    MAX_DIFF_PAGE_SIZE: integer(
+      SETTINGS_DEFAULTS.maxDiffPageSize,
+      SETTINGS_BOUNDS.maxDiffPageSizeMin,
+      SETTINGS_BOUNDS.maxDiffPageSizeMax,
+    ),
+    TRASH_DAYS: integer(SETTINGS_DEFAULTS.trashDays, 1, Number.MAX_SAFE_INTEGER),
+    TOMBSTONE_RETENTION_DAYS: integer(
+      SETTINGS_DEFAULTS.tombstoneRetentionDays,
+      SETTINGS_BOUNDS.tombstoneRetentionDaysMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_PURGE_TRASH_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobPurgeTrashIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_ERASE_ACCOUNTS_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobEraseAccountsIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_PRUNE_TOMBSTONES_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobPruneTombstonesIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
   })
   .superRefine((env, context) => {
     const baseUrl = parseUrl(env.PUBLIC_BASE_URL);
@@ -380,7 +420,13 @@ function toSettings(env: Env): Settings {
       maxUploadBytes: env.MAX_UPLOAD_BYTES,
       defaultQuotaBytes: env.DEFAULT_QUOTA_BYTES,
       maxCollectionMetadataBytes: env.MAX_COLLECTION_METADATA_BYTES,
+      maxEntryMetadataBytes: env.MAX_ENTRY_METADATA_BYTES,
     },
+    sync: {
+      maxDiffPageSize: env.MAX_DIFF_PAGE_SIZE,
+      tombstoneRetentionDays: env.TOMBSTONE_RETENTION_DAYS,
+    },
+    entries: { trashDays: env.TRASH_DAYS },
     auth: {
       fakeParamsSecret: env.FAKE_PARAMS_SECRET,
       sessionIdleDays: env.SESSION_IDLE_DAYS,
@@ -414,6 +460,9 @@ function toSettings(env: Env): Settings {
       collectObjectsIntervalMs: env.JOB_COLLECT_OBJECTS_INTERVAL_MINUTES * MINUTE_MS,
       abortStaleUploadsIntervalMs: env.JOB_ABORT_STALE_UPLOADS_INTERVAL_MINUTES * MINUTE_MS,
       reconcileUsageIntervalMs: env.JOB_RECONCILE_USAGE_INTERVAL_MINUTES * MINUTE_MS,
+      purgeTrashIntervalMs: env.JOB_PURGE_TRASH_INTERVAL_MINUTES * MINUTE_MS,
+      eraseAccountsIntervalMs: env.JOB_ERASE_ACCOUNTS_INTERVAL_MINUTES * MINUTE_MS,
+      pruneTombstonesIntervalMs: env.JOB_PRUNE_TOMBSTONES_INTERVAL_MINUTES * MINUTE_MS,
     },
   };
 }

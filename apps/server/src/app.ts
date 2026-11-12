@@ -17,6 +17,8 @@ import type { Settings } from './config/settings.ts';
 import { registerErrorHandling, sendError } from './http/error-handler.ts';
 import { registerAuthPlugin } from './http/auth-plugin.ts';
 import { createAuthController } from './http/controllers/auth-controller.ts';
+import { createCollectionsController } from './http/controllers/collections-controller.ts';
+import { createEntriesController } from './http/controllers/entries-controller.ts';
 import { createObjectsController } from './http/controllers/objects-controller.ts';
 import { createUsersController } from './http/controllers/users-controller.ts';
 import { loggerOptions, type LogStream } from './http/log-redaction.ts';
@@ -27,6 +29,10 @@ import {
 } from './http/rate-limits.ts';
 import { registerRequestContext, setResponseContext } from './http/request-context.ts';
 import { registerAuthRoutes } from './http/routes/auth.ts';
+import { registerCollectionsRoutes } from './http/routes/collections.ts';
+import { registerEntriesRoutes } from './http/routes/entries.ts';
+import { registerMediaRoutes } from './http/routes/media.ts';
+import { registerSyncRoutes } from './http/routes/sync.ts';
 import { registerConfigRoutes } from './http/routes/config.ts';
 import { registerHealthRoutes } from './http/routes/health.ts';
 import { registerObjectsRoutes } from './http/routes/objects.ts';
@@ -35,7 +41,12 @@ import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-trac
 import type { ObjectStore } from './adapters/storage/object-store.ts';
 import type { Clock } from './platform/clock.ts';
 import { randomToken } from './platform/ids.ts';
+import { objectsRepository } from './adapters/db/objects-repository.ts';
 import { createAuthService } from './services/auth-service.ts';
+import { createCollectionsService } from './services/collections-service.ts';
+import { createEntriesService } from './services/entries-service.ts';
+import { createSequenceService } from './services/sequence-service.ts';
+import { createSyncService } from './services/sync-service.ts';
 import { createObjectsService } from './services/objects-service.ts';
 import type { ReadinessCheck } from './services/readiness.ts';
 import { LOG_EVENTS } from './text/events.ts';
@@ -110,12 +121,20 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
     rateLimitFor,
     requireSession,
   });
+  const entriesService = createEntriesService({
+    db,
+    settings,
+    clock,
+    objectsRepository,
+    sequenceService: createSequenceService(),
+    logger: app.log,
+  });
   const objectsService = createObjectsService({
     db,
     store: objectStore,
     settings,
     clock,
-    onObjectUploaded: async () => undefined,
+    onObjectUploaded: entriesService.onObjectUploaded,
     logger: app.log,
   });
   registerObjectsRoutes(app, {
@@ -123,5 +142,14 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
     rateLimitFor,
     requireSession,
   });
+  const entriesController = createEntriesController(entriesService);
+  registerEntriesRoutes(app, { controller: entriesController, rateLimitFor, requireSession });
+  registerMediaRoutes(app, { controller: entriesController, rateLimitFor, requireSession });
+  const collectionsController = createCollectionsController(
+    createCollectionsService({ db, settings, clock }),
+    createSyncService({ db, settings }),
+  );
+  registerCollectionsRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
+  registerSyncRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
   return app;
 }

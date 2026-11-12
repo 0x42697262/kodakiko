@@ -54,6 +54,7 @@ describe('loadSettings', () => {
       maxUploadBytes: 3758096384,
       defaultQuotaBytes: 107374182400,
       maxCollectionMetadataBytes: 4096,
+      maxEntryMetadataBytes: 524288,
     });
     expect(settings.log).toEqual({ level: 'info' });
     expect(settings.jobs).toEqual({
@@ -62,6 +63,9 @@ describe('loadSettings', () => {
       collectObjectsIntervalMs: 600_000,
       abortStaleUploadsIntervalMs: 3_600_000,
       reconcileUsageIntervalMs: 86_400_000,
+      purgeTrashIntervalMs: 3_600_000,
+      eraseAccountsIntervalMs: 3_600_000,
+      pruneTombstonesIntervalMs: 86_400_000,
     });
   });
 

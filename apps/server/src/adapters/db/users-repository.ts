@@ -85,6 +85,38 @@ export function createUsersRepository(db: Kysely<Database>) {
         .execute();
     },
 
+    selectDueForErasure(now: Date, limit: number): Promise<UserRow[]> {
+      return db
+        .selectFrom('users')
+        .selectAll()
+        .where('status', '=', 'pending_deletion')
+        .where('deletionDueAt', '<', now)
+        .where((builder) =>
+          builder.or([
+            builder.not(
+              builder.exists(
+                builder.selectFrom('objects').select('objects.id').whereRef('objects.ownerId', '=', 'users.id'),
+              ),
+            ),
+            builder.exists(
+              builder
+                .selectFrom('objects')
+                .select('objects.id')
+                .whereRef('objects.ownerId', '=', 'users.id')
+                .where('objects.state', '<>', 'deleting'),
+            ),
+          ]),
+        )
+        .orderBy('deletionDueAt')
+        .orderBy('id')
+        .limit(limit)
+        .execute();
+    },
+
+    async deleteById(id: string): Promise<void> {
+      await db.deleteFrom('users').where('id', '=', id).execute();
+    },
+
     async cancelPendingDeletion(id: string, now: Date): Promise<number> {
       const result = await db
         .updateTable('users')

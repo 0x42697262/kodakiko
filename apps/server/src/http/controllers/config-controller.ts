@@ -1,8 +1,5 @@
 import type { PublicConfigDto } from '@kodakiko/contract';
-import {
-  PUBLIC_CONFIG_API_VERSION,
-  TRASH_DAYS_DEFAULT,
-} from '../../config/constants.ts';
+import { PUBLIC_CONFIG_API_VERSION } from '../../config/constants.ts';
 import type { Settings } from '../../config/settings.ts';
 
 export function configController(settings: Settings): PublicConfigDto {
@@ -14,7 +11,7 @@ export function configController(settings: Settings): PublicConfigDto {
     maxMediaPerEntry: settings.limits.maxMediaPerEntry,
     maxUploadBytes: settings.limits.maxUploadBytes,
     defaultQuotaBytes: settings.limits.defaultQuotaBytes,
-    trashDays: TRASH_DAYS_DEFAULT,
+    trashDays: settings.entries.trashDays,
     accountDeletionGraceDays: settings.accounts.deletionGraceDays,
     serverVersion: settings.server.version,
   };

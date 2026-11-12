@@ -99,3 +99,10 @@ export function reissueUrlTtlSeconds(
   const expiresAtMs = createdAt.getTime() + pendingUploadHours * HOUR_MS;
   return Math.min(uploadUrlTtlSeconds, Math.floor((expiresAtMs - now.getTime()) / SECOND_MS));
 }
+
+export function objectDeleteAfter(
+  now: Date,
+  storage: Pick<StorageSettings, 'objectGraceDays' | 'uploadUrlTtlSeconds'>,
+): Date {
+  return abandonedDeleteAfter(now, storage.objectGraceDays, storage.uploadUrlTtlSeconds);
+}

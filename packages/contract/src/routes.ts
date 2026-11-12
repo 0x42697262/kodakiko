@@ -20,6 +20,16 @@ export const ROUTE_PATTERNS = Object.freeze({
   objectParts: `${API_PREFIX}/objects/:id/parts`,
   objectConfirm: `${API_PREFIX}/objects/:id/confirm`,
   objectDownload: `${API_PREFIX}/objects/:id/download`,
+  collections: `${API_PREFIX}/collections`,
+  collection: `${API_PREFIX}/collections/:id`,
+  collectionDiff: `${API_PREFIX}/collections/:id/diff`,
+  syncState: `${API_PREFIX}/sync/state`,
+  entries: `${API_PREFIX}/entries`,
+  entry: `${API_PREFIX}/entries/:id`,
+  entryTrash: `${API_PREFIX}/entries/:id/trash`,
+  entryRestore: `${API_PREFIX}/entries/:id/restore`,
+  entryMedia: `${API_PREFIX}/entries/:id/media`,
+  media: `${API_PREFIX}/media/:id`,
 });
 
 export const ROUTES = Object.freeze({
@@ -42,4 +52,14 @@ export const ROUTES = Object.freeze({
   objectParts: (id: string) => `${API_PREFIX}/objects/${id}/parts`,
   objectConfirm: (id: string) => `${API_PREFIX}/objects/${id}/confirm`,
   objectDownload: (id: string) => `${API_PREFIX}/objects/${id}/download`,
+  collections: () => `${API_PREFIX}/collections`,
+  collection: (id: string) => `${API_PREFIX}/collections/${id}`,
+  collectionDiff: (id: string) => `${API_PREFIX}/collections/${id}/diff`,
+  syncState: () => `${API_PREFIX}/sync/state`,
+  entries: () => `${API_PREFIX}/entries`,
+  entry: (id: string) => `${API_PREFIX}/entries/${id}`,
+  entryTrash: (id: string) => `${API_PREFIX}/entries/${id}/trash`,
+  entryRestore: (id: string) => `${API_PREFIX}/entries/${id}/restore`,
+  entryMedia: (id: string) => `${API_PREFIX}/entries/${id}/media`,
+  media: (id: string) => `${API_PREFIX}/media/${id}`,
 });

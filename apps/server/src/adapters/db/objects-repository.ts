@@ -117,6 +117,38 @@ export const objectsRepository = {
       .execute();
   },
 
+  async markDeletingByOwner(
+    trx: Executor,
+    ownerId: string,
+    deleteAfter: Date,
+    limit: number,
+  ): Promise<void> {
+    await trx
+      .updateTable('objects')
+      .set({ state: 'deleting', deleteAfter })
+      .where(
+        'id',
+        'in',
+        trx
+          .selectFrom('objects')
+          .select('id')
+          .where('ownerId', '=', ownerId)
+          .where('state', '<>', 'deleting')
+          .orderBy('id')
+          .limit(limit),
+      )
+      .execute();
+  },
+
+  async countByOwner(trx: Executor, ownerId: string): Promise<number> {
+    const row = await trx
+      .selectFrom('objects')
+      .select((builder) => builder.fn.countAll<number>().as('total'))
+      .where('ownerId', '=', ownerId)
+      .executeTakeFirstOrThrow();
+    return Number(row.total);
+  },
+
   async adjustUsedBytes(trx: Executor, userId: string, delta: number): Promise<void> {
     await trx
       .updateTable('users')
@@ -140,9 +172,11 @@ export const objectsRepository = {
         select 1
         from objects
         join media on media.id = objects.media_id
+        join entries on entries.id = media.entry_id
         join entry_memberships on entry_memberships.entry_id = media.entry_id
         join collections on collections.id = entry_memberships.collection_id
         where objects.id = ${objectId}
+          and (entries.owner_id = ${userId} or entries.trashed_at is null)
           and (
             collections.owner_id = ${userId}
             or exists (
