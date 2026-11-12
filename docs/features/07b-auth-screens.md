@@ -292,6 +292,19 @@ Review additions:
     Opus) warns that the dev API on `0.0.0.0:8080` must not be reachable from the LAN.
 11. `@kodakiko/client/testing` exports `createWrappersSodium`; `seed.ts` imports it from there.
 
+## 5b. Android flow findings (2026-11-12)
+
+1. `Screen`'s `ScrollView` uses `keyboardShouldPersistTaps="handled"` (otherwise the first tap with
+   the keyboard open only closes the keyboard and buttons never fire). `Banner` puts its `testID` on
+   the message `Text` (the `alert` role stays on the container).
+2. After any failed submit, the password fields of `/sign-in`, `/recover` and `/lock` are cleared.
+   `TextField` gains a `selectOnFocus` prop (default `false`); the username fields and the
+   `/welcome` server field set it, so typing replaces the whole value.
+3. KeyVault (07a): when the device has no secure screen lock
+   (`LocalAuthentication.getEnrolledLevelAsync()` is `NONE`), `storeMasterKey` stores nothing and
+   `capabilities().persistent` is false: the key cannot be protected, so this device always unlocks
+   with the password. Unit test with the fake ports.
+
 ## 6. Steps
 
 1. Dev stack files + `docs/development.md`; bootstrap; `F-S3-07`.

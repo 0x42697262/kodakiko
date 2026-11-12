@@ -413,6 +413,15 @@ use `10.0.2.2`, not `adb reverse`:
 Physical devices still need `adb reverse` (or a LAN address); that path is documented in
 `docs/development.md` and not used by the automated flows.
 
+## 10c. Flow mechanics on Android (2026-11-12)
+
+- Fields are filled with `tapOn` + `inputText` (selection replaces the value, 07b §5b); no `eraseText`.
+- Before tapping a field that may sit under the keyboard, the flow runs `hideKeyboard` and, if
+  needed, `scrollUntilVisible` on the field's id.
+- U-05 on Android: after `cancelDeletion.submit`, if `lock.title` is visible (device without a
+  screen lock, 07b §5b item 3) the flow unlocks with the password (`lock.unlockPassword` →
+  `lock.password` → Enter) and then expects `home.signedInAs`. The emulator keeps no screen lock.
+
 ## 11. Verification checklist
 
 - [ ] `pnpm ui:web` runs `U-00` green in both projects; the HTML report opens.
