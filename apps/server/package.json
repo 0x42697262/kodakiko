@@ -1,0 +1,11 @@
+{
+  "name": "@kodakiko/server",
+  "private": true,
+  "type": "module",
+  "exports": { "./testing": "./src/testing.ts" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": { "@types/node": "catalog:" }
+}

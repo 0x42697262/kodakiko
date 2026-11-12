@@ -1,0 +1,10 @@
+export const BASE64URL_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+export const BYTES_PER_GROUP = 3;
+export const CHARS_PER_GROUP = 4;
+export const BITS_PER_BYTE = 8;
+export const BITS_PER_CHAR = 6;
+export const BYTE_MASK = 0xff;
+export const CHAR_MASK = 0x3f;
+export const ORPHAN_CHARS_LENGTH_REMAINDER = 1;
+export const CHARS_FOR_ONE_BYTE = 2;
+export const CHARS_FOR_TWO_BYTES = 3;

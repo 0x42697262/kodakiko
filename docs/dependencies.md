@@ -84,7 +84,7 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 |---|---|---|
 | `expo` | 58.0.23 | platform |
 | `expo-router` | 58.0.30 | navigation (client.md §1) |
-| `react` / `react-dom` | 19.3.1 | UI |
+| `react` / `react-dom` | 19.3.0 | UI; matches Expo SDK 58 (F-TOOL-12): react-native 0.88.1's bundled renderer is built against 19.3.0 (`ReactFabric-*.js` `version: "19.3.0"`), and `react-dom` must equal `react` exactly |
 | `react-native` | 0.88.1 | UI |
 | `react-native-web` | 0.21.4 | web target |
 | `@expo/metro-runtime` | 58.0.17 | web runtime for Expo Router |

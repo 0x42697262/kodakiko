@@ -76,7 +76,7 @@ the listed source files.
 | `@kodakiko/contract` | `packages/contract` | `zod: catalog:` | `src/ids.ts`, `src/bytes.ts`, `src/index.ts` (re-exports both), `test/bytes.test.ts` |
 | `@kodakiko/core` | `packages/core` | `@kodakiko/contract: workspace:*`, `zod: catalog:`; devDependency `libsodium-wrappers-sumo: catalog:` | `src/index.ts` = `export {};` |
 | `@kodakiko/server` | `apps/server` | none yet | `src/main.ts` = `export {};` |
-| `@kodakiko/client` | `apps/client` | `expo`, `react`, `react-native`: all `catalog:` | `App.tsx` (default export a component returning `null`) |
+| `@kodakiko/client` | `apps/client` | `expo`, `react`, `react-native`: all `catalog:`; devDependency `@types/react` (`catalog:`, needed by the type check) | `App.tsx` (default export a component returning `null`) |
 
 Every `package.json`: `private: true`, `type: "module"`, script `test` = `vitest run
 --passWithNoTests`. (`noEmit` comes from the base config, so `tsc` only checks.)
