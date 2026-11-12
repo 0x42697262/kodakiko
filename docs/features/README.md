@@ -24,8 +24,9 @@ Each file is a complete build task. Rules for the implementing model (Sonnet):
    they fail, and why (missing module or wrong result, not a broken test setup); (c) implement until
    they pass; (d) refactor with the tests green. A behavior marked `manual` in `behaviors.md` is
    checked by hand and reported. The spec is done only when every behavior row that names it passes;
-   a `ui` flow counts only for the spec in the last column of 07c §8 (the last spec it needs), other
-   specs named in the same row are done when their own layers pass.
+   a `ui` flow counts only for the spec in the last column of 07c §8, and an `e2e` row only for the
+   **last** spec it needs (the `tests/e2e` package exists from spec 08; client services from 07b on);
+   other specs named in the same row are done when their own layers pass.
 9. **Tests are fixed by the plan (D-76).** Tests named in a spec, in `behaviors.md` or in 07c §8 may
    never be deleted, skipped (`.skip`, `.todo`, `test.fixme`, commented out, excluded by config),
    loosened (weaker assertions, longer timeouts than the spec states, broader matchers) or changed

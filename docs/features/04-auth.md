@@ -24,6 +24,35 @@ Depends on specs 02 and 03.
 `UserDto.status` uses `USER_STATUSES = ['active', 'pending_deletion'] as const`;
 `USER_ROLES = ['admin', 'member'] as const` (both exported from `limits.ts`'s sibling `enums.ts`).
 
+
+### 1a. Implementation answers (2026-11-12)
+
+1. Contract: `sessionResponse = z.object({ user: userDto })` (`GET /auth/session`) and a separate
+   `passwordChangeResponse = z.object({ session: sessionDto })` (`POST /auth/password`).
+2. `authenticate` also returns the session's `deviceLabel`; `changePassword` gives the new session
+   that label.
+3. `createAuthService` deps add `logger: Pick<FastifyBaseLogger, 'info' | 'warn'>` (the CLI passes a
+   silent logger) and `checkOpenSignUpRate: (ip: string) => Promise<boolean>`; `signUp` gains an
+   `ip` argument (the route passes `request.ip`). The route module builds `checkOpenSignUpRate` from
+   `fastify.createRateLimit(RATE_LIMITS.authSignUpOpen)`; it always returns `true` when
+   `settings.server.rateLimitsEnabled` is false. `authSignUpOpen` is added to `RATE_LIMITS` and to
+   `RATE_LIMIT_IP_KEYED_GROUPS`. The service never imports Fastify values (types only).
+4. `AppDeps` gains optional `logStream` (forwarded to Fastify's `logger.stream`) for log-capture
+   tests.
+5. Spec 03's `deepFreeze` skips `ArrayBuffer` views (`ArrayBuffer.isView`), so
+   `auth.fakeParamsSecret` bytes can live in the frozen settings. Adding `FAKE_PARAMS_SECRET` to the
+   spec 03 test fixtures (`FIXED_TEST_ENV`, the settings test base env) is required by this spec and
+   is not a test change under rule 9.
+6. KDF params schema bounds: `opsLimit` ≤ 2,147,483,647 and `memLimitBytes` ≤
+   `Number.MAX_SAFE_INTEGER` (too large → `422 VALIDATION_FAILED`, not a database error).
+7. Defaults accepted: tracker methods `failureCount` / `recordFailure` / `clear`;
+   `INVITE_TOKEN_PATTERN` / `INVITE_TOKEN_REGEX` next to the session ones in `limits.ts`; the four
+   new core error classes carry no message and there is no `account/text.ts`; usernames are
+   normalized in every service method; `shouldTouchSession` uses `>=`; `sleep` stays private to the
+   auth service file; CLI `--role` is required and `--expires-days` is 1-90.
+8. Done-ness: the `e2e` rows B-001, B-003, B-005, B-006, B-010 are proven later (README rule 8); this
+   spec covers B-002 and B-004 (`api`) and its own tests.
+
 ## 2. Core: account flows (`packages/core/src/account/`)
 
 Pure; every function takes the `Sodium` port. Byte fields are `Uint8Array`; conversion to the

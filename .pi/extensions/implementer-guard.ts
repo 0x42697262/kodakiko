@@ -86,7 +86,8 @@ function checkBashWrites(rootCwd: string, rawCommand: string): string | null {
 		if (reason) return `shell redirect: ${reason}`;
 	}
 	for (const match of command.matchAll(FILE_MUTATORS)) {
-		if (PROTECTED_TOKEN.test(match[2] ?? "")) return `\`${match[1]}\` touching a protected path or a path outside the repository; stop and ask`;
+		const unquotedArgs = (match[2] ?? "").replace(/'[^']*'|"[^"]*"/g, " ");
+		if (PROTECTED_TOKEN.test(unquotedArgs)) return `\`${match[1]}\` touching a protected path or a path outside the repository; stop and ask`;
 	}
 	return null;
 }
