@@ -19,3 +19,5 @@ apps/client/expo-env.d.ts
 apps/client/public/workers/
 apps/client/public/media-sw.js
 .pnpm-store/
+.pi/implementer/logs/
+.pi/implementer/sessions/

@@ -3,10 +3,11 @@ import {
   BITS_PER_BYTE,
   BITS_PER_CHAR,
   BYTE_MASK,
+  BYTES_FROM_THREE_CHARS,
+  BYTES_FROM_TWO_CHARS,
   BYTES_PER_GROUP,
   CHAR_MASK,
-  CHARS_FOR_ONE_BYTE,
-  CHARS_FOR_TWO_BYTES,
+  CHARS_FOR_TWO_BYTES_GROUP,
   CHARS_PER_GROUP,
   ORPHAN_CHARS_LENGTH_REMAINDER,
 } from './constants.ts';
@@ -62,5 +63,5 @@ function bytesInGroup(characters: number): number {
   if (characters === CHARS_PER_GROUP) {
     return BYTES_PER_GROUP;
   }
-  return characters === CHARS_FOR_TWO_BYTES ? CHARS_FOR_ONE_BYTE : 1;
+  return characters === CHARS_FOR_TWO_BYTES_GROUP ? BYTES_FROM_THREE_CHARS : BYTES_FROM_TWO_CHARS;
 }
