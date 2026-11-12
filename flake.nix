@@ -21,7 +21,7 @@
         cmakeVersion = "3.22.1";
         androidComposition = pkgs.androidenv.composeAndroidPackages {
           platformVersions = [ "37" ];
-          buildToolsVersions = [ buildToolsVersion ];
+          buildToolsVersions = [ buildToolsVersion "36.0.0" ];
           includeNDK = true;
           ndkVersions = [ ndkVersion ];
           cmakeVersions = [ cmakeVersion ];

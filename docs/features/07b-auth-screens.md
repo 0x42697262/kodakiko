@@ -259,6 +259,39 @@ item 5). The words stay on screen only until "I've Written It Down" is pressed.
    (the auth service of §2 with memory kv, session store and key vault; spec 08 extends this file
    with `createTestClientContext`).
 
+## 5a. Implementation answers and review 1 (2026-11-12)
+
+Accepted gaps: `tapOn: recoveryKey.done` in 07c's `common/recovery-words.yaml`; sign-in and sign-up
+store the master key in the KeyVault on every platform and `restore()` tries `unlockWithDevice()`;
+`signUp` sets `unlocked` and `app/index.tsx` routes unconfirmed accounts to `/recovery-key`; names
+`AuthServiceContext`, `GlobalStore`, `platformTraits`, memory adapters, `signedOut.username`,
+`AppContext.inviteToken` / `globalStore`; `apps/server/scripts/dev.ts` + `build-options.ts`.
+
+Review additions:
+1. **Wipe on every path.** `signIn`, `recover`, `signUp`, `unlockWithDevice` and `establish` wipe
+   every key/login-key/KEK buffer in `finally` (or in `catch` for keys that must survive success):
+   signIn `kek`, `loginKey`; recover `opened.recoveryKey`, `completion.loginKey`,
+   `completion.recoveryLoginKey` (and `opened.masterKey` on failure); signUp `request.loginKey`,
+   `request.recoveryLoginKey` (and `secrets.*` on failure); unlockWithDevice `masterKey` when the
+   unwrap throws; `establish` wipes `input.keys` on failure. Tests: each failure path leaves the
+   spied buffers zeroed.
+2. `fetchFreshBundle`: a 401 clears the session token, sets `signedOut(username)` and throws
+   `AuthError('invalidCredentials')` (full sign-in, crypto.md §5.3); `LockScreen` redirects to `/`
+   when the state leaves `locked`.
+3. The fresh key bundle is saved only after it opened successfully.
+4. `recover` decodes the words locally first (`decodeRecoveryWords`), no request on a checksum
+   error; the decoded key is wiped.
+5. `signOut` runs each step in its own `try/catch`, then always clears the active account, deletes
+   the global record and sets `signedOut(null)`.
+6. `ConfigService.accept(config)` (set current, store, notify) is called by `chooseServer`.
+7. `recoveryPending(): Promise<boolean>` reads only `account.recoveryConfirmed`; an error counts as
+   pending.
+8. `inviteToken.set(null)` after a successful sign-up and on sign-out.
+9. The test fake Argon2 mixes `opsLimit` and `memLimitBytes` into its input.
+10. Dev stack: Caddy binds `127.0.0.1:9443` / `127.0.0.1:9444`; `docs/development.md` (written by
+    Opus) warns that the dev API on `0.0.0.0:8080` must not be reachable from the LAN.
+11. `@kodakiko/client/testing` exports `createWrappersSodium`; `seed.ts` imports it from there.
+
 ## 6. Steps
 
 1. Dev stack files + `docs/development.md`; bootstrap; `F-S3-07`.
