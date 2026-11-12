@@ -49,7 +49,7 @@ https://localhost:9444 {
 
 Server `.env.dev.example`: `PUBLIC_BASE_URL=https://localhost:9443`,
 `S3_ENDPOINT=http://127.0.0.1:53901`, `S3_PUBLIC_ENDPOINT=https://localhost:9444`,
-`TRUST_PROXY_HOPS=1`, `REQUIRE_HTTPS=true`, `SIGNUP_MODE=invite`, a dev-only `FAKE_PARAMS_SECRET`.
+`TRUSTED_PROXIES=loopback,uniquelocal` (Caddy reaches the host API from the Docker bridge address), `REQUIRE_HTTPS=true`, `SIGNUP_MODE=invite`, a dev-only `FAKE_PARAMS_SECRET`.
 Bucket CORS for the dev bucket (origin `https://localhost:9443`, rule of `deployment.md` §2.1) is
 applied with the server CLI command `apply-bucket-cors` (spec 05 §8), which reads the origin from
 `PUBLIC_BASE_URL`.

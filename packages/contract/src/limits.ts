@@ -1,0 +1,16 @@
+export const NOTE_MAX_CHARS = 100_000;
+export const TAGS_PER_ENTRY_MAX = 50;
+export const TAG_MAX_CHARS = 64;
+export const MEDIA_PER_ENTRY_HARD_MAX = 100;
+export const UTC_OFFSET_MINUTES_MIN = -840;
+export const UTC_OFFSET_MINUTES_MAX = 840;
+export const TIME_ZONE_MAX_CHARS = 64;
+export const MIME_TYPE_MAX_CHARS = 100;
+export const FILE_NAME_MAX_CHARS = 255;
+export const COLLECTION_NAME_MAX_CHARS = 100;
+export const LATITUDE_MIN = -90;
+export const LATITUDE_MAX = 90;
+export const LONGITUDE_MIN = -180;
+export const LONGITUDE_MAX = 180;
+export const SESSION_TOKEN_PATTERN = '^kdk_s_[A-Za-z0-9_-]{43}$';
+export const SESSION_TOKEN_REGEX = new RegExp(SESSION_TOKEN_PATTERN);

@@ -1,0 +1,15 @@
+services:
+  postgres-test:
+    image: postgres:17@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f
+    environment:
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: kodakiko_test
+    ports:
+      - '127.0.0.1:55432:5432'
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d kodakiko_test']
+      interval: 2s
+      timeout: 3s
+      retries: 30

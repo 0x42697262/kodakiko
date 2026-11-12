@@ -121,10 +121,11 @@ s3.kodakiko.{$DOMAIN} {
   module and its arguments per the module's README.
 - `header_up Host {host}` keeps the original `Host` for SigV4 presigned URLs (storage.md §1, F-S3-07).
 - No `trusted_proxies` in the private profile: Caddy sees real client addresses and overwrites
-  `X-Forwarded-For`; the API trusts exactly one hop (`TRUST_PROXY_HOPS=1`, spec 03 `TRUST_PROXY`
-  becomes the integer setting `TRUST_PROXY_HOPS`, default 1, passed to Fastify's `trustProxy`). In the
-  public profile with Cloudflare Tunnel the operator adds `trusted_proxies static <cloudflared
-  container address>` to the global block and sets `TRUST_PROXY_HOPS=2` (operations guide §8), so
+  `X-Forwarded-For`; the API trusts forwarded headers only from peers in `TRUSTED_PROXIES`
+  (default `loopback,uniquelocal`, which covers Caddy on the compose network; D-77). In the public
+  profile with Cloudflare Tunnel the operator adds `trusted_proxies static private_ranges` to Caddy's
+  global block (cloudflared runs on the same private network), so Caddy keeps the client address
+  that cloudflared forwards, and the API still trusts only private peers (operations guide §8);
   clients cannot spoof `X-Forwarded-For` to evade per-IP limits.
 
 ### 2.2 `snippets/security-headers.caddy`
@@ -175,7 +176,7 @@ Caddy substitutes `{$CSP_SCRIPT_HASHES}` when parsing the config, also inside qu
 
 `infra/compose/.env.example` is the **production** superset: every server variable of the settings
 tables in specs 03, 04, 05, 06, 17 and 18 with production defaults (`REQUIRE_HTTPS=true`,
-`TRUST_PROXY_HOPS=1`, `PUBLIC_BASE_URL=https://kodakiko.<domain>`, `S3_ENDPOINT=http://garage:3900`,
+`TRUSTED_PROXIES=loopback,uniquelocal`, `PUBLIC_BASE_URL=https://kodakiko.<domain>`, `S3_ENDPOINT=http://garage:3900`,
 `S3_PUBLIC_ENDPOINT=https://s3.kodakiko.<domain>`, `STORAGE_PROVIDER=garage`, flags off,
 `SIGNUP_MODE=invite`), plus the compose-only variables `REGISTRY`, `KODAKIKO_VERSION`, `BIND_IP`,
 `DOMAIN`, `ACME_EMAIL`, `DNS_API_TOKEN`, `S3_MAX_BODY=9MiB`, `POSTGRES_PASSWORD`,
@@ -208,7 +209,7 @@ Sections (each a numbered procedure with expected output):
    loads → `reconcile-usage` runs (or `docker compose exec api node dist/cli.js stats`).
 7. Updates and rollback (deployment.md §7).
 8. Going public (D-41 checklist, deployment.md §6): either full public access (Cloudflare Tunnel
-   or a public `BIND_IP`; then `trusted_proxies` + `TRUST_PROXY_HOPS=2` for a tunnel, §2.1), or only
+   or a public `BIND_IP`; then `trusted_proxies static private_ranges` in Caddy for a tunnel, §2.1), or only
    public links for non-VPN viewers (D-36): a tunnel or Tailscale Funnel limited to the paths `/s/*`,
    `/_expo/static/*`, `/media-sw.js`, `/api/v1/config` and `/api/v1/public-links/*`, with
    `PUBLIC_LINK_PROXY=true` because the S3 host stays private.

@@ -90,7 +90,7 @@ Summary:
 
 | Group | Variables |
 |---|---|
-| `server` | `PORT`, `HOST`, `PUBLIC_BASE_URL`, `TRUST_PROXY_HOPS`, `REQUIRE_HTTPS`, `SERVER_VERSION`, `SHUTDOWN_TIMEOUT_MS` |
+| `server` | `PORT`, `HOST`, `PUBLIC_BASE_URL`, `TRUSTED_PROXIES`, `REQUIRE_HTTPS`, `SERVER_VERSION`, `SHUTDOWN_TIMEOUT_MS` |
 | `database` | `DATABASE_URL` (required), `DATABASE_POOL_MAX`, `DATABASE_STATEMENT_TIMEOUT_MS`, `DATABASE_CONNECT_TIMEOUT_MS` |
 | `flags` | `FLAG_SHARING`, `FLAG_PUBLIC_LINKS`, `SIGNUP_MODE` (`invite`/`open`) |
 | `limits` | `MAX_MEDIA_PER_ENTRY`, `MAX_UPLOAD_BYTES`, `DEFAULT_QUOTA_BYTES`, `MAX_ENTRY_METADATA_BYTES`, `MAX_COLLECTION_METADATA_BYTES` |
@@ -164,6 +164,9 @@ Config and ingress only; no code change:
    runs against a migrated DB (guidelines 4.4).
 4. Client releases: Android via sideloaded APK / Play internal track later; web is part of the
    compose stack (`web` image), so it ships with the server.
+
+Known limitation: rate-limit counters and session-touch state live in the API process; running
+more than one API instance needs a shared (Redis) store first (spec 03 §2.8).
 
 ## 8. Flags registry (`docs/flags.md` content, lives here until the file is split out)
 

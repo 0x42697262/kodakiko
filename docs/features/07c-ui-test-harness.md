@@ -125,7 +125,7 @@ apps/server/dist/{main,cli}.js` (Node's `--env-file` does not override variables
 environment, so the S3 keys passed by the runner win). `apps/server/.env.ui` is committed (test-only
 values, no real secret): `PORT=9582`, `HOST=0.0.0.0`, `PUBLIC_BASE_URL=http://localhost:9580`,
 `REQUIRE_HTTPS=false`, `RATE_LIMITS_ENABLED=false` (D-75: every request arrives from one address,
-and the suite signs in hundreds of times), `TRUST_PROXY_HOPS=1`,
+and the suite signs in hundreds of times), `TRUSTED_PROXIES=loopback,uniquelocal`,
 `DATABASE_URL=postgres://kodakiko:kodakiko@127.0.0.1:55433/kodakiko`, `STORAGE_PROVIDER=garage`,
 `S3_ENDPOINT=http://127.0.0.1:9581`, `S3_PUBLIC_ENDPOINT=http://localhost:9581`,
 `S3_BUCKET=kodakiko-ui`, `SIGNUP_MODE=invite`,

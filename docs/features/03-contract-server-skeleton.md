@@ -99,7 +99,7 @@ deep-frozen.
 | `PORT` | int 1-65535 | 8080 | `server.port` |
 | `HOST` | string | `0.0.0.0` | `server.host` |
 | `PUBLIC_BASE_URL` | https URL, no trailing slash (http allowed only when `REQUIRE_HTTPS=false`) | required | `server.publicBaseUrl` |
-| `TRUST_PROXY_HOPS` | int 0-5 | 1 | `server.trustProxyHops` (number of reverse proxies in front of the API whose `X-Forwarded-*` headers are trusted; 0 = none; Caddy alone = 1) |
+| `TRUSTED_PROXIES` | comma-separated list; each entry is an IP address, a CIDR (`10.0.0.0/8`, `fd00::/8`) or one of the presets `loopback`, `linklocal`, `uniquelocal`; empty = trust no proxy | `loopback,uniquelocal` | `server.trustedProxies` (readonly string array, entries trimmed; an invalid entry → `SettingsError` naming it). Passed to Fastify's `trustProxy` as the array: a request's `X-Forwarded-*` headers are honored only when the connecting peer matches (D-77). Fastify 5.12 treats a **number** as "trust nothing" (fail-closed), so hop counts are not used. The API port must never be published to clients: only Caddy (on the private Docker network) may reach it |
 | `REQUIRE_HTTPS` | boolean | `true` | `server.requireHttps` |
 | `RATE_LIMITS_ENABLED` | boolean | `true` | `server.rateLimitsEnabled`; `false` is accepted only when `REQUIRE_HTTPS=false` **and** the `PUBLIC_BASE_URL` host is `localhost` or `127.0.0.1`, else `SettingsError` (D-75: local UI tests only); when `false` the boot logs `security.rate_limits_disabled` at `warn` |
 | `SERVER_VERSION` | string | `dev` | `server.version` |
@@ -179,9 +179,10 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance>;
 ```
 
 `buildApp`:
-1. `Fastify({ logger: loggerOptions(settings), trustProxy: settings.server.trustProxyHops,
+1. `Fastify({ logger: loggerOptions(settings), trustProxy: [...settings.server.trustedProxies],
    bodyLimit: API_MAX_BODY_BYTES, genReqId: () => randomToken(REQUEST_ID_BYTES),
-   requestIdHeader: false, disableRequestLogging: false })`.
+   requestIdHeader: false })` (request logging stays on by default; passing `disableRequestLogging`
+   prints Fastify deprecation `FSTDEP023`, so the option is omitted).
 2. `setValidatorCompiler(validatorCompiler)`, `setSerializerCompiler(serializerCompiler)` from
    `fastify-type-provider-zod`; `withTypeProvider<ZodTypeProvider>()`.
 3. `registerRequestContext` (§2.7), `@fastify/helmet` (§2.7), `@fastify/rate-limit` with
@@ -197,8 +198,9 @@ censor: '[redacted]' } }` and `REDACT_PATHS`:
 `*.mediaKeyByEntry`, `*.keyMaterial`,
 `*.password`, `*.loginKey`, `*.currentLoginKey`, `*.recoveryLoginKey`, `*.token`,
 `*.inviteToken`, `*.accessToken`, `*.masterKeyByKek`, `*.masterKeyByRecovery`,
-`*.recoveryKeyByMaster`, `*.privateKeyByMaster`, `*.keyByOwner`, `*.sealedCollectionKey`.
-Request bodies are never logged (Fastify does not log them by default; keep it so).
+`*.recoveryKeyByMaster`, `*.privateKeyByMaster`, `*.keyByOwner`, `*.sealedCollectionKey`, and the
+**bare top-level form** of every `*.x` path above (`password`, `token`, `loginKey`, …; pino's `*.x`
+matches exactly one level, so `log.info({ token })` would otherwise print it). Request bodies are never logged (Fastify does not log them by default; keep it so).
 
 `main.ts` (≤ 40 lines, sequence only):
 1. `const settings = loadSettings(process.env)`; on `SettingsError` print the message to stderr and
@@ -231,10 +233,13 @@ true }`, `referrerPolicy: { policy: 'no-referrer' }`, `crossOriginResourcePolicy
 
 ### 2.8 Rate limits
 
-`http/rate-limits.ts`: `export function rateLimitFor(group: RateLimitGroup): RouteOptions['config']`
-returning `{ rateLimit: { max, timeWindow } }` from `RATE_LIMITS`, or `{ rateLimit: false }` when
-`rateLimitsEnabled` is false (the function reads it from the settings passed to `buildApp`; services
-that call `fastify.createRateLimit` directly, spec 04 `authSignUpOpen`, skip the check the same way). The plugin is registered with
+`http/rate-limits.ts`: `export type RateLimitFor = (group: RateLimitGroup) => RouteOptions['config']`
+and `export function createRateLimitFor(settings: Settings): RateLimitFor`, whose result returns
+`{ rateLimit: { max, timeWindow } }` from `RATE_LIMITS`, or `{ rateLimit: false }` when
+`settings.server.rateLimitsEnabled` is false. `buildApp` calls it once and passes `rateLimitFor` to
+every route-registration function in its options object. Services that call
+`fastify.createRateLimit` directly (spec 04 `authSignUpOpen`) check
+`settings.server.rateLimitsEnabled` themselves. The plugin is registered with
 `global: false`, `keyGenerator: rateLimitKey` (`http/rate-limits.ts`): requests with an
 `Authorization: Bearer` header are keyed by `'s:' + first 16 hex characters of sha256(token)` (per
 session, so per user, D-27, and independent of the auth preHandler's order), all others by
@@ -243,6 +248,43 @@ session, so per user, D-27, and independent of the auth preHandler's order), all
 `x-ratelimit-remaining` and `retry-after` only. Storage is the plugin's in-memory store (one API
 instance; a Redis store is a later change if the API scales out, recorded in
 `deployment.md` §7 as a limitation).
+
+### 2.8a Review 1 additions (2026-11-12)
+
+1. **Rate-limit keys.** `rateLimitKey` keys a request by session only when its `Authorization`
+   header is `Bearer ` + a token matching `SESSION_TOKEN_REGEX` (contract `limits.ts`, added by this
+   spec: `SESSION_TOKEN_PATTERN = '^kdk_s_[A-Za-z0-9_-]{43}$'`); everything else by IP. The groups
+   in `RATE_LIMIT_IP_KEYED_GROUPS = ['authSignIn', 'authSignUp', 'publicLinkOpen',
+   'publicLinkEntries', 'publicLinkContent']` (server `constants.ts`; the groups that do not exist yet
+   are listed anyway) are **always** keyed by IP: `createRateLimitFor` returns `{ rateLimit: { max,
+   timeWindow, keyGenerator: ipRateLimitKey } }` for them. Otherwise random tokens would give every
+   request its own bucket.
+2. **Database pool errors.** `createDatabase(url, onPoolError)` adds `pool.on('error', onPoolError)`;
+   `main.ts` passes a function logging `LOG_EVENTS.dbPoolError = 'db.pool_error'` (message only)
+   through `app.log` (an idle client error must not crash the process).
+3. **Framework errors.** Fastify option `frameworkErrors: (error, request, reply) => sendError(reply,
+   request.id, 'MALFORMED_REQUEST', null)` (`sendError` exported from `error-handler.ts`), so
+   malformed URLs also get `errorResponseSchema`, a `requestId` and `no-store`.
+4. **Validation errors.** The error handler maps `hasZodFastifySchemaValidationErrors(error) ||
+   error.validation !== undefined` to `VALIDATION_FAILED`.
+5. **Settings errors list every problem.** Per-variable rules (including each `TRUSTED_PROXIES`
+   entry) are refinements on the variable's own schema, not in the object-level `superRefine`, so a
+   missing variable does not hide other invalid ones; only the two cross-variable rules
+   (`PUBLIC_BASE_URL` http, `RATE_LIMITS_ENABLED`) stay object-level.
+6. `PUBLIC_BASE_URL` must have no user, password, query or fragment (path still forbidden as
+   before: origin only, no trailing slash).
+7. `no-store` applies to every response whose URL is `/api` or starts with `/api/` (constant
+   `API_PATH_PREFIX = '/api/'`).
+8. Remaining literals move to `config/constants.ts` (`ID_BYTES`, the `'fatal'` level, the
+   `'https'` protocol — reuse `HTTPS_PROTOCOL`); unused text keys `notUrl` and `unknownVariable` are
+   removed; the integration global-setup `pg.Client` gets `connectionTimeoutMillis: RETRY_DELAY_MS * 4`.
+9. Tests: a random `Bearer x` on `authSignIn`-group route stub shares the IP bucket (11th request →
+   429 with `max` 10); `kdk_s_` + 43 chars → session key; `log.info({ token: 'x' })` prints
+   `[redacted]`; `GET /api/v1/%E0%A4%A` → 400 `MALFORMED_REQUEST` with `requestId`; an
+   error with `validation` set → 400 `VALIDATION_FAILED`; settings with `DATABASE_URL` only and
+   `TRUSTED_PROXIES=bad` → the message names `PUBLIC_BASE_URL` **and** `TRUSTED_PROXIES`;
+   `PUBLIC_BASE_URL=https://u:p@a.example` invalid; `/api/v2/x` 404 has `no-store`; pool `error`
+   event → logged, process alive.
 
 ### 2.9 Database
 
@@ -305,10 +347,17 @@ export function createScheduler(options: SchedulerOptions): { start(): void; sto
 `tryLock` defaults to the advisory-lock implementation below; tests inject a fake. It returns a
 release function, or `null` when another instance holds the lock.
 
-- Every job is due on the first tick after `start()`; afterwards every `JOB_TICK_MS` the scheduler
-  checks which jobs are due (`lastRunAt + intervalMs <= now`).
+- `start()` runs the first tick immediately (`setTimeout(tick, 0)`), then every `JOB_TICK_MS`; every
+  job is due on that first tick; on later ticks a job is due when `lastRunAt + intervalMs <= now`.
+  Ticks never overlap (a tick that finds the previous one still running is skipped).
 - A due job runs only if `select pg_try_advisory_lock(lockId)` returns true on a **dedicated
-  connection** (`db.connection().execute(...)`), and that connection unlocks in `finally`.
+  connection** (`db.connection().execute(...)`), and that connection unlocks in `finally`. When the
+  lock is not acquired (another instance runs it), the scheduler sets that job's `lastRunAt = now`
+  anyway, so it is next due one interval later. The advisory lock guarantees a job never runs
+  **concurrently** on two instances; it can still run twice in one interval (instance B ticks after
+  A finished). Every job must therefore be idempotent and batch-bounded (specs 04-06, 17-18 jobs are).
+- `stop()` during a pending `tryLock`: when the lock resolves after `stop()`, release it immediately
+  and do not start the job.
 - Each run gets an `AbortSignal` that aborts after `timeoutMs`; the run logs `job.started`,
   `job.finished` (with `processed`, `remaining`, duration) or `job.failed` (error message,
   stack). A failure does not stop the scheduler; the next run happens at the next interval
@@ -368,14 +417,15 @@ Unit (`test/unit/`):
 1. `settings.test.ts`: `PUBLIC_BASE_URL=http://…` rejected with `REQUIRE_HTTPS=true`, accepted with
    `false`; `RATE_LIMITS_ENABLED=false` rejected unless `REQUIRE_HTTPS=false` and the host is
    `localhost`/`127.0.0.1`; defaults applied; each required variable missing → `SettingsError` whose
-   message names it; `TRUST_PROXY_HOPS=yes` invalid; `MAX_MEDIA_PER_ENTRY=101` invalid; the returned
+   message names it; `TRUSTED_PROXIES=not-an-ip` invalid (message names the entry); `TRUSTED_PROXIES=` (empty) valid → `[]`; `MAX_MEDIA_PER_ENTRY=101` invalid; the returned
    object is frozen; the error message never contains the value of `DATABASE_URL`.
 2. `error-handler.test.ts` (Fastify instance with a test route, no DB): `AppError('NOT_FOUND')` →
    404 with the catalog message and the request id equal to `X-Request-Id`; Zod body violation →
    422 with `issues`; unknown route → 404 shape; thrown plain `Error` → 500 generic message;
    2 MiB + 1 body → 413; invalid JSON → 400.
 3. `https.test.ts`: `requireHttps=true` + no forwarded proto → 400 `HTTPS_REQUIRED`; with
-   `x-forwarded-proto: https` and `trustProxyHops=1` → passes; `/health/live` exempt.
+   `x-forwarded-proto: https` from a trusted peer (`TRUSTED_PROXIES=loopback`; `app.inject` connects
+   from `127.0.0.1`) → passes; the same header with `TRUSTED_PROXIES=` (empty) → 400; `/health/live` exempt.
 4. `scheduler.test.ts` with fake timers and a fake lock function: job runs when due, not twice
    concurrently, `remaining: true` reruns next tick, failure logs and continues, `stop()` aborts.
 5. `rate-limit.test.ts`: a test route with `max: 2` → third call 429 with `Retry-After`.
@@ -392,8 +442,9 @@ Integration (`test/integration/`, real Postgres):
    `referrer-policy: no-referrer`.
 4. `int8.test.ts`: a `bigint` column round-trips as `number`; a value above
    `Number.MAX_SAFE_INTEGER` read through the pool throws.
-5. `scheduler-lock.test.ts`: two schedulers on the same database with one job → the job body runs
-   once per interval (advisory lock works).
+5. `scheduler-lock.test.ts`: two schedulers on the same database with one job whose body sleeps
+   500 ms → the bodies never overlap in time (advisory lock works); `stop()` while `tryLock` is
+   pending → the job body never starts.
 
 ## 5. Steps
 
@@ -418,7 +469,8 @@ Integration (`test/integration/`, real Postgres):
       else secret.
 - [ ] Log output of one request contains `reqId`, method, URL, status, and no `authorization`
       header value (send one with a dummy token and grep for it: zero hits).
-- [ ] `grep -rn "process.env" apps/server/src` → only `main.ts` (passes it to `loadSettings`).
+- [ ] `grep -rn "process.env" apps/server/src` → only the two entry points `main.ts` and `cli.ts`
+      (each passes it to `loadSettings`).
 - [ ] Postgres image digest recorded in `docs/dependencies.md`.
 - [ ] `docs/design/data-model.md` DDL and `0001_initial.ts` match statement for statement (report
       any difference instead of silently fixing either).

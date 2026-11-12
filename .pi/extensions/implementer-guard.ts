@@ -58,11 +58,18 @@ function checkPath(cwd: string, path: string): string | null {
 	return hit ? `${rel} is owned by Opus/the programmer; stop and ask instead of editing it` : null;
 }
 
-const REDIRECT_TARGET = /(?:^|[^<>&0-9])(?:[0-9]?>{1,2}|&>)\s*(?!&)([^\s;&|<>()]+)|\btee\s+(?:-a\s+)?([^\s;&|<>()]+)/g;
+const REDIRECT_TARGET = /(?:^|[^<>&0-9=-])(?:[0-9]?>{1,2}|&>)\s*(?!&)([^\s;&|<>()]+)|\btee\s+(?:-a\s+)?([^\s;&|<>()]+)/g;
 const FILE_MUTATORS = /\b(mv|cp|ln|install|truncate|touch|sed\s+-i|perl\s+-p?i)\b([^|;&]*)/g;
 const PROTECTED_TOKEN = /(^|[\s'"=])(\.\/)?(docs\/|AGENTS\.md\b|\.pi\/|\.git\/|pnpm-workspace\.yaml\b|~\/|\/(?!tmp\/|dev\/null)[\w.-]+\/)/;
 
-function checkBashWrites(cwd: string, command: string): string | null {
+const HEREDOC = /<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n\s*\2\s*(?=\n|$)/g;
+
+function stripHeredocBodies(command: string): string {
+	return command.replace(HEREDOC, (whole) => whole.slice(0, whole.indexOf("\n")));
+}
+
+function checkBashWrites(cwd: string, rawCommand: string): string | null {
+	const command = stripHeredocBodies(rawCommand);
 	for (const match of command.matchAll(REDIRECT_TARGET)) {
 		const target = match[1] ?? match[2];
 		if (!target) continue;
