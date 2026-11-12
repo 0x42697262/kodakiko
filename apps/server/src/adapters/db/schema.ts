@@ -114,6 +114,7 @@ export interface ObjectsTable {
   sizeBytes: number;
   state: ObjectState;
   multipartUploadId: string | null;
+  partSizeBytes: number | null;
   createdAt: Date;
   uploadedAt: Date | null;
   deleteAfter: Date | null;

@@ -4,7 +4,16 @@ import { loadSettings } from '../../src/config/settings.ts';
 
 const SECRET_PASSWORD = 'hunter2-not-a-real-password';
 const FAKE_PARAMS_SECRET = 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU';
+const STORAGE_ENV = {
+  STORAGE_PROVIDER: 'garage',
+  S3_ENDPOINT: 'http://garage:3900',
+  S3_PUBLIC_ENDPOINT: 'https://s3.kodakiko.example.com',
+  S3_BUCKET: 'kodakiko',
+  S3_ACCESS_KEY_ID: 'GKexampleaccesskey',
+  S3_SECRET_ACCESS_KEY: 'example-secret-not-real',
+};
 const BASE_ENV = {
+  ...STORAGE_ENV,
   FAKE_PARAMS_SECRET,
   PUBLIC_BASE_URL: 'https://kodakiko.example.com',
   DATABASE_URL: `postgres://kodakiko:${SECRET_PASSWORD}@db.example.com:5432/kodakiko`,
@@ -47,7 +56,13 @@ describe('loadSettings', () => {
       maxCollectionMetadataBytes: 4096,
     });
     expect(settings.log).toEqual({ level: 'info' });
-    expect(settings.jobs).toEqual({ enabled: true, expireSessionsIntervalMs: 86_400_000 });
+    expect(settings.jobs).toEqual({
+      enabled: true,
+      expireSessionsIntervalMs: 86_400_000,
+      collectObjectsIntervalMs: 600_000,
+      abortStaleUploadsIntervalMs: 3_600_000,
+      reconcileUsageIntervalMs: 86_400_000,
+    });
   });
 
   it('reads overrides', () => {

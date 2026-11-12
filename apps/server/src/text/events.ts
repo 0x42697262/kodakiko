@@ -16,5 +16,11 @@ export const LOG_EVENTS = Object.freeze({
   authPasswordChanged: 'auth.password_changed',
   accountDeletionRequested: 'account.deletion_requested',
   accountDeletionCancelled: 'account.deletion_cancelled',
+  objectPresigned: 'object.presigned',
+  objectQuotaRefused: 'object.quota_refused',
+  objectConfirmed: 'object.confirmed',
+  objectDeleteFailed: 'object.delete_failed',
+  objectAbortFailed: 'object.abort_failed',
+  usageReconciled: 'usage.reconciled',
   securityRateLimitsDisabled: 'security.rate_limits_disabled',
 });

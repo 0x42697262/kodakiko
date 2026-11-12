@@ -1,9 +1,9 @@
 import { CamelCasePlugin, Kysely, PostgresDialect, sql } from 'kysely';
 import pg from 'pg';
-import { INT8_OID, READY_CHECK_TIMEOUT_MS, DATABASE_CHECK_NAME } from '../../config/constants.ts';
+import { INT8_OID, DATABASE_CHECK_NAME } from '../../config/constants.ts';
 import type { Settings } from '../../config/settings.ts';
 import { SYSTEM_TEXT } from '../../text/system.ts';
-import type { ReadinessCheck } from '../../services/readiness.ts';
+import { withReadinessTimeout, type ReadinessCheck } from '../../services/readiness.ts';
 import type { Database } from './schema.ts';
 
 function parseSafeInteger(value: string): number {
@@ -35,24 +35,11 @@ export function createDatabase(
   });
 }
 
-function rejectAfter(milliseconds: number): { promise: Promise<never>; cancel(): void } {
-  let timer: NodeJS.Timeout | undefined;
-  const promise = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(new Error(SYSTEM_TEXT.readinessTimeout)), milliseconds);
-  });
-  return { promise, cancel: () => clearTimeout(timer) };
-}
-
 export function databaseCheck(db: Kysely<Database>): ReadinessCheck {
   return {
     name: DATABASE_CHECK_NAME,
     async check() {
-      const timeout = rejectAfter(READY_CHECK_TIMEOUT_MS);
-      try {
-        await Promise.race([sql`select 1`.execute(db), timeout.promise]);
-      } finally {
-        timeout.cancel();
-      }
+      await withReadinessTimeout(() => sql`select 1`.execute(db));
     },
   };
 }

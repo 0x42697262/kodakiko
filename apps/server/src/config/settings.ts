@@ -14,8 +14,11 @@ import {
   MINUTE_MS,
   LOG_LEVELS,
   POSTGRES_PROTOCOLS,
+  S3_MAX_PARTS,
+  SECONDS_PER_HOUR,
   SETTINGS_BOUNDS,
   SETTINGS_DEFAULTS,
+  STORAGE_PROVIDERS,
   TRUSTED_PROXY_LIST_SEPARATOR,
   TRUSTED_PROXY_PRESETS,
 } from './constants.ts';
@@ -57,7 +60,33 @@ export type Settings = {
   };
   readonly accounts: { readonly deletionGraceDays: number };
   readonly log: { readonly level: (typeof LOG_LEVELS)[number] };
-  readonly jobs: { readonly enabled: boolean; readonly expireSessionsIntervalMs: number };
+  readonly storage: StorageSettings;
+  readonly jobs: {
+    readonly enabled: boolean;
+    readonly expireSessionsIntervalMs: number;
+    readonly collectObjectsIntervalMs: number;
+    readonly abortStaleUploadsIntervalMs: number;
+    readonly reconcileUsageIntervalMs: number;
+  };
+};
+
+export type StorageSettings = {
+  readonly provider: (typeof STORAGE_PROVIDERS)[number];
+  readonly endpoint: string;
+  readonly publicEndpoint: string;
+  readonly region: string;
+  readonly bucket: string;
+  readonly accessKeyId: string;
+  readonly secretAccessKey: string;
+  readonly forcePathStyle: boolean;
+  readonly requestTimeoutMs: number;
+  readonly singlePartMaxBytes: number;
+  readonly multipartPartBytes: number;
+  readonly uploadUrlTtlSeconds: number;
+  readonly downloadUrlTtlSeconds: number;
+  readonly pendingUploadHours: number;
+  readonly objectGraceDays: number;
+  readonly maxPresignsPerHour: number;
 };
 
 function integer(fallback: number | undefined, min: number, max: number) {
@@ -204,6 +233,68 @@ const envSchema = z
       SETTINGS_BOUNDS.maxCollectionMetadataBytesMin,
       Number.MAX_SAFE_INTEGER,
     ),
+    STORAGE_PROVIDER: z.enum(STORAGE_PROVIDERS),
+    S3_ENDPOINT: z.string().refine(isBaseUrl, SETTINGS_TEXT.notHttpUrl),
+    S3_PUBLIC_ENDPOINT: z.string().refine(isBaseUrl, SETTINGS_TEXT.notHttpUrl),
+    S3_REGION: z.string().min(1).default(SETTINGS_DEFAULTS.storageRegion),
+    S3_BUCKET: z
+      .string()
+      .min(SETTINGS_BOUNDS.bucketNameMinChars)
+      .max(SETTINGS_BOUNDS.bucketNameMaxChars),
+    S3_ACCESS_KEY_ID: z.string().min(1),
+    S3_SECRET_ACCESS_KEY: z.string().min(1),
+    S3_FORCE_PATH_STYLE: flag(SETTINGS_DEFAULTS.storageForcePathStyle),
+    STORAGE_REQUEST_TIMEOUT_MS: integer(
+      SETTINGS_DEFAULTS.storageRequestTimeoutMs,
+      SETTINGS_BOUNDS.storageRequestTimeoutMsMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    SINGLE_PART_MAX_BYTES: integer(
+      SETTINGS_DEFAULTS.singlePartMaxBytes,
+      SETTINGS_BOUNDS.partBytesMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    MULTIPART_PART_BYTES: integer(
+      SETTINGS_DEFAULTS.multipartPartBytes,
+      SETTINGS_BOUNDS.partBytesMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    UPLOAD_URL_TTL_SECONDS: integer(
+      SETTINGS_DEFAULTS.uploadUrlTtlSeconds,
+      SETTINGS_BOUNDS.uploadUrlTtlSecondsMin,
+      SETTINGS_BOUNDS.uploadUrlTtlSecondsMax,
+    ),
+    DOWNLOAD_URL_TTL_SECONDS: integer(
+      SETTINGS_DEFAULTS.downloadUrlTtlSeconds,
+      SETTINGS_BOUNDS.downloadUrlTtlSecondsMin,
+      SETTINGS_BOUNDS.downloadUrlTtlSecondsMax,
+    ),
+    PENDING_UPLOAD_HOURS: integer(
+      SETTINGS_DEFAULTS.pendingUploadHours,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    OBJECT_GRACE_DAYS: integer(SETTINGS_DEFAULTS.objectGraceDays, 0, Number.MAX_SAFE_INTEGER),
+    MAX_PRESIGNS_PER_HOUR: integer(
+      SETTINGS_DEFAULTS.maxPresignsPerHour,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_COLLECT_OBJECTS_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobCollectObjectsIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_ABORT_STALE_UPLOADS_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobAbortStaleUploadsIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    JOB_RECONCILE_USAGE_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobReconcileUsageIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
   })
   .superRefine((env, context) => {
     const baseUrl = parseUrl(env.PUBLIC_BASE_URL);
@@ -212,6 +303,41 @@ const envSchema = z
         code: 'custom',
         path: ['PUBLIC_BASE_URL'],
         message: SETTINGS_TEXT.httpNeedsHttpsOff,
+      });
+    }
+    if (parseUrl(env.S3_PUBLIC_ENDPOINT)?.protocol === HTTP_PROTOCOL && env.REQUIRE_HTTPS) {
+      context.addIssue({
+        code: 'custom',
+        path: ['S3_PUBLIC_ENDPOINT'],
+        message: SETTINGS_TEXT.publicEndpointNeedsHttpsOff,
+      });
+    }
+    if (env.MAX_UPLOAD_BYTES > env.MULTIPART_PART_BYTES * S3_MAX_PARTS) {
+      context.addIssue({
+        code: 'custom',
+        path: ['MAX_UPLOAD_BYTES'],
+        message: SETTINGS_TEXT.uploadExceedsPartCapacity(S3_MAX_PARTS),
+      });
+    }
+    if (env.PENDING_UPLOAD_HOURS * SECONDS_PER_HOUR <= env.UPLOAD_URL_TTL_SECONDS) {
+      context.addIssue({
+        code: 'custom',
+        path: ['PENDING_UPLOAD_HOURS'],
+        message: SETTINGS_TEXT.pendingWindowTooShort,
+      });
+    }
+    if (env.SINGLE_PART_MAX_BYTES > env.MAX_UPLOAD_BYTES) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SINGLE_PART_MAX_BYTES'],
+        message: SETTINGS_TEXT.singlePartAboveMaxUpload,
+      });
+    }
+    if (env.SINGLE_PART_MAX_BYTES > env.MULTIPART_PART_BYTES) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SINGLE_PART_MAX_BYTES'],
+        message: SETTINGS_TEXT.singlePartAbovePartSize,
       });
     }
     const localOnly = !env.REQUIRE_HTTPS && LOCAL_HOSTS.includes(baseUrl?.hostname ?? '');
@@ -264,9 +390,30 @@ function toSettings(env: Env): Settings {
     },
     accounts: { deletionGraceDays: env.ACCOUNT_DELETION_GRACE_DAYS },
     log: { level: env.LOG_LEVEL },
+    storage: {
+      provider: env.STORAGE_PROVIDER,
+      endpoint: env.S3_ENDPOINT,
+      publicEndpoint: env.S3_PUBLIC_ENDPOINT,
+      region: env.S3_REGION,
+      bucket: env.S3_BUCKET,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+      forcePathStyle: env.S3_FORCE_PATH_STYLE,
+      requestTimeoutMs: env.STORAGE_REQUEST_TIMEOUT_MS,
+      singlePartMaxBytes: env.SINGLE_PART_MAX_BYTES,
+      multipartPartBytes: env.MULTIPART_PART_BYTES,
+      uploadUrlTtlSeconds: env.UPLOAD_URL_TTL_SECONDS,
+      downloadUrlTtlSeconds: env.DOWNLOAD_URL_TTL_SECONDS,
+      pendingUploadHours: env.PENDING_UPLOAD_HOURS,
+      objectGraceDays: env.OBJECT_GRACE_DAYS,
+      maxPresignsPerHour: env.MAX_PRESIGNS_PER_HOUR,
+    },
     jobs: {
       enabled: env.JOBS_ENABLED,
       expireSessionsIntervalMs: env.JOB_EXPIRE_SESSIONS_INTERVAL_MINUTES * MINUTE_MS,
+      collectObjectsIntervalMs: env.JOB_COLLECT_OBJECTS_INTERVAL_MINUTES * MINUTE_MS,
+      abortStaleUploadsIntervalMs: env.JOB_ABORT_STALE_UPLOADS_INTERVAL_MINUTES * MINUTE_MS,
+      reconcileUsageIntervalMs: env.JOB_RECONCILE_USAGE_INTERVAL_MINUTES * MINUTE_MS,
     },
   };
 }

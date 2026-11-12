@@ -1,4 +1,5 @@
 import { createDatabase } from './adapters/db/database.ts';
+import { applyBucketCors } from './adapters/storage/bucket-cors.ts';
 import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-tracker.ts';
 import { parseCreateInviteArguments } from './cli-arguments.ts';
 import { createMigrator } from './adapters/db/migrator.ts';
@@ -14,12 +15,14 @@ import { systemClock } from './platform/clock.ts';
 import { silentLogger } from './platform/silent-logger.ts';
 import { createAuthService } from './services/auth-service.ts';
 import { LOG_EVENTS } from './text/events.ts';
+import { STORAGE_TEXT } from './text/storage.ts';
 import { SYSTEM_TEXT } from './text/system.ts';
 
 type Command = (args: readonly string[]) => Promise<number>;
 
 const NEWLINE = '\n';
 const ARGV_COMMAND_START = 2;
+const JSON_INDENT_SPACES = 2;
 
 function printLines(lines: readonly string[]): void {
   process.stdout.write(`${lines.join(NEWLINE)}${NEWLINE}`);
@@ -85,6 +88,19 @@ async function createInvite(args: readonly string[]): Promise<number> {
   }
 }
 
+async function applyBucketCorsCommand(): Promise<number> {
+  const settings = loadSettings(process.env);
+  try {
+    const rules = await applyBucketCors(settings.storage, settings.server.publicBaseUrl);
+    printLines([STORAGE_TEXT.corsApplied, JSON.stringify(rules, null, JSON_INDENT_SPACES)]);
+    return EXIT_CODES.success;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`${STORAGE_TEXT.corsFailed(message)}${NEWLINE}`);
+    return EXIT_CODES.failure;
+  }
+}
+
 async function help(): Promise<number> {
   printLines([SYSTEM_TEXT.usage]);
   return EXIT_CODES.success;
@@ -93,6 +109,7 @@ async function help(): Promise<number> {
 const COMMANDS: Readonly<Record<string, Command>> = Object.freeze({
   'migrate-status': migrateStatus,
   'create-invite': createInvite,
+  'apply-bucket-cors': applyBucketCorsCommand,
   help,
 });
 

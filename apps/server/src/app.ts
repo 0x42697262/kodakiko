@@ -17,6 +17,7 @@ import type { Settings } from './config/settings.ts';
 import { registerErrorHandling, sendError } from './http/error-handler.ts';
 import { registerAuthPlugin } from './http/auth-plugin.ts';
 import { createAuthController } from './http/controllers/auth-controller.ts';
+import { createObjectsController } from './http/controllers/objects-controller.ts';
 import { createUsersController } from './http/controllers/users-controller.ts';
 import { loggerOptions, type LogStream } from './http/log-redaction.ts';
 import {
@@ -28,11 +29,14 @@ import { registerRequestContext, setResponseContext } from './http/request-conte
 import { registerAuthRoutes } from './http/routes/auth.ts';
 import { registerConfigRoutes } from './http/routes/config.ts';
 import { registerHealthRoutes } from './http/routes/health.ts';
+import { registerObjectsRoutes } from './http/routes/objects.ts';
 import { registerUsersRoutes } from './http/routes/users.ts';
 import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-tracker.ts';
+import type { ObjectStore } from './adapters/storage/object-store.ts';
 import type { Clock } from './platform/clock.ts';
 import { randomToken } from './platform/ids.ts';
 import { createAuthService } from './services/auth-service.ts';
+import { createObjectsService } from './services/objects-service.ts';
 import type { ReadinessCheck } from './services/readiness.ts';
 import { LOG_EVENTS } from './text/events.ts';
 import { SECURITY_TEXT } from './text/settings.ts';
@@ -42,11 +46,12 @@ export type AppDeps = {
   readonly db: Kysely<Database>;
   readonly clock: Clock;
   readonly readinessChecks: readonly ReadinessCheck[];
+  readonly objectStore: ObjectStore;
   readonly logStream?: LogStream;
 };
 
 export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
-  const { settings, db, clock, readinessChecks } = deps;
+  const { settings, db, clock, readinessChecks, objectStore } = deps;
   const app = Fastify({
     logger: loggerOptions(settings, deps.logStream),
     trustProxy: [...settings.server.trustedProxies],
@@ -102,6 +107,19 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   });
   registerUsersRoutes(app, {
     controller: createUsersController(authService),
+    rateLimitFor,
+    requireSession,
+  });
+  const objectsService = createObjectsService({
+    db,
+    store: objectStore,
+    settings,
+    clock,
+    onObjectUploaded: async () => undefined,
+    logger: app.log,
+  });
+  registerObjectsRoutes(app, {
+    controller: createObjectsController(objectsService),
     rateLimitFor,
     requireSession,
   });

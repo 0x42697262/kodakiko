@@ -4,7 +4,11 @@ import { ROUTE_PATTERNS } from '@kodakiko/contract';
 import { testSettings } from '../integration/helpers.ts';
 import { buildUnitApp } from './support.ts';
 
-const SECURE_ENV = { REQUIRE_HTTPS: 'true', PUBLIC_BASE_URL: 'https://kodakiko.example.com' };
+const SECURE_ENV = {
+  REQUIRE_HTTPS: 'true',
+  PUBLIC_BASE_URL: 'https://kodakiko.example.com',
+  S3_PUBLIC_ENDPOINT: 'https://s3.kodakiko.example.com',
+};
 let app: FastifyInstance;
 
 afterEach(async () => {

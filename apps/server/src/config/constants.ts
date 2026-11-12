@@ -1,9 +1,9 @@
 const KIBIBYTE = 1024;
 const MEBIBYTE = KIBIBYTE * KIBIBYTE;
 const GIBIBYTE = MEBIBYTE * KIBIBYTE;
-const SECOND_MS = 1000;
+export const SECOND_MS = 1000;
 export const MINUTE_MS = 60 * SECOND_MS;
-const HOUR_MS = 60 * MINUTE_MS;
+export const HOUR_MS = 60 * MINUTE_MS;
 export const DAY_MS = 24 * HOUR_MS;
 const MAX_UPLOAD_BYTES_CEILING = 3758096384;
 
@@ -11,6 +11,7 @@ export const API_MAX_BODY_BYTES = 2 * MEBIBYTE;
 export const REQUEST_ID_BYTES = 16;
 export const READY_CHECK_TIMEOUT_MS = 2000;
 export const DATABASE_CHECK_NAME = 'database';
+export const BUCKET_CHECK_NAME = 'bucket';
 
 export const RATE_LIMITS = Object.freeze({
   auth: { max: 60, timeWindowMs: MINUTE_MS },
@@ -91,6 +92,7 @@ export const LOG_LEVELS = Object.freeze([
   'trace',
 ] as const);
 export const BOOLEAN_VALUES = Object.freeze(['true', 'false'] as const);
+export const STORAGE_PROVIDERS = Object.freeze(['garage', 'b2', 'r2', 's3'] as const);
 
 export const SETTINGS_DEFAULTS = Object.freeze({
   port: 8080,
@@ -118,6 +120,19 @@ export const SETTINGS_DEFAULTS = Object.freeze({
   accountDeletionGraceDays: 7,
   jobExpireSessionsIntervalMinutes: 1440,
   maxCollectionMetadataBytes: 4096,
+  storageRegion: 'garage',
+  storageForcePathStyle: 'true',
+  storageRequestTimeoutMs: 15000,
+  singlePartMaxBytes: 8 * MEBIBYTE,
+  multipartPartBytes: 8 * MEBIBYTE,
+  uploadUrlTtlSeconds: 86400,
+  downloadUrlTtlSeconds: 900,
+  pendingUploadHours: 48,
+  objectGraceDays: 7,
+  maxPresignsPerHour: 1000,
+  jobCollectObjectsIntervalMinutes: 10,
+  jobAbortStaleUploadsIntervalMinutes: 60,
+  jobReconcileUsageIntervalMinutes: 1440,
 } as const);
 
 export const SETTINGS_BOUNDS = Object.freeze({
@@ -134,7 +149,39 @@ export const SETTINGS_BOUNDS = Object.freeze({
   accountDeletionGraceDaysMax: 90,
   maxCollectionMetadataBytesMin: 256,
   fakeParamsSecretMinBytes: 32,
+  bucketNameMinChars: 3,
+  bucketNameMaxChars: 63,
+  storageRequestTimeoutMsMin: 1000,
+  partBytesMin: 5 * MEBIBYTE,
+  uploadUrlTtlSecondsMin: 60,
+  uploadUrlTtlSecondsMax: 604800,
+  downloadUrlTtlSecondsMin: 60,
+  downloadUrlTtlSecondsMax: 86400,
 });
+
+export const SECONDS_PER_HOUR = 3600;
+export const S3_MAX_PARTS = 10_000;
+export const OBJECT_KEY_VERSION = 'v1';
+export const OBJECT_KEY_SEPARATOR = '/';
+export const OBJECT_CONTENT_TYPE = 'application/octet-stream';
+export const PRESIGN_RATE_WINDOW_MS = HOUR_MS;
+export const BACKOFF_GROWTH_FACTOR = 2;
+export const STORAGE_RETRY_ATTEMPTS = 3;
+export const STORAGE_RETRY_BASE_DELAY_MS = 200;
+export const STORAGE_RETRY_CAP_DELAY_MS = 2000;
+export const STORAGE_RETRY_STATUS_TOO_MANY_REQUESTS = 429;
+export const S3_NOT_FOUND_ERROR_NAMES = Object.freeze(['NotFound', 'NoSuchKey']);
+export const S3_NO_SUCH_UPLOAD_ERROR_NAME = 'NoSuchUpload';
+export const S3_CHECKSUM_MODE = 'WHEN_REQUIRED';
+export const S3_LIST_PARTS_PAGE_SIZE = 1000;
+export const BUCKET_CORS_RULE = Object.freeze({
+  methods: ['GET', 'PUT', 'HEAD'],
+  headers: ['range', 'content-type'],
+  exposeHeaders: ['Content-Range', 'Content-Length', 'Accept-Ranges'],
+  maxAgeSeconds: 3600,
+});
+export const RANGE_HEADER_PREFIX = 'bytes=';
+export const CONTENT_RANGE_TOTAL_SEPARATOR = '/';
 
 export const API_CSP_DIRECTIVES = Object.freeze({
   defaultSrc: ["'none'"],
@@ -144,6 +191,9 @@ export const REFERRER_POLICY = 'no-referrer';
 export const CORP_POLICY = 'same-origin';
 
 export const HTTP_STATUS = Object.freeze({
+  notFound: 404,
+  tooManyRequests: 429,
+  serverErrorMin: 500,
   serviceUnavailable: 503,
 });
 
@@ -193,6 +243,8 @@ export const PG_UNIQUE_VIOLATION = '23505';
 export const USERS_USERNAME_CONSTRAINT = 'users_username_key';
 export const USERS_ID_CONSTRAINT = 'users_pkey';
 export const COLLECTIONS_ID_CONSTRAINT = 'collections_pkey';
+export const OBJECTS_ID_CONSTRAINT = 'objects_pkey';
+export const OBJECTS_PENDING_VARIANT_CONSTRAINT = 'objects_one_pending_per_variant';
 
 export const CLI_FLAGS = Object.freeze({
   role: '--role',

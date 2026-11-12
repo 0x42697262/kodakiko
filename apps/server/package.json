@@ -7,11 +7,14 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
+    "test:provider": "vitest run --project provider",
     "build": "node scripts/build.ts",
     "start": "node dist/main.js",
     "migrate:status": "node dist/cli.js migrate-status"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
     "@fastify/helmet": "catalog:",
     "@fastify/rate-limit": "catalog:",
     "@kodakiko/contract": "workspace:*",

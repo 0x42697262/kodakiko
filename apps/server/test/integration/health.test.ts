@@ -4,6 +4,7 @@ import { createDatabase, databaseCheck } from '../../src/adapters/db/database.ts
 import { systemClock } from '../../src/platform/clock.ts';
 import {
   buildTestApp,
+  createPlaceholderObjectStore,
   createTestDatabase,
   ignorePoolError,
   testSettings,
@@ -29,6 +30,7 @@ describe('GET /health/ready', () => {
       db,
       clock: systemClock,
       readinessChecks: [databaseCheck(db)],
+      objectStore: createPlaceholderObjectStore(),
     });
     const ready = await app.inject({ method: 'GET', url: ROUTE_PATTERNS.healthReady });
     expect(ready.statusCode).toBe(200);

@@ -2,7 +2,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { publicConfigSchema, ROUTE_PATTERNS } from '@kodakiko/contract';
 import { systemClock } from '../../src/platform/clock.ts';
-import { buildTestApp, createTestDatabase, testSettings, type TestDatabase } from './helpers.ts';
+import {
+  buildTestApp,
+  createPlaceholderObjectStore,
+  createTestDatabase,
+  testSettings,
+  type TestDatabase,
+} from './helpers.ts';
 
 let testDatabase: TestDatabase;
 let app: FastifyInstance;
@@ -18,6 +24,7 @@ beforeAll(async () => {
     db: testDatabase.db,
     clock: systemClock,
     readinessChecks: [],
+    objectStore: createPlaceholderObjectStore(),
   });
 });
 

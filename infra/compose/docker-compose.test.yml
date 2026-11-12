@@ -13,3 +13,18 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+
+  garage-test:
+    image: dxflrs/garage:v2.5.0@sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5
+    command: ['/garage', 'server']
+    volumes:
+      - ./test/garage.toml:/etc/garage.toml:ro
+    ports:
+      - '127.0.0.1:53900:3900'
+    tmpfs:
+      - /var/lib/garage
+    healthcheck:
+      test: ['CMD', '/garage', 'status']
+      interval: 2s
+      timeout: 3s
+      retries: 30

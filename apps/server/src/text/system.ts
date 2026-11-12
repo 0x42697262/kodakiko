@@ -10,6 +10,7 @@ export const SYSTEM_TEXT = Object.freeze({
     'Commands:',
     '  migrate-status   Print applied and pending migrations',
     '  create-invite    --role <admin|member> [--expires-days <1-90>]  Print an invite URL',
+    '  apply-bucket-cors  Apply the bucket CORS rule for PUBLIC_BASE_URL and print it',
     '  help             Show this text',
   ].join('\n'),
   appliedHeading: 'Applied:',

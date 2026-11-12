@@ -1,13 +1,18 @@
 import { createDatabase, databaseCheck } from './adapters/db/database.ts';
 import { migrateToLatest } from './adapters/db/migrator.ts';
+import { createS3ObjectStore } from './adapters/storage/s3-object-store.ts';
 import { buildApp } from './app.ts';
 import { EXIT_CODES } from './config/constants.ts';
 import { loadSettings } from './config/settings.ts';
 import { SettingsError } from './domain/errors.ts';
+import { abortStaleUploadsJob } from './jobs/abort-stale-uploads.ts';
+import { collectObjectsJob } from './jobs/collect-objects.ts';
 import { expireSessionsJob } from './jobs/expire-sessions.ts';
+import { reconcileUsageJob } from './jobs/reconcile-usage.ts';
 import { createScheduler } from './jobs/scheduler.ts';
 import { systemClock as clock } from './platform/clock.ts';
 import { exitWith, fatalLine, onShutdownSignal } from './platform/process.ts';
+import { bucketCheck } from './services/readiness.ts';
 import { LOG_EVENTS } from './text/events.ts';
 
 try {
@@ -18,10 +23,16 @@ try {
   await migrateToLatest(db).catch((error: unknown) => {
     exitWith(EXIT_CODES.failure, fatalLine(LOG_EVENTS.dbMigrationFailed, error));
   });
-  const readinessChecks = [databaseCheck(db)];
-  const app = await buildApp({ settings, db, clock, readinessChecks });
+  const objectStore = createS3ObjectStore(settings.storage);
+  const readinessChecks = [databaseCheck(db), bucketCheck(objectStore)];
+  const app = await buildApp({ settings, db, clock, readinessChecks, objectStore });
   const enabled = settings.jobs.enabled;
-  const jobs = [expireSessionsJob(settings)];
+  const jobs = [
+    expireSessionsJob(settings),
+    collectObjectsJob(settings, objectStore, app.log),
+    abortStaleUploadsJob(settings, objectStore, app.log),
+    reconcileUsageJob(settings, app.log),
+  ];
   const scheduler = createScheduler({ db, clock, logger: app.log, jobs, enabled });
   scheduler.start();
   const { port, host, version, shutdownTimeoutMs } = settings.server;

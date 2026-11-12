@@ -5,6 +5,7 @@ export * from './enums.ts';
 export * from './errors.ts';
 export * from './ids.ts';
 export * from './limits.ts';
+export * from './objects.ts';
 export * from './payloads.ts';
 export * from './routes.ts';
 export * from './users.ts';

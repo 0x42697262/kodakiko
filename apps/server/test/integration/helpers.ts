@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import type { FastifyInstance } from 'fastify';
 import type { Kysely } from 'kysely';
 import pg from 'pg';
@@ -7,7 +8,14 @@ import { loadSettings, type Settings } from '../../src/config/settings.ts';
 import { createDatabase } from '../../src/adapters/db/database.ts';
 import type { Database } from '../../src/adapters/db/schema.ts';
 import { migrateToLatest } from '../../src/adapters/db/migrator.ts';
-import { DEFAULT_TEST_DATABASE_URL } from './test-constants.ts';
+import type { ObjectStore } from '../../src/adapters/storage/object-store.ts';
+import { createS3ObjectStore } from '../../src/adapters/storage/s3-object-store.ts';
+import {
+  DEFAULT_TEST_DATABASE_URL,
+  GARAGE_BUCKET,
+  GARAGE_ENDPOINT,
+  GARAGE_KEY_FILE,
+} from './test-constants.ts';
 
 const RANDOM_NAME_BYTES = 8;
 const TEST_POOL_MAX = 5;
@@ -64,10 +72,38 @@ const FIXED_TEST_ENV: Readonly<Record<string, string>> = Object.freeze({
   DATABASE_URL: DEFAULT_TEST_DATABASE_URL,
   LOG_LEVEL: 'fatal',
   JOBS_ENABLED: 'false',
+  STORAGE_PROVIDER: 'garage',
+  S3_ENDPOINT: GARAGE_ENDPOINT,
+  S3_PUBLIC_ENDPOINT: GARAGE_ENDPOINT,
+  S3_BUCKET: GARAGE_BUCKET,
+  S3_ACCESS_KEY_ID: 'placeholder-access-key-id',
+  S3_SECRET_ACCESS_KEY: 'placeholder-secret-access-key',
 });
 
+export function garageStorageEnv(): Record<string, string> {
+  const key = JSON.parse(readFileSync(GARAGE_KEY_FILE, 'utf8')) as {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  return { S3_ACCESS_KEY_ID: key.accessKeyId, S3_SECRET_ACCESS_KEY: key.secretAccessKey };
+}
+
+export function createTestObjectStore(
+  overrides: Readonly<Record<string, string>> = {},
+): ObjectStore {
+  return createS3ObjectStore(testSettings({ ...garageStorageEnv(), ...overrides }).storage);
+}
+
+export function createPlaceholderObjectStore(): ObjectStore {
+  return createS3ObjectStore(testSettings().storage);
+}
+
+export function testEnv(overrides: Readonly<Record<string, string>> = {}): Record<string, string> {
+  return { ...FIXED_TEST_ENV, ...overrides };
+}
+
 export function testSettings(overrides: Readonly<Record<string, string>> = {}): Settings {
-  return loadSettings({ ...FIXED_TEST_ENV, ...overrides });
+  return loadSettings(testEnv(overrides));
 }
 
 export async function buildTestApp(deps: AppDeps): Promise<FastifyInstance> {

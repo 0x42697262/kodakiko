@@ -21,3 +21,5 @@ apps/client/public/media-sw.js
 .pnpm-store/
 .pi/implementer/logs/
 .pi/implementer/sessions/
+
+apps/server/test/.garage-test-key.json

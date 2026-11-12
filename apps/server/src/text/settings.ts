@@ -10,6 +10,12 @@ export const SETTINGS_TEXT = Object.freeze({
   httpNeedsHttpsOff: 'may use http:// only when REQUIRE_HTTPS is false',
   rateLimitsOffLocalOnly:
     'may be false only when REQUIRE_HTTPS is false and PUBLIC_BASE_URL is localhost or 127.0.0.1',
+  publicEndpointNeedsHttpsOff: 'may use http:// only when REQUIRE_HTTPS is false',
+  uploadExceedsPartCapacity: (maxParts: number) =>
+    `must not exceed MULTIPART_PART_BYTES × ${maxParts} parts`,
+  pendingWindowTooShort: 'must be longer than UPLOAD_URL_TTL_SECONDS (compared in seconds)',
+  singlePartAboveMaxUpload: 'must not exceed MAX_UPLOAD_BYTES',
+  singlePartAbovePartSize: 'must not exceed MULTIPART_PART_BYTES',
   fakeParamsSecretTooShort: 'must decode to at least 32 bytes',
   invalidProxyEntry: (entry: string) =>
     `invalid entry "${entry}"; use an IP address, a CIDR, or loopback, linklocal, uniquelocal`,

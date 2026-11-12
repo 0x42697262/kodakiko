@@ -24,6 +24,7 @@ const SECRET_FIELDS = [
   'privateKeyByMaster',
   'keyByOwner',
   'sealedCollectionKey',
+  'secretAccessKey',
 ];
 
 export const REDACT_PATHS: readonly string[] = Object.freeze([

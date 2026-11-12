@@ -16,6 +16,10 @@ export const ROUTE_PATTERNS = Object.freeze({
   usersMe: `${API_PREFIX}/users/me`,
   usersMeDelete: `${API_PREFIX}/users/me/delete`,
   usersMeDeleteCancel: `${API_PREFIX}/users/me/delete/cancel`,
+  objectsPresign: `${API_PREFIX}/objects/presign`,
+  objectParts: `${API_PREFIX}/objects/:id/parts`,
+  objectConfirm: `${API_PREFIX}/objects/:id/confirm`,
+  objectDownload: `${API_PREFIX}/objects/:id/download`,
 });
 
 export const ROUTES = Object.freeze({
@@ -34,4 +38,8 @@ export const ROUTES = Object.freeze({
   usersMe: () => `${API_PREFIX}/users/me`,
   usersMeDelete: () => `${API_PREFIX}/users/me/delete`,
   usersMeDeleteCancel: () => `${API_PREFIX}/users/me/delete/cancel`,
+  objectsPresign: () => `${API_PREFIX}/objects/presign`,
+  objectParts: (id: string) => `${API_PREFIX}/objects/${id}/parts`,
+  objectConfirm: (id: string) => `${API_PREFIX}/objects/${id}/confirm`,
+  objectDownload: (id: string) => `${API_PREFIX}/objects/${id}/download`,
 });

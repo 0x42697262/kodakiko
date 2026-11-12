@@ -23,7 +23,7 @@ import { randomId } from '../../src/platform/ids.ts';
 import type { Clock } from '../../src/platform/clock.ts';
 import { silentLogger } from '../../src/platform/silent-logger.ts';
 import { createAuthService, type AuthService } from '../../src/services/auth-service.ts';
-import { testSettings, type TestDatabase } from './helpers.ts';
+import { createPlaceholderObjectStore, testSettings, type TestDatabase } from './helpers.ts';
 import type { Kysely } from 'kysely';
 
 export const FAST_OPS = 2;
@@ -106,6 +106,7 @@ export async function createAuthContext(
     db: testDatabase.db,
     clock,
     readinessChecks: [],
+    objectStore: createPlaceholderObjectStore(),
     logStream: logs.stream,
   });
   await app.ready();
