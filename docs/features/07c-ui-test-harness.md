@@ -421,9 +421,8 @@ Physical devices still need `adb reverse` (or a LAN address); that path is docum
 - U-05 on Android: after `cancelDeletion.submit`, if `lock.title` is visible (device without a
   screen lock, 07b §5b item 3) the flow unlocks with the password (`lock.unlockPassword` →
   `lock.password` → Enter) and then expects `home.signedInAs`. The emulator keeps no screen lock.
-- U-05 waits for **either** screen first: `extendedWaitUntil` visible `lock.title` **or**
-  `home.signedInAs` (Maestro `anyOf`-style: a `runFlow` with `when: visible: lock.title` placed after
-  an `extendedWaitUntil` on a common parent id `app.ready` that both screens render), so a slow
+- U-05 waits for **either** screen first: `extendedWaitUntil` visible id matching the regex
+  `(lock\.title|home\.signedInAs)`, then `runFlow` with `when: visible: lock.title`, so a slow
   network cannot skip the unlock branch.
 - Accepted: the runner's `am force-stop` + `APP_SETTLE_MS` before each flow (no unit test; emulator
   only); `src/composition/route-by-state.ts` shared by `app/index.tsx` and the tabs layout.
