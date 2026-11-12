@@ -1,4 +1,4 @@
-import { bytesEqual, concatBytes, writeUint56BigEndian } from './bytes.ts';
+import { bytesEqual, bytesToHex, concatBytes, utf8Encode, writeUint56BigEndian } from './bytes.ts';
 import {
   AEAD_TAG_BYTES,
   KEY_BYTES,
@@ -185,6 +185,10 @@ export function streamNonce(header: StreamHeader, index: number, isFinal: boolea
   );
 }
 
+export function streamAdditionalData(header: Uint8Array): Uint8Array {
+  return utf8Encode(bytesToHex(header));
+}
+
 export function encryptChunk(
   sodium: Sodium,
   variantKey: Uint8Array,
@@ -199,7 +203,12 @@ export function encryptChunk(
   if (isFinal ? plaintext.length > chunkSize : plaintext.length !== chunkSize) {
     throw new InvalidChunkError(CRYPTO_TEXT.invalidChunk);
   }
-  return sodium.aeadEncrypt(plaintext, header, streamNonce(parsed, index, isFinal), variantKey);
+  return sodium.aeadEncrypt(
+    plaintext,
+    streamAdditionalData(header),
+    streamNonce(parsed, index, isFinal),
+    variantKey,
+  );
 }
 
 export function decryptChunk(
@@ -216,7 +225,12 @@ export function decryptChunk(
   if (ciphertext.length < AEAD_TAG_BYTES || ciphertext.length > chunkSize + AEAD_TAG_BYTES) {
     throw new MalformedObjectError(CRYPTO_TEXT.malformedObject);
   }
-  return sodium.aeadDecrypt(ciphertext, header, streamNonce(parsed, index, isFinal), variantKey);
+  return sodium.aeadDecrypt(
+    ciphertext,
+    streamAdditionalData(header),
+    streamNonce(parsed, index, isFinal),
+    variantKey,
+  );
 }
 
 function chunkPlaintextSize(layout: StreamLayout, index: number): number {

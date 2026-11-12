@@ -23,6 +23,7 @@ import {
   createStreamHeader,
   encryptChunk,
   streamLayout,
+  streamNonce,
   utf8Encode,
   createStreamDecryptor,
   createStreamEncryptor,
@@ -37,6 +38,7 @@ import {
   padIso7816,
   parseStreamHeader,
   passwordToBytes,
+  streamAdditionalData,
   publicKeyFingerprint,
   sealBlob,
   sealJson,
@@ -60,6 +62,10 @@ const BINDING_ID = 'AAAAAAAAAAAAAAAAAAAAAA';
 const OTHER_BINDING_ID = 'BBBBBBBBBBBBBBBBBBBBBB';
 
 const key = counterBytes(1, KEY_LENGTH);
+
+function streamNonceOf(header: Uint8Array): Uint8Array {
+  return streamNonce(parseStreamHeader(header), 0, true);
+}
 
 function encryptWholeObject(sodium: Sodium, plaintext: Uint8Array) {
   const encryptor = createStreamEncryptor(sodium, key, plaintext.length);
@@ -329,6 +335,40 @@ describe('errors', () => {
     const badExponent = header.slice();
     badExponent[5] = 30;
     expect(catchError(() => parseStreamHeader(badExponent))).toBeInstanceOf(MalformedObjectError);
+  });
+
+  it('streamAdditionalData is the UTF-8 of the lowercase hex of the header (D-79)', async () => {
+    const sodium = await createNodeSodium(createCounterRandom(0));
+    const header = createStreamHeader(sodium);
+    const additionalData = streamAdditionalData(header);
+    const expectedHex = '4b444b5301140000000102030405060708090a0b0c0d0e0f';
+    expect(expectedHex).toHaveLength(2 * STREAM_HEADER_BYTES);
+    expect(additionalData).toEqual(utf8Encode(expectedHex));
+    expect(additionalData).toHaveLength(2 * STREAM_HEADER_BYTES);
+    expect(new TextDecoder('utf-8', { fatal: true }).decode(additionalData)).toBe(expectedHex);
+  });
+
+  it('stream chunks bind the hex additional data, not the raw header (D-79)', async () => {
+    const sodium = await createNodeSodium();
+    const seen: Uint8Array[] = [];
+    const spy: Sodium = {
+      ...sodium,
+      aeadEncrypt: (plaintext, additionalData, nonce, variantKey) => {
+        seen.push(additionalData);
+        return sodium.aeadEncrypt(plaintext, additionalData, nonce, variantKey);
+      },
+    };
+    const { header, chunks } = encryptWholeObject(spy, counterBytes(3, 5));
+    expect(seen).toHaveLength(1);
+    expect(seen[0]).toEqual(streamAdditionalData(header));
+    expect(
+      catchError(() =>
+        sodium.aeadDecrypt(chunks[0] ?? new Uint8Array(0), header, streamNonceOf(header), key),
+      ),
+    ).toBeInstanceOf(DecryptionError);
+    expect(decryptChunk(sodium, key, header, 0, true, chunks[0] ?? new Uint8Array(0))).toEqual(
+      counterBytes(3, 5),
+    );
   });
 
   it('stream encryptor failures', async () => {
