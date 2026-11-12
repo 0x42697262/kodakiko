@@ -49,12 +49,30 @@ function checkRecursiveRm(command: string): string | null {
 }
 
 function checkPath(cwd: string, path: string): string | null {
-	const absolute = isAbsolute(path) ? normalize(path) : resolve(cwd, path);
-	if (absolute.startsWith("/tmp/kodakiko")) return null;
+	const expanded = path.replace(/^~(?=\/|$)/, process.env.HOME ?? "/nonexistent-home");
+	const absolute = isAbsolute(expanded) ? normalize(expanded) : resolve(cwd, expanded);
+	if (absolute.startsWith("/tmp/") || absolute === "/dev/null") return null;
 	const rel = relative(cwd, absolute);
 	if (rel.startsWith("..") || isAbsolute(rel)) return `writing outside the repository is not allowed: ${path}`;
 	const hit = PROTECTED_WRITE_PATHS.find((rule) => rule.test(rel));
 	return hit ? `${rel} is owned by Opus/the programmer; stop and ask instead of editing it` : null;
+}
+
+const REDIRECT_TARGET = /(?:^|[^<>&0-9])(?:[0-9]?>{1,2}|&>)\s*(?!&)([^\s;&|<>()]+)|\btee\s+(?:-a\s+)?([^\s;&|<>()]+)/g;
+const FILE_MUTATORS = /\b(mv|cp|ln|install|truncate|touch|sed\s+-i|perl\s+-p?i)\b([^|;&]*)/g;
+const PROTECTED_TOKEN = /(^|[\s'"=])(\.\/)?(docs\/|AGENTS\.md\b|\.pi\/|\.git\/|pnpm-workspace\.yaml\b|~\/|\/(?!tmp\/|dev\/null)[\w.-]+\/)/;
+
+function checkBashWrites(cwd: string, command: string): string | null {
+	for (const match of command.matchAll(REDIRECT_TARGET)) {
+		const target = match[1] ?? match[2];
+		if (!target) continue;
+		const reason = checkPath(cwd, target.replace(/^['"]|['"]$/g, ""));
+		if (reason) return `shell redirect: ${reason}`;
+	}
+	for (const match of command.matchAll(FILE_MUTATORS)) {
+		if (PROTECTED_TOKEN.test(match[2] ?? "")) return `\`${match[1]}\` touching a protected path or a path outside the repository; stop and ask`;
+	}
+	return null;
 }
 
 export default function (pi: ExtensionAPI) {
@@ -66,7 +84,7 @@ export default function (pi: ExtensionAPI) {
 		if (event.toolName === "bash") {
 			const command = String(input.command ?? "");
 			const rule = BASH_RULES.find((candidate) => candidate.pattern.test(command));
-			reason = rule ? rule.reason : checkRecursiveRm(command);
+			reason = rule ? rule.reason : (checkRecursiveRm(command) ?? checkBashWrites(ctx.cwd, command));
 		} else if (event.toolName === "write" || event.toolName === "edit") {
 			reason = checkPath(ctx.cwd, String(input.path ?? ""));
 		}

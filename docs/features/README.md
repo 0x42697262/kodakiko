@@ -31,6 +31,9 @@ Each file is a complete build task. Rules for the implementing model (Sonnet):
    loosened (weaker assertions, longer timeouts than the spec states, broader matchers) or changed
    to fit the code. If one looks wrong or cannot pass, stop and ask. Extra tests are allowed; list
    each one in the spec's report with one line on what it proves.
+10. **`docs/` belongs to Opus.** Where a spec says to record something in `docs/` (a `facts.md`
+   row, a measurement, a version), put the exact data in the report instead; Opus records it.
+   Never edit `docs/`, `AGENTS.md` or `.pi/`.
 
 ## Phases (D-73)
 

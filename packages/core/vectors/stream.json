@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "cases": [
+    {
+      "plaintextSize": 0,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 1,
+      "ciphertextSize": 40,
+      "chunkDigests": [
+        "d0395ba55e5d7aff76bc2ad0c1721a5346db1219c6ce7626078dd5a52681f053"
+      ],
+      "firstChunkPrefix": "2f6abe714b8a55f0986df61189fda3a7"
+    },
+    {
+      "plaintextSize": 1,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 1,
+      "ciphertextSize": 41,
+      "chunkDigests": [
+        "687a744e6d29f0f6f9e11479e205c6323ada2cff85e7412cf45375b585f9e0ba"
+      ],
+      "firstChunkPrefix": "eb75aac2370ef2323f4a275a94c852cc31"
+    },
+    {
+      "plaintextSize": 1048575,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 1,
+      "ciphertextSize": 1048615,
+      "chunkDigests": [
+        "d85355c80b415e9ecbdf5ea6116f0b6122aa7dcb77f4c55acfb7b0cffa9bd24f"
+      ],
+      "firstChunkPrefix": "eb132d1fd95fe6ace3af6bdc23112a346224b60473bf2d758917dd1cf9251abd"
+    },
+    {
+      "plaintextSize": 1048576,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 1,
+      "ciphertextSize": 1048616,
+      "chunkDigests": [
+        "53f22a4cc98dd0d9068303e7d131c47091c326e472cc0a5e5a85fb3e1ac2e45d"
+      ],
+      "firstChunkPrefix": "eb132d1fd95fe6ace3af6bdc23112a346224b60473bf2d758917dd1cf9251abd"
+    },
+    {
+      "plaintextSize": 1048577,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 2,
+      "ciphertextSize": 1048633,
+      "chunkDigests": [
+        "142f39641a05eac291a29b9fd0b59a88429d04e78da4da2a9aba4a0a214476c3",
+        "dffa75c17c7bcbcfc75ee524111e9a0ec60ae933bccab38a538aac5b2f27f62f"
+      ],
+      "firstChunkPrefix": "9239f2c65e103140b33776162678959f626aaa3c75b1ef2b793cbb42e2da906c"
+    },
+    {
+      "plaintextSize": 3145728,
+      "plaintextSeed": 9,
+      "key": "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324252627",
+      "randomSeed": 10,
+      "header": "4b444b53011400000a0b0c0d0e0f10111213141516171819",
+      "chunkCount": 3,
+      "ciphertextSize": 3145800,
+      "chunkDigests": [
+        "142f39641a05eac291a29b9fd0b59a88429d04e78da4da2a9aba4a0a214476c3",
+        "f0d8eef2cee392f8e94c9d9504e274be9ebdc5758cc5cd1925739167e6c4be45",
+        "f5291825cc76a44ccd72bb0e356e0e5cfdd672fed29aad355c1d725e86c289f4"
+      ],
+      "firstChunkPrefix": "9239f2c65e103140b33776162678959f626aaa3c75b1ef2b793cbb42e2da906c"
+    }
+  ]
+}

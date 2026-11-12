@@ -1,0 +1,122 @@
+{
+  "format": 1,
+  "cases": [
+    {
+      "contextKey": "masterKeyByKek",
+      "context": "kodakiko/v1/wrap/master-key-by-kek",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb1011c1781296e4708213925850a662f85e"
+    },
+    {
+      "contextKey": "masterKeyByRecovery",
+      "context": "kodakiko/v1/wrap/master-key-by-recovery",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb104a55283ff23d05a9124f632cfcfa7c4b"
+    },
+    {
+      "contextKey": "recoveryKeyByMaster",
+      "context": "kodakiko/v1/wrap/recovery-key-by-master",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb10d8c479739621e80cf856cec3668fe18b"
+    },
+    {
+      "contextKey": "privateKeyByMaster",
+      "context": "kodakiko/v1/wrap/private-key-by-master",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb10ed1d453566f7a5b26041e831362bc6dd"
+    },
+    {
+      "contextKey": "collectionKeyByMaster",
+      "context": "kodakiko/v1/wrap/collection-key-by-master",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb108fb3ad7b20047ad4ecc6f35052111e51"
+    },
+    {
+      "contextKey": "entryKeyByCollection",
+      "context": "kodakiko/v1/wrap/entry-key-by-collection",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb104bfdf27d69b5c454c16334c9e1c62ac1"
+    },
+    {
+      "contextKey": "mediaKeyByEntry",
+      "context": "kodakiko/v1/wrap/media-key-by-entry",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb103716dec4aa1f678411a3072b5dc3e8a3"
+    },
+    {
+      "contextKey": "entryMetadata",
+      "context": "kodakiko/v1/entry-metadata",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb10d4fde42250bd4df0e83ce08435d7e63c"
+    },
+    {
+      "contextKey": "collectionMetadata",
+      "context": "kodakiko/v1/collection-metadata",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb1057a19a9c24df3dbb835a8cbdbc6842c1"
+    },
+    {
+      "contextKey": "userSettings",
+      "context": "kodakiko/v1/user-settings",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb1023a435a05095c8270c28c4279a1ab5f1"
+    },
+    {
+      "contextKey": "indexSnapshot",
+      "context": "kodakiko/v1/index-snapshot",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb10e1bcd74e1aa1b98a96d8226312863d97"
+    },
+    {
+      "contextKey": "localKeyByDevice",
+      "context": "kodakiko/v1/wrap/local-thumbnail-key",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb1045b690b7b27c4bcf49f6622093ed464c"
+    },
+    {
+      "contextKey": "linkSecretByMaster",
+      "context": "kodakiko/v1/wrap/link-secret-by-master",
+      "bindingId": "AAAAAAAAAAAAAAAAAAAAAA",
+      "key": "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223",
+      "plaintext": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c",
+      "randomSeed": 6,
+      "blob": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1db7538c4ffbdd1725678d96ccb9afb577cd434d3edebbb2c03e6327e17fe6e3d1e33cccc090ebdb10334db01f3f76f7807d8e1aa543e198a6"
+    }
+  ]
+}

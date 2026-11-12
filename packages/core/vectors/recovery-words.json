@@ -1,0 +1,92 @@
+{
+  "format": 1,
+  "cases": [
+    {
+      "recoveryKey": "0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a",
+      "words": [
+        "arch",
+        "gather",
+        "drum",
+        "bullet",
+        "absurd",
+        "math",
+        "era",
+        "live",
+        "bid",
+        "rhythm",
+        "alien",
+        "crouch",
+        "range",
+        "attend",
+        "journey",
+        "tomato",
+        "cancel",
+        "baby",
+        "simple",
+        "engage",
+        "give",
+        "neglect",
+        "pigeon",
+        "dragon"
+      ]
+    },
+    {
+      "recoveryKey": "0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b",
+      "words": [
+        "army",
+        "half",
+        "long",
+        "cage",
+        "bachelor",
+        "another",
+        "expect",
+        "people",
+        "blade",
+        "school",
+        "educate",
+        "curtain",
+        "scrub",
+        "monitor",
+        "lady",
+        "aerobic",
+        "captain",
+        "bomb",
+        "announce",
+        "era",
+        "income",
+        "behind",
+        "post",
+        "impose"
+      ]
+    },
+    {
+      "recoveryKey": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "words": [
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "zoo",
+        "wisdom"
+      ]
+    }
+  ]
+}

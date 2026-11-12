@@ -36,7 +36,7 @@ Rules for this package (they apply to every later `core` file too):
 | `packages/core/src/crypto/wordlist-en.ts` | 9 |
 | `packages/core/src/crypto/recovery-words.ts` | 9 |
 | `packages/core/src/crypto/share-payload.ts` | 10 |
-| `packages/core/src/crypto/index.ts` | barrel of every module above except `platform-globals.d.ts` |
+| `packages/core/src/crypto/index.ts` | barrel of every module above except `platform-globals.d.ts` and `deterministic-bytes.ts` (its deterministic randomness helpers must not be importable by app code; tests and `vector-check.ts` import that file by relative path) |
 | `packages/core/src/index.ts` | `export * from './crypto/index.ts';` |
 | `packages/core/src/crypto/deterministic-bytes.ts` | 11 |
 | `packages/core/src/crypto/vector-check.ts` | 12 |
@@ -346,7 +346,30 @@ It recomputes every case of every file exactly as the generator did (inputs from
 randomness via `withRandomSource(sodium, createCounterRandom(randomSeed))`) and compares. Pure:
 the vectors and the clock are passed in. `CryptoVectors` and the per-file case types live in
 `src/crypto/vector-types.ts` (in `src`, so `vectors/index.ts` imports them from
-`../src/crypto/vector-types.ts`, never the other way round). Case names: `<file>#<index>`.
+`../src/crypto/vector-types.ts`, never the other way round).
+
+```ts
+export type VectorFile<Case> = { readonly format: 1; readonly cases: readonly Case[] };
+export type CryptoVectors = {
+  readonly argon2id: VectorFile<Argon2idCase>;
+  readonly kdf: VectorFile<KdfCase>;
+  readonly sealedBlob: VectorFile<SealedBlobCase>;
+  readonly padding: VectorFile<PaddingCase>;
+  readonly stream: VectorFile<StreamCase>;
+  readonly recoveryWords: VectorFile<RecoveryWordsCase>;
+  readonly sharePayload: VectorFile<SharePayloadCase>;
+};
+```
+
+Each `XCase` type has exactly the fields of its row in the table below (hex strings as `string`,
+numbers as `number`, `words` as `readonly string[]`, `chunkDigests` as `readonly string[]`).
+`VectorCaseResult.file` is the file name with extension (`"kdf.json"`); `name` is
+`<file>#<index>` (`"kdf.json#0"`). `vector-check.ts` contains no numeric literals beyond `0`/`1`:
+every input it needs is in the JSON (stream plaintexts are rebuilt with `counterBytes(case.plaintextSeed,
+case.plaintextSize)`; the `firstChunkPrefix` length is `case.firstChunkPrefix.length / 2` hex
+characters per byte, using a `HEX_CHARS_PER_BYTE = 2` constant from `constants.ts` — the one
+constant this section adds there). Literal seeds and sizes appear only in
+`scripts/generate-vectors.ts` (scripts are outside the magic-number lint scope).
 
 Every file: `{ "format": 1, "cases": [...] }`; binary values are lowercase hex strings.
 
@@ -356,10 +379,10 @@ case uses `createNodeSodium(createCounterRandom(randomSeed))` and stores `random
 | File | Cases (exact) | Fields |
 |---|---|---|
 | `argon2id.json` | 2 cases: password `passwordToBytes("correct horse battery staple")` and `passwordToBytes("e\u0301t\u00e9")`; salt `counterBytes(1, 16)` / `counterBytes(2, 16)`; `opsLimit 2`, `memLimitBytes 8388608`, `outputLength 32` | `password` (hex), `salt`, `opsLimit`, `memLimitBytes`, `output` |
-| `kdf.json` | 6 cases: (login,1), (recovery,1), (media,1), (media,2), (link,1), (link,2); key `counterBytes(3, 32)` | `context`, `subkeyId`, `key`, `subkey` |
+| `kdf.json` | 6 cases: (login,1), (recovery,1), (media,1), (media,2), (link,1), (link,2); key `counterBytes(3, 32)` | `context` (the `KDF_CONTEXTS` **key**, e.g. `"login"`; the checker derives with `KDF_CONTEXTS[context]`), `subkeyId`, `key`, `subkey` |
 | `sealed-blob.json` | 13 cases, one per `AD_CONTEXTS` key; key `counterBytes(4, 32)`; plaintext `counterBytes(5, 40)`; bindingId `"AAAAAAAAAAAAAAAAAAAAAA"`; `randomSeed 6` | `contextKey`, `context`, `bindingId`, `key`, `plaintext`, `randomSeed`, `blob` |
 | `padding.json` | lengths 0, 1, 255, 256, 257, 512; input `counterBytes(7, length)`; block 256 | `input`, `padded` |
-| `stream.json` | plaintext sizes 0, 1, 1048575, 1048576, 1048577, 3145728; key `counterBytes(8, 32)`; plaintext `counterBytes(9, size)`; `randomSeed 10` (header prefix); encrypted with `createStreamEncryptor` | `plaintextSize`, `key`, `randomSeed`, `header`, `chunkCount`, `ciphertextSize`, `chunkDigests` (list: `genericHash(32, chunk)` hex of each ciphertext chunk, so the JSON stays small and the check needs no extra hash library), `firstChunkPrefix` (first 32 bytes of chunk 0 in hex) |
+| `stream.json` | plaintext sizes 0, 1, 1048575, 1048576, 1048577, 3145728; key `counterBytes(8, 32)`; plaintext `counterBytes(9, size)`; `randomSeed 10` (header prefix); encrypted with `createStreamEncryptor` | `plaintextSize`, `plaintextSeed` (always `9`), `key`, `randomSeed`, `header`, `chunkCount`, `ciphertextSize`, `chunkDigests` (list: `genericHash(32, chunk)` hex of each ciphertext chunk, so the JSON stays small and the check needs no extra hash library), `firstChunkPrefix` (first 32 bytes of chunk 0 in hex) |
 | `recovery-words.json` | 3 cases: keys `counterBytes(11, 32)`, `counterBytes(12, 32)`, all-`0xff` 32 bytes | `recoveryKey`, `words` |
 | `share-payload.json` | 2 cases: ids `"AAAAAAAAAAAAAAAAAAAAAA"`, `"zzzzzzzzzzzzzzzzzzzzzz"`; key `counterBytes(13, 32)` | `collectionId`, `collectionKey`, `payload` |
 
@@ -367,7 +390,8 @@ No `node:crypto` anywhere in this package; digests use the port's `genericHash`.
 
 ## 13. Tests
 
-`test/vectors.test.ts`: `checkVectors(await createNodeSodium(), CRYPTO_VECTORS, performance.now)`
+`test/vectors.test.ts`: `checkVectors(await createNodeSodium(), CRYPTO_VECTORS, () => performance.now())`
+(a bare `performance.now` throws `ERR_INVALID_THIS` when called unbound)
 → every result `passed`; and a copy of `CRYPTO_VECTORS` with the first byte of `kdf.json` case 0's
 `subkey` changed → exactly that case reports `passed: false`, all others `true` (proves the checker
 can fail). Running the generator again must change nothing; the test is what proves
@@ -397,7 +421,8 @@ it.
    - `unpadIso7816(Uint8Array.of(1, 2), 2)` → `MalformedPayloadError`;
    - `wrapKey` with a 31-byte key → `InvalidKeyLengthError`; `unwrapKey` of a sealed 31-byte
      plaintext → `MalformedPayloadError`;
-   - `layoutFromCiphertextSize(39, 20)` → `MalformedObjectError`; `(40, 20)` →
+   - `layoutFromCiphertextSize(39, 20)` → `MalformedObjectError`; `(40, 20)` → `toEqual` the full
+     layout object (every field, values computed by hand in the test), which includes
      `{ chunkCount: 1, plaintextSize: 0 }`;
    - `parseStreamHeader` with bad magic, version `0x02`, reserved `0x0001`, exponent 30 →
      `MalformedObjectError`, `UnsupportedFormatError`, `MalformedObjectError`,
@@ -417,12 +442,40 @@ it.
 3. Normalization: `passwordToBytes('e\u0301')` equals `passwordToBytes('\u00e9')`; differs from
    `passwordToBytes('e')`.
 
+## 13a. Review 1 additions (2026-11-12)
+
+1. Key hygiene (crypto.md §1 rule 4): every temporary buffer that holds key material is wiped in a
+   `finally`: the recovery-key + checksum buffer in `encodeRecoveryKey`/`decodeRecoveryWords`, a
+   wrong-length opened key in `unwrapKey` (wipe before throwing), the opened share payload in
+   `openSharePayload` (copy the key out, wipe the payload).
+2. Byte-layout numbers used by `sealed-blob.ts` and `share-payload.ts` are exported from
+   `constants.ts`: `BLOB_VERSION_BYTES = 1`, `BLOB_VERSION_OFFSET = 0`, `SHARE_PAYLOAD_ID_LENGTH_OFFSET = 1`,
+   `SHARE_PAYLOAD_ID_OFFSET = 2` (no local constants in those modules).
+3. `openSharePayload` compares the embedded id **as bytes** with `utf8Encode(expectedCollectionId)`
+   (a `TextDecoder` drops a leading BOM, so string comparison accepted `EF BB BF` + id).
+4. `createStreamEncryptor` / `createStreamDecryptor` keep a private copy of the header for nonces
+   and additional data; the `header` they expose is a separate copy.
+5. `encryptChunk` / `decryptChunk` check the key length first → `InvalidKeyLengthError`.
+6. `streamLayout` and `layoutFromCiphertextSize` reject a chunk-size exponent outside
+   `[STREAM_CHUNK_SIZE_EXPONENT_MIN, STREAM_CHUNK_SIZE_EXPONENT_MAX]` (§4) → `MalformedObjectError`.
+7. `checkVectors`: a file whose `format` is not `VECTOR_FORMAT` marks all its cases failed; it also
+   checks the decrypt direction: each `sealed-blob.json` stored `blob` opens to its `plaintext`, and
+   every re-encrypted stream case is decrypted back with `createStreamDecryptor` + `finish()` and
+   compared with the rebuilt plaintext.
+8. The generator may import `node:fs`, `node:path` and `node:url` (it writes files).
+9. Tests added: `passwordToBytes('\uFB01')` equals `passwordToBytes('fi')` (proves NFKC); the three
+   recovery errors also assert `.message` (`CRYPTO_TEXT.invalidRecoveryWordCount`,
+   `unknownRecoveryWord(5)`, `recoveryChecksumMismatch`); BOM-prefixed share id → `DecryptionError`;
+   header mutation after `createStreamEncryptor` does not change later chunks; 31-byte stream key →
+   `InvalidKeyLengthError`; exponent 99 in `streamLayout` → `MalformedObjectError`; a vector file
+   with `format: 2` → all its cases fail.
+
 ## 14. Steps
 
 1. Add the dependencies of spec 01 §1.3 if missing (`@kodakiko/contract`, `zod`,
    `libsodium-wrappers-sumo` dev).
 2. Write the files in section 1 order (text/errors/constants first).
-3. Fetch and verify the word list; add `F-CRY-04` to `docs/facts.md`.
+3. Fetch and verify the word list (Opus records `F-CRY-04`, README rule 10; already recorded).
 4. `node scripts/generate-vectors.ts`; inspect the files; commit them.
 5. Write both test files; `pnpm --filter @kodakiko/core test` until green.
 6. `pnpm verify` at the root.
@@ -435,7 +488,7 @@ it.
 - [ ] `packages/core/src` imports only relative files, `@kodakiko/contract`, `zod`
       (`grep -rhn "from '" packages/core/src | sort -u`).
 - [ ] No explanatory comments, no magic numbers outside `constants.ts` (lint proves both).
-- [ ] `F-CRY-04` row in `docs/facts.md` with URL, date and SHA-256.
+- [ ] The word list's SHA-256 equals `F-CRY-04` in `docs/facts.md`.
 - [ ] Error-case list of §13.2: each observed class reported.
 - [ ] Argon2id vector runtime noted (it uses 8 MiB, should be well under a second).
 

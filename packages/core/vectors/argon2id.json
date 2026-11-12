@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "cases": [
+    {
+      "password": "636f727265637420686f727365206261747465727920737461706c65",
+      "salt": "0102030405060708090a0b0c0d0e0f10",
+      "opsLimit": 2,
+      "memLimitBytes": 8388608,
+      "output": "3119dd22fca1a87543cd92aaef9554055663c9a17eb6f4cf328a7b4be67d0b30"
+    },
+    {
+      "password": "c3a974c3a9",
+      "salt": "02030405060708090a0b0c0d0e0f1011",
+      "opsLimit": 2,
+      "memLimitBytes": 8388608,
+      "output": "3489419c67eb25a43e0adc60ad89774e99831fc092b39283aa5309622601dede"
+    }
+  ]
+}

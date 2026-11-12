@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "cases": [
+    {
+      "context": "login",
+      "subkeyId": 1,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "4d66ea4a026d35029631275426f62eed8f6f600f21fa884266093c01d39a69f9"
+    },
+    {
+      "context": "recovery",
+      "subkeyId": 1,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "7290522d57bffd42710484b72daeb84efe7f8469617c3225b3149b0465da62e2"
+    },
+    {
+      "context": "media",
+      "subkeyId": 1,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "4615946cb652b55e38d00056693175404be6dbde561db79fad2888eff3a32561"
+    },
+    {
+      "context": "media",
+      "subkeyId": 2,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "77596c634134b74a9430fe6db3c111f8079273a7e9cfed70dbe172c9a327dc11"
+    },
+    {
+      "context": "link",
+      "subkeyId": 1,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "3c1981fa48f9d3eb430fe7bb8cafc75c56739a7e2b8be32a5b63afee839f0eb0"
+    },
+    {
+      "context": "link",
+      "subkeyId": 2,
+      "key": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+      "subkey": "30cc40ec4ac0aa70dbaab695e24bc87fef638502236e7251843e97a2ac952a20"
+    }
+  ]
+}
