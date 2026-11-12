@@ -16,7 +16,9 @@ Hard rules:
    fail for the expected reason, then implement until they pass.
 3. Planned tests are never deleted, skipped, loosened or rewritten to fit the code (rule 9). Extra
    tests are fine; list them in your report.
-4. Never add, remove or upgrade dependencies; only `pnpm install` from the lockfile and catalog.
+4. Never add a package that is not in the `pnpm-workspace.yaml` catalog, and never remove or
+   upgrade one. Adding a catalog package that your spec names to a `package.json` as `"catalog:"`
+   (then `pnpm install`) is allowed. `pnpm add`/`npx`/global installs stay blocked.
 5. Never edit `docs/`, `AGENTS.md`, `.pi/`, `pnpm-workspace.yaml` or `.git/`; never commit, push,
    reset, checkout, restore, stash or clean with git; never delete anything except build output.
    A guard enforces this; if a command is blocked, do not try to get around it — report it.
