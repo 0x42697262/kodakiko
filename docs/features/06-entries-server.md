@@ -198,6 +198,36 @@ id; `limit` default `COLLECTIONS_PAGE_DEFAULT`, clamped to `COLLECTIONS_PAGE_MAX
    restored between the job's select and the delete is kept). Test: restore between select and
    remove → entry survives.
 
+
+### Review 1 additions (2026-11-12)
+
+1. **Lock order** everywhere is entry → media → objects → collections. `removeEntryInTransaction`
+   marks objects deleting (after locking the media rows) **before** `allocate`. Regression test:
+   concurrent `DELETE /entries/:id` and `POST /objects/:id/confirm` loops on the same entry → no 5xx.
+2. `mediaIdsOfEntry` and `findMedia` lock the media rows `FOR UPDATE` before
+   `markDeletingByMediaIds`, so a concurrent presign (FK `KEY SHARE`) is serialized and its pending
+   object is marked too.
+3. Test 4 (approved reading): (a) 25 rounds of two concurrent patches on two entries whose
+   memberships were inserted in **opposite collection orders** (`[shared, home]` vs `[home, shared]`)
+   → all 50 succeed; (b) 50 fully parallel patches → only 200 or 409, never 5xx; (c) the
+   trash/restore toggle test stays as the contention test.
+4. `canRead` for object downloads also requires `entries.owner_id = user OR entries.trashed_at IS
+   NULL`; test: a recipient downloading a trashed entry's object → 404.
+5. Test 12 (approved reading): create the vacated top seq with `allocate(trx, [homeId], now)` and
+   no membership change (not by deleting a membership row) → `diff since = last_seq − 1` is empty
+   with `nextCursor === last_seq`.
+6. Test: a share recipient gets 404 on PATCH, trash, restore, DELETE, `POST /entries/:id/media`,
+   `DELETE /media/:id`, with the row and seq unchanged.
+7. `POST /entries/:id/media` uses rate-limit group `entries` (§6).
+8. Duplicate `mediaId`s inside one create/add request → `422 VALIDATION_FAILED` (path names the
+   media), checked before the transaction.
+9. `selectTrashedBefore` uses `<=` (same comparison as the purge guard).
+10. `sequence-repository` returns `undefined` for a missing collection; the service maps it to
+    `NOT_FOUND` (adapters never throw `AppError`).
+11. `erase-accounts`: `markDeletingByOwner` is bounded by `JOB_BATCH_SIZE` (CTE + `LIMIT`); users
+    whose remaining objects are all already `deleting` are skipped in that run (ordered by
+    `deletion_due_at, id`), so a GC backlog cannot starve newer users.
+
 ## 8. Tests
 
 Unit: `validateCreateMemberships` (every rule and flag combination), `isIdenticalCreate`,
