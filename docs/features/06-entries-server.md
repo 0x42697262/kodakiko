@@ -147,7 +147,7 @@ write runs in one transaction. Check order per guidelines 3.2.
 | `get(userId, id)` | readable through any membership in a collection the user owns or receives → `EntryDto`; else `NOT_FOUND`. Viewers do not see trashed entries (`NOT_FOUND`) |
 | `patch(userId, id, { metadataBlob, baseRevision })` | size check; transaction: `findEntry forUpdate`; missing or not owner → `NOT_FOUND`; `baseRevision !== revision` → `AppError('REVISION_CONFLICT', { revision, metadataBlob })`; update with `revision + 1`; `bumpEntry` |
 | `trash(userId, id)` / `restore(userId, id)` | owner; already in the target state → return without a bump; else set/clear `trashed_at`, `bumpEntry` |
-| `remove(userId, id)` | owner; absent → success (idempotent); transaction: `allocate` for every membership collection, insert one tombstone per membership with its new seq, `objectsRepository.markDeletingByMediaIds(trx, mediaIds, deleteAfter(now, objectGraceDays))`, `deleteEntry`. Log `entry.deleted`. The transaction body is the **exported** function `removeEntryInTransaction(trx, entryId, now)` (spec 18's link cleanup calls it inside its own transaction); `remove` checks ownership first, `removeAsSystem(entryId)` (used by `purge-trash`) skips that check |
+| `remove(userId, id)` | owner; absent → success (idempotent); transaction: `allocate` for every membership collection, insert one tombstone per membership with its new seq, `objectsRepository.markDeletingByMediaIds(trx, mediaIds, deleteAfter(now, objectGraceDays))`, `deleteEntry`. Log `entry.deleted`. The transaction body is the **exported** function `removeEntryInTransaction(trx, entryId, now, storage)` (spec 18's link cleanup calls it inside its own transaction); `remove` checks ownership first, `removeAsSystem(entryId)` (used by `purge-trash`) skips that check |
 | `addMedia(userId, entryId, { mediaId, mediaKeyByEntry })` | owner; existing same media on the same entry with the same wrap → return it (`created: false`); other → `ID_CONFLICT`; `countMedia < maxMediaPerEntry` else `VALIDATION_FAILED`; insert; bump |
 | `removeMedia(userId, mediaId)` | owner of its entry else `NOT_FOUND`; objects of the media → `deleting`; delete media row; bump. The client also patches the entry metadata (separate outbox item, `sync.md` §2.1) |
 | `onObjectUploaded(trx, entryId)` | `bumpEntry`; wired into spec 05's `confirm`, which calls it **inside** `markUploaded`'s transaction (spec 05 §6 defines that signature) |
@@ -176,9 +176,27 @@ id; `limit` default `COLLECTIONS_PAGE_DEFAULT`, clamped to `COLLECTIONS_PAGE_MAX
 
 | Job | Lock id | Run |
 |---|---|---|
-| `purge-trash` | 1201 | `selectTrashedBefore(trashCutoff, JOB_BATCH_SIZE)`; for each id: `entriesService.removeAsSystem(id)`; log `entry.purged` with count |
+| `purge-trash` | 1201 | `selectTrashedBefore(trashCutoff, JOB_BATCH_SIZE)`; for each id: `entriesService.removeAsSystem(id, { onlyIfTrashedBefore: trashCutoff })`; log `entry.purged` with count |
 | `erase-accounts` | 1202 | users `pending_deletion` with `deletion_due_at < now`, up to `JOB_BATCH_SIZE`; per user, step 1: delete all their sessions; all their objects not yet `deleting` → `deleting` with `delete_after = now`; step 2: when the user has zero object rows left (GC from spec 05 removes them), delete the user row (cascades collections, entries, memberships, media, shares, sessions, invites they created become `created_by = null`). Log `account.erased` at step 2 |
 | `prune-tombstones` | 1203 | per collection with tombstones older than `tombstoneCutoff`: in one transaction delete them (up to `JOB_BATCH_SIZE` rows per run) and set `tombstones_pruned_through_seq = greatest(current, max deleted seq)` |
+
+
+### Implementation answers (2026-11-12)
+
+1. `removeEntryInTransaction(trx, entryId, now, storage)` where `storage: Pick<StorageSettings,
+   'objectGraceDays' | 'uploadUrlTtlSeconds'>`; objects of removed media get `delete_after = now +
+   max(objectGraceDays days, uploadUrlTtlSeconds)` (the same rule as spec 05 §10c item 3, via one
+   shared helper `objectDeleteAfter(now, storage)` in `domain/objects.ts`). `entries-service`,
+   `purge-trash` and spec 18 pass `settings.storage`.
+2. Every new repository method takes the executor (`Kysely<Database>` or `Transaction<Database>`)
+   first, as in spec 05 (`insertHome` unchanged).
+3. Query schemas: `since` required int ≥ 0; `limit` optional int ≥ 1, values above the maximum are
+   clamped; a malformed `GET /collections` cursor → `422 VALIDATION_FAILED`; helper schemas
+   `collectionIdParams`, `entryIdParams`, `mediaIdParams`, `collectionListQuery` in the contract.
+4. `removeAsSystem(id, { onlyIfTrashedBefore })`: inside its transaction it re-reads the entry `FOR
+   UPDATE` and does nothing unless `trashed_at` is set and ≤ `onlyIfTrashedBefore` (an entry
+   restored between the job's select and the delete is kept). Test: restore between select and
+   remove → entry survives.
 
 ## 8. Tests
 
