@@ -189,6 +189,7 @@ way.
 | OI-3 | ~~DNS provider~~ — closed: **Cloudflare** (D-68 default confirmed) | Closed 2026-11-11 |
 | OI-4 | ~~UI test tooling~~ — closed: Playwright + Maestro (D-74) | Closed 2026-11-11 |
 | OI-5 | ~~Android id~~ — closed: `com.x42697262.kodakiko` (D-53) | Closed 2026-11-11 |
+| RISK-1-result | 2026-11-12: Argon2id 256 MiB × 16 ops — web (Firefox, Ryzen 5 5600H) median 4.6 s; Android emulator (API 34 x86_64, KVM) median 4.3 s; vectors 38/38 on native libsodium (D-79 confirmed). A real phone measurement is still required before release | Measured by Sonnet (web) and Opus (emulator) |
 | RISK-1 | Argon2id at 4 GiB total work may be too slow on web (single-thread WASM) or freeze Android's JS thread; spec 04 records a Node baseline, spec 07a measures on a phone and in a browser against an 8 s budget; over budget = programmer decides whether to lower the floor | Measured in spec 07 |
 
 Answered round 5 questions, kept for the record:
