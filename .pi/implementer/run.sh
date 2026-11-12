@@ -12,6 +12,22 @@ LOG_DIR="$ROOT/.pi/implementer/logs"
 SESSION_DIR="$ROOT/.pi/implementer/sessions"
 mkdir -p "$LOG_DIR" "$SESSION_DIR"
 MESSAGE="$(cat "$MESSAGE_FILE")"
+MIN_START_KB=$((3 * 1024 * 1024))
+MIN_RUN_KB=$((1536 * 1024))
+FREE_KB=$(df --output=avail -k / | tail -1)
+if [ "$FREE_KB" -lt "$MIN_START_KB" ]; then echo "refusing to start: less than 3 GB free" >&2; exit 4; fi
+(
+  while sleep 10; do
+    if [ "$(df --output=avail -k / | tail -1)" -lt "$MIN_RUN_KB" ]; then
+      echo "$(date) disk below 1.5 GB: stopping implementer and gradle" >> "$LOG_DIR/diskguard.log"
+      pkill -u "$USER" -f "GradleWrapperMain|GradleDaemon" || true
+      pkill -u "$USER" -f "pi-bolt -p --mode json" || true
+      exit 0
+    fi
+  done
+) &
+WATCHDOG_PID=$!
+trap 'kill "$WATCHDOG_PID" 2>/dev/null || true' EXIT
 CONTINUE_MESSAGE="Your previous turn was cut off by a provider rate limit. Continue exactly where you stopped; do not redo finished steps."
 for ((attempt = 1; attempt <= MAX_ATTEMPTS; attempt++)); do
   MODEL="${MODELS[$(((attempt - 1) % ${#MODELS[@]}))]}"

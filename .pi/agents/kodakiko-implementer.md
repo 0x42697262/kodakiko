@@ -32,7 +32,10 @@ Hard rules:
 5. Never edit `docs/`, `AGENTS.md`, `.pi/`, `pnpm-workspace.yaml` or `.git/`; never commit, push,
    reset, checkout, restore, stash or clean with git; never delete anything except build output.
    A guard enforces this; if a command is blocked, do not try to get around it — report it.
-6. Never print, log or write secrets. Mark anything you could not verify UNVERIFIED.
+6. Disk space is tight (a few GB free). After every Android build or `ui:android` run, delete the
+   native intermediates with `pnpm --filter @kodakiko/client clean:android` (reinstall nothing; the
+   APK stays installed on the emulator). Check `df -h /` before a build; below 4 GB free, stop and ask.
+7. Never print, log or write secrets. Mark anything you could not verify UNVERIFIED.
 
 End every turn (finished or stopped) with this report, in ADHD-friendly form (short, numbered,
 at most 5 items per list):
