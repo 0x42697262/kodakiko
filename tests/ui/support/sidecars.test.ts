@@ -48,7 +48,7 @@ describe('sidecar loading', () => {
       `export default {
         seed: async (project) => ({ USERNAME: 'name-' + project }),
         parts: [
-          { file: 'U-15-p1.yaml', waitAfterMs: 70000, adb: [['reverse', '--remove', 'tcp:9580']] },
+          { file: 'U-15-p1.yaml', waitAfterMs: 70000, adb: [['shell', 'input', 'keyevent', '4']] },
           { file: 'U-15-p2.yaml' },
         ],
       };`,
@@ -56,10 +56,27 @@ describe('sidecar loading', () => {
     const loaded = await import(pathToFileURL(join(directory, 'U-15.flow.ts')).href);
     const sidecar = parseSidecar(loaded.default);
     expect(sidecar.parts).toEqual([
-      { file: 'U-15-p1.yaml', waitAfterMs: 70000, adb: [['reverse', '--remove', 'tcp:9580']] },
+      { file: 'U-15-p1.yaml', waitAfterMs: 70000, adb: [['shell', 'input', 'keyevent', '4']] },
       { file: 'U-15-p2.yaml' },
     ]);
     expect(await sidecar.seed?.('android')).toEqual({ USERNAME: 'name-android' });
+  });
+
+  it('loads the caddy field and rejects other values', () => {
+    const sidecar = parseSidecar({
+      parts: [
+        { file: 'a.yaml', caddy: 'stop' },
+        { file: 'b.yaml', caddy: 'start' },
+        { file: 'c.yaml' },
+      ],
+    });
+    expect(sidecar.parts).toEqual([
+      { file: 'a.yaml', caddy: 'stop' },
+      { file: 'b.yaml', caddy: 'start' },
+      { file: 'c.yaml' },
+    ]);
+    expect(() => parseSidecar({ parts: [{ file: 'a.yaml', caddy: 'restart' }] })).toThrow('caddy');
+    expect(() => parseSidecar({ parts: [{ file: 'a.yaml', caddy: true }] })).toThrow('caddy');
   });
 
   it('rejects shapes without parts', () => {

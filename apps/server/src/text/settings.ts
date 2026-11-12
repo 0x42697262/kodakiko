@@ -9,7 +9,7 @@ export const SETTINGS_TEXT = Object.freeze({
     'must be an http:// or https:// origin without credentials, path, query, fragment or trailing slash',
   httpNeedsHttpsOff: 'may use http:// only when REQUIRE_HTTPS is false',
   rateLimitsOffLocalOnly:
-    'may be false only when REQUIRE_HTTPS is false and PUBLIC_BASE_URL is localhost or 127.0.0.1',
+    'may be false only when REQUIRE_HTTPS is false and PUBLIC_BASE_URL is localhost, 127.0.0.1 or 10.0.2.2',
   publicEndpointNeedsHttpsOff: 'may use http:// only when REQUIRE_HTTPS is false',
   uploadExceedsPartCapacity: (maxParts: number) =>
     `must not exceed MULTIPART_PART_BYTES × ${maxParts} parts`,

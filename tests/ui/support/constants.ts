@@ -53,8 +53,22 @@ export const ENV_NAMES = Object.freeze({
   skipBuild: 'UI_SKIP_BUILD',
   uiTestMode: 'EXPO_PUBLIC_UI_TEST',
   nonInteractive: 'CI',
+  publicBaseUrl: 'PUBLIC_BASE_URL',
+  s3PublicEndpoint: 'S3_PUBLIC_ENDPOINT',
 });
 export const FLAG_ON = '1';
+
+export const ANDROID_HOST_ALIAS = '10.0.2.2';
+export const ANDROID_WEB_ORIGIN = `http://${ANDROID_HOST_ALIAS}:${WEB_PORT}`;
+export const ANDROID_S3_ORIGIN = `http://${ANDROID_HOST_ALIAS}:${S3_PORT}`;
+export const ANDROID_API_ENV_OVERRIDES: Readonly<Record<string, string>> = Object.freeze({
+  [ENV_NAMES.publicBaseUrl]: ANDROID_WEB_ORIGIN,
+  [ENV_NAMES.s3PublicEndpoint]: ANDROID_S3_ORIGIN,
+});
+export const CADDY_SERVICE = 'caddy-ui';
+export const CADDY_STOP = 'stop';
+export const CADDY_START = 'start';
+export const CADDY_ACTIONS = [CADDY_STOP, CADDY_START] as const;
 
 export const REPORTS_DIRECTORY = 'tests/ui/reports';
 export const SERVER_LOG_FILE = 'server.log';
@@ -88,7 +102,6 @@ export const FLOW_ID_DASH = '-';
 export const FLOW_FILE_PATTERN = /^(U-\d\d)\.flow\.ts$/;
 
 export const APP_ID = 'com.x42697262.kodakiko';
-export const ADB_REVERSE_PORTS: readonly number[] = [WEB_PORT, S3_PORT, METRO_PORT];
 export const MAESTRO_VERSION = '2.12.1';
 export const JAVA_MIN_MAJOR = 17;
 export const ANDROID_EMULATOR_HINT = 'Start the emulator: `emulator -avd kodakiko-ui`';

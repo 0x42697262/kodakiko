@@ -6,12 +6,13 @@ import {
   ADB_COMMAND,
   ADB_DEVICES_HEADER,
   ADB_DEVICE_STATE,
-  ADB_REVERSE_PORTS,
   ADB_TIMEOUT_MS,
+  ANDROID_API_ENV_OVERRIDES,
   ANDROID_EMULATOR_HINT,
   ANDROID_FLOWS_SOURCE_DIRECTORY,
   ANDROID_PROJECT_NAME,
   ANDROID_REPORTS_DIRECTORY,
+  ANDROID_WEB_ORIGIN,
   CLIENT_ANDROID_DIRECTORY,
   CLIENT_METRO_SCRIPT,
   CLIENT_PACKAGE,
@@ -36,13 +37,14 @@ import {
   METRO_STOP_SIGNAL,
   READY_POLL_MS,
   REPORTS_DIRECTORY,
-  WEB_ORIGIN,
   BUILD_TIMEOUT_MS,
+  CADDY_START,
+  CADDY_STOP,
 } from '../support/constants.ts';
 import { fromRoot } from '../support/paths.ts';
 import { run } from '../support/process.ts';
 import { findFlowIds, parseSidecar, selectFlowIds, type Sidecar } from '../support/sidecars.ts';
-import { startStack, stopStack } from '../support/stack.ts';
+import { startCaddy, startStack, stopCaddy, stopStack } from '../support/stack.ts';
 import { ANDROID_TEXT } from '../support/text.ts';
 
 const SOURCE_FLOWS_DIRECTORY = fromRoot(ANDROID_FLOWS_SOURCE_DIRECTORY);
@@ -103,14 +105,6 @@ async function checkEnvironment(): Promise<readonly string[]> {
   if (major === null || major < JAVA_MIN_MAJOR)
     problems.push(ANDROID_TEXT.javaMissing(JAVA_MIN_MAJOR));
   return problems;
-}
-
-async function reverseAll(): Promise<void> {
-  for (const port of ADB_REVERSE_PORTS) await adb(['reverse', `tcp:${port}`, `tcp:${port}`]);
-}
-
-async function removeReverseAll(): Promise<void> {
-  for (const port of ADB_REVERSE_PORTS) await adb(['reverse', '--remove', `tcp:${port}`]);
 }
 
 async function buildApp(): Promise<void> {
@@ -189,18 +183,21 @@ async function runPart(
     { cwd: SOURCE_FLOWS_DIRECTORY, timeoutMs: MAESTRO_TIMEOUT_MS },
   );
   for (const adbArguments of part.adb ?? []) await adb(adbArguments);
+  if (part.caddy === CADDY_STOP) await stopCaddy();
+  if (part.caddy === CADDY_START) await startCaddy();
   if (part.waitAfterMs !== undefined) await pause(part.waitAfterMs);
 }
 
 async function runFlow(id: string): Promise<boolean> {
   const sidecar = await loadSidecar(id);
   const seeded = (await sidecar.seed?.(ANDROID_PROJECT_NAME)) ?? {};
-  const environment = { [DEFAULT_SERVER_INPUT_NAME]: WEB_ORIGIN, ...seeded };
+  const environment = { [DEFAULT_SERVER_INPUT_NAME]: ANDROID_WEB_ORIGIN, ...seeded };
   for (const part of sidecar.parts) {
     try {
       await runPart(part, environment);
     } catch {
       process.stderr.write(`${ANDROID_TEXT.flowFailed(id, part.file)}\n`);
+      await startCaddy().catch(() => undefined);
       return false;
     }
   }
@@ -213,7 +210,6 @@ async function runFlows(requested: readonly string[]): Promise<readonly string[]
   const failed: string[] = [];
   for (const id of ids) {
     if (!(await runFlow(id))) failed.push(id);
-    await reverseAll();
   }
   return failed;
 }
@@ -226,14 +222,12 @@ async function main(requested: readonly string[]): Promise<number> {
   }
   let failed: readonly string[] = [];
   try {
-    await startStack({ build: false });
-    await reverseAll();
+    await startStack({ build: false, apiEnvOverrides: ANDROID_API_ENV_OVERRIDES });
     if (process.env[ENV_NAMES.skipBuild] !== FLAG_ON) await buildApp();
     await startMetro();
     failed = await runFlows(requested);
   } finally {
     stopMetro();
-    await removeReverseAll().catch(() => undefined);
     await stopStack();
   }
   process.stdout.write(
@@ -244,10 +238,7 @@ async function main(requested: readonly string[]): Promise<number> {
 
 process.once('SIGINT', () => {
   stopMetro();
-  removeReverseAll()
-    .catch(() => undefined)
-    .then(stopStack)
-    .finally(() => process.exit(1));
+  stopStack().finally(() => process.exit(1));
 });
 
 process.exitCode = await main(process.argv.slice(REQUESTED_ARGUMENTS_START));

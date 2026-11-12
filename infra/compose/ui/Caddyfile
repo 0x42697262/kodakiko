@@ -2,7 +2,7 @@
   auto_https off
 }
 
-http://localhost:9580 {
+http://:9580 {
   handle /api/* {
     reverse_proxy host.docker.internal:9582
   }

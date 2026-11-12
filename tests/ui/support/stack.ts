@@ -3,6 +3,7 @@ import { closeSync, mkdirSync, openSync } from 'node:fs';
 import {
   API_PORT,
   BUILD_TIMEOUT_MS,
+  CADDY_SERVICE,
   CLIENT_BUILD_SCRIPT,
   CLIENT_PACKAGE,
   COMPOSE_FILE,
@@ -31,6 +32,9 @@ const COMPOSE_BASE = ['compose', '-p', STACK_PROJECT, '-f', COMPOSE_FILE];
 const API_READY_URL = `http://127.0.0.1:${API_PORT}/health/ready`;
 const HTTP_OK = 200;
 
+export type ApiEnvOverrides = Readonly<Record<string, string>>;
+
+let apiOverrides: ApiEnvOverrides = {};
 let apiProcess: ChildProcess | null = null;
 let apiExit: string | null = null;
 
@@ -38,7 +42,7 @@ function pause(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-export function serverEnvironment(): NodeJS.ProcessEnv {
+export function serverEnvironment(overrides: ApiEnvOverrides = apiOverrides): NodeJS.ProcessEnv {
   const accessKeyId = process.env[ENV_NAMES.s3AccessKeyId];
   const secretAccessKey = process.env[ENV_NAMES.s3SecretAccessKey];
   if (accessKeyId === undefined || secretAccessKey === undefined) {
@@ -46,6 +50,7 @@ export function serverEnvironment(): NodeJS.ProcessEnv {
   }
   return {
     ...process.env,
+    ...overrides,
     [ENV_NAMES.serverS3AccessKeyId]: accessKeyId,
     [ENV_NAMES.serverS3SecretAccessKey]: secretAccessKey,
   };
@@ -76,7 +81,7 @@ async function answers(url: string): Promise<boolean> {
 async function runCli(args: readonly string[]): Promise<void> {
   await run('node', [`--env-file=${SERVER_ENV_FILE}`, SERVER_CLI, ...args], {
     cwd: fromRoot(),
-    env: serverEnvironment(),
+    env: serverEnvironment({}),
     timeoutMs: COMPOSE_UP_TIMEOUT_MS,
   });
 }
@@ -106,7 +111,14 @@ async function waitUntilReady(): Promise<void> {
   throw new Error(STACK_TEXT.notReady(READY_URL, HOST_FIREWALL_HINT, await answers(API_READY_URL)));
 }
 
-export async function startStack({ build }: { readonly build: boolean }): Promise<void> {
+export async function startStack({
+  build,
+  apiEnvOverrides = {},
+}: {
+  readonly build: boolean;
+  readonly apiEnvOverrides?: ApiEnvOverrides;
+}): Promise<void> {
+  apiOverrides = apiEnvOverrides;
   try {
     await pnpm(['--filter', SERVER_PACKAGE, 'build']);
     if (build) await pnpm(['--filter', CLIENT_PACKAGE, CLIENT_BUILD_SCRIPT]);
@@ -145,4 +157,13 @@ async function stopApi(): Promise<void> {
 export async function stopStack(): Promise<void> {
   await stopApi();
   await compose(['down', '-v'], COMPOSE_UP_TIMEOUT_MS);
+  apiOverrides = {};
+}
+
+export async function stopCaddy(): Promise<void> {
+  await compose(['stop', CADDY_SERVICE], COMPOSE_UP_TIMEOUT_MS);
+}
+
+export async function startCaddy(): Promise<void> {
+  await compose(['start', CADDY_SERVICE], COMPOSE_UP_TIMEOUT_MS);
 }

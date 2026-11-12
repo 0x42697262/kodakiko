@@ -1,12 +1,15 @@
 import { readdir } from 'node:fs/promises';
-import { FLOW_FILE_PATTERN } from './constants.ts';
+import { CADDY_ACTIONS, FLOW_FILE_PATTERN } from './constants.ts';
 
 export type AdbArguments = readonly (readonly string[])[];
+
+export type CaddyAction = (typeof CADDY_ACTIONS)[number];
 
 export type SidecarPart = {
   readonly file: string;
   readonly waitAfterMs?: number;
   readonly adb?: AdbArguments;
+  readonly caddy?: CaddyAction;
 };
 
 export type Sidecar = {
@@ -49,6 +52,14 @@ function parseAdb(value: unknown, file: string): AdbArguments {
   return value as AdbArguments;
 }
 
+function parseCaddy(value: unknown, file: string): CaddyAction {
+  const action = CADDY_ACTIONS.find((candidate) => candidate === value);
+  if (action === undefined) {
+    throw new SidecarError(`Part ${file}: caddy must be one of ${CADDY_ACTIONS.join(', ')}`);
+  }
+  return action;
+}
+
 function parsePart(value: unknown): SidecarPart {
   if (!isRecord(value) || typeof value['file'] !== 'string') {
     throw new SidecarError('Every part needs a file name');
@@ -62,6 +73,7 @@ function parsePart(value: unknown): SidecarPart {
     file,
     ...(waitAfterMs === undefined ? {} : { waitAfterMs }),
     ...(value['adb'] === undefined ? {} : { adb: parseAdb(value['adb'], file) }),
+    ...(value['caddy'] === undefined ? {} : { caddy: parseCaddy(value['caddy'], file) }),
   };
 }
 

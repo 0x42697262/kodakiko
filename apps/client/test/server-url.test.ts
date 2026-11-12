@@ -163,6 +163,10 @@ describe('server url store', () => {
       ok: true,
       baseUrl: 'http://127.0.0.1:9580',
     });
+    await expect(allowed.store.choose('http://10.0.2.2:9580')).resolves.toMatchObject({
+      ok: true,
+      baseUrl: 'http://10.0.2.2:9580',
+    });
     await expect(allowed.store.choose('http://example.com')).resolves.toEqual({
       ok: false,
       reason: 'not_https',
@@ -174,6 +178,10 @@ describe('server url store', () => {
       reason: 'not_https',
     });
     await expect(refused.store.choose('http://127.0.0.1:9580')).resolves.toEqual({
+      ok: false,
+      reason: 'not_https',
+    });
+    await expect(refused.store.choose('http://10.0.2.2:9580')).resolves.toEqual({
       ok: false,
       reason: 'not_https',
     });

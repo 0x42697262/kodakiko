@@ -116,7 +116,10 @@ describe('loadSettings', () => {
     expect(
       messageOf({ ...BASE_ENV, RATE_LIMITS_ENABLED: 'false', REQUIRE_HTTPS: 'true' }),
     ).toContain('RATE_LIMITS_ENABLED');
-    for (const host of ['localhost', '127.0.0.1']) {
+    expect(messageOf({ ...local, PUBLIC_BASE_URL: 'http://192.168.1.5:8080' })).toContain(
+      'RATE_LIMITS_ENABLED',
+    );
+    for (const host of ['localhost', '127.0.0.1', '10.0.2.2']) {
       const settings = loadSettings({ ...local, PUBLIC_BASE_URL: `http://${host}:8080` });
       expect(settings.server.rateLimitsEnabled).toBe(false);
     }
