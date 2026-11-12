@@ -70,8 +70,14 @@ function stripHeredocBodies(command: string): string {
 
 const LEADING_CD = /^\s*cd\s+([^\s;&|]+)\s*(?:&&|;)/;
 
+const QUOTED = /'[^']*'|"(?:[^"\\]|\\.)*"/g;
+
+function neutralizeQuotedOperators(command: string): string {
+	return command.replace(QUOTED, (quoted) => quoted.replace(/[<>;|&]/g, " "));
+}
+
 function checkBashWrites(rootCwd: string, rawCommand: string): string | null {
-	const command = stripHeredocBodies(rawCommand);
+	const command = neutralizeQuotedOperators(stripHeredocBodies(rawCommand));
 	const cdMatch = LEADING_CD.exec(command);
 	const cwd = cdMatch?.[1] ? resolve(rootCwd, cdMatch[1].replace(/^~(?=\/|$)/, process.env.HOME ?? "/nonexistent-home")) : rootCwd;
 	if (relative(rootCwd, cwd).startsWith("..")) {
