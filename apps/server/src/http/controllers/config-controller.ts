@@ -1,6 +1,5 @@
 import type { PublicConfigDto } from '@kodakiko/contract';
 import {
-  ACCOUNT_DELETION_GRACE_DAYS_DEFAULT,
   PUBLIC_CONFIG_API_VERSION,
   TRASH_DAYS_DEFAULT,
 } from '../../config/constants.ts';
@@ -16,7 +15,7 @@ export function configController(settings: Settings): PublicConfigDto {
     maxUploadBytes: settings.limits.maxUploadBytes,
     defaultQuotaBytes: settings.limits.defaultQuotaBytes,
     trashDays: TRASH_DAYS_DEFAULT,
-    accountDeletionGraceDays: ACCOUNT_DELETION_GRACE_DAYS_DEFAULT,
+    accountDeletionGraceDays: settings.accounts.deletionGraceDays,
     serverVersion: settings.server.version,
   };
 }

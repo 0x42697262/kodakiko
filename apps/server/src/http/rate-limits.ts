@@ -47,6 +47,27 @@ export function createRateLimitFor(settings: Settings): RateLimitFor {
   };
 }
 
+function addressOnlyRequest(ip: string): FastifyRequest {
+  return { ip, routeOptions: { config: {} } } as unknown as FastifyRequest;
+}
+
+export function createOpenSignUpRateCheck(
+  app: FastifyInstance,
+  settings: Settings,
+): (ip: string) => Promise<boolean> {
+  if (!settings.server.rateLimitsEnabled) return async () => true;
+  const { max, timeWindowMs } = RATE_LIMITS.authSignUpOpen;
+  const check = app.createRateLimit({
+    max,
+    timeWindow: timeWindowMs,
+    keyGenerator: ipRateLimitKey,
+  });
+  return async (ip) => {
+    const result = await check(addressOnlyRequest(ip));
+    return result.isAllowed || !result.isExceeded;
+  };
+}
+
 export async function registerRateLimit(app: FastifyInstance): Promise<void> {
   await app.register(rateLimit, {
     global: false,

@@ -9,6 +9,7 @@ export const SYSTEM_TEXT = Object.freeze({
     '',
     'Commands:',
     '  migrate-status   Print applied and pending migrations',
+    '  create-invite    --role <admin|member> [--expires-days <1-90>]  Print an invite URL',
     '  help             Show this text',
   ].join('\n'),
   appliedHeading: 'Applied:',

@@ -5,6 +5,8 @@ import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod
 import type { Database } from './adapters/db/schema.ts';
 import {
   API_CSP_DIRECTIVES,
+  FAILED_SIGN_IN_TRACKER_MAX_ENTRIES,
+  MINUTE_MS,
   API_MAX_BODY_BYTES,
   CORP_POLICY,
   HSTS_MAX_AGE_SECONDS,
@@ -13,13 +15,24 @@ import {
 } from './config/constants.ts';
 import type { Settings } from './config/settings.ts';
 import { registerErrorHandling, sendError } from './http/error-handler.ts';
-import { loggerOptions } from './http/log-redaction.ts';
-import { createRateLimitFor, registerRateLimit } from './http/rate-limits.ts';
+import { registerAuthPlugin } from './http/auth-plugin.ts';
+import { createAuthController } from './http/controllers/auth-controller.ts';
+import { createUsersController } from './http/controllers/users-controller.ts';
+import { loggerOptions, type LogStream } from './http/log-redaction.ts';
+import {
+  createOpenSignUpRateCheck,
+  createRateLimitFor,
+  registerRateLimit,
+} from './http/rate-limits.ts';
 import { registerRequestContext, setResponseContext } from './http/request-context.ts';
+import { registerAuthRoutes } from './http/routes/auth.ts';
 import { registerConfigRoutes } from './http/routes/config.ts';
 import { registerHealthRoutes } from './http/routes/health.ts';
+import { registerUsersRoutes } from './http/routes/users.ts';
+import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-tracker.ts';
 import type { Clock } from './platform/clock.ts';
 import { randomToken } from './platform/ids.ts';
+import { createAuthService } from './services/auth-service.ts';
 import type { ReadinessCheck } from './services/readiness.ts';
 import { LOG_EVENTS } from './text/events.ts';
 import { SECURITY_TEXT } from './text/settings.ts';
@@ -29,12 +42,13 @@ export type AppDeps = {
   readonly db: Kysely<Database>;
   readonly clock: Clock;
   readonly readinessChecks: readonly ReadinessCheck[];
+  readonly logStream?: LogStream;
 };
 
 export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
-  const { settings, readinessChecks } = deps;
+  const { settings, db, clock, readinessChecks } = deps;
   const app = Fastify({
-    logger: loggerOptions(settings),
+    logger: loggerOptions(settings, deps.logStream),
     trustProxy: [...settings.server.trustedProxies],
     bodyLimit: API_MAX_BODY_BYTES,
     genReqId: () => randomToken(REQUEST_ID_BYTES),
@@ -68,5 +82,28 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   const rateLimitFor = createRateLimitFor(settings);
   registerHealthRoutes(app, { readinessChecks });
   registerConfigRoutes(app, { settings, rateLimitFor });
+
+  const authService = createAuthService({
+    db,
+    settings,
+    clock,
+    failedSignIns: createFailedSignInTracker({
+      windowMs: settings.auth.failedSignInWindowMinutes * MINUTE_MS,
+      maxEntries: FAILED_SIGN_IN_TRACKER_MAX_ENTRIES,
+    }),
+    logger: app.log,
+    checkOpenSignUpRate: createOpenSignUpRateCheck(app, settings),
+  });
+  const requireSession = registerAuthPlugin(app, { authService, clock });
+  registerAuthRoutes(app, {
+    controller: createAuthController(authService),
+    rateLimitFor,
+    requireSession,
+  });
+  registerUsersRoutes(app, {
+    controller: createUsersController(authService),
+    rateLimitFor,
+    requireSession,
+  });
   return app;
 }

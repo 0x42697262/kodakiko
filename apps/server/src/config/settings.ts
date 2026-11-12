@@ -1,6 +1,6 @@
 import { isIP } from 'node:net';
 import { z } from 'zod';
-import { MEDIA_PER_ENTRY_HARD_MAX, SIGNUP_MODES } from '@kodakiko/contract';
+import { MEDIA_PER_ENTRY_HARD_MAX, SIGNUP_MODES, bytesSchema, decodeBytes, isDecodableBase64Url } from '@kodakiko/contract';
 import { SettingsError } from '../domain/errors.ts';
 import { SETTINGS_TEXT } from '../text/settings.ts';
 import {
@@ -11,6 +11,7 @@ import {
   HTTP_PROTOCOL,
   INTEGER_PATTERN,
   LOCAL_HOSTS,
+  MINUTE_MS,
   LOG_LEVELS,
   POSTGRES_PROTOCOLS,
   SETTINGS_BOUNDS,
@@ -45,9 +46,18 @@ export type Settings = {
     readonly maxMediaPerEntry: number;
     readonly maxUploadBytes: number;
     readonly defaultQuotaBytes: number;
+    readonly maxCollectionMetadataBytes: number;
   };
+  readonly auth: {
+    readonly fakeParamsSecret: Uint8Array;
+    readonly sessionIdleDays: number;
+    readonly maxFailedSignIns: number;
+    readonly failedSignInWindowMinutes: number;
+    readonly inviteDefaultExpiryDays: number;
+  };
+  readonly accounts: { readonly deletionGraceDays: number };
   readonly log: { readonly level: (typeof LOG_LEVELS)[number] };
-  readonly jobs: { readonly enabled: boolean };
+  readonly jobs: { readonly enabled: boolean; readonly expireSessionsIntervalMs: number };
 };
 
 function integer(fallback: number | undefined, min: number, max: number) {
@@ -151,6 +161,49 @@ const envSchema = z
     DEFAULT_QUOTA_BYTES: integer(SETTINGS_DEFAULTS.defaultQuotaBytes, 0, Number.MAX_SAFE_INTEGER),
     LOG_LEVEL: z.enum(LOG_LEVELS).default(SETTINGS_DEFAULTS.logLevel),
     JOBS_ENABLED: flag(SETTINGS_DEFAULTS.jobsEnabled),
+    FAKE_PARAMS_SECRET: bytesSchema
+      .refine(
+        (value) =>
+          isDecodableBase64Url(value) &&
+          decodeBytes(value).length >= SETTINGS_BOUNDS.fakeParamsSecretMinBytes,
+        SETTINGS_TEXT.fakeParamsSecretTooShort,
+      )
+      .transform((value) => decodeBytes(value)),
+    SESSION_IDLE_DAYS: integer(
+      SETTINGS_DEFAULTS.sessionIdleDays,
+      1,
+      SETTINGS_BOUNDS.sessionIdleDaysMax,
+    ),
+    MAX_FAILED_SIGN_INS: integer(
+      SETTINGS_DEFAULTS.maxFailedSignIns,
+      1,
+      SETTINGS_BOUNDS.maxFailedSignInsMax,
+    ),
+    FAILED_SIGN_IN_WINDOW_MINUTES: integer(
+      SETTINGS_DEFAULTS.failedSignInWindowMinutes,
+      1,
+      SETTINGS_BOUNDS.failedSignInWindowMinutesMax,
+    ),
+    INVITE_DEFAULT_EXPIRY_DAYS: integer(
+      SETTINGS_DEFAULTS.inviteDefaultExpiryDays,
+      1,
+      SETTINGS_BOUNDS.inviteDefaultExpiryDaysMax,
+    ),
+    ACCOUNT_DELETION_GRACE_DAYS: integer(
+      SETTINGS_DEFAULTS.accountDeletionGraceDays,
+      1,
+      SETTINGS_BOUNDS.accountDeletionGraceDaysMax,
+    ),
+    JOB_EXPIRE_SESSIONS_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobExpireSessionsIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    MAX_COLLECTION_METADATA_BYTES: integer(
+      SETTINGS_DEFAULTS.maxCollectionMetadataBytes,
+      SETTINGS_BOUNDS.maxCollectionMetadataBytesMin,
+      Number.MAX_SAFE_INTEGER,
+    ),
   })
   .superRefine((env, context) => {
     const baseUrl = parseUrl(env.PUBLIC_BASE_URL);
@@ -200,15 +253,29 @@ function toSettings(env: Env): Settings {
       maxMediaPerEntry: env.MAX_MEDIA_PER_ENTRY,
       maxUploadBytes: env.MAX_UPLOAD_BYTES,
       defaultQuotaBytes: env.DEFAULT_QUOTA_BYTES,
+      maxCollectionMetadataBytes: env.MAX_COLLECTION_METADATA_BYTES,
     },
+    auth: {
+      fakeParamsSecret: env.FAKE_PARAMS_SECRET,
+      sessionIdleDays: env.SESSION_IDLE_DAYS,
+      maxFailedSignIns: env.MAX_FAILED_SIGN_INS,
+      failedSignInWindowMinutes: env.FAILED_SIGN_IN_WINDOW_MINUTES,
+      inviteDefaultExpiryDays: env.INVITE_DEFAULT_EXPIRY_DAYS,
+    },
+    accounts: { deletionGraceDays: env.ACCOUNT_DELETION_GRACE_DAYS },
     log: { level: env.LOG_LEVEL },
-    jobs: { enabled: env.JOBS_ENABLED },
+    jobs: {
+      enabled: env.JOBS_ENABLED,
+      expireSessionsIntervalMs: env.JOB_EXPIRE_SESSIONS_INTERVAL_MINUTES * MINUTE_MS,
+    },
   };
 }
 
 function deepFreeze<Value extends object>(value: Value): Value {
   for (const child of Object.values(value)) {
-    if (typeof child === 'object' && child !== null) deepFreeze(child);
+    if (typeof child === 'object' && child !== null && !ArrayBuffer.isView(child)) {
+      deepFreeze(child);
+    }
   }
   return Object.freeze(value);
 }

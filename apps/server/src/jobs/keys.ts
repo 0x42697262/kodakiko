@@ -1,1 +1,3 @@
-export const JOB_LOCK_IDS: Readonly<Record<string, number>> = Object.freeze({});
+export const JOB_LOCK_IDS = Object.freeze({
+  expireSessions: 1001,
+});

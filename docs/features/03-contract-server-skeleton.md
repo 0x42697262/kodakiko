@@ -258,7 +258,8 @@ instance; a Redis store is a later change if the API scales out, recorded in
    'publicLinkEntries', 'publicLinkContent']` (server `constants.ts`; the groups that do not exist yet
    are listed anyway) are **always** keyed by IP: `createRateLimitFor` returns `{ rateLimit: { max,
    timeWindow, keyGenerator: ipRateLimitKey } }` for them. Otherwise random tokens would give every
-   request its own bucket.
+   request its own bucket. General rule for every later spec: routes that do not require a session
+   always use an IP-keyed group.
 2. **Database pool errors.** `createDatabase(url, onPoolError)` adds `pool.on('error', onPoolError)`;
    `main.ts` passes a function logging `LOG_EVENTS.dbPoolError = 'db.pool_error'` (message only)
    through `app.log` (an idle client error must not crash the process).

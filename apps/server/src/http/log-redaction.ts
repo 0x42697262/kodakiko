@@ -34,9 +34,12 @@ export const REDACT_PATHS: readonly string[] = Object.freeze([
 
 const REDACT_CENSOR = '[redacted]';
 
-export function loggerOptions(settings: Settings) {
+export type LogStream = { write(chunk: string): void };
+
+export function loggerOptions(settings: Settings, stream?: LogStream) {
   return {
     level: settings.log.level,
     redact: { paths: [...REDACT_PATHS], censor: REDACT_CENSOR },
+    ...(stream === undefined ? {} : { stream }),
   };
 }

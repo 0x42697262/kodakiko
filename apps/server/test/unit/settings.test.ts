@@ -3,7 +3,9 @@ import { SettingsError } from '../../src/domain/errors.ts';
 import { loadSettings } from '../../src/config/settings.ts';
 
 const SECRET_PASSWORD = 'hunter2-not-a-real-password';
+const FAKE_PARAMS_SECRET = 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU';
 const BASE_ENV = {
+  FAKE_PARAMS_SECRET,
   PUBLIC_BASE_URL: 'https://kodakiko.example.com',
   DATABASE_URL: `postgres://kodakiko:${SECRET_PASSWORD}@db.example.com:5432/kodakiko`,
 };
@@ -42,9 +44,10 @@ describe('loadSettings', () => {
       maxMediaPerEntry: 20,
       maxUploadBytes: 3758096384,
       defaultQuotaBytes: 107374182400,
+      maxCollectionMetadataBytes: 4096,
     });
     expect(settings.log).toEqual({ level: 'info' });
-    expect(settings.jobs).toEqual({ enabled: true });
+    expect(settings.jobs).toEqual({ enabled: true, expireSessionsIntervalMs: 86_400_000 });
   });
 
   it('reads overrides', () => {
@@ -180,5 +183,65 @@ describe('loadSettings', () => {
     const message = messageOf({ ...BASE_ENV, DATABASE_URL: invalidUrl, PORT: 'x' });
     expect(message).toContain('DATABASE_URL');
     expect(message).not.toContain(SECRET_PASSWORD);
+  });
+
+  it('applies the auth and account defaults and decodes the fake params secret', () => {
+    const settings = loadSettings(BASE_ENV);
+    expect(settings.auth).toMatchObject({
+      sessionIdleDays: 30,
+      maxFailedSignIns: 10,
+      failedSignInWindowMinutes: 60,
+      inviteDefaultExpiryDays: 7,
+    });
+    expect(settings.auth.fakeParamsSecret).toBeInstanceOf(Uint8Array);
+    expect(settings.auth.fakeParamsSecret.length).toBe(32);
+    expect(settings.accounts).toEqual({ deletionGraceDays: 7 });
+    expect(Object.isFrozen(settings.auth)).toBe(true);
+  });
+
+  it('reads the auth overrides and converts minutes to milliseconds', () => {
+    const settings = loadSettings({
+      ...BASE_ENV,
+      SESSION_IDLE_DAYS: '365',
+      MAX_FAILED_SIGN_INS: '1',
+      FAILED_SIGN_IN_WINDOW_MINUTES: '1440',
+      INVITE_DEFAULT_EXPIRY_DAYS: '90',
+      ACCOUNT_DELETION_GRACE_DAYS: '1',
+      JOB_EXPIRE_SESSIONS_INTERVAL_MINUTES: '2',
+      MAX_COLLECTION_METADATA_BYTES: '256',
+    });
+    expect(settings.auth.sessionIdleDays).toBe(365);
+    expect(settings.auth.maxFailedSignIns).toBe(1);
+    expect(settings.accounts.deletionGraceDays).toBe(1);
+    expect(settings.jobs.expireSessionsIntervalMs).toBe(120_000);
+    expect(settings.limits.maxCollectionMetadataBytes).toBe(256);
+  });
+
+  it('rejects out-of-range auth values and a weak or missing fake params secret', () => {
+    expect(messageOf({ ...BASE_ENV, SESSION_IDLE_DAYS: '366' })).toContain('SESSION_IDLE_DAYS');
+    expect(messageOf({ ...BASE_ENV, MAX_FAILED_SIGN_INS: '0' })).toContain('MAX_FAILED_SIGN_INS');
+    expect(messageOf({ ...BASE_ENV, INVITE_DEFAULT_EXPIRY_DAYS: '91' })).toContain(
+      'INVITE_DEFAULT_EXPIRY_DAYS',
+    );
+    expect(messageOf({ ...BASE_ENV, ACCOUNT_DELETION_GRACE_DAYS: '0' })).toContain(
+      'ACCOUNT_DELETION_GRACE_DAYS',
+    );
+    expect(messageOf({ ...BASE_ENV, MAX_COLLECTION_METADATA_BYTES: '255' })).toContain(
+      'MAX_COLLECTION_METADATA_BYTES',
+    );
+    const { FAKE_PARAMS_SECRET: _omitted, ...withoutSecret } = BASE_ENV;
+    expect(messageOf(withoutSecret)).toContain('FAKE_PARAMS_SECRET');
+    const shortSecret = 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo';
+    const message = messageOf({ ...BASE_ENV, FAKE_PARAMS_SECRET: shortSecret });
+    expect(message).toContain('FAKE_PARAMS_SECRET');
+    expect(message).not.toContain(shortSecret);
+  });
+
+  it('names FAKE_PARAMS_SECRET for malformed values without echoing them', () => {
+    for (const malformed of ['AAAAA', 'not base64url!!', '', 'a']) {
+      const message = messageOf({ ...BASE_ENV, FAKE_PARAMS_SECRET: malformed });
+      expect(message).toContain('FAKE_PARAMS_SECRET');
+      if (malformed.length > 1) expect(message).not.toContain(malformed);
+    }
   });
 });

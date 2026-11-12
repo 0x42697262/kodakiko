@@ -8,5 +8,13 @@ export const LOG_EVENTS = Object.freeze({
   jobStarted: 'job.started',
   jobFinished: 'job.finished',
   jobFailed: 'job.failed',
+  authSignedUp: 'auth.signed_up',
+  authThrottled: 'auth.throttled',
+  authSignInFailed: 'auth.sign_in_failed',
+  authRecoveryFailed: 'auth.recovery_failed',
+  authRecovered: 'auth.recovered',
+  authPasswordChanged: 'auth.password_changed',
+  accountDeletionRequested: 'account.deletion_requested',
+  accountDeletionCancelled: 'account.deletion_cancelled',
   securityRateLimitsDisabled: 'security.rate_limits_disabled',
 });

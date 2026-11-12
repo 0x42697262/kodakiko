@@ -58,6 +58,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
 }
 
 const FIXED_TEST_ENV: Readonly<Record<string, string>> = Object.freeze({
+  FAKE_PARAMS_SECRET: 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU',
   PUBLIC_BASE_URL: 'http://localhost:8080',
   REQUIRE_HTTPS: 'false',
   DATABASE_URL: DEFAULT_TEST_DATABASE_URL,

@@ -1,9 +1,18 @@
 import { createDatabase } from './adapters/db/database.ts';
+import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-tracker.ts';
+import { parseCreateInviteArguments } from './cli-arguments.ts';
 import { createMigrator } from './adapters/db/migrator.ts';
-import { EXIT_CODES } from './config/constants.ts';
+import {
+  EXIT_CODES,
+  FAILED_SIGN_IN_TRACKER_MAX_ENTRIES,
+  MINUTE_MS,
+} from './config/constants.ts';
 import { loadSettings } from './config/settings.ts';
 import { SettingsError } from './domain/errors.ts';
 import { fatalLine } from './platform/process.ts';
+import { systemClock } from './platform/clock.ts';
+import { silentLogger } from './platform/silent-logger.ts';
+import { createAuthService } from './services/auth-service.ts';
 import { LOG_EVENTS } from './text/events.ts';
 import { SYSTEM_TEXT } from './text/system.ts';
 
@@ -44,6 +53,38 @@ async function migrateStatus(): Promise<number> {
   }
 }
 
+async function createInvite(args: readonly string[]): Promise<number> {
+  const parsed = parseCreateInviteArguments(args);
+  if (parsed === null) {
+    process.stderr.write(`${SYSTEM_TEXT.usage}${NEWLINE}`);
+    return EXIT_CODES.usage;
+  }
+  const settings = loadSettings(process.env);
+  const db = createDatabase(settings.database, reportPoolError);
+  try {
+    const service = createAuthService({
+      db,
+      settings,
+      clock: systemClock,
+      failedSignIns: createFailedSignInTracker({
+        windowMs: settings.auth.failedSignInWindowMinutes * MINUTE_MS,
+        maxEntries: FAILED_SIGN_IN_TRACKER_MAX_ENTRIES,
+      }),
+      logger: silentLogger,
+      checkOpenSignUpRate: async () => true,
+    });
+    const { inviteUrl } = await service.createInvite(
+      parsed.role,
+      parsed.expiresInDays ?? settings.auth.inviteDefaultExpiryDays,
+      null,
+    );
+    printLines([inviteUrl]);
+    return EXIT_CODES.success;
+  } finally {
+    await db.destroy();
+  }
+}
+
 async function help(): Promise<number> {
   printLines([SYSTEM_TEXT.usage]);
   return EXIT_CODES.success;
@@ -51,6 +92,7 @@ async function help(): Promise<number> {
 
 const COMMANDS: Readonly<Record<string, Command>> = Object.freeze({
   'migrate-status': migrateStatus,
+  'create-invite': createInvite,
   help,
 });
 

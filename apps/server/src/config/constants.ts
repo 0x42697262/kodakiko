@@ -2,8 +2,9 @@ const KIBIBYTE = 1024;
 const MEBIBYTE = KIBIBYTE * KIBIBYTE;
 const GIBIBYTE = MEBIBYTE * KIBIBYTE;
 const SECOND_MS = 1000;
-const MINUTE_MS = 60 * SECOND_MS;
+export const MINUTE_MS = 60 * SECOND_MS;
 const HOUR_MS = 60 * MINUTE_MS;
+export const DAY_MS = 24 * HOUR_MS;
 const MAX_UPLOAD_BYTES_CEILING = 3758096384;
 
 export const API_MAX_BODY_BYTES = 2 * MEBIBYTE;
@@ -13,8 +14,10 @@ export const DATABASE_CHECK_NAME = 'database';
 
 export const RATE_LIMITS = Object.freeze({
   auth: { max: 60, timeWindowMs: MINUTE_MS },
+  authPublic: { max: 60, timeWindowMs: MINUTE_MS },
   authSignIn: { max: 10, timeWindowMs: 5 * MINUTE_MS },
   authSignUp: { max: 20, timeWindowMs: HOUR_MS },
+  authSignUpOpen: { max: 5, timeWindowMs: DAY_MS },
   users: { max: 60, timeWindowMs: MINUTE_MS },
   collections: { max: 120, timeWindowMs: MINUTE_MS },
   entries: { max: 300, timeWindowMs: MINUTE_MS },
@@ -29,8 +32,10 @@ export const RATE_LIMITS = Object.freeze({
 export type RateLimitGroup = keyof typeof RATE_LIMITS;
 
 export const RATE_LIMIT_IP_KEYED_GROUPS: readonly RateLimitGroup[] = Object.freeze([
+  'authPublic',
   'authSignIn',
   'authSignUp',
+  'authSignUpOpen',
   'publicLinkOpen',
   'publicLinkEntries',
   'publicLinkContent',
@@ -65,7 +70,6 @@ export const HSTS_MAX_AGE_SECONDS = 63072000;
 export const INT8_OID = 20;
 
 export const TRASH_DAYS_DEFAULT = 30;
-export const ACCOUNT_DELETION_GRACE_DAYS_DEFAULT = 7;
 export const PUBLIC_CONFIG_API_VERSION = 1;
 
 export const TRUSTED_PROXY_PRESETS = Object.freeze(['loopback', 'linklocal', 'uniquelocal']);
@@ -107,6 +111,13 @@ export const SETTINGS_DEFAULTS = Object.freeze({
   defaultQuotaBytes: 100 * GIBIBYTE,
   logLevel: 'info',
   jobsEnabled: 'true',
+  sessionIdleDays: 30,
+  maxFailedSignIns: 10,
+  failedSignInWindowMinutes: 60,
+  inviteDefaultExpiryDays: 7,
+  accountDeletionGraceDays: 7,
+  jobExpireSessionsIntervalMinutes: 1440,
+  maxCollectionMetadataBytes: 4096,
 } as const);
 
 export const SETTINGS_BOUNDS = Object.freeze({
@@ -116,6 +127,13 @@ export const SETTINGS_BOUNDS = Object.freeze({
   databaseTimeoutMsMin: 100,
   maxUploadBytesMin: MEBIBYTE,
   maxUploadBytesMax: MAX_UPLOAD_BYTES_CEILING,
+  sessionIdleDaysMax: 365,
+  maxFailedSignInsMax: 100,
+  failedSignInWindowMinutesMax: 1440,
+  inviteDefaultExpiryDaysMax: 90,
+  accountDeletionGraceDaysMax: 90,
+  maxCollectionMetadataBytesMin: 256,
+  fakeParamsSecretMinBytes: 32,
 });
 
 export const API_CSP_DIRECTIVES = Object.freeze({
@@ -140,3 +158,45 @@ export const API_PATH_PREFIX = `${API_ROOT_PATH}/`;
 export const QUERY_SEPARATOR = '?';
 export const ID_BYTES = 16;
 export const FATAL_LOG_LEVEL = 'fatal';
+
+export const WRAPPED_KEY_BYTES = 73;
+export const LOGIN_KEY_BYTES = 32;
+export const PUBLIC_KEY_BYTES = 32;
+export const FAILED_SIGN_IN_DELAY_CAP_MS = 30_000;
+export const FAILED_SIGN_IN_BASE_DELAY_MS = 1000;
+export const FAILED_SIGN_IN_TRACKER_MAX_ENTRIES = 10_000;
+export const USERNAME_LOG_HASH_HEX_CHARS = 12;
+export const DUMMY_LOGIN_HASH_SEED = 'kodakiko/dummy-login-hash';
+export const FAKE_PARAMS_SALT_BYTES = 16;
+export const FAKE_RECOVERY_WRAP_VERSION = 0x01;
+export const FAKE_RECOVERY_WRAP_BYTES = 73;
+export const FAKE_RECOVERY_ID_BYTES = 16;
+export const INVITE_PATH = '/invite';
+export const INVITE_FRAGMENT_PREFIX = '#';
+
+export const HMAC_LABELS = Object.freeze({
+  paramsSalt: 'params-salt-1',
+  recoveryFake1: 'recovery-fake-1',
+  recoveryFake2: 'recovery-fake-2',
+  recoveryFake3: 'recovery-fake-3',
+  recoveryFakeId: 'recovery-fake-id',
+} as const);
+
+export const PENDING_DELETION_ALLOWED_ROUTE_IDS: readonly string[] = Object.freeze([
+  'authSession',
+  'authSignOut',
+  'usersMe',
+  'usersMeDeleteCancel',
+]);
+
+export const PG_UNIQUE_VIOLATION = '23505';
+export const USERS_USERNAME_CONSTRAINT = 'users_username_key';
+export const USERS_ID_CONSTRAINT = 'users_pkey';
+export const COLLECTIONS_ID_CONSTRAINT = 'collections_pkey';
+
+export const CLI_FLAGS = Object.freeze({
+  role: '--role',
+  expiresDays: '--expires-days',
+});
+export const CLI_INVITE_EXPIRES_DAYS_MIN = 1;
+export const CLI_INVITE_EXPIRES_DAYS_MAX = 90;

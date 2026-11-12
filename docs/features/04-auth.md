@@ -53,6 +53,39 @@ Depends on specs 02 and 03.
 8. Done-ness: the `e2e` rows B-001, B-003, B-005, B-006, B-010 are proven later (README rule 8); this
    spec covers B-002 and B-004 (`api`) and its own tests.
 
+### 1b. Review 1 additions (2026-11-12)
+
+1. KDF work bound: `memLimitBytes * opsLimit` must be ≤ `KDF_WORK_MAX = 2 ** 62` (contract
+   `limits.ts`), checked in the domain before `kdfParamsAcceptable` → else `422 VALIDATION_FAILED`
+   (the database check overflows `bigint` otherwise). Test: `opsLimit 2_147_483_647` with
+   `memLimitBytes 2 ** 33` → 422.
+2. Race-safety: `changePassword`, `recoveryComplete` and `cancelDeletion` re-read the user **inside**
+   their transaction with `SELECT … FOR UPDATE` (`findByIdForUpdate` / `findByUsernameForUpdate`) and
+   re-check `loginKeyMatches`; `changePassword` deletes the calling session first and throws
+   `UNAUTHENTICATED` when 0 rows were deleted (it was revoked concurrently); `cancelDeletion` uses
+   `UPDATE … WHERE id = ? AND status = 'pending_deletion' AND deletion_due_at > now` and throws
+   `FORBIDDEN` when 0 rows change.
+3. `insertHome` returns `'inserted' | 'idConflict'` (unique violation on `collections_pkey`) →
+   `signUp` throws `409 ID_CONFLICT` (api.md §3). Test with a reused home collection id.
+4. `FAKE_PARAMS_SECRET`: the length refine first checks `isDecodableBase64Url`, so a malformed
+   value gives a `SettingsError` naming the variable (never the value). Unit test.
+5. Failed-sign-in delay test asserts `≥ FAILED_SIGN_IN_BASE_DELAY_MS` (imported, no local copy, no
+   tolerance); if real timers make it flaky, use fake timers (allowed by the test's original text).
+6. Approved changes: the two stricter spec 03 settings assertions (`maxCollectionMetadataBytes`,
+   `expireSessionsIntervalMs`); `checkOpenSignUpRate` built in `http/rate-limits.ts` and wired in
+   `app.ts`; `changePassword(userId, sessionId, deviceLabel, request)`.
+7. Extra tests: two concurrent sign-ups with one invite → statuses `[201, 403]` in any order and
+   exactly one user; the log-capture test also covers the invite token and one recovery start +
+   complete (`recoveryLoginKey`, `masterKeyByRecovery` values absent from logs).
+8. Session ids use `randomId()` (same format as every id); `SESSION_ID_RANDOM_BYTES` is removed.
+9. `params()` validates the username first (invalid → fake params without a database query).
+10. A failed `recoveryComplete` logs `auth.recovery_failed` with the 12-character username-hash
+    prefix (new `LOG_EVENTS.authRecoveryFailed`).
+11. Unauthenticated routes always use IP-keyed rate-limit groups: new group `authPublic` (same
+    numbers as `auth`, in `RATE_LIMIT_IP_KEYED_GROUPS`) for `/auth/params` and `/auth/recovery/start`
+    and every other route of this spec that does not require a session; `auth` stays for session
+    routes. (General rule, also recorded in spec 03 §2.8a.)
+
 ## 2. Core: account flows (`packages/core/src/account/`)
 
 Pure; every function takes the `Sodium` port. Byte fields are `Uint8Array`; conversion to the
