@@ -26,7 +26,8 @@ added by spec 07c) at the exact listed version (container images are not npm pac
 | `.prettierignore` | `pnpm-lock.yaml`, `docs/`, `packages/core/vectors/*.json` |
 | `.gitignore` | `node_modules/`, `dist/`, `build/`, `coverage/`, `.expo/`, `*.tsbuildinfo`, `.env`, `.env.*`, `!.env.example`, `!.env.*.example`, `!.env.ui`, `sbom*.json`, `tmp/`, `docs/planning/review-*.md`, `scripts/local/`, `apps/client/android/`, `apps/client/ios/`, `apps/client/expo-env.d.ts`, `apps/client/public/workers/`, `apps/client/public/media-sw.js`, `.pnpm-store/` |
 | `.editorconfig` | `root = true`; `[*]` utf-8, lf, 2-space indent, final newline, trim trailing whitespace |
-| `README.md` | 10-20 lines: one paragraph of what Kodakiko is (from `docs/planning/context.md` §Vision), link to `docs/README.md`, requirements (Node ≥ 22.18, pnpm 12.17.0 via `corepack enable`), commands `pnpm install`, `pnpm verify` |
+| `README.md` | 10-20 lines: one paragraph of what Kodakiko is (from `docs/planning/context.md` §Vision), link to `docs/README.md`, requirements (Node ≥ 22.18; any pnpm ≥ 11, which switches itself to the pinned 12.17.0 from
+`packageManager`, F-TOOL-18), commands `pnpm install`, `pnpm verify` |
 
 No `.npmrc`: since pnpm 11 settings live in `pnpm-workspace.yaml` (F-TOOL-01).
 `.env.example` files come in spec 03 (server) and spec 21 (compose).
@@ -122,7 +123,7 @@ export const ID_REGEX = new RegExp(ID_PATTERN);
 export const idSchema = z.string().regex(ID_REGEX).brand<'Id'>();
 export type Id = z.infer<typeof idSchema>;
 
-export const BASE64URL_REGEX = /^[A-Za-z0-9_-]+$/;
+export const BASE64URL_REGEX = /^[A-Za-z0-9_-]*$/;
 export const bytesSchema = z.string().min(1).regex(BASE64URL_REGEX).refine(isDecodableBase64Url).brand<'Bytes'>();
 export type Bytes = z.infer<typeof bytesSchema>;
 ```
@@ -138,15 +139,20 @@ export function decodeBytes(value: Bytes): Uint8Array;
 - Encoding: standard base64 alphabet with `+`→`-`, `/`→`_`, no `=` padding (RFC 4648 §5).
   Implement with a 64-character alphabet constant and bit operations, not `Buffer` or `atob`
   (the package must run in Node, React Native and browsers).
-- `isDecodableBase64Url`: true when the regex matches and `value.length % 4 !== 1`.
-- `decodeBytes` throws `RangeError` for non-decodable input (callers validate with the schema
-  first).
+- `isDecodableBase64Url`: true when the regex matches and `value.length % 4 !== 1`. The empty
+  string is decodable (it encodes zero bytes): `isDecodableBase64Url('') === true`.
+- `encodeBytes(new Uint8Array(0)) === ''` and `decodeBytes('')` returns an empty `Uint8Array`.
+- `bytesSchema` still rejects `''` through its `.min(1)`: no API field carries zero bytes, so an
+  empty value on the wire is always a client bug.
+- `decodeBytes` throws `RangeError` for every input `isDecodableBase64Url` rejects (callers
+  validate with the schema first).
 - The alphabet, the group sizes (3 bytes / 4 characters, 6 and 8 bit widths) go in
   `packages/contract/src/constants.ts` (the magic-number rule applies).
 
 `test/bytes.test.ts`: `encodeBytes(Uint8Array.of(0xfb, 0xff)) === '-_8'`; round-trip of lengths
-0..64 with deterministic content; `isDecodableBase64Url('A') === false`; `'A+B'` fails
-`bytesSchema`; a valid 22-char id passes `idSchema`, a 21-char one fails.
+0..64 with deterministic content (length 0 included: `''` ↔ empty array);
+`isDecodableBase64Url('A') === false`; `isDecodableBase64Url('') === true`; `decodeBytes('A' as
+Bytes)` throws `RangeError`; `''` and `'A+B'` fail `bytesSchema`; a valid 22-char id passes `idSchema`, a 21-char one fails.
 
 ### 1.5 Not created in this spec
 
@@ -155,7 +161,10 @@ export function decodeBytes(value: Bytes): Uint8Array;
 
 ## 2. Steps
 
-1. `corepack enable` (once per machine), then create all files of section 1.
+1. Create all files of section 1. No `corepack` step: Node 25+ no longer ships corepack, and the
+   installed pnpm (≥ 11) runs the version pinned in `packageManager` by itself (F-TOOL-18). After
+   creating `package.json`, `pnpm --version` in the repository must print `12.17.0`; anything else →
+   stop and report.
 2. `pnpm install`. If it stops with `ERR_PNPM_IGNORED_BUILDS`, follow the `allowBuilds` rule in
    `docs/dependencies.md` §"Policy settings"; anything not on the allowlist → stop and ask.
 3. `pnpm --filter @kodakiko/client exec expo install --check`. Patch-level mismatches caused by

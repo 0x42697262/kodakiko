@@ -92,6 +92,7 @@ relative to `https://github.com/ente-io/ente/blob/main/`.
 | F-TOOL-15 | react-native-web 0.21.4 renders `testID` as `data-testid` (`dist/modules/createDOMProps/index.js` L410) | npm tarball (2026-11-11) | Playwright `getByTestId` works unchanged |
 | F-TOOL-16 | ffmpeg 8.1.2: the `mov` muxer writes `©xyz` from `-metadata location=…`; the `mp4` muxer does not (it writes the location elsewhere) | local run (2026-11-11) | Location fixture is `video-gps.mov` |
 | F-TOOL-17 | Caddy v2.11.9 rejects a block opened and closed on one line (`handle /api/* { reverse_proxy … }` → "Unexpected next token after '{' on same line") | `caddy adapt` (2026-11-11) | Every Caddyfile in the specs uses multi-line blocks |
+| F-TOOL-18 | pnpm 11.3.0 (system install) in a directory whose `package.json` has `packageManager: pnpm@12.17.0` prints `12.17.0` (it downloads and runs the pinned version); the programmer's machine has Node 26.7.0 and no `corepack` (Node 25+ no longer bundles it) | local run (2026-11-11) | Spec 01 has no corepack step; Docker/CI images use Node 22, which still bundles corepack (spec 21) |
 
 ## Crypto constructions
 
