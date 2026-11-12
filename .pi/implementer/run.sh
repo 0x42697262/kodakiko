@@ -37,7 +37,7 @@ for ((attempt = 1; attempt <= MAX_ATTEMPTS; attempt++)); do
     cp "$OUT" "$LOG_DIR/$LABEL.final.jsonl"
     exit 0
   fi
-  if ! tail -c 4000 "$OUT" | grep -qE 'rate_limit|overloaded|429|529'; then
+  if ! tail -c 4000 "$OUT" | grep -qE 'rate_limit|overloaded|authentication_error|429|529|401'; then
     cp "$OUT" "$LOG_DIR/$LABEL.final.jsonl"
     exit 2
   fi
