@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { WelcomeScreen } from '../src/features/auth/WelcomeScreen';
 
-export default function WelcomeScreen() {
-  return <PlaceholderScreen titleKey="welcome.title" />;
+export default function WelcomeRoute() {
+  return <WelcomeScreen />;
 }

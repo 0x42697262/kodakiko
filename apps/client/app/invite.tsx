@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { InviteScreen } from '../src/features/auth/InviteScreen';
 
-export default function InviteScreen() {
-  return <PlaceholderScreen titleKey="invite.title" />;
+export default function InviteRoute() {
+  return <InviteScreen />;
 }

@@ -1,5 +1,8 @@
-import type { Sodium } from '@kodakiko/core';
+import { router } from 'expo-router';
+import { startKdfParams, type Sodium } from '@kodakiko/core';
 import { systemClock, type Clock } from '../adapters/clock';
+import { deviceLabel } from '../adapters/device-label/device-label';
+import { createGlobalStore, type GlobalStore } from '../adapters/global-store/global-store';
 import { createFileStore } from '../adapters/filestore/filestore';
 import { createHttpClient, type HttpClient } from '../adapters/http/http';
 import { createRandomId } from '../adapters/ids';
@@ -12,7 +15,10 @@ import { loadSodium } from '../adapters/sodium/sodium';
 import type { FileStore } from '../adapters/filestore/filestore';
 import type { KeyVault } from '../adapters/keyvault/keyvault';
 import type { RowStore } from '../adapters/rowstore/rowstore';
+import { APP_ROUTES } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
+import { createAuthService, type AuthService } from '../services/auth-service';
+import { createConfigService, type ConfigService } from '../services/config/config-service';
 import { EN } from '../text/en';
 import {
   createAccountState,
@@ -21,7 +27,10 @@ import {
   type Observable,
 } from './account-state';
 
-export type Services = Readonly<Record<string, never>>;
+export type Services = {
+  readonly auth: AuthService;
+  readonly config: ConfigService;
+};
 
 export type AppContext = {
   readonly sodium: Sodium;
@@ -36,6 +45,8 @@ export type AppContext = {
   readonly randomId: () => string;
   readonly accountState: AccountStateStore;
   readonly activeAccountKey: Observable<string | null>;
+  readonly inviteToken: Observable<string | null>;
+  readonly globalStore: GlobalStore;
   readonly services: Services;
 };
 
@@ -68,6 +79,32 @@ export async function createAppContext(): Promise<AppContext> {
     },
     onSessionInvalid: () => accountState.set({ kind: 'signedOut' }),
   });
+  const globalStore = createGlobalStore();
+  const inviteToken = createObservable<string | null>(null);
+  const config = createConfigService({ http, globalStore, lifecycle });
+  const randomId = createRandomId(sodium);
+  const auth = createAuthService({
+    sodium,
+    http,
+    serverUrl,
+    sessionStore,
+    keyVault,
+    rowStore,
+    fileStore,
+    globalStore,
+    lifecycle,
+    clock: systemClock,
+    randomId,
+    accountState,
+    activeAccountKey,
+    config,
+    inviteToken,
+    deviceLabel,
+    kdfStartParams: startKdfParams,
+    showSecuring: () => router.push(APP_ROUTES.securing),
+    dismissSecuring: () => router.back(),
+  });
+  await auth.restore();
   return {
     sodium,
     serverUrl,
@@ -78,9 +115,11 @@ export async function createAppContext(): Promise<AppContext> {
     lifecycle,
     http,
     clock: systemClock,
-    randomId: createRandomId(sodium),
+    randomId,
     accountState,
     activeAccountKey,
-    services: {},
+    inviteToken,
+    globalStore,
+    services: { auth, config },
   };
 }

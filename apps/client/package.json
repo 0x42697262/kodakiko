@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "main": "expo-router/entry",
+  "exports": {
+    "./testing": "./src/testing.ts"
+  },
   "scripts": {
     "typecheck": "tsc -p .",
     "test": "vitest run --passWithNoTests",
@@ -10,6 +13,9 @@
     "start:web": "pnpm build:workers && expo start --web --port 8081",
     "build:web": "pnpm build:workers && expo export --platform web",
     "prebuild:android": "expo prebuild --platform android --clean",
+    "build:android:debug": "cd android && ./gradlew assembleDebug -PreactNativeArchitectures=x86_64",
+    "build:android:device": "cd android && ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a",
+    "clean:android": "node scripts/clean-android.ts",
     "start:metro-ui": "expo start --port 8081",
     "run:android": "expo run:android"
   },

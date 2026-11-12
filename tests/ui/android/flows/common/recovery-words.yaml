@@ -10,6 +10,8 @@ appId: com.x42697262.kodakiko
       - copyTextFrom:
           id: recoveryKey.word.${output.i}
       - evalScript: ${output.words.push(maestro.copiedText); output.i = output.i + 1}
+- tapOn:
+    id: recoveryKey.done
 - copyTextFrom:
     id: recoveryKey.confirmLabel.0
 - evalScript: ${output.pos = parseInt(maestro.copiedText.replace(/\D/g, ''), 10)}

@@ -5,6 +5,8 @@ export const APP_ROUTES = Object.freeze({
   invite: '/invite',
   signUp: '/sign-up',
   signIn: '/sign-in',
+  securing: '/securing',
+  recoveryKey: '/recovery-key',
   recover: '/recover',
   lock: '/lock',
   cancelDeletion: '/cancel-deletion',

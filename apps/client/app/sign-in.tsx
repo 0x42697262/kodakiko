@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { SignInScreen } from '../src/features/auth/SignInScreen';
 
-export default function SignInScreen() {
-  return <PlaceholderScreen titleKey="signIn.title" />;
+export default function SignInRoute() {
+  return <SignInScreen />;
 }

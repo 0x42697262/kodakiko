@@ -2,7 +2,7 @@ import type { AccountKeys } from '@kodakiko/core';
 
 export type AccountState =
   | { readonly kind: 'noServer' }
-  | { readonly kind: 'signedOut' }
+  | { readonly kind: 'signedOut'; readonly username?: string }
   | { readonly kind: 'locked' }
   | {
       readonly kind: 'unlocked';

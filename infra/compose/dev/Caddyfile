@@ -1,0 +1,19 @@
+{
+  local_certs
+}
+
+https://localhost:9443 {
+  handle /api/* {
+    reverse_proxy host.docker.internal:8080
+  }
+  handle /health/* {
+    reverse_proxy host.docker.internal:8080
+  }
+  handle {
+    reverse_proxy host.docker.internal:8081
+  }
+}
+
+https://localhost:9444 {
+  reverse_proxy garage-dev:3900
+}

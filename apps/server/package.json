@@ -9,6 +9,7 @@
     "test:integration": "vitest run --project integration",
     "test:provider": "vitest run --project provider",
     "build": "node scripts/build.ts",
+    "dev": "node scripts/dev.ts",
     "start": "node dist/main.js",
     "migrate:status": "node dist/cli.js migrate-status"
   },

@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { LockScreen } from '../src/features/auth/LockScreen';
 
-export default function LockScreen() {
-  return <PlaceholderScreen titleKey="lock.title" />;
+export default function LockRoute() {
+  return <LockScreen />;
 }

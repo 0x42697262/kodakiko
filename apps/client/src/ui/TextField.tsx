@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from './theme-constants';
+import { Text, TextInput, View } from 'react-native';
 import { useTheme } from './theme';
+import { styles } from './text-field-styles';
 
 type TextFieldProps = {
   readonly testID: string;
@@ -11,6 +11,9 @@ type TextFieldProps = {
   readonly errorTestID?: string;
   readonly secureTextEntry?: boolean;
   readonly autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  readonly onSubmit?: () => void;
+  readonly multiline?: boolean;
+  readonly showLabel?: boolean;
 };
 
 export function TextField({
@@ -22,11 +25,14 @@ export function TextField({
   errorTestID,
   secureTextEntry = false,
   autoCapitalize = 'none',
+  onSubmit,
+  multiline = false,
+  showLabel = true,
 }: TextFieldProps) {
   const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
+      {showLabel ? <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text> : null}
       <TextInput
         testID={testID}
         accessibilityLabel={label}
@@ -35,6 +41,10 @@ export function TextField({
         secureTextEntry={secureTextEntry}
         autoCapitalize={autoCapitalize}
         autoCorrect={false}
+        multiline={multiline}
+        onSubmitEditing={onSubmit}
+        submitBehavior={multiline ? 'newline' : 'submit'}
+        textAlignVertical={multiline ? 'top' : 'center'}
         style={[
           styles.input,
           {
@@ -42,6 +52,7 @@ export function TextField({
             backgroundColor: colors.surface,
             borderColor: errorText === null ? colors.border : colors.danger,
           },
+          multiline && styles.multiline,
         ]}
       />
       {errorText === null ? null : (
@@ -52,16 +63,3 @@ export function TextField({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { gap: SPACING.xs },
-  label: { fontSize: FONT_SIZE.caption },
-  input: {
-    minHeight: MIN_TOUCH_TARGET,
-    paddingHorizontal: SPACING.md,
-    borderRadius: RADIUS.sm,
-    borderWidth: BORDER_WIDTH,
-    fontSize: FONT_SIZE.body,
-  },
-  error: { fontSize: FONT_SIZE.caption },
-});

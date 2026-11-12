@@ -1,0 +1,29 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- runFlow: common/connect.yaml
+- tapOn:
+    id: signUp.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: signUp.password
+- inputText: ${PASSWORD}
+- tapOn:
+    id: signUp.confirm
+- inputText: ${PASSWORD}
+- tapOn:
+    id: signUp.submit
+- extendedWaitUntil:
+    visible:
+      id: recoveryKey.word.1
+    timeout: 60000
+- runFlow: common/recovery-words.yaml
+- tapOn:
+    id: recoveryKey.confirmSubmit
+- extendedWaitUntil:
+    visible:
+      id: home.signedInAs
+      text: .*${USERNAME}.*
+    timeout: 60000

@@ -14,6 +14,8 @@ export const STACK_TEXT = Object.freeze({
   s3KeysMissing:
     'UI_S3_ACCESS_KEY_ID and UI_S3_SECRET_ACCESS_KEY are not set; the stack is not running.',
   inviteUrlMissing: 'The create-invite command printed no URL.',
+  deletionRequestFailed: (status: number) => `Requesting the account deletion answered ${status}.`,
+  sessionTokenMissing: 'The seeded account has no session token.',
 });
 
 export const ANDROID_TEXT = Object.freeze({

@@ -62,6 +62,11 @@ export const ANDROID_REPORTS_DIRECTORY = 'android';
 export const METRO_LOG_FILE = 'metro.log';
 
 export const UI_TEST_PASSWORD = 'correct horse battery staple';
+export const UI_TEST_NEW_PASSWORD = 'a brand new passphrase here';
+export const WRONG_TEST_PASSWORD = 'definitely not the password';
+export const USERS_ME_DELETE_PATH = '/api/v1/users/me/delete';
+export const BEARER_PREFIX = 'Bearer ';
+export const HTTP_ACCEPTED = 202;
 export const INVITE_ROLES = ['member', 'admin'] as const;
 export const INVITE_EXPIRES_DAYS = '1';
 export const INVITE_URL_PATTERN = /https?:\/\/\S+/;

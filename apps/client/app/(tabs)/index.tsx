@@ -7,7 +7,7 @@ import { FONT_SIZE } from '../../src/ui/theme-constants';
 import { useTheme } from '../../src/ui/theme';
 
 export default function GalleryPlaceholder() {
-  const { accountState } = useAppContext();
+  const { services } = useAppContext();
   const state = useAccountState();
   const { colors } = useTheme();
   const username = state.kind === 'unlocked' ? state.username : '';
@@ -19,7 +19,9 @@ export default function GalleryPlaceholder() {
       <Button
         testID="home.signOut"
         label={EN['home.signOut']}
-        onPress={() => accountState.set({ kind: 'signedOut' })}
+        onPress={() => {
+          services.auth.signOut().catch(() => undefined);
+        }}
       />
     </Screen>
   );

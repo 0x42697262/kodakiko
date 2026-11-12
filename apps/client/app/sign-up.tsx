@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { SignUpScreen } from '../src/features/auth/SignUpScreen';
 
-export default function SignUpScreen() {
-  return <PlaceholderScreen titleKey="signUp.title" />;
+export default function SignUpRoute() {
+  return <SignUpScreen />;
 }

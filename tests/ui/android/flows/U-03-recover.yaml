@@ -1,0 +1,53 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- runFlow: common/connect.yaml
+- tapOn:
+    id: signIn.forgot
+- tapOn:
+    id: recover.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: recover.words
+- inputText: ${WORDS}
+- tapOn:
+    id: recover.newPassword
+- inputText: ${NEW_PASSWORD}
+- tapOn:
+    id: recover.confirm
+- inputText: ${NEW_PASSWORD}
+- tapOn:
+    id: recover.submit
+- extendedWaitUntil:
+    visible:
+      id: home.signedInAs
+      text: .*${USERNAME}.*
+    timeout: 60000
+- tapOn:
+    id: home.signOut
+- runFlow: common/connect.yaml
+- tapOn:
+    id: signIn.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: signIn.password
+- inputText: ${OLD_PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: errors.invalidCredentials
+    timeout: 60000
+- tapOn:
+    id: signIn.password
+- eraseText: 100
+- inputText: ${NEW_PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: home.signedInAs
+      text: .*${USERNAME}.*
+    timeout: 60000

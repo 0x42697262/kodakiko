@@ -23,6 +23,7 @@ const config: ExpoConfig = {
     'expo-secure-store',
     'expo-sqlite',
     './plugins/with-android-hardening',
+    './plugins/with-android-toolchain',
   ],
   experiments: { typedRoutes: true },
 };

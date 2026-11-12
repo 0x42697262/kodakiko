@@ -1,0 +1,49 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- runFlow: common/connect.yaml
+- tapOn:
+    id: signIn.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: signIn.password
+- inputText: ${WRONG_PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: errors.invalidCredentials
+      text: Username or password is incorrect.
+    timeout: 60000
+- tapOn:
+    id: signIn.username
+- eraseText: 100
+- inputText: ${UNKNOWN_USERNAME}
+- tapOn:
+    id: signIn.password
+- eraseText: 100
+- inputText: ${OTHER_PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: errors.invalidCredentials
+      text: Username or password is incorrect.
+    timeout: 60000
+- tapOn:
+    id: signIn.username
+- eraseText: 100
+- inputText: ${USERNAME}
+- tapOn:
+    id: signIn.password
+- eraseText: 100
+- inputText: ${PASSWORD}
+- tapOn:
+    id: signIn.submit
+- extendedWaitUntil:
+    visible:
+      id: home.signedInAs
+      text: .*${USERNAME}.*
+    timeout: 60000

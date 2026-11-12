@@ -1,0 +1,48 @@
+name: kodakiko-dev
+
+services:
+  postgres-dev:
+    image: postgres:17@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f
+    environment:
+      POSTGRES_USER: kodakiko
+      POSTGRES_PASSWORD: kodakiko
+      POSTGRES_DB: kodakiko
+    ports:
+      - '127.0.0.1:55434:5432'
+    volumes:
+      - kodakiko-dev-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kodakiko']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  garage-dev:
+    image: dxflrs/garage:v2.5.0@sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5
+    command: ['/garage', 'server']
+    volumes:
+      - ./dev/garage.toml:/etc/garage.toml:ro
+      - kodakiko-dev-garage:/var/lib/garage
+    ports:
+      - '127.0.0.1:53901:3900'
+    healthcheck:
+      test: ['CMD', '/garage', 'status']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  caddy-dev:
+    image: caddy:2@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03
+    volumes:
+      - ./dev/Caddyfile:/etc/caddy/Caddyfile:ro
+      - kodakiko-dev-caddy:/data
+    ports:
+      - '127.0.0.1:9443:9443'
+      - '127.0.0.1:9444:9444'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+volumes:
+  kodakiko-dev-pg:
+  kodakiko-dev-garage:
+  kodakiko-dev-caddy:

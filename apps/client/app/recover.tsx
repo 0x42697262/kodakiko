@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { RecoverScreen } from '../src/features/auth/RecoverScreen';
 
-export default function RecoverScreen() {
-  return <PlaceholderScreen titleKey="recover.title" />;
+export default function RecoverRoute() {
+  return <RecoverScreen />;
 }

@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from '../src/ui/PlaceholderScreen';
+import { CancelDeletionScreen } from '../src/features/auth/CancelDeletionScreen';
 
-export default function CancelDeletionScreen() {
-  return <PlaceholderScreen titleKey="cancelDeletion.title" />;
+export default function CancelDeletionRoute() {
+  return <CancelDeletionScreen />;
 }
