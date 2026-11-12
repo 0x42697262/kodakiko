@@ -497,6 +497,22 @@ Vitest in `apps/client` with `environment: 'node'` for adapter logic that does n
     `apps/client/scripts/local/`; any local static server must normalize paths and refuse `..`.
 12. The web Argon2 worker also handles `onmessageerror` (fails all pending requests).
 
+## 8c. Android toolchain (D-80, 2026-11-12)
+
+1. New config plugin `plugins/with-android-toolchain.js` (registered after the hardening plugin):
+   - `withProjectBuildGradle`: inside `buildscript {` insert `ext { ndkVersion = "27.0.12077973" }`
+     (constant `ANDROID_NDK_VERSION` at the top of the plugin file) unless already present; Expo's
+     root-project plugin keeps an existing `ndkVersion`.
+   - `withGradleProperties`: set `android.cmakeVersion=3.22.1` (CMake 4 rejects
+     `cmake_minimum_required(3.4.1)` in expo-sqlite and react-native-libsodium).
+   - Plugin unit test on a fixture `build.gradle` / properties list (idempotent on a second run).
+2. Client scripts: `build:android:debug` = `cd android && ./gradlew assembleDebug
+   -PreactNativeArchitectures=x86_64` (emulator); `build:android:device` = same with `arm64-v8a`;
+   `clean:android` = `node scripts/clean-android.ts`, which deletes `android/app/build`,
+   `android/build` and every `node_modules/**/android/{build,.cxx}` directory reached through the
+   client's dependencies (native intermediates, several GB) and prints the bytes freed. These run
+   inside `nix develop`.
+
 ## 9. Steps
 
 1. App config, plugin, package deps; `expo prebuild --platform android`; report `minSdkVersion`.
