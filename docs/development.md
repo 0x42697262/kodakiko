@@ -32,3 +32,8 @@ Caddy's dev ports are bound to `127.0.0.1` only.
 - Web: `pnpm ui:web`.
 - Android: start the emulator, then `pnpm ui:android [U-NN…]` (`UI_SKIP_BUILD=1` reuses the
   installed build).
+
+## Screenshots
+
+`pnpm --filter @kodakiko/ui-tests screenshots` regenerates `docs/screenshots/*.png` (needs
+ImageMagick and ffmpeg for the demo media; see `docs/screenshots/README.md`).
