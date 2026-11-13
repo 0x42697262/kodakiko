@@ -11,6 +11,7 @@ import { collectObjectsJob } from './jobs/collect-objects.ts';
 import { eraseAccountsJob } from './jobs/erase-accounts.ts';
 import { expireSessionsJob } from './jobs/expire-sessions.ts';
 import { pruneTombstonesJob } from './jobs/prune-tombstones.ts';
+import { expirePublicLinksJob } from './jobs/expire-public-links.ts';
 import { purgeTrashJob } from './jobs/purge-trash.ts';
 import { reconcileUsageJob } from './jobs/reconcile-usage.ts';
 import { createScheduler } from './jobs/scheduler.ts';
@@ -49,6 +50,7 @@ try {
     purgeTrashJob(settings, entriesService, app.log),
     eraseAccountsJob(settings, app.log),
     pruneTombstonesJob(settings),
+    expirePublicLinksJob(settings, objectStore, app.log),
   ];
   const scheduler = createScheduler({ db, clock, logger: app.log, jobs, enabled });
   scheduler.start();

@@ -6,4 +6,5 @@ export const JOB_LOCK_IDS = Object.freeze({
   purgeTrash: 1201,
   eraseAccounts: 1202,
   pruneTombstones: 1203,
+  expirePublicLinks: 1301,
 });

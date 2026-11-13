@@ -57,6 +57,12 @@ export type Settings = {
     readonly tombstoneRetentionDays: number;
   };
   readonly entries: { readonly trashDays: number };
+  readonly links: {
+    readonly proxyDownloads: boolean;
+    readonly maxPerUser: number;
+    readonly maxEntriesPerLink: number;
+    readonly viewTokenMinutes: number;
+  };
   readonly sharing: {
     readonly maxRecipientsPerCollection: number;
     readonly maxSharedCollectionsPerUser: number;
@@ -80,6 +86,7 @@ export type Settings = {
     readonly purgeTrashIntervalMs: number;
     readonly eraseAccountsIntervalMs: number;
     readonly pruneTombstonesIntervalMs: number;
+    readonly expirePublicLinksIntervalMs: number;
   };
 };
 
@@ -238,6 +245,23 @@ const envSchema = z
     ),
     JOB_EXPIRE_SESSIONS_INTERVAL_MINUTES: integer(
       SETTINGS_DEFAULTS.jobExpireSessionsIntervalMinutes,
+      1,
+      Number.MAX_SAFE_INTEGER,
+    ),
+    PUBLIC_LINK_PROXY: flag(SETTINGS_DEFAULTS.publicLinkProxy),
+    MAX_PUBLIC_LINKS_PER_USER: integer(
+      SETTINGS_DEFAULTS.maxPublicLinksPerUser,
+      1,
+      SETTINGS_BOUNDS.maxPublicLinksPerUserMax,
+    ),
+    MAX_ENTRIES_PER_LINK: integer(SETTINGS_DEFAULTS.maxEntriesPerLink, 1, SETTINGS_BOUNDS.maxEntriesPerLinkMax),
+    LINK_VIEW_TOKEN_MINUTES: integer(
+      SETTINGS_DEFAULTS.linkViewTokenMinutes,
+      SETTINGS_BOUNDS.linkViewTokenMinutesMin,
+      SETTINGS_BOUNDS.linkViewTokenMinutesMax,
+    ),
+    JOB_EXPIRE_PUBLIC_LINKS_INTERVAL_MINUTES: integer(
+      SETTINGS_DEFAULTS.jobExpirePublicLinksIntervalMinutes,
       1,
       Number.MAX_SAFE_INTEGER,
     ),
@@ -441,6 +465,12 @@ function toSettings(env: Env): Settings {
       tombstoneRetentionDays: env.TOMBSTONE_RETENTION_DAYS,
     },
     entries: { trashDays: env.TRASH_DAYS },
+    links: {
+      proxyDownloads: env.PUBLIC_LINK_PROXY,
+      maxPerUser: env.MAX_PUBLIC_LINKS_PER_USER,
+      maxEntriesPerLink: env.MAX_ENTRIES_PER_LINK,
+      viewTokenMinutes: env.LINK_VIEW_TOKEN_MINUTES,
+    },
     sharing: {
       maxRecipientsPerCollection: env.MAX_RECIPIENTS_PER_COLLECTION,
       maxSharedCollectionsPerUser: env.MAX_SHARED_COLLECTIONS_PER_USER,
@@ -481,6 +511,7 @@ function toSettings(env: Env): Settings {
       purgeTrashIntervalMs: env.JOB_PURGE_TRASH_INTERVAL_MINUTES * MINUTE_MS,
       eraseAccountsIntervalMs: env.JOB_ERASE_ACCOUNTS_INTERVAL_MINUTES * MINUTE_MS,
       pruneTombstonesIntervalMs: env.JOB_PRUNE_TOMBSTONES_INTERVAL_MINUTES * MINUTE_MS,
+      expirePublicLinksIntervalMs: env.JOB_EXPIRE_PUBLIC_LINKS_INTERVAL_MINUTES * MINUTE_MS,
     },
   };
 }

@@ -1,3 +1,4 @@
+import { ROUTES } from '@kodakiko/contract';
 import Fastify, { type FastifyInstance } from 'fastify';
 import helmet from '@fastify/helmet';
 import type { Kysely } from 'kysely';
@@ -31,6 +32,9 @@ import { registerRequestContext, setResponseContext } from './http/request-conte
 import { registerAuthRoutes } from './http/routes/auth.ts';
 import { registerCollectionsRoutes } from './http/routes/collections.ts';
 import { registerSharingRoutes } from './http/routes/sharing.ts';
+import { registerPublicLinksRoutes } from './http/routes/public-links.ts';
+import { createPublicLinksController } from './http/controllers/public-links-controller.ts';
+import { createPublicLinksService } from './services/public-links-service.ts';
 import { createSharingController } from './http/controllers/sharing-controller.ts';
 import { createSharingService } from './services/sharing-service.ts';
 import { registerEntriesRoutes } from './http/routes/entries.ts';
@@ -154,8 +158,29 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   );
   registerCollectionsRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
   registerSyncRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
+  const publicLinksService = createPublicLinksService({
+    db,
+    settings,
+    clock,
+    store: objectStore,
+    logger: app.log,
+    proxyPath: (linkId, objectId) => ROUTES.publicLinkObjectContent(linkId, objectId),
+  });
+  registerPublicLinksRoutes(app, {
+    controller: createPublicLinksController(publicLinksService),
+    rateLimitFor,
+    requireSession,
+  });
   registerSharingRoutes(app, {
-    controller: createSharingController(createSharingService({ db, settings, clock, logger: app.log })),
+    controller: createSharingController(
+      createSharingService({
+        db,
+        settings,
+        clock,
+        logger: app.log,
+        deleteLinkCollection: publicLinksService.deleteOwnedLinkCollection,
+      }),
+    ),
     rateLimitFor,
     requireSession,
   });

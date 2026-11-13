@@ -7,6 +7,7 @@ export * from './entries.ts';
 export * from './errors.ts';
 export * from './ids.ts';
 export * from './limits.ts';
+export * from './links.ts';
 export * from './media.ts';
 export * from './objects.ts';
 export * from './outbox.ts';

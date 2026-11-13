@@ -126,6 +126,11 @@ export const SETTINGS_DEFAULTS = Object.freeze({
   maxCollectionMetadataBytes: 4096,
   maxRecipientsPerCollection: 50,
   maxSharedCollectionsPerUser: 200,
+  publicLinkProxy: 'false',
+  maxPublicLinksPerUser: 100,
+  maxEntriesPerLink: 100,
+  linkViewTokenMinutes: 60,
+  jobExpirePublicLinksIntervalMinutes: 60,
   storageRegion: 'garage',
   storageForcePathStyle: 'true',
   storageRequestTimeoutMs: 15000,
@@ -163,6 +168,10 @@ export const SETTINGS_BOUNDS = Object.freeze({
   maxCollectionMetadataBytesMin: 256,
   maxRecipientsPerCollectionMax: 500,
   maxSharedCollectionsPerUserMax: 10_000,
+  maxPublicLinksPerUserMax: 10_000,
+  maxEntriesPerLinkMax: 500,
+  linkViewTokenMinutesMin: 5,
+  linkViewTokenMinutesMax: 1440,
   fakeParamsSecretMinBytes: 32,
   bucketNameMinChars: 3,
   bucketNameMaxChars: 63,
@@ -250,6 +259,7 @@ export const HMAC_LABELS = Object.freeze({
   paramsSalt: 'params-salt-1',
   recoveryFake1: 'recovery-fake-1',
   recoveryFake2: 'recovery-fake-2',
+  linkView: 'link-view-1',
   recoveryFake3: 'recovery-fake-3',
   recoveryFakeId: 'recovery-fake-id',
 } as const);
@@ -278,3 +288,20 @@ export const CLI_INVITE_EXPIRES_DAYS_MIN = 1;
 export const CLI_INVITE_EXPIRES_DAYS_MAX = 90;
 
 export const SEALED_SHARE_BYTES = 104;
+
+export const LINK_EXPIRY_DURATIONS_MS: Readonly<Record<string, number>> = Object.freeze({
+  '1h': 3_600_000,
+  '1d': 86_400_000,
+  '7d': 604_800_000,
+  '14d': 1_209_600_000,
+  '30d': 2_592_000_000,
+});
+export const LINK_ONE_VIEW = 'one_view';
+export const ONE_VIEW_RETENTION_MS = 86_400_000;
+export const LINK_ENTRIES_PAGE_DEFAULT = 50;
+export const LINK_ENTRIES_PAGE_MAX = 100;
+export const LINK_ACCESS_TOKEN_BYTES = 32;
+export const LINK_VIEW_TOKEN_SEPARATOR = '.';
+export const LINK_VIEW_TOKEN_SECONDS_BYTES = 4;
+export const ROBOTS_HEADER = 'x-robots-tag';
+export const ROBOTS_NOINDEX = 'noindex';

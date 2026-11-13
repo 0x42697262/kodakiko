@@ -66,7 +66,10 @@ describe('loadSettings', () => {
       purgeTrashIntervalMs: 3_600_000,
       eraseAccountsIntervalMs: 3_600_000,
       pruneTombstonesIntervalMs: 86_400_000,
+      expirePublicLinksIntervalMs: 3_600_000,
     });
+    expect(settings.links).toEqual({ proxyDownloads: false, maxPerUser: 100, maxEntriesPerLink: 100, viewTokenMinutes: 60 });
+    expect(settings.sharing).toEqual({ maxRecipientsPerCollection: 50, maxSharedCollectionsPerUser: 200 });
   });
 
   it('reads overrides', () => {

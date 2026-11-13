@@ -32,6 +32,7 @@ export type SharingServiceDeps = {
   readonly settings: Settings;
   readonly clock: Clock;
   readonly logger: FastifyBaseLogger;
+  readonly deleteLinkCollection?: (userId: string, collectionId: string) => Promise<void>;
 };
 
 function invalid(path: readonly string[], message: string, extra: Record<string, unknown> = {}): AppError {
@@ -108,6 +109,10 @@ export function createSharingService(deps: SharingServiceDeps) {
       throw new AppError('NOT_FOUND');
     }
     requireFlagFor(found.kind === 'link' ? 'link' : 'shared');
+    if (found.kind === 'link' && deps.deleteLinkCollection !== undefined) {
+      await deps.deleteLinkCollection(userId, id);
+      return;
+    }
     if (found.kind !== 'shared') throw new AppError('FORBIDDEN');
     await collections.deleteCollection(db, id);
   }
