@@ -13,7 +13,9 @@ function ThemedStack() {
   return (
     <Stack
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
-    />
+    >
+      <Stack.Screen name="capture" options={{ presentation: 'modal' }} />
+    </Stack>
   );
 }
 

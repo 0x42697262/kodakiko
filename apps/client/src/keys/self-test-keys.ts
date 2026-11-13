@@ -19,4 +19,7 @@ export const SELF_TEST_CHECKS = Object.freeze({
   fileBlob: 'blob matches native uri',
   fileFailedWrite: 'failed write leaves no object',
   fileDelete: 'delete',
+  filePlainThumbnail: 'plain thumbnail write and delete',
+  filePlainSweep: 'sweep deletes only unknown old plain thumbnails',
+  fileSweepOrphans: 'sweep deletes only unknown old files',
 });

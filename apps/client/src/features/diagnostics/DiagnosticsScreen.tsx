@@ -70,6 +70,13 @@ export function DiagnosticsScreen() {
       },
     },
     {
+      key: 'tempFiles.diagnosticsList',
+      run: async () => {
+        const files = await app.tempFiles.list();
+        return [EN['tempFiles.diagnosticsListResult'](files.length), ...files];
+      },
+    },
+    {
       key: 'sync.diagnosticsUploadTest',
       run: async () => {
         const state = app.accountState.get();

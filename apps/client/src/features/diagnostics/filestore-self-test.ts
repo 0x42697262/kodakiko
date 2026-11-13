@@ -6,8 +6,12 @@ import {
   SELF_TEST_CHUNKS,
   SELF_TEST_FAILED_OBJECT_ID,
   SELF_TEST_OBJECT_ID,
+  SELF_TEST_ORPHAN_OBJECT_ID,
+  SELF_TEST_PLAIN_MEDIA_ID,
   SELF_TEST_READ_LENGTH,
   SELF_TEST_READ_OFFSETS,
+  SELF_TEST_SWEEP_AGE_MS,
+  SELF_TEST_SWEEP_EVERYTHING_AGE_MS,
   SELF_TEST_TOTAL_BYTES,
 } from './self-test-constants';
 import { expectCheck, sameValue } from './self-test-support';
@@ -63,11 +67,56 @@ async function checkFailedWrite(fileStore: FileStore): Promise<void> {
   );
 }
 
+async function checkPlainThumbnail(fileStore: FileStore): Promise<void> {
+  const before = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID);
+  await fileStore.writePlainThumbnail(SELF_TEST_PLAIN_MEDIA_ID, SELF_TEST_CHUNKS[0] ?? new Uint8Array(0));
+  const written = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID);
+  await fileStore.deletePlainThumbnail(SELF_TEST_PLAIN_MEDIA_ID);
+  const after = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID);
+  expectCheck(
+    before === null && (written === null || typeof written === 'string') && after === null,
+    SELF_TEST_CHECKS.filePlainThumbnail,
+  );
+}
+
+async function checkSweepOrphans(fileStore: FileStore): Promise<void> {
+  await fileStore.writeObject(SELF_TEST_ORPHAN_OBJECT_ID, chunkSource(SELF_TEST_CHUNKS));
+  const known = new Set([SELF_TEST_OBJECT_ID, SELF_TEST_ORPHAN_OBJECT_ID]);
+  await fileStore.sweepOrphans(known, SELF_TEST_SWEEP_EVERYTHING_AGE_MS);
+  const keptKnown = (await fileStore.size(SELF_TEST_ORPHAN_OBJECT_ID)) !== null;
+  await fileStore.sweepOrphans(new Set([SELF_TEST_OBJECT_ID]), SELF_TEST_SWEEP_AGE_MS);
+  const keptYoung = (await fileStore.size(SELF_TEST_ORPHAN_OBJECT_ID)) !== null;
+  await fileStore.sweepOrphans(new Set([SELF_TEST_OBJECT_ID]), SELF_TEST_SWEEP_EVERYTHING_AGE_MS);
+  const removedUnknown = (await fileStore.size(SELF_TEST_ORPHAN_OBJECT_ID)) === null;
+  const keptListed = (await fileStore.size(SELF_TEST_OBJECT_ID)) !== null;
+  expectCheck(
+    keptKnown && keptYoung && removedUnknown && keptListed,
+    SELF_TEST_CHECKS.fileSweepOrphans,
+  );
+}
+
+async function checkPlainSweep(fileStore: FileStore): Promise<void> {
+  const sweep = (ageMs: number, knownMedia: ReadonlySet<string>) =>
+    fileStore.sweepOrphans(new Set([SELF_TEST_OBJECT_ID]), ageMs, knownMedia);
+  await fileStore.writePlainThumbnail(SELF_TEST_PLAIN_MEDIA_ID, SELF_TEST_CHUNKS[0] ?? new Uint8Array(0));
+  const written = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID);
+  await sweep(SELF_TEST_SWEEP_EVERYTHING_AGE_MS, new Set([SELF_TEST_PLAIN_MEDIA_ID]));
+  const keptKnown = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID) === written;
+  await sweep(SELF_TEST_SWEEP_AGE_MS, new Set());
+  const keptYoung = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID) === written;
+  await sweep(SELF_TEST_SWEEP_EVERYTHING_AGE_MS, new Set());
+  const removed = fileStore.plainThumbnailUri(SELF_TEST_PLAIN_MEDIA_ID) === null;
+  expectCheck(keptKnown && keptYoung && removed, SELF_TEST_CHECKS.filePlainSweep);
+}
+
 export async function fileStoreSelfTest(fileStore: FileStore): Promise<void> {
   await fileStore.open(SELF_TEST_ACCOUNT_KEY);
   try {
     await checkWriteAndRead(fileStore);
     await checkFailedWrite(fileStore);
+    await checkPlainThumbnail(fileStore);
+    await checkSweepOrphans(fileStore);
+    await checkPlainSweep(fileStore);
     await fileStore.delete(SELF_TEST_OBJECT_ID);
     expectCheck((await fileStore.size(SELF_TEST_OBJECT_ID)) === null, SELF_TEST_CHECKS.fileDelete);
   } finally {

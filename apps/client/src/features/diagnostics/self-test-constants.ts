@@ -120,6 +120,10 @@ export const OUTBOX_UPDATED_ATTEMPTS = 7;
 
 export const SELF_TEST_OBJECT_ID = 'SelfTestObject0000000A';
 export const SELF_TEST_FAILED_OBJECT_ID = 'SelfTestFailed0000000B';
+export const SELF_TEST_ORPHAN_OBJECT_ID = 'SelfTestOrphan000000C';
+export const SELF_TEST_PLAIN_MEDIA_ID = 'SelfTestMedia00000000D';
+export const SELF_TEST_SWEEP_AGE_MS = 3_600_000;
+export const SELF_TEST_SWEEP_EVERYTHING_AGE_MS = -1;
 export const SELF_TEST_CHUNKS: readonly Uint8Array[] = [
   Uint8Array.of(0, 1, 2, 3, 4, 5, 6, 7),
   Uint8Array.of(8, 9, 10, 11, 12, 13, 14, 15),

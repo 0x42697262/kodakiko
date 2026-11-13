@@ -10,6 +10,14 @@ export interface FileStore {
   readonly destroy: (accountKey: string) => Promise<void>;
   readonly nativeUri: (objectId: string) => string | null;
   readonly readBlob: (objectId: string) => Promise<Blob | null>;
+  readonly writePlainThumbnail: (mediaId: string, bytes: Uint8Array) => Promise<void>;
+  readonly plainThumbnailUri: (mediaId: string) => string | null;
+  readonly deletePlainThumbnail: (mediaId: string) => Promise<void>;
+  readonly sweepOrphans: (
+    knownObjectIds: ReadonlySet<string>,
+    olderThanMs: number,
+    knownMediaIds?: ReadonlySet<string>,
+  ) => Promise<void>;
 }
 
 export type FileStoreDeps = {

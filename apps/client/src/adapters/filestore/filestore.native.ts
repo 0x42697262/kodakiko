@@ -3,9 +3,12 @@ import {
   APP_DATA_DIRECTORY,
   OBJECTS_DIRECTORY,
   PARTIAL_EXTENSION,
+  PLAIN_THUMBNAILS_DIRECTORY,
+  mediaIdFromPlainThumbnailName,
   objectFileName,
   objectIdFromFileName,
   partialFileName,
+  plainThumbnailFileName,
 } from '../../keys/paths';
 import { EN } from '../../text/en';
 import { hashAccountKey } from '../account-key';
@@ -21,10 +24,16 @@ function deleteIfExists(file: File): void {
 
 export function createFileStore(deps: FileStoreDeps): FileStore {
   let objects: Directory | null = null;
+  let plainThumbnails: Directory | null = null;
 
   function requireObjects(): Directory {
     if (objects === null) throw new Error(EN['filestore.notOpen']);
     return objects;
+  }
+
+  function plainThumbnailFile(mediaId: string): File {
+    if (plainThumbnails === null) throw new Error(EN['filestore.notOpen']);
+    return new File(plainThumbnails, plainThumbnailFileName(mediaId));
   }
 
   function objectFile(objectId: string): File {
@@ -48,11 +57,12 @@ export function createFileStore(deps: FileStoreDeps): FileStore {
 
   return {
     open: async (accountKey) => {
-      const opened = new Directory(
-        accountDirectory(hashAccountKey(deps.sodium, accountKey)),
-        OBJECTS_DIRECTORY,
-      );
+      const root = accountDirectory(hashAccountKey(deps.sodium, accountKey));
+      const opened = new Directory(root, OBJECTS_DIRECTORY);
       opened.create({ intermediates: true, idempotent: true });
+      const thumbnails = new Directory(root, PLAIN_THUMBNAILS_DIRECTORY);
+      thumbnails.create({ intermediates: true, idempotent: true });
+      plainThumbnails = thumbnails;
       for (const entry of opened.list()) {
         if (entry instanceof File && entry.name.endsWith(PARTIAL_EXTENSION)) entry.delete();
       }
@@ -97,10 +107,41 @@ export function createFileStore(deps: FileStoreDeps): FileStore {
     },
     destroy: async (accountKey) => {
       objects = null;
+      plainThumbnails = null;
       const directory = accountDirectory(hashAccountKey(deps.sodium, accountKey));
       if (directory.exists) directory.delete();
     },
     nativeUri: (objectId) => objectFile(objectId).uri,
     readBlob: async () => null,
+    writePlainThumbnail: async (mediaId, bytes) => {
+      const file = plainThumbnailFile(mediaId);
+      file.create({ overwrite: true });
+      file.write(bytes);
+    },
+    plainThumbnailUri: (mediaId) => {
+      const file = plainThumbnailFile(mediaId);
+      return file.exists ? file.uri : null;
+    },
+    deletePlainThumbnail: async (mediaId) => {
+      deleteIfExists(plainThumbnailFile(mediaId));
+    },
+    sweepOrphans: async (knownObjectIds, olderThanMs, knownMediaIds) => {
+      const cutoff = Date.now() - olderThanMs;
+      const isStale = (file: File): boolean => {
+        const modifiedAt = file.modificationTime;
+        return modifiedAt !== null && modifiedAt < cutoff;
+      };
+      for (const entry of requireObjects().list()) {
+        if (!(entry instanceof File)) continue;
+        const objectId = objectIdFromFileName(entry.name);
+        if (objectId !== null && !knownObjectIds.has(objectId) && isStale(entry)) entry.delete();
+      }
+      if (knownMediaIds === undefined || plainThumbnails === null) return;
+      for (const entry of plainThumbnails.list()) {
+        if (!(entry instanceof File)) continue;
+        const mediaId = mediaIdFromPlainThumbnailName(entry.name);
+        if (mediaId !== null && !knownMediaIds.has(mediaId) && isStale(entry)) entry.delete();
+      }
+    },
   };
 }

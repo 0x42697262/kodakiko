@@ -1,0 +1,17 @@
+export const MEDIA_PROBE_TIMEOUT_MS = 10_000;
+export const THUMBNAIL_MAX_EDGE = 512;
+export const THUMBNAIL_QUALITY = 80;
+export const THUMBNAIL_QUALITY_SCALE = 100;
+export const POSTER_MAX_TIME_MS = 1000;
+export const POSTER_DURATION_DIVISOR = 2;
+export const PHOTO_POSTER_TIME_MS = 0;
+export const ORPHAN_SWEEP_AGE_MS = 3_600_000;
+export const IMPORT_YIELD_MS = 0;
+export const MEDIA_SEEK_TIMEOUT_MS = 10_000;
+export const MILLISECONDS_PER_SECOND = 1000;
+export const QUARTER_TURN = 90;
+export const THREE_QUARTER_TURN = 270;
+export const THUMBNAIL_MIME_TYPE = 'image/webp';
+export const PICKER_EXIF_FRACTION_SEPARATOR = '/';
+export const PICKER_EXIF_PART_SEPARATOR = ',';
+export const PICKER_COORDINATE_PARTS = 3;

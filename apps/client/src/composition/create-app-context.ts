@@ -9,6 +9,9 @@ import { consoleLogger } from '../adapters/logger';
 import { createRandomId } from '../adapters/ids';
 import { createKeyVault } from '../adapters/keyvault/keyvault';
 import { createLifecycle, type Lifecycle } from '../adapters/lifecycle/lifecycle';
+import { createLocationProvider, type LocationProvider } from '../adapters/location/location';
+import { createMediaToolkit } from '../adapters/media/media-toolkit';
+import { createTempFiles, type TempFiles } from '../adapters/temp-files/temp-files';
 import { createRowStore } from '../adapters/rowstore/rowstore';
 import { createServerUrlStore, type ServerUrlStore } from '../adapters/server-url/server-url';
 import { createSessionStore, type SessionStore } from '../adapters/session/session-store';
@@ -18,11 +21,18 @@ import { createUploader, type Uploader } from '../adapters/uploader/uploader';
 import type { FileStore } from '../adapters/filestore/filestore';
 import type { KeyVault } from '../adapters/keyvault/keyvault';
 import type { RowStore } from '../adapters/rowstore/rowstore';
+import { DEVICE_SETTINGS_DEFAULTS } from '../constants/device-settings-defaults';
+import { ORPHAN_SWEEP_AGE_MS } from '../constants/media-constants';
+import { createCaptureTrayStore, type CaptureTrayStore } from '../features/capture/capture-tray-store';
+import { MEDIA_LOG_EVENTS } from '../keys/media-keys';
 import { APP_ROUTES } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
 import type { EntryKeys } from '../services/keys/entry-keys';
+import { createImportService, type ImportService } from '../services/media/import-service';
+import { createBoundDeviceSettings } from '../services/settings/bound-device-settings';
+import type { DeviceSettings } from '../services/settings/device-settings';
 import { createSyncStack } from '../services/sync/create-sync-stack';
 import type { NotificationPrompt } from '../services/sync/notification-prompt';
 import type { SyncService } from '../services/sync/sync-service';
@@ -44,6 +54,10 @@ export type Services = {
   readonly uploads: UploadCoordinator;
   readonly entryKeys: EntryKeys;
   readonly notificationPrompt: NotificationPrompt;
+  readonly mediaImport: ImportService;
+  readonly captureTray: CaptureTrayStore;
+  readonly deviceSettings: DeviceSettings;
+  readonly location: LocationProvider;
 };
 
 export type AppContext = {
@@ -63,6 +77,7 @@ export type AppContext = {
   readonly globalStore: GlobalStore;
   readonly events: AppEventBus;
   readonly uploader: Uploader;
+  readonly tempFiles: TempFiles;
   readonly services: Services;
 };
 
@@ -136,11 +151,44 @@ export async function createAppContext(): Promise<AppContext> {
     log: consoleLogger,
     requestNotificationPermission,
   });
+  const tempFiles = createTempFiles({ sodium, activeAccountKey: () => activeAccountKey.get() });
+  const boundSettings = createBoundDeviceSettings({
+    rowStore,
+    defaults: DEVICE_SETTINGS_DEFAULTS,
+    onInvalidFields: (fields) => {
+      if (__DEV__) {
+        consoleLogger.warn(MEDIA_LOG_EVENTS.invalidDeviceSettings, { fields: fields.join(',') });
+      }
+    },
+  });
+  const captureTray = createCaptureTrayStore({
+    fileStore,
+    isUnlocked: () => accountState.get().kind === 'unlocked',
+  });
+  const mediaImport = createImportService({
+    sodium,
+    fileStore,
+    toolkit: createMediaToolkit(),
+    clock: systemClock,
+    config,
+    deviceSettings: boundSettings.settings,
+    randomId,
+  });
+  await tempFiles.wipe().catch(() => undefined);
   bindAccountLifecycle(accountState, {
-    onUnlocked: stack.sync.start,
+    onUnlocked: () => {
+      stack.sync.start();
+      boundSettings
+        .load()
+        .catch(() => undefined);
+      sweepOrphans(rowStore, fileStore).catch(() => undefined);
+    },
     onLeftUnlocked: () => {
       stack.sync.stop();
       stack.entryKeys.clear();
+      boundSettings.unload();
+      captureTray.clear(true).catch(() => undefined);
+      tempFiles.wipe().catch(() => undefined);
       const kind = accountState.get().kind;
       if (kind === 'signedOut' || kind === 'noServer') uploader.cancelAll().catch(() => undefined);
     },
@@ -163,6 +211,7 @@ export async function createAppContext(): Promise<AppContext> {
     globalStore,
     events,
     uploader,
+    tempFiles,
     services: {
       auth,
       config,
@@ -170,6 +219,18 @@ export async function createAppContext(): Promise<AppContext> {
       uploads: stack.uploads,
       entryKeys: stack.entryKeys,
       notificationPrompt: stack.notificationPrompt,
+      mediaImport,
+      captureTray,
+      deviceSettings: boundSettings.settings,
+      location: createLocationProvider(),
     },
   };
+}
+
+async function sweepOrphans(rowStore: RowStore, fileStore: FileStore): Promise<void> {
+  const known = await rowStore.transaction(async (tx) => ({
+    objects: (await tx.objects.all()).map((row) => row.id),
+    media: (await tx.media.all()).map((row) => row.id),
+  }));
+  await fileStore.sweepOrphans(new Set(known.objects), ORPHAN_SWEEP_AGE_MS, new Set(known.media));
 }

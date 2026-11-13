@@ -146,5 +146,19 @@ export function createFileStore(deps: FileStoreDeps): FileStore {
     },
     nativeUri: () => null,
     readBlob: async (objectId) => (await (await findObject(objectId))?.getFile()) ?? null,
+    writePlainThumbnail: async () => undefined,
+    plainThumbnailUri: () => null,
+    deletePlainThumbnail: async () => undefined,
+    sweepOrphans: async (knownObjectIds, olderThanMs) => {
+      const cutoff = Date.now() - olderThanMs;
+      const stale: string[] = [];
+      for await (const [name, handle] of requireObjects().entries()) {
+        const objectId = objectIdFromFileName(name);
+        if (objectId === null || handle.kind !== 'file' || knownObjectIds.has(objectId)) continue;
+        const file = await (handle as FileSystemFileHandle).getFile();
+        if (file.lastModified < cutoff) stale.push(name);
+      }
+      for (const name of stale) await removeQuietly(name);
+    },
   };
 }

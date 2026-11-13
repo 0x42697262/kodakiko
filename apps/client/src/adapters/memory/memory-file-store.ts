@@ -1,49 +1,86 @@
 import { concatBytes } from '@kodakiko/core';
+import { PLAIN_THUMBNAILS_DIRECTORY, plainThumbnailFileName } from '../../keys/paths';
 import { EN } from '../../text/en';
 import type { FileStore } from '../filestore/filestore';
 
-export function createMemoryFileStore(): FileStore {
-  const accounts = new Map<string, Map<string, Uint8Array>>();
-  let objects: Map<string, Uint8Array> | null = null;
+const MEMORY_URI_SCHEME = 'memory://';
 
-  function current(): Map<string, Uint8Array> {
-    if (objects === null) throw new Error(EN['filestore.notOpen']);
-    return objects;
+type StoredObject = { readonly bytes: Uint8Array; readonly modifiedAt: number };
+type AccountFiles = {
+  readonly objects: Map<string, StoredObject>;
+  readonly plainThumbnails: Map<string, StoredObject>;
+};
+
+export type MemoryFileStoreOptions = { readonly now?: () => number };
+
+export function createMemoryFileStore(options: MemoryFileStoreOptions = {}): FileStore {
+  const now = options.now ?? Date.now;
+  const accounts = new Map<string, AccountFiles>();
+  let files: AccountFiles | null = null;
+
+  function current(): AccountFiles {
+    if (files === null) throw new Error(EN['filestore.notOpen']);
+    return files;
   }
 
   function stored(objectId: string): Uint8Array {
-    const bytes = current().get(objectId);
-    if (bytes === undefined) throw new Error(EN['filestore.missingObject']);
-    return bytes;
+    const object = current().objects.get(objectId);
+    if (object === undefined) throw new Error(EN['filestore.missingObject']);
+    return object.bytes;
   }
 
   return {
     open: async (accountKey) => {
-      objects = accounts.get(accountKey) ?? new Map<string, Uint8Array>();
-      accounts.set(accountKey, objects);
+      files = accounts.get(accountKey) ?? { objects: new Map(), plainThumbnails: new Map() };
+      accounts.set(accountKey, files);
     },
     writeObject: async (objectId, chunks) => {
       const parts: Uint8Array[] = [];
       for await (const chunk of chunks) parts.push(chunk.slice());
       const bytes = concatBytes(...parts);
-      current().set(objectId, bytes);
+      current().objects.set(objectId, { bytes, modifiedAt: now() });
       return bytes.length;
     },
     readRange: async (objectId, offset, length) => stored(objectId).slice(offset, offset + length),
-    size: async (objectId) => current().get(objectId)?.length ?? null,
+    size: async (objectId) => current().objects.get(objectId)?.bytes.length ?? null,
     delete: async (objectId) => {
-      current().delete(objectId);
+      current().objects.delete(objectId);
     },
     listSizes: async () =>
-      new Map([...current().entries()].map(([objectId, bytes]) => [objectId, bytes.length])),
+      new Map([...current().objects.entries()].map(([objectId, object]) => [objectId, object.bytes.length])),
     destroy: async (accountKey) => {
       accounts.delete(accountKey);
-      objects = null;
+      files = null;
     },
     nativeUri: () => null,
     readBlob: async (objectId) => {
-      const bytes = current().get(objectId);
-      return bytes === undefined ? null : new Blob([bytes.slice()]);
+      const object = current().objects.get(objectId);
+      return object === undefined ? null : new Blob([object.bytes.slice()]);
+    },
+    writePlainThumbnail: async (mediaId, bytes) => {
+      plainThumbnailFileName(mediaId);
+      current().plainThumbnails.set(mediaId, { bytes: bytes.slice(), modifiedAt: now() });
+    },
+    plainThumbnailUri: (mediaId) =>
+      current().plainThumbnails.has(mediaId)
+        ? `${MEMORY_URI_SCHEME}${PLAIN_THUMBNAILS_DIRECTORY}/${plainThumbnailFileName(mediaId)}`
+        : null,
+    deletePlainThumbnail: async (mediaId) => {
+      current().plainThumbnails.delete(mediaId);
+    },
+    sweepOrphans: async (knownObjectIds, olderThanMs, knownMediaIds) => {
+      const cutoff = now() - olderThanMs;
+      for (const [objectId, object] of [...current().objects]) {
+        if (!knownObjectIds.has(objectId) && object.modifiedAt < cutoff) {
+          current().objects.delete(objectId);
+        }
+      }
+      if (knownMediaIds === undefined) return;
+      for (const [mediaId, thumbnail] of [...current().plainThumbnails]) {
+        if (!knownMediaIds.has(mediaId) && thumbnail.modifiedAt < cutoff) {
+          current().plainThumbnails.delete(mediaId);
+        }
+      }
     },
   };
 }

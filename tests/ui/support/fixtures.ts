@@ -64,6 +64,13 @@ export async function unlockThroughUi(page: Page, password: string): Promise<voi
   await field.press('Enter');
 }
 
+export async function openRouteInApp(page: Page, path: string): Promise<void> {
+  await page.evaluate((target) => {
+    window.history.pushState(null, '', target);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }, path);
+}
+
 export async function readRecoveryWords(page: Page): Promise<readonly string[]> {
   await expect(page.getByTestId('recoveryKey.word.1')).toBeVisible({
     timeout: SIGN_UP_WORDS_TIMEOUT_MS,

@@ -121,6 +121,45 @@ export const EN = {
   'sync.diagnosticsUploadTestNoHome': 'The home journal has not synced to this device yet.',
   'sync.diagnosticsUploadTestResult': (objectId: string, sizeBytes: number) =>
     `Queued ${sizeBytes} bytes as ${objectId}`,
+  'media.webHandleRequired': 'The web app needs a file to read.',
+  'media.nativeHandleRequired': 'The Android app needs a file path to read.',
+  'media.probeTimeout': 'The media file took too long to open.',
+  'media.videoUnreadable': 'The video could not be read.',
+  'media.canvasUnavailable': 'The browser cannot draw a thumbnail.',
+  'media.videoMetadataMissing': 'The video reported no size.',
+  'settings.notLoaded': 'The device settings are not available until the journal is unlocked.',
+  'tempFiles.unsupported': 'The web app does not write plaintext files.',
+  'tempFiles.noAccount': 'No account is open for temporary files.',
+  'tempFiles.diagnosticsList': 'List temp files',
+  'tempFiles.diagnosticsListResult': (count: number) =>
+    `${count} temp ${count === 1 ? 'file' : 'files'}`,
+  'capture.refusal.unsupported': (name: string) => `${name} isn't a supported photo or video.`,
+  'capture.refusal.undecodableWeb': (name: string) =>
+    `This browser can't read ${name}. Add it from the Android app instead.`,
+  'capture.refusal.undecodableNative': (name: string) => `${name} couldn't be opened.`,
+  'capture.refusal.tooLarge': (name: string) => `${name} is larger than this server allows.`,
+  'capture.refusal.trayFull': (max: number) =>
+    `An entry can hold up to ${max} photos and videos.`,
+  'capture.refusal.readFailed': (name: string) => `${name} couldn't be added. Try again.`,
+  'capture.thisPhoto': 'This photo',
+  'capture.thisVideo': 'This video',
+  'capture.cameraPermissionBody': 'Kodakiko needs the camera to take photos and videos.',
+  'capture.allowCamera': 'Allow Camera',
+  'capture.openSettings': 'Open Settings',
+  'capture.shutterLabel': 'Take a photo, or hold to record a video',
+  'capture.flip': 'Flip Camera',
+  'capture.close': 'Close',
+  'capture.pickFromGallery': 'Gallery',
+  'capture.chooseFiles': 'Choose Files',
+  'capture.next': 'Next',
+  'capture.cameraUnavailable':
+    'Camera not available. Add photos and videos from your files instead.',
+  'capture.dropHint': 'Drop photos and videos here',
+  'capture.discardTitle': (count: number) => `Discard ${count} ${count === 1 ? 'item' : 'items'}?`,
+  'capture.discard': 'Discard',
+  'capture.keep': 'Keep',
+  'capture.removeItem': (position: number) => `Remove item ${position}`,
+  'capture.removeGlyph': '\u00d7',
 } as const;
 
 export type TextKey = keyof typeof EN;

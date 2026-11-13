@@ -11,4 +11,6 @@ export const APP_ROUTES = Object.freeze({
   lock: '/lock',
   cancelDeletion: '/cancel-deletion',
   diagnostics: '/settings/diagnostics',
+  capture: '/capture',
+  entryNew: '/entry/new',
 } as const);

@@ -1,5 +1,8 @@
 import type { ExpoConfig } from 'expo/config';
 
+const LOCATION_PERMISSION_TEXT =
+  'Kodakiko adds your location to new photos only if you turn this on in Settings.';
+
 const config: ExpoConfig = {
   name: 'Kodakiko',
   slug: 'kodakiko',
@@ -10,7 +13,7 @@ const config: ExpoConfig = {
   android: {
     package: 'com.x42697262.kodakiko',
     allowBackup: false,
-    permissions: [],
+    permissions: ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO'],
     blockedPermissions: [
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.WRITE_EXTERNAL_STORAGE',
@@ -22,6 +25,13 @@ const config: ExpoConfig = {
     'react-native-libsodium',
     'expo-secure-store',
     'expo-sqlite',
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission: LOCATION_PERMISSION_TEXT,
+        isAndroidBackgroundLocationEnabled: false,
+      },
+    ],
     './plugins/with-android-hardening',
     './plugins/with-android-toolchain',
   ],
