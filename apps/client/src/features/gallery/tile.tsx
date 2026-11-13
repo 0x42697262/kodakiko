@@ -99,7 +99,7 @@ export function Tile({ entryId, position, size, selecting, selected, display = D
   const list = display.mode === 'list';
   const thumbSize = list ? LIST_THUMB_SIZE : size;
   const time = localTimeOf(entry.takenAtUtc, entry.utcOffsetMinutes);
-  const note = display.hideNotePreviews ? '' : entry.notePreview;
+  const note = display.hideNotePreviews ? '' : entry.notePreview.replace(MARKDOWN_LEAD, '');
   const checkbox = showCheckbox ? (
     <View
       testID={listTestId(GALLERY_IDS.tileCheckbox, position)}
@@ -153,6 +153,7 @@ export function Tile({ entryId, position, size, selecting, selected, display = D
 }
 
 const LIST_THUMB_SIZE = 72;
+const MARKDOWN_LEAD = /^[#>*\-\s]+/;
 const CAPTION_SHADE = 'rgba(0,0,0,0.55)';
 const CAPTION_TEXT = '#FFFFFF';
 

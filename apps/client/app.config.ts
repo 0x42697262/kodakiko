@@ -3,7 +3,7 @@ import type { ExpoConfig } from 'expo/config';
 const LOCATION_PERMISSION_TEXT =
   'Kodakiko adds your location to new photos only if you turn this on in Settings.';
 
-const APP_VERSION = '0.1.1';
+const APP_VERSION = '0.1.2';
 const VERSION_PART_RANGE = 100;
 
 function versionCodeOf(version: string): number {
