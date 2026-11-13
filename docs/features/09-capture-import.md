@@ -395,6 +395,38 @@ Client (Node, fakes for `MediaToolkit`, memory FileStore, wrappers Sodium):
 
 Manual (Android dev build and Chrome), each a checklist line in §9.
 
+## 7a. Implementation decisions and review 1 (2026-11-12)
+
+Accepted: refusal or any exception discards the input (`readFailed` for exceptions); extra ids in
+`CAPTURE_IDS` (`src/keys/capture-keys.ts`); platform constants files; camera captures ignore embedded
+time **and** GPS; no app entry point to `/capture` before spec 11.
+
+Review additions (test-first):
+1. **Readers never throw.** `readAscii` decodes in a bounded loop (no argument spread);
+   `EXIF_ASCII_MAX_BYTES = 64` (`asciiOf` → null above), `KEYS_NAME_MAX_BYTES = 256` (longer names
+   skipped), `ISO6709_MAX_BYTES = 64` (`itemText`/`xyzLocation` → null above); every reader catches
+   all errors and returns `malformed: true`. Tests: EXIF ASCII count 200,000 and a 2 MB keys name.
+2. **No import lands after a clear.** The tray store has a `generation` counter incremented by
+   `clear()`; an import finishing in an older generation, or with the account not unlocked, deletes
+   its objects and plain thumbnail and wipes its media key instead of adding. Test.
+3. **Orientation (replaces the earlier "raw size" answer).** Probes return the size as the platform
+   decoder displays it (Glide / `createImageBitmap(…, { imageOrientation: 'from-image' })` already
+   apply EXIF orientation); the import service does not rotate again. Videos: core
+   `readVideoMetadata` also returns `rotationDegrees` (0/90/180/270 from the first video `tkhd`
+   matrix; anything else → 0) and the service swaps width/height for 90/270. Tests with a synthetic
+   rotated `tkhd`.
+4. Device settings expose `loaded`; while not loaded (or after a read error) the import service treats
+   `encryptThumbnails` as `true` (fails closed).
+5. `sweepOrphans` also deletes `thumbs-plain/<mediaId>.webp` files whose media id is unknown in the
+   RowStore and older than the cutoff (memory store too; self-test case).
+6. `parseOffsetMinutes` → null outside `UTC_OFFSET_MINUTES_MIN/MAX`; `creationTime` → null when the
+   year is > 9999. Two tests.
+7. Native `TempFiles.list()` lists every entry under `Paths.cache` recursively (so the §9 check is
+   real); `wipe()` continues past entries whose delete throws.
+8. `probeVideo` also rejects at once on `statusChange` with `status === 'error'`.
+9. Stored device settings with `schemaVersion !== 1` → defaults, reported invalid.
+10. Web file names longer than `FILE_NAME_MAX_CHARS` are shortened, keeping the extension.
+
 ## 8. Steps
 
 1. Confirm the installed 5.2.4 type definitions match `F-LIB-18`; report differences before coding
