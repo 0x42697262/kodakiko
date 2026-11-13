@@ -6,6 +6,8 @@ import type { Logger } from '../src/adapters/logger';
 import { createEventBus, type AppEvents } from '../src/composition/events';
 import { createPull } from '../src/services/sync/pull';
 import { SYNC_LOG_EVENTS } from '../src/keys/sync-keys';
+import { STORAGE_KEYS } from '../src/keys/storage-keys';
+import { z } from 'zod';
 import {
   createAccountFixture,
   createLocalEntry,
@@ -196,6 +198,46 @@ describe('pull: first sync of a device', () => {
     await puller().run();
     expect(fakeHttp.requests).toHaveLength(1);
     expect((await rows()).collections).toEqual([]);
+  });
+});
+
+describe('pull: home collection id', () => {
+  async function storedHomeId() {
+    return fixture.rowStore.kvGetJson(STORAGE_KEYS.accountHomeCollectionId, z.string());
+  }
+
+  it('records the owned home collection id when the key is missing', async () => {
+    const collectionId = fixture.homeCollectionId;
+    fakeHttp.on('GET', ROUTES.syncState(), () => stateOf(collectionId));
+    fakeHttp.on('GET', ROUTES.collection(collectionId), () => collectionDtoFor(collectionId));
+    fakeHttp.on('GET', diffPath(collectionId, 0), () => page(collectionId));
+    expect(await storedHomeId()).toBeNull();
+    await puller().run();
+    expect(await storedHomeId()).toBe(collectionId);
+  });
+
+  it('keeps an existing home collection id', async () => {
+    const collectionId = fixture.homeCollectionId;
+    const existing = fixture.randomId();
+    await fixture.rowStore.kvSetJson(STORAGE_KEYS.accountHomeCollectionId, existing);
+    fakeHttp.on('GET', ROUTES.syncState(), () => stateOf(collectionId));
+    fakeHttp.on('GET', ROUTES.collection(collectionId), () => collectionDtoFor(collectionId));
+    fakeHttp.on('GET', diffPath(collectionId, 0), () => page(collectionId));
+    await puller().run();
+    expect(await storedHomeId()).toBe(existing);
+  });
+
+  it('does not record a shared collection', async () => {
+    const collectionId = fixture.randomId();
+    fakeHttp.on('GET', ROUTES.syncState(), () => stateOf(collectionId, { kind: 'shared' }));
+    fakeHttp.on('GET', ROUTES.collection(collectionId), () => ({
+      ...collectionDtoFor(collectionId),
+      kind: 'shared',
+      role: 'viewer',
+    }));
+    fakeHttp.on('GET', diffPath(collectionId, 0), () => page(collectionId));
+    await puller().run();
+    expect(await storedHomeId()).toBeNull();
   });
 });
 

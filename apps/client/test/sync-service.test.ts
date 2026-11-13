@@ -176,6 +176,20 @@ describe('push drain', () => {
     expect(calls).toEqual([first, second]);
   });
 
+  it('reports an entry as in flight only while one of its items runs', async () => {
+    const entryId = fixture.randomId();
+    await enqueue(row('trashEntry', entryId));
+    const seen: boolean[] = [];
+    handler = () => {
+      seen.push(service.isEntryInFlight(entryId), service.isEntryInFlight(fixture.randomId()));
+      return 'done' as const;
+    };
+    expect(service.isEntryInFlight(entryId)).toBe(false);
+    await service.syncNow();
+    expect(seen).toEqual([true, false]);
+    expect(service.isEntryInFlight(entryId)).toBe(false);
+  });
+
   it('keeps later same-entry items blocked while the earlier one fails and waits', async () => {
     const entryId = fixture.randomId();
     await enqueue(row('createEntry', entryId), row('updateEntryMeta', entryId));

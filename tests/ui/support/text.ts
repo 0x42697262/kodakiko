@@ -16,6 +16,11 @@ export const STACK_TEXT = Object.freeze({
   inviteUrlMissing: 'The create-invite command printed no URL.',
   deletionRequestFailed: (status: number) => `Requesting the account deletion answered ${status}.`,
   sessionTokenMissing: 'The seeded account has no session token.',
+  seedOutboxNotEmpty: (kinds: string) => `The seeded entries did not finish syncing: ${kinds}`,
+  seedMediaMissing: (name: string) => `Cannot read the fixture ${name}.`,
+  seedImportRefused: (name: string, reason: string) => `Importing ${name} was refused: ${reason}`,
+  serverRequestFailed: (path: string, status: number) => `GET ${path} answered ${status}.`,
+  homeCollectionMissing: 'The server lists no home collection for the account.',
 });
 
 export const ANDROID_TEXT = Object.freeze({

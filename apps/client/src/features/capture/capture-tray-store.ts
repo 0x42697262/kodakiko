@@ -15,6 +15,7 @@ export type CaptureTrayStore = {
   readonly add: (item: ImportedMedia) => void;
   readonly remove: (mediaId: string) => Promise<void>;
   readonly reorder: (from: number, to: number) => void;
+  readonly take: () => readonly ImportedMedia[];
   readonly clear: (deleteFiles: boolean) => Promise<void>;
   readonly setDeviceLocation: (location: DeviceLocation | null) => void;
   readonly subscribe: (listener: () => void) => () => void;
@@ -82,6 +83,12 @@ export function createCaptureTrayStore(deps: CaptureTrayDeps): CaptureTrayStore 
       next.splice(to, 0, moved);
       items = next;
       notify();
+    },
+    take: () => {
+      const taken = items;
+      items = [];
+      notify();
+      return taken;
     },
     clear: async (shouldDeleteFiles) => {
       const cleared = items;

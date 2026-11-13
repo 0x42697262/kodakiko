@@ -14,6 +14,14 @@ export async function serverEntry(harness: Harness, entryId: string): Promise<Se
     .executeTakeFirstOrThrow();
 }
 
+export async function findServerEntry(harness: Harness, entryId: string) {
+  return harness.db
+    .selectFrom('entries')
+    .select(['revision', 'trashedAt'])
+    .where('id', '=', entryId)
+    .executeTakeFirst();
+}
+
 export async function setQuota(
   harness: Harness,
   userId: string,

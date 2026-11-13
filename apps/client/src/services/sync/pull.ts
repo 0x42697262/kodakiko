@@ -14,11 +14,13 @@ import {
   planCollections,
   type RemoteCollectionState,
 } from '@kodakiko/core';
+import { z } from 'zod';
 import type { FileStore } from '../../adapters/filestore/filestore';
 import type { HttpClient } from '../../adapters/http/http';
 import type { Logger } from '../../adapters/logger';
 import type { EntryRow, ObjectRow, RowStore, RowStoreTx } from '../../adapters/rowstore/rowstore';
 import type { AppEventBus } from '../../composition/events';
+import { STORAGE_KEYS } from '../../keys/storage-keys';
 import { SYNC_LOG_EVENTS } from '../../keys/sync-keys';
 import { EN } from '../../text/en';
 import { entryIdOfPayload } from './outbox-rows';
@@ -101,6 +103,12 @@ export function createPull(deps: PullDeps): Pull {
         cursorSeq: existing?.cursorSeq ?? 0,
       });
     });
+    if (dto.kind === 'home' && dto.role === 'owner') await rememberHome(dto.id);
+  }
+
+  async function rememberHome(collectionId: string): Promise<void> {
+    const stored = await rowStore.kvGetJson(STORAGE_KEYS.accountHomeCollectionId, z.string());
+    if (stored === null) await rowStore.kvSetJson(STORAGE_KEYS.accountHomeCollectionId, collectionId);
   }
 
   async function wipeMemberships(collectionId: string): Promise<void> {

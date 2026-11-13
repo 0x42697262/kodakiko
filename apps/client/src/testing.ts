@@ -12,16 +12,21 @@ import { createMemoryRowStore } from './adapters/memory/memory-row-store';
 import { createMemorySessionStore } from './adapters/memory/memory-session-store';
 import { silentLogger, type Logger } from './adapters/logger';
 import type { Lifecycle } from './adapters/lifecycle/lifecycle';
+import { createMemoryMediaToolkit } from './adapters/memory/memory-media-toolkit';
 import { createWebUploader } from './adapters/uploader/uploader.web';
 import { bindAccountLifecycle } from './composition/account-lifecycle';
 import { createAccountState, createObservable } from './composition/account-state';
 import { createEventBus, type AppEventBus, type AppEvents } from './composition/events';
-import { TEST_DEVICE_LABEL } from './constants/testing-constants';
+import { SEED_TRAY_LIMIT } from './constants/entry-constants';
+import { TEST_DEVICE_LABEL, TEST_DEVICE_SETTINGS } from './constants/testing-constants';
+import { createCaptureTrayStore, type CaptureTrayStore } from './features/capture/capture-tray-store';
 import {
   createAuthService,
   type AuthService,
   type AuthServiceContext,
 } from './services/auth-service';
+import { createEntriesService, type EntriesService } from './services/entries/entries-service';
+import { createImportService, type ImportService } from './services/media/import-service';
 import { createSyncStack, type SyncStack } from './services/sync/create-sync-stack';
 
 export type TestAuthContextInput = {
@@ -96,7 +101,12 @@ export type TestClientContext = TestAuthContext &
     readonly uploader: Uploader;
     readonly rowStore: RowStore;
     readonly fileStore: FileStore;
+    readonly entries: EntriesService;
+    readonly captureTray: CaptureTrayStore;
+    readonly mediaImport: ImportService;
   };
+
+export type TrayFile = { readonly bytes: Uint8Array; readonly fileName: string };
 
 const FAKE_LIFECYCLE: Lifecycle = {
   afterInteractions: async () => undefined,
@@ -129,14 +139,71 @@ export async function createTestClientContext(
     requestNotificationPermission: null,
     ...(input.random === undefined ? {} : { random: input.random }),
   });
+  const captureTray = createCaptureTrayStore({
+    fileStore: auth.fileStore,
+    isUnlocked: () => auth.accountState.get().kind === 'unlocked',
+  });
+  const mediaImport = createImportService({
+    sodium: input.sodium,
+    fileStore: auth.fileStore,
+    toolkit: createMemoryMediaToolkit(),
+    clock: input.clock,
+    config: auth.config,
+    deviceSettings: {
+      get: () => TEST_DEVICE_SETTINGS,
+      loaded: () => true,
+      update: async () => undefined,
+      subscribe: () => () => undefined,
+    },
+    randomId: auth.randomId,
+  });
+  const entries = createEntriesService({
+    sodium: input.sodium,
+    rowStore: auth.rowStore,
+    fileStore: auth.fileStore,
+    entryKeys: stack.entryKeys,
+    captureTray,
+    config: auth.config,
+    sync: stack.sync,
+    events,
+    clock: input.clock,
+    randomId: auth.randomId,
+    account: () => {
+      const state = auth.accountState.get();
+      return state.kind === 'unlocked' ? { userId: state.userId } : null;
+    },
+  });
   bindAccountLifecycle(auth.accountState, {
     onUnlocked: () => undefined,
     onLeftUnlocked: () => {
       stack.sync.stop();
       stack.entryKeys.clear();
+      captureTray.clear(true).catch(() => undefined);
     },
   });
-  return { ...auth, ...stack, events, uploader };
+  return { ...auth, ...stack, events, uploader, entries, captureTray, mediaImport };
+}
+
+export async function importIntoTray(
+  context: Pick<TestClientContext, 'mediaImport' | 'captureTray'>,
+  files: readonly TrayFile[],
+): Promise<readonly string[]> {
+  const mediaIds: string[] = [];
+  for (const file of files) {
+    const outcome = await context.mediaImport.importOne(
+      {
+        origin: 'picker',
+        handle: { blob: new Blob([file.bytes.slice()]) },
+        fileName: file.fileName,
+        pickerExif: null,
+      },
+      { used: context.captureTray.items.length, limit: SEED_TRAY_LIMIT },
+    );
+    if (!outcome.ok) throw new Error(`${file.fileName}: ${outcome.reason}`);
+    context.captureTray.add(outcome.media);
+    mediaIds.push(outcome.media.mediaId);
+  }
+  return mediaIds;
 }
 
 export { createWrappersSodium } from './adapters/sodium/sodium-wrappers';

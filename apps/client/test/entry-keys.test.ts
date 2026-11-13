@@ -102,6 +102,37 @@ describe('entry keys', () => {
     expect([...(await keys.entryKey(local.entryId))]).toEqual([...local.entryKey]);
   });
 
+  it('forget(entryId, mediaId) wipes and drops only that media key', async () => {
+    const local = await createLocalEntry(fixture, { mediaBytes: [Uint8Array.of(1), Uint8Array.of(2)], note: '', tags: [] });
+    const keys = keysUnderTest();
+    const [first = '', second = ''] = local.mediaIds;
+    const entryKey = await keys.entryKey(local.entryId);
+    const firstKey = await keys.mediaKey(local.entryId, first);
+    const secondKey = await keys.mediaKey(local.entryId, second);
+    const entryCopy = entryKey.slice();
+    keys.forget(local.entryId, first);
+    expect(firstKey.every((byte) => byte === 0)).toBe(true);
+    expect(secondKey.some((byte) => byte !== 0)).toBe(true);
+    expect([...entryKey]).toEqual([...entryCopy]);
+    expect(await keys.mediaKey(local.entryId, first)).not.toBe(firstKey);
+  });
+
+  it('forget(entryId) wipes and drops the entry key and all its media keys', async () => {
+    const local = await createLocalEntry(fixture, { mediaBytes: [Uint8Array.of(1)], note: '', tags: [] });
+    const other = await createLocalEntry(fixture, { mediaBytes: [Uint8Array.of(2)], note: '', tags: [] });
+    const keys = keysUnderTest();
+    const entryKey = await keys.entryKey(local.entryId);
+    const mediaKey = await keys.mediaKey(local.entryId, local.mediaIds[0] ?? '');
+    const otherKey = await keys.entryKey(other.entryId);
+    keys.forget(local.entryId);
+    expect(entryKey.every((byte) => byte === 0)).toBe(true);
+    expect(mediaKey.every((byte) => byte === 0)).toBe(true);
+    expect(otherKey.some((byte) => byte !== 0)).toBe(true);
+    const again = await keys.entryKey(local.entryId);
+    expect(again).not.toBe(entryKey);
+    expect([...again]).toEqual([...local.entryKey]);
+  });
+
   it('throws when the entry has no usable membership', async () => {
     const keys = keysUnderTest();
     await expect(keys.entryKey(fixture.randomId())).rejects.toBeInstanceOf(EntryKeyUnavailableError);

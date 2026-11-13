@@ -33,6 +33,7 @@ export type EntryKeys = {
     mediaId: string,
     variant: 'original' | 'thumbnail',
   ) => Promise<Uint8Array>;
+  readonly forget: (entryId: string, mediaId?: string) => void;
   readonly clear: () => void;
 };
 
@@ -182,6 +183,26 @@ export function createEntryKeys(deps: EntryKeysDeps): EntryKeys {
     return sodium.kdfDerive(KEY_BYTES, VARIANT_SUBKEY_IDS[variant], KDF_CONTEXTS.media, parent);
   }
 
+  function dropMediaKey(cacheKey: string): void {
+    const key = mediaKeys.get(cacheKey);
+    if (key !== undefined) wipe(key);
+    mediaKeys.delete(cacheKey);
+  }
+
+  function forget(entryId: string, mediaId?: string): void {
+    if (mediaId !== undefined) {
+      dropMediaKey(`${entryId}/${mediaId}`);
+      return;
+    }
+    const prefix = `${entryId}/`;
+    for (const cacheKey of [...mediaKeys.keys()]) {
+      if (cacheKey.startsWith(prefix)) dropMediaKey(cacheKey);
+    }
+    const key = entryKeys.get(entryId);
+    if (key !== undefined) wipe(key);
+    entryKeys.delete(entryId);
+  }
+
   function clear(): void {
     generation += 1;
     for (const cache of [collectionKeys, entryKeys, mediaKeys]) {
@@ -190,5 +211,5 @@ export function createEntryKeys(deps: EntryKeysDeps): EntryKeys {
     }
   }
 
-  return { collectionKey, entryKey, mediaKey, variantKey, clear };
+  return { collectionKey, entryKey, mediaKey, variantKey, forget, clear };
 }

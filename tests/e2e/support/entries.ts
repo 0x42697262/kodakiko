@@ -9,13 +9,8 @@ import {
   openJson,
   wipe,
 } from '@kodakiko/core';
-import {
-  createLocalEntry,
-  sealEntryMetadata,
-  type AccountFixture,
-  type LocalEntry,
-  type Metadata,
-} from '@kodakiko/client/test-support';
+import { sealEntryMetadata, type Metadata } from '@kodakiko/client/test-support';
+import { importIntoTray } from '@kodakiko/client/testing';
 import { SETTLE_DEADLINE_MS, SETTLE_POLL_MS } from './constants.ts';
 import type { Device } from './device.ts';
 
@@ -28,6 +23,11 @@ export type EntryInput = {
   readonly tags: readonly string[];
 };
 
+export type CreatedEntry = {
+  readonly entryId: string;
+  readonly mediaIds: readonly string[];
+};
+
 export type EntrySnapshot = { readonly revision: number; readonly blob: string };
 
 function pause(milliseconds: number): Promise<void> {
@@ -38,12 +38,6 @@ function toHex(bytes: Uint8Array): string {
   return Buffer.from(bytes).toString('hex');
 }
 
-function unlockedKeys(device: Device) {
-  const state = device.context.accountState.get();
-  if (state.kind !== 'unlocked') throw new Error(`${device.name} is not unlocked`);
-  return state.keys;
-}
-
 export async function homeCollectionId(device: Device): Promise<string> {
   const collections = await device.context.rowStore.transaction((tx) => tx.collections.all());
   const home = collections.find((collection) => collection.kind === 'home');
@@ -51,22 +45,20 @@ export async function homeCollectionId(device: Device): Promise<string> {
   return home.id;
 }
 
-async function fixtureOf(device: Device): Promise<AccountFixture> {
-  const homeId = await homeCollectionId(device);
-  return {
-    sodium: device.context.sodium,
-    keys: unlockedKeys(device),
-    userId: device.userId,
-    homeCollectionId: homeId,
-    homeCollectionKey: await device.context.entryKeys.collectionKey(homeId),
-    rowStore: device.context.rowStore,
-    fileStore: device.context.fileStore,
-    randomId: device.context.randomId,
-  };
-}
-
-export async function createEntryLocally(device: Device, input: EntryInput): Promise<LocalEntry> {
-  return createLocalEntry(await fixtureOf(device), input);
+export async function createEntryLocally(
+  device: Device,
+  input: EntryInput,
+): Promise<CreatedEntry> {
+  const mediaIds = await importIntoTray(
+    device.context,
+    input.mediaBytes.map((bytes, position) => ({ bytes, fileName: `media-${position}.jpg` })),
+  );
+  const entryId = await device.context.entries.createFromTray({
+    note: input.note,
+    tags: input.tags,
+    time: null,
+  });
+  return { entryId, mediaIds };
 }
 
 export async function readEntry(device: Device, entryId: string) {

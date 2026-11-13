@@ -55,6 +55,7 @@ export type SyncService = {
   readonly status: () => SyncStatus;
   readonly subscribe: (listener: (status: SyncStatus) => void) => () => void;
   readonly retryDead: () => Promise<void>;
+  readonly isEntryInFlight: (entryId: string) => boolean;
 };
 
 export type SyncServiceDeps = {
@@ -328,9 +329,10 @@ export function createSyncService(deps: SyncServiceDeps): SyncService {
     await applyResult(row, result, startedAt, totals);
   }
 
+  const inFlightEntries = new Set<string>();
+
   async function pushDrain(totals: PassTotals): Promise<void> {
     const running = new Map<number, Promise<void>>();
-    const inFlightEntries = new Set<string>();
     for (;;) {
       const rows = await rowStore.transaction((tx) => tx.outbox.all());
       const ids = planPushBatch(
@@ -516,5 +518,6 @@ export function createSyncService(deps: SyncServiceDeps): SyncService {
       };
     },
     retryDead,
+    isEntryInFlight: (entryId) => inFlightEntries.has(entryId),
   };
 }

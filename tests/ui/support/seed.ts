@@ -1,6 +1,13 @@
 import sodiumLibrary from 'libsodium-wrappers-sumo';
 import type { Sodium } from '@kodakiko/core';
-import { createTestAuthContext, createWrappersSodium } from '@kodakiko/client/testing';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import {
+  createTestAuthContext,
+  createTestClientContext,
+  createWrappersSodium,
+  importIntoTray,
+} from '@kodakiko/client/testing';
 import {
   BEARER_PREFIX,
   HTTP_ACCEPTED,
@@ -13,6 +20,10 @@ import {
   SERVER_CLI,
   SERVER_ENV_FILE,
   COMPOSE_UP_TIMEOUT_MS,
+  FIXTURES_DIRECTORY,
+  SEED_SETTLE_DEADLINE_MS,
+  SEED_SETTLE_POLL_MS,
+  type FixtureName,
 } from './constants.ts';
 import { fromRoot } from './paths.ts';
 import { run } from './process.ts';
@@ -97,5 +108,69 @@ export async function seedDeletionRequest(account: SeededAccount): Promise<void>
   });
   if (response.status !== HTTP_ACCEPTED) {
     throw new Error(STACK_TEXT.deletionRequestFailed(response.status));
+  }
+}
+
+export type SeedEntry = {
+  readonly takenAtUtc: string;
+  readonly offsetMinutes: number;
+  readonly note: string;
+  readonly tags: readonly string[];
+  readonly media: readonly FixtureName[];
+};
+
+const SYSTEM_CLOCK = {
+  now: () => Date.now(),
+  nowIso: () => new Date().toISOString(),
+};
+
+function pause(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function fixtureFile(name: FixtureName) {
+  try {
+    return { bytes: new Uint8Array(await readFile(join(FIXTURES_DIRECTORY, name))), fileName: name };
+  } catch {
+    throw new Error(STACK_TEXT.seedMediaMissing(name));
+  }
+}
+
+export async function seedEntries(
+  account: SeededAccount,
+  entries: readonly SeedEntry[],
+): Promise<readonly { entryId: string }[]> {
+  const context = await createTestClientContext({
+    baseUrl: WEB_ORIGIN,
+    fetcher: fetch,
+    sodium: await createNodeSodium(),
+    clock: SYSTEM_CLOCK,
+  });
+  await context.auth.signIn({
+    username: account.username,
+    password: account.password,
+    keepSignedIn: false,
+  });
+  await context.sync.syncNow();
+  const created: { entryId: string }[] = [];
+  for (const entry of entries) {
+    const files = await Promise.all(entry.media.map(fixtureFile));
+    await importIntoTray(context, files);
+    const entryId = await context.entries.createFromTray({
+      note: entry.note,
+      tags: entry.tags,
+      time: { takenAtUtc: entry.takenAtUtc, utcOffsetMinutes: entry.offsetMinutes },
+    });
+    created.push({ entryId });
+  }
+  const deadline = Date.now() + SEED_SETTLE_DEADLINE_MS;
+  for (;;) {
+    await context.sync.syncNow();
+    const queued = await context.rowStore.transaction((tx) => tx.outbox.all());
+    if (queued.length === 0) return created;
+    if (Date.now() > deadline) {
+      throw new Error(STACK_TEXT.seedOutboxNotEmpty(queued.map((row) => row.kind).join(', ')));
+    }
+    await pause(SEED_SETTLE_POLL_MS);
   }
 }

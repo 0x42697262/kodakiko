@@ -1,0 +1,17 @@
+export const ENTRY_IDS = Object.freeze({
+  composeScreen: 'compose.screen',
+  composeItem: 'compose.item',
+  composeWhenValue: 'compose.whenValue',
+  composeNoteCounter: 'compose.noteCounter',
+  composeFailure: 'compose.failure',
+  tagChip: 'tags.chip',
+  tagRemove: 'tags.remove',
+  tagSuggestion: 'tags.suggestion',
+  locationCoordinates: 'location.coordinates',
+  locationSource: 'location.source',
+  bulkMenu: 'bulk.menu',
+  bulkTagPanel: 'bulk.tagPanel',
+  bulkDeletePanel: 'bulk.deletePanel',
+  bulkResult: 'bulk.result',
+  savedBanner: 'entry.saved',
+} as const);

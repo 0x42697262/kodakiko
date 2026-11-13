@@ -1,3 +1,14 @@
 export const WHITESPACE_RUN_PATTERN = /\s+/gu;
 export const TAG_WORD_SEPARATOR = ' ';
 export const TAG_UNICODE_FORM = 'NFKC';
+export const LOCAL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+export const LOCAL_TIME_PATTERN = /^(\d{2}):(\d{2})$/;
+export const ISO_DATE_LENGTH = 10;
+export const ISO_TIME_START = 11;
+export const ISO_TIME_END = 16;
+export const MS_PER_MINUTE = 60_000;
+export const DECIMAL_RADIX = 10;
+export const HOURS_PER_DAY = 24;
+export const MINUTES_PER_HOUR = 60;
+export const YEAR_MIN = 0;
+export const YEAR_MAX = 9999;

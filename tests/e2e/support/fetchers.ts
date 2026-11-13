@@ -1,4 +1,4 @@
-import { DROPPED_RESPONSE_MESSAGE } from './constants.ts';
+import { DROPPED_RESPONSE_MESSAGE, OFFLINE_MESSAGE } from './constants.ts';
 
 export type TestFetcher = {
   readonly fetcher: typeof fetch;
@@ -6,6 +6,7 @@ export type TestFetcher = {
   readonly clearRequests: () => void;
   readonly dropNextResponse: (method: string, count?: number) => void;
   readonly droppedCount: () => number;
+  readonly setOffline: (offline: boolean) => void;
 };
 
 function urlOf(input: Parameters<typeof fetch>[0]): string {
@@ -23,9 +24,11 @@ export function createTestFetcher(): TestFetcher {
   let dropMethod: string | null = null;
   let dropRemaining = 0;
   let dropped = 0;
+  let offline = false;
   const fetcher: typeof fetch = async (input, init) => {
     const method = methodOf(input, init);
     seen.push(`${method} ${urlOf(input)}`);
+    if (offline) throw new TypeError(OFFLINE_MESSAGE);
     const response = await fetch(input, init);
     if (dropMethod === method && dropRemaining > 0) {
       dropRemaining -= 1;
@@ -47,5 +50,8 @@ export function createTestFetcher(): TestFetcher {
       dropRemaining = count;
     },
     droppedCount: () => dropped,
+    setOffline: (value) => {
+      offline = value;
+    },
   };
 }

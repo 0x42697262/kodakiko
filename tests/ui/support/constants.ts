@@ -98,6 +98,23 @@ export const GENERATED_FIXTURES: readonly string[] = [
   'video-short.webm',
 ];
 
+export const FIXTURE_NAMES = [
+  'photo-gps.jpg',
+  'photo-portrait.jpg',
+  'screenshot.png',
+  'video-20s.mp4',
+  'video-gps.mov',
+  'video-short.webm',
+] as const;
+export type FixtureName = (typeof FIXTURE_NAMES)[number];
+export const SEED_SETTLE_DEADLINE_MS = 120_000;
+export const SEED_SETTLE_POLL_MS = 200;
+export const SYNC_STATE_PATH = '/api/v1/sync/state';
+export const COLLECTIONS_PATH = '/api/v1/collections';
+export const DIFF_PATH_SUFFIX = '/diff';
+export const DIFF_PAGE_LIMIT = 500;
+export const SEED_TIMEOUT_MS = 180_000;
+
 export const FLOW_ID_DASH = '-';
 export const FLOW_FILE_PATTERN = /^(U-\d\d)\.flow\.ts$/;
 

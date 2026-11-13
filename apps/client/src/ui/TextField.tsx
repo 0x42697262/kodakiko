@@ -15,6 +15,10 @@ type TextFieldProps = {
   readonly multiline?: boolean;
   readonly showLabel?: boolean;
   readonly selectOnFocus?: boolean;
+  readonly placeholder?: string;
+  readonly maxLength?: number;
+  readonly onKeyPress?: (key: string) => void;
+  readonly editable?: boolean;
 };
 
 export function TextField({
@@ -30,6 +34,10 @@ export function TextField({
   multiline = false,
   showLabel = true,
   selectOnFocus = false,
+  placeholder,
+  maxLength,
+  onKeyPress,
+  editable = true,
 }: TextFieldProps) {
   const { colors } = useTheme();
   return (
@@ -46,6 +54,11 @@ export function TextField({
         selectTextOnFocus={selectOnFocus}
         multiline={multiline}
         onSubmitEditing={onSubmit}
+        placeholder={placeholder}
+        placeholderTextColor={colors.textMuted}
+        maxLength={maxLength}
+        editable={editable}
+        onKeyPress={onKeyPress === undefined ? undefined : (event) => onKeyPress(event.nativeEvent.key)}
         submitBehavior={multiline ? 'newline' : 'submit'}
         textAlignVertical={multiline ? 'top' : 'center'}
         style={[

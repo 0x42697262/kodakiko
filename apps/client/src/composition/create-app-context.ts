@@ -30,8 +30,10 @@ import { STORAGE_KEYS } from '../keys/storage-keys';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
 import type { EntryKeys } from '../services/keys/entry-keys';
+import { createEntriesService, type EntriesService } from '../services/entries/entries-service';
 import { createImportService, type ImportService } from '../services/media/import-service';
 import { createBoundDeviceSettings } from '../services/settings/bound-device-settings';
+import { EMPTY_TAG_SUGGESTIONS, type TagSuggestionSource } from '../services/tags/tag-suggestions';
 import type { DeviceSettings } from '../services/settings/device-settings';
 import { createSyncStack } from '../services/sync/create-sync-stack';
 import type { NotificationPrompt } from '../services/sync/notification-prompt';
@@ -58,6 +60,9 @@ export type Services = {
   readonly captureTray: CaptureTrayStore;
   readonly deviceSettings: DeviceSettings;
   readonly location: LocationProvider;
+  readonly entries: EntriesService;
+  readonly tagSuggestions: TagSuggestionSource;
+  readonly savedNotice: Observable<number | null>;
 };
 
 export type AppContext = {
@@ -174,6 +179,22 @@ export async function createAppContext(): Promise<AppContext> {
     deviceSettings: boundSettings.settings,
     randomId,
   });
+  const entries = createEntriesService({
+    sodium,
+    rowStore,
+    fileStore,
+    entryKeys: stack.entryKeys,
+    captureTray,
+    config,
+    sync: stack.sync,
+    events,
+    clock: systemClock,
+    randomId,
+    account: () => {
+      const state = accountState.get();
+      return state.kind === 'unlocked' ? { userId: state.userId } : null;
+    },
+  });
   await tempFiles.wipe().catch(() => undefined);
   bindAccountLifecycle(accountState, {
     onUnlocked: () => {
@@ -223,6 +244,9 @@ export async function createAppContext(): Promise<AppContext> {
       captureTray,
       deviceSettings: boundSettings.settings,
       location: createLocationProvider(),
+      entries,
+      tagSuggestions: EMPTY_TAG_SUGGESTIONS,
+      savedNotice: createObservable<number | null>(null),
     },
   };
 }

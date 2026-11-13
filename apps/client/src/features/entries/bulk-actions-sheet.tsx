@@ -1,0 +1,195 @@
+import { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { useAppContext } from '../../composition/app-context';
+import { ENTRY_IDS } from '../../keys/entry-ids';
+import { listTestId, testId } from '../../keys/test-ids';
+import { EN } from '../../text/en';
+import { Banner } from '../../ui/Banner';
+import { Button } from '../../ui/Button';
+import { TextField } from '../../ui/TextField';
+import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
+import { useTheme } from '../../ui/theme';
+import { TAG_SUGGESTIONS_MAX } from '../../constants/entry-constants';
+import type { BulkResult } from '../../services/entries/entries-service';
+
+export type BulkActionsMode = 'journal' | 'trash' | 'collectionOwner';
+
+export type BulkActionsSheetProps = {
+  readonly ids: readonly string[];
+  readonly mode: BulkActionsMode;
+  readonly collectionId?: string;
+  readonly onDone?: () => void;
+};
+
+type Panel = 'menu' | 'addTag' | 'removeTag' | 'confirmDelete';
+
+function resultMessage(result: BulkResult): string {
+  const updated = EN['bulk.updated'](result.changed);
+  return result.skipped > 0 ? `${updated} ${EN['bulk.skipped'](result.skipped)}` : updated;
+}
+
+export function BulkActionsSheet({ ids, mode, onDone }: BulkActionsSheetProps) {
+  const { services } = useAppContext();
+  const { colors } = useTheme();
+  const [panel, setPanel] = useState<Panel>('menu');
+  const [tag, setTag] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function run(action: () => Promise<BulkResult>): Promise<void> {
+    setBusy(true);
+    try {
+      setMessage(resultMessage(await action()));
+      setPanel('menu');
+      setTag('');
+      onDone?.();
+    } catch {
+      setMessage(EN['errors.generic']);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const suggestions = services.tagSuggestions
+    .suggest(tag)
+    .slice(0, TAG_SUGGESTIONS_MAX);
+
+  const resultBanner =
+    message === null ? null : <Banner testID={ENTRY_IDS.bulkResult} kind="info" message={message} />;
+
+  if (mode === 'collectionOwner') {
+    return (
+      <View testID={ENTRY_IDS.bulkMenu} style={styles.container}>
+        {resultBanner}
+        <Button
+          testID={testId('bulk.removeFromJournal')}
+          label={EN['bulk.removeFromJournal']}
+          variant="secondary"
+          disabled
+          onPress={() => undefined}
+        />
+      </View>
+    );
+  }
+
+  if (panel === 'confirmDelete') {
+    return (
+      <View testID={ENTRY_IDS.bulkDeletePanel} style={styles.container}>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {EN['bulk.confirmDeleteTitle'](ids.length)}
+        </Text>
+        <View style={styles.row}>
+          <Button
+            testID={testId('bulk.confirmDelete')}
+            label={EN['bulk.confirmDelete']}
+            variant="danger"
+            busy={busy}
+            onPress={() => void run(() => services.entries.deletePermanently(ids))}
+          />
+          <Button
+            testID={testId('bulk.cancel')}
+            label={EN['bulk.cancel']}
+            variant="secondary"
+            onPress={() => setPanel('menu')}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  if (panel === 'addTag' || panel === 'removeTag') {
+    const adding = panel === 'addTag';
+    return (
+      <View testID={ENTRY_IDS.bulkTagPanel} style={styles.container}>
+        <TextField
+          testID={testId('bulk.tagField')}
+          label={EN['bulk.tagField']}
+          value={tag}
+          onChangeText={setTag}
+        />
+        <View style={styles.row}>
+          {suggestions.map((name, position) => (
+            <Button
+              key={name}
+              testID={listTestId(ENTRY_IDS.tagSuggestion, position)}
+              label={name}
+              variant="secondary"
+              onPress={() => setTag(name)}
+            />
+          ))}
+        </View>
+        <View style={styles.row}>
+          <Button
+            testID={testId(adding ? 'bulk.confirmAdd' : 'bulk.confirmRemove')}
+            label={adding ? EN['bulk.confirmAdd'] : EN['bulk.confirmRemove']}
+            busy={busy}
+            onPress={() =>
+              void run(() =>
+                adding
+                  ? services.entries.addTagToMany(ids, tag)
+                  : services.entries.removeTagFromMany(ids, tag),
+              )
+            }
+          />
+          <Button
+            testID={testId('bulk.cancel')}
+            label={EN['bulk.cancel']}
+            variant="secondary"
+            onPress={() => setPanel('menu')}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View testID={ENTRY_IDS.bulkMenu} style={styles.container}>
+      {resultBanner}
+      {mode === 'journal' ? (
+        <>
+          <Button
+            testID={testId('bulk.addTag')}
+            label={EN['bulk.addTag']}
+            variant="secondary"
+            onPress={() => setPanel('addTag')}
+          />
+          <Button
+            testID={testId('bulk.removeTag')}
+            label={EN['bulk.removeTag']}
+            variant="secondary"
+            onPress={() => setPanel('removeTag')}
+          />
+          <Button
+            testID={testId('bulk.trash')}
+            label={EN['bulk.trash']}
+            variant="secondary"
+            busy={busy}
+            onPress={() => void run(() => services.entries.trash(ids))}
+          />
+        </>
+      ) : (
+        <>
+          <Button
+            testID={testId('bulk.restore')}
+            label={EN['bulk.restore']}
+            variant="secondary"
+            busy={busy}
+            onPress={() => void run(() => services.entries.restore(ids))}
+          />
+          <Button
+            testID={testId('bulk.deletePermanently')}
+            label={EN['bulk.deletePermanently']}
+            variant="danger"
+            onPress={() => setPanel('confirmDelete')}
+          />
+        </>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { gap: SPACING.sm },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
+  title: { fontSize: FONT_SIZE.headline },
+});

@@ -1,6 +1,10 @@
-import type { LocalEntry } from '@kodakiko/client/test-support';
 import { signInDevice, signUpDevice, type Device } from './device.ts';
-import { createEntryLocally, syncUntilIdle, type EntryInput } from './entries.ts';
+import {
+  createEntryLocally,
+  syncUntilIdle,
+  type CreatedEntry,
+  type EntryInput,
+} from './entries.ts';
 import type { Harness } from './harness.ts';
 
 export type Pair = { readonly a: Device; readonly b: Device };
@@ -13,13 +17,13 @@ export async function startPair(harness: Harness): Promise<Pair> {
   return { a, b };
 }
 
-export async function createSyncedEntry(device: Device, input: EntryInput): Promise<LocalEntry> {
+export async function createSyncedEntry(device: Device, input: EntryInput): Promise<CreatedEntry> {
   const entry = await createEntryLocally(device, input);
   await syncUntilIdle(device);
   return entry;
 }
 
-export function mediaIdAt(entry: LocalEntry, position: number): string {
+export function mediaIdAt(entry: CreatedEntry, position: number): string {
   const mediaId = entry.mediaIds[position];
   if (mediaId === undefined) throw new Error(`entry ${entry.entryId} has no media at ${position}`);
   return mediaId;

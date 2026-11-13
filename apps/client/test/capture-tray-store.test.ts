@@ -150,6 +150,29 @@ describe('capture tray store', () => {
     for (const item of items) expect(fileStore.plainThumbnailUri(item.mediaId)).not.toBeNull();
   });
 
+  it('take() detaches every item without deleting files, keeping the generation and location', async () => {
+    const tray = createCaptureTrayStore({ fileStore });
+    const items = [await storedItem(1), await storedItem(2)];
+    for (const item of items) tray.add(item);
+    tray.setDeviceLocation({ point: { latitude: 1, longitude: 2 }, accuracyMeters: null });
+    const generation = tray.generation;
+    let notified = 0;
+    tray.subscribe(() => {
+      notified += 1;
+    });
+
+    const taken = tray.take();
+
+    expect(idsOf(taken)).toEqual(idsOf(items));
+    expect(tray.items).toEqual([]);
+    expect(tray.generation).toBe(generation);
+    expect(tray.deviceLocation).not.toBeNull();
+    expect(notified).toBe(1);
+    await tray.clear(true);
+    expect((await fileStore.listSizes()).size).toBe(4);
+    for (const item of items) expect(item.mediaKey.some((byte) => byte !== 0)).toBe(true);
+  });
+
   it('increments the generation on every clear, not on add or remove', async () => {
     const tray = createCaptureTrayStore({ fileStore });
     const first = await storedItem(1);

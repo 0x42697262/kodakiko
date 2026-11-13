@@ -45,6 +45,7 @@ export const ROLLBACK_REJECTED_EVENT = 'sync.rollback_rejected';
 export const DIFF_PATH_FRAGMENT = '/diff?since=';
 export const PATCH_METHOD = 'PATCH';
 export const DROPPED_RESPONSE_MESSAGE = 'response dropped by the e2e fetcher';
+export const OFFLINE_MESSAGE = 'the e2e fetcher is offline';
 
 export const EARLIER_EDIT_UTC = '2030-01-01T10:00:00.000Z';
 export const LATER_EDIT_UTC = '2030-01-01T11:00:00.000Z';
