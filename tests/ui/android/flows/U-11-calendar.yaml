@@ -1,0 +1,27 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- runFlow: common/connect.yaml
+- runFlow: common/sign-in.yaml
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.1
+    timeout: 60000
+- tapOn:
+    id: tabs.calendar
+- extendedWaitUntil:
+    visible:
+      id: ${DAY_ID}
+    timeout: 10000
+- tapOn:
+    id: ${DAY_ID}
+- extendedWaitUntil:
+    visible:
+      id: day.screen
+    timeout: 10000
+- assertVisible:
+    id: gallery.tile.0
+- assertNotVisible:
+    id: gallery.tile.1
