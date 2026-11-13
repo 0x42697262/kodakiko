@@ -26,6 +26,7 @@ import { testId } from '../../keys/test-ids';
 import { maxPlaintextBytes } from '../../services/media/max-recording-bytes';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import type { MediaInput } from '../media/media-toolkit';
@@ -87,7 +88,8 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
   const { colors } = useTheme();
   const active = useCameraActive();
   const microphone = useMicrophonePermission();
-  const [position, setPosition] = useState<Position>(CAMERA_POSITIONS.back);
+  const { services } = useAppContext();
+  const [position, setPosition] = useState<Position>(CAMERA_POSITIONS[services.deviceSettings.get().captureStartCamera]);
   const device = useCameraDevice(position);
   const photoOutput = usePhotoOutput({ containerFormat: 'jpeg', quality: CAMERA_PHOTO_QUALITY });
   const videoOutput = useVideoOutput({ enableAudio: true, fileType: 'mp4' });
@@ -174,10 +176,10 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
         </Text>
       )}
       <View style={styles.controls}>
-        <Button
+        <IconAction
           testID={testId('capture.pickFromGallery')}
+          icon="gallery"
           label={EN['capture.pickFromGallery']}
-          variant="secondary"
           disabled={recordingMs !== null}
           onPress={pickFromGallery}
         />
@@ -187,10 +189,10 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
           onHoldStart={startRecording}
           onHoldEnd={stopRecording}
         />
-        <Button
+        <IconAction
           testID={testId('capture.flip')}
+          icon="flip"
           label={EN['capture.flip']}
-          variant="secondary"
           disabled={recordingMs !== null}
           onPress={() =>
             setPosition((current) =>

@@ -13,7 +13,7 @@ import { CAPTURE_IDS } from '../../keys/capture-keys';
 import { CANVAS_CONTEXT_2D, CANVAS_ELEMENT } from '../../keys/media-keys';
 import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
-import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import type { MediaInput } from '../media/media-toolkit';
@@ -137,10 +137,10 @@ export function WebCamera({ onInputs }: WebCameraProps) {
           onHoldStart={startRecording}
           onHoldEnd={stopRecording}
         />
-        <Button
+        <IconAction
           testID={testId('capture.flip')}
+          icon="flip"
           label={EN['capture.flip']}
-          variant="secondary"
           disabled={recordingMs !== null}
           onPress={() => setFacing((current) => (current === 'back' ? 'front' : 'back'))}
         />

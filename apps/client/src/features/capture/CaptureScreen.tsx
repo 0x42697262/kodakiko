@@ -9,7 +9,11 @@ import { APP_ROUTES } from '../../keys/routes';
 import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
+import { FAB } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
+import { ICONS } from '../../ui/icons';
 import { Screen } from '../../ui/Screen';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
@@ -83,19 +87,22 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   }
 
   return (
-    <Screen testID={CAPTURE_IDS.screen}>
+    <SafeAreaView testID={CAPTURE_IDS.screen} edges={CAPTURE_EDGES} style={styles.root}>
       <View style={styles.surface}>
         <CaptureSurface
           onInputs={addInputs}
           remainingSlots={Math.max(0, maxMediaPerEntry - items.length - pending)}
           maxUploadBytes={maxUploadBytes}
         />
+        <View style={styles.topBar}>
+          <IconAction testID={testId('capture.close')} icon="close" label={EN['capture.close']} onPress={close} />
+        </View>
       </View>
       {messages.length > 0 ? (
         <Banner testID={CAPTURE_IDS.refusals} kind="warning" message={messages.join('\n')} />
       ) : null}
       {confirmingDiscard ? (
-        <View testID={CAPTURE_IDS.discardPanel} style={styles.panel}>
+        <View testID={CAPTURE_IDS.discardPanel} style={[styles.panel, { backgroundColor: colors.background }]}>
           <Text style={[styles.panelText, { color: colors.text }]}>
             {EN['capture.discardTitle'](items.length)}
           </Text>
@@ -115,38 +122,43 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
           </View>
         </View>
       ) : null}
-      <TrayStrip items={items} pending={pending} onRemove={remove} />
-      <View style={styles.row}>
-        <Button
-          testID={testId('capture.close')}
-          label={EN['capture.close']}
-          variant="secondary"
-          onPress={close}
-        />
+      <View style={styles.bottomBar}>
+        <View style={styles.tray}>
+          <TrayStrip items={items} pending={pending} onRemove={remove} />
+        </View>
         {addToEntry === undefined ? (
-          <Button
+          <FAB
             testID={testId('capture.next')}
+            icon={ICONS.forward}
             label={EN['capture.next']}
             disabled={items.length === 0}
             onPress={() => router.push(APP_ROUTES.entryNew as Href)}
           />
         ) : (
-          <Button
+          <FAB
             testID={testId('capture.addToEntry')}
+            icon={ICONS.save}
             label={EN['capture.addToEntry']}
             disabled={items.length === 0 || pending > 0}
-            busy={adding}
+            loading={adding}
             onPress={() => addToExisting().catch(() => undefined)}
           />
         )}
       </View>
-    </Screen>
+    </SafeAreaView>
   );
 }
 
+const CAPTURE_EDGES = ['top', 'bottom', 'left', 'right'] as const;
+const CAPTURE_BACKGROUND = '#000000';
+
 const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: CAPTURE_BACKGROUND },
   surface: { flex: 1 },
+  topBar: { position: 'absolute', top: SPACING.sm, left: SPACING.sm },
+  bottomBar: { flexDirection: 'row', alignItems: 'center', gap: SPACING.md, padding: SPACING.md },
+  tray: { flex: 1 },
   row: { flexDirection: 'row', gap: SPACING.md, justifyContent: 'space-between' },
-  panel: { gap: SPACING.md },
+  panel: { gap: SPACING.md, padding: SPACING.lg },
   panelText: { fontSize: FONT_SIZE.headline },
 });

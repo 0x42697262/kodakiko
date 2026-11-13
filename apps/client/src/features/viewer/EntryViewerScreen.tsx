@@ -21,6 +21,7 @@ import type { OriginalRef } from '../../services/originals/original-source';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { Body } from '../../ui/Typography';
 import { FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
@@ -321,18 +322,19 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   return (
     <Screen testID={VIEWER_IDS.screen} scroll>
       <View style={styles.header}>
-        <Button testID={testId('viewer.back')} label={EN['viewer.back']} variant="secondary" onPress={onBack} />
+        <IconAction testID={testId('viewer.back')} icon="back" label={EN['viewer.back']} tonal={false} onPress={onBack} />
         {!summary.trashed && !summary.unreadable ? (
           <View style={styles.actions}>
             {owner ? (
-              <Button
+              <IconAction
                 testID={testId('viewer.edit')}
+                icon="edit"
                 label={EN['viewer.edit']}
-                variant="secondary"
+                tonal={false}
                 onPress={() => router.push(`${entryRoute(entryId)}/edit`)}
               />
             ) : null}
-            <Button testID={testId('viewer.more')} label={EN['viewer.more']} variant="secondary" onPress={() => setOverlay('more')} />
+            <IconAction testID={testId('viewer.more')} icon="overflow" label={EN['viewer.more']} tonal={false} onPress={() => setOverlay('more')} />
           </View>
         ) : null}
       </View>

@@ -270,6 +270,16 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
   - `Screen` (non-scrolling) now uses `flex: 1`, so content no longer runs under the bottom bar.
   - U-24 and U-25 were written after the code (no red run; slip noted).
 
+- **Phase 4 (2026-11-14):**
+  - Capture is full-screen: black background, close icon (`capture.close`) over the preview,
+    icon buttons for import and flip (`ui/IconAction.tsx`, a Paper `IconButton`), and Next / Add
+    to entry as Paper FABs with the same test ids.
+  - The native camera starts on the `captureStartCamera` side. The keep-screen-on setting is
+    stored but not applied yet (it needs `expo-keep-awake`, a catalog decision).
+  - The viewer header uses icon actions (back, edit, ⋮).
+  - Compose and Edit keep their labeled Cancel/Save buttons (a labeled primary action on a form
+    is standard Material).
+
 ## 9. Answered questions (programmer, 2026-11-14)
 
 | ID | Question | Answer |
