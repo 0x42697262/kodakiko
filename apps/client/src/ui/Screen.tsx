@@ -22,7 +22,7 @@ export function Screen({ testID, children, scroll = false }: ScreenProps) {
           {children}
         </ScrollView>
       ) : (
-        <View style={styles.content}>{children}</View>
+        <View style={[styles.content, styles.fill]}>{children}</View>
       )}
     </SafeAreaView>
   );
@@ -31,4 +31,5 @@ export function Screen({ testID, children, scroll = false }: ScreenProps) {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   content: { flexGrow: 1, padding: SPACING.lg, gap: SPACING.md },
+  fill: { flex: 1, minHeight: 0 },
 });

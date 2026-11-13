@@ -23,6 +23,13 @@ export type GalleryFilter = {
   readonly fromDate: string | null;
   readonly toDate: string | null;
   readonly text: string;
+  readonly attributes?: AttributeFilters | undefined;
 };
+
+export type TriState = 'off' | 'include' | 'exclude';
+export type AttributeKey = 'video' | 'note' | 'multiple' | 'shared' | 'pending';
+export type AttributeFilters = Readonly<Partial<Record<AttributeKey, TriState>>>;
+export type GallerySortKey = 'takenAt' | 'noteLength' | 'mediaCount' | 'random';
+export type GallerySort = { readonly key: GallerySortKey; readonly descending: boolean };
 
 export type DaySection = { readonly localDate: string; readonly entryIds: readonly string[] };

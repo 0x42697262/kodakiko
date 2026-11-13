@@ -1,7 +1,7 @@
 import { normalizeTag } from '../domain/tags.ts';
 import { LOCAL_DATE_SEPARATOR, MONTH_DAY_START, SORT_BEFORE, YEAR_END } from './constants.ts';
 import { tokenize } from './tokenize.ts';
-import type { DaySection, GalleryFilter, IndexedEntry } from './types.ts';
+import type { AttributeFilters, AttributeKey, DaySection, GalleryFilter, IndexedEntry } from './types.ts';
 
 export type OnThisDayGroup = { readonly yearsAgo: number; readonly entryIds: readonly string[] };
 
@@ -13,6 +13,7 @@ export type GalleryIndex = {
   readonly size: () => number;
   readonly query: (filter: GalleryFilter) => readonly DaySection[];
   readonly tagSuggestions: (prefix: string, limit: number) => readonly string[];
+  readonly allTags: () => readonly { readonly tag: string; readonly count: number }[];
   readonly onThisDay: (
     todayLocalDate: string,
     scope: GalleryFilter['scope'],
@@ -73,6 +74,34 @@ function normalizedPrefix(prefix: string): string | null {
 
 function yearOf(localDate: string): number {
   return Number(localDate.slice(0, YEAR_END));
+}
+
+function attributeOf(entry: IndexedEntry, key: AttributeKey, homeCollectionId: string): boolean {
+  switch (key) {
+    case 'video':
+      return entry.hasVideo;
+    case 'note':
+      return entry.notePreview !== '';
+    case 'multiple':
+      return entry.mediaCount > 1;
+    case 'shared':
+      return !entry.isOwn || entry.collectionIds.some((id) => id !== homeCollectionId);
+    case 'pending':
+      return entry.pending;
+    default:
+      return false;
+  }
+}
+
+const ATTRIBUTE_KEYS: readonly AttributeKey[] = ['video', 'note', 'multiple', 'shared', 'pending'];
+
+export function attributesMatch(entry: IndexedEntry, filters: AttributeFilters, homeCollectionId: string): boolean {
+  for (const key of ATTRIBUTE_KEYS) {
+    const state = filters[key] ?? 'off';
+    if (state === 'off') continue;
+    if (attributeOf(entry, key, homeCollectionId) !== (state === 'include')) return false;
+  }
+  return true;
 }
 
 export function createGalleryIndex(options: { readonly homeCollectionId: string }): GalleryIndex {
@@ -195,6 +224,7 @@ export function createGalleryIndex(options: { readonly homeCollectionId: string 
 
   function matches(entry: IndexedEntry, filter: GalleryFilter): boolean {
     if (!inScope(entry, filter.scope)) return false;
+    if (filter.attributes !== undefined && !attributesMatch(entry, filter.attributes, options.homeCollectionId)) return false;
     if (entry.trashed !== (filter.view === 'trash')) return false;
     if (filter.fromDate !== null && entry.localDate < filter.fromDate) return false;
     return filter.toDate === null || entry.localDate <= filter.toDate;
@@ -212,6 +242,13 @@ export function createGalleryIndex(options: { readonly homeCollectionId: string 
       else sections.push({ localDate: entry.localDate, entryIds: [id] });
     }
     return sections;
+  }
+
+  function allTags(): readonly { readonly tag: string; readonly count: number }[] {
+    return [...tagCounts.entries()]
+      .filter(([, count]) => count > 0)
+      .sort(([left], [right]) => (left < right ? SORT_BEFORE : 1))
+      .map(([tag, count]) => ({ tag, count }));
   }
 
   function tagSuggestions(prefix: string, limit: number): readonly string[] {
@@ -269,6 +306,7 @@ export function createGalleryIndex(options: { readonly homeCollectionId: string 
     get: (entryId) => entries.get(entryId)?.entry ?? null,
     size: () => entries.size,
     query,
+    allTags,
     tagSuggestions,
     onThisDay,
     daysWithEntries,

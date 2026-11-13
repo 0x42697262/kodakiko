@@ -11,6 +11,8 @@ export type GalleryItem =
       readonly firstPosition: number;
     };
 
+export const UNGROUPED_DATE = '';
+
 export function gridColumns(width: number): number {
   return Math.max(GRID_MIN_COLUMNS, Math.floor(width / GRID_TILE_MIN_PX));
 }
@@ -23,7 +25,7 @@ export function buildGalleryItems(
   const items: GalleryItem[] = showOnThisDay ? [{ type: 'onThisDay' }] : [];
   let position = 0;
   for (const section of sections) {
-    items.push({ type: 'header', localDate: section.localDate });
+    if (section.localDate !== UNGROUPED_DATE) items.push({ type: 'header', localDate: section.localDate });
     for (let start = 0; start < section.entryIds.length; start += columns) {
       const entryIds = section.entryIds.slice(start, start + columns);
       items.push({ type: 'row', localDate: section.localDate, entryIds, firstPosition: position });

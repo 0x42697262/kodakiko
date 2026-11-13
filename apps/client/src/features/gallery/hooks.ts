@@ -2,6 +2,7 @@ import { deviceOffsetMinutes, localDateOf, type DaySection, type GalleryFilter, 
 import { useMemo, useSyncExternalStore } from 'react';
 import { useAppContext } from '../../composition/app-context';
 import type { IndexStatus } from '../../services/index/index-service';
+import { arrangeSections, galleryAttributes } from './gallery-arrange';
 
 const NO_INDEX_ID = 0;
 const indexIds = new WeakMap<GalleryIndex, number>();
@@ -65,4 +66,34 @@ export function useOnThisDay(): readonly OnThisDayGroup[] {
 export function useGalleryFilter(): GalleryFilter {
   const { services } = useAppContext();
   return useSyncExternalStore(services.galleryFilter.subscribe, services.galleryFilter.get);
+}
+
+let shuffleSeed = 1;
+const seedListeners = new Set<() => void>();
+
+export function reshuffleGallery(): void {
+  shuffleSeed += 1;
+  for (const listener of seedListeners) listener();
+}
+
+function subscribeSeed(listener: () => void): () => void {
+  seedListeners.add(listener);
+  return () => {
+    seedListeners.delete(listener);
+  };
+}
+
+export function useArrangedSections(filter: GalleryFilter): readonly DaySection[] {
+  const { services } = useAppContext();
+  const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
+  const seed = useSyncExternalStore(subscribeSeed, () => shuffleSeed, () => shuffleSeed);
+  const attributes = galleryAttributes(settings.galleryFilters, settings.hideShared);
+  const attributesKey = JSON.stringify(attributes);
+  const refined = useMemo(() => ({ ...filter, attributes }), [filter, attributesKey]);
+  const sections = useGallerySections(refined);
+  const version = useIndexVersion();
+  return useMemo(
+    () => arrangeSections(sections, (id) => services.index.index()?.get(id) ?? null, settings.gallerySort, settings.galleryGroupByDay, seed),
+    [sections, services.index, version, settings.gallerySort, settings.galleryGroupByDay, seed],
+  );
 }

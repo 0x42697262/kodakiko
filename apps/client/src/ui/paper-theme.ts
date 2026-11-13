@@ -20,6 +20,8 @@ export function paperTheme(scheme: 'light' | 'dark'): MD3Theme {
       onSurfaceVariant: colors.textMuted,
       outline: colors.border,
       error: colors.danger,
+      primaryContainer: colors.primary,
+      onPrimaryContainer: colors.onPrimary,
       secondaryContainer: SECONDARY_CONTAINER[scheme],
       onSecondaryContainer: colors.text,
       elevation: {

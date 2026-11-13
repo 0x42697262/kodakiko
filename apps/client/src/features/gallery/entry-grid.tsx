@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { useRouter, type Href } from 'expo-router';
-import { useMemo, useState, type ReactNode } from 'react';
-import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { StyleSheet, Text, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
 import type { GalleryFilter } from '@kodakiko/core';
 import { useAppContext } from '../../composition/app-context';
 import { TILE_GAP } from '../../constants/gallery-constants';
@@ -11,8 +11,9 @@ import { listTestId } from '../../keys/test-ids';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { formatDayHeader } from './format-day-header';
-import { buildGalleryItems, displayOrder, gridColumns, type GalleryItem } from './gallery-items';
-import { todayLocalDate, useGallerySections } from './hooks';
+import { columnsFor } from './gallery-arrange';
+import { buildGalleryItems, displayOrder, type GalleryItem } from './gallery-items';
+import { todayLocalDate, useArrangedSections } from './hooks';
 import { OnThisDayCard } from './on-this-day-card';
 import { Tile } from './tile';
 import type { Selection } from './use-selection';
@@ -32,11 +33,18 @@ function itemKey(item: GalleryItem): string {
 
 export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGridProps) {
   const router = useRouter();
-  const { clock } = useAppContext();
+  const { clock, services } = useAppContext();
   const { colors } = useTheme();
+  const window = useWindowDimensions();
+  const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
   const [width, setWidth] = useState(0);
-  const sections = useGallerySections(filter);
-  const columns = gridColumns(width);
+  const sections = useArrangedSections(filter);
+  const list = settings.galleryDisplayMode === 'list';
+  const columns = list ? 1 : columnsFor(width, window.height, settings.galleryColumnsPortrait, settings.galleryColumnsLandscape);
+  const display = useMemo(
+    () => ({ mode: settings.galleryDisplayMode, badges: settings.galleryBadges, hideNotePreviews: settings.hideNotePreviews }),
+    [settings.galleryDisplayMode, settings.galleryBadges, settings.hideNotePreviews],
+  );
   const items = useMemo(
     () => buildGalleryItems(sections, columns, showOnThisDay),
     [sections, columns, showOnThisDay],
@@ -73,7 +81,8 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
             key={entryId}
             entryId={entryId}
             position={item.firstPosition + offset}
-            size={tileSize}
+            size={list ? width : tileSize}
+            display={display}
             selecting={selection.selecting}
             selected={selection.selected.has(entryId)}
             onPress={(id, modifiers) => {
@@ -98,7 +107,7 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
           renderItem={renderItem}
           keyExtractor={itemKey}
           getItemType={(item) => item.type}
-          extraData={{ selection, tileSize }}
+          extraData={{ selection, tileSize, display }}
           ListFooterComponent={sections.length === 0 ? <>{empty}</> : null}
         />
       )}

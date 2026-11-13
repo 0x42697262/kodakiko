@@ -8,6 +8,7 @@ export type Selection = {
   readonly start: (entryId: string) => void;
   readonly tap: (entryId: string, modifiers: TileModifiers, order: readonly string[]) => boolean;
   readonly clear: () => void;
+  readonly selectAll: (order: readonly string[]) => void;
 };
 
 const NOTHING: ReadonlySet<string> = new Set();
@@ -45,5 +46,10 @@ export function useSelection(): Selection {
     setAnchor(null);
   }, []);
 
-  return { selecting, selected, start, tap, clear };
+  const selectAll = useCallback((order: readonly string[]) => {
+    setSelecting(true);
+    setSelected(new Set(order));
+  }, []);
+
+  return { selecting, selected, start, tap, clear, selectAll };
 }

@@ -349,6 +349,8 @@ rows in `behaviors.md` point here.
 | U-21 | A | B-104 | sign in → Settings › Account → Change Server… → confirm → `welcome.serverLabel` visible and empty | 20 |
 | U-22 | A | — | `launchApp clearState` → `welcome.local` → local setup (username, password, `localSetup.understand`) → recovery key confirm → capture a photo with the emulator camera → `gallery.tile.0` visible and no `gallery.tilePending.0` | 20a |
 | U-23 | A | — | part 2 of U-22's device state (no `clearState`): sidecar seeds an invite → Settings › Account › Connect a Server… (`10.0.2.2` UI stack, invite link, password) → `connect.done`; sidecar checks the server has 1 entry for the username | 20a |
+| U-24 | W-d | — | `seedEntries` a photo and a video → Filter sheet: `sheet.filter.video` include → Display tab: display mode List → 1 tile with the clip's note; lock and unlock → still 1 tile (settings persist) | 22 |
+| U-25 | W | — | `seedEntries` 3 entries tagged beach, city, city → tag tabs All, beach, city; `gallery.tagTab.1` → 2 tiles; All → 3 | 22 |
 
 Behaviors that stay `manual` (neither tool can drive them here; recorded in `behaviors.md`):
 fingerprint unlock (B-009 Android), the background upload notification and resume (B-060),

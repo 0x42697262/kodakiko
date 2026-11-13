@@ -45,6 +45,13 @@ export const ICONS = Object.freeze({
   upload: 'cloud-upload',
   note: 'notes',
   video: 'videocam',
+  triOff: 'check-box-outline-blank',
+  triInclude: 'check-box',
+  triExclude: 'disabled-by-default',
+  ascending: 'arrow-upward',
+  descending: 'arrow-downward',
+  random: 'casino',
+  signOut: 'logout',
 } satisfies Record<string, MaterialIconName>);
 
 export type IconKey = keyof typeof ICONS;

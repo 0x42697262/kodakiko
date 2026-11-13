@@ -21,6 +21,7 @@ test('U-03 recover with the 24 words and sign in with the new password', async (
   await page.getByTestId('recover.submit').click();
 
   await expect(page.getByTestId('home.signedInAs')).toContainText(account.username);
+  await page.getByTestId('gallery.more').click();
   await page.getByTestId('home.signOut').click();
 
   await signInThroughUi(page, { username: account.username, password: UI_TEST_PASSWORD });

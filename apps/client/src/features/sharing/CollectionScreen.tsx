@@ -29,6 +29,7 @@ const NO_SELECTION: Selection = Object.freeze({
   start: () => undefined,
   tap: () => false,
   clear: () => undefined,
+  selectAll: () => undefined,
 });
 
 export function CollectionScreen({ collectionId }: { readonly collectionId: string }) {

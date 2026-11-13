@@ -250,6 +250,26 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
   - Not yet applied to the screens they affect (phase 3+): date format, relative dates, start
     screen, gallery display settings, hide shared, hide note previews, camera side, keep screen on.
 
+- **Phase 3 (2026-11-14):**
+  - Core: `GalleryFilter.attributes` (tri-state video, note, multiple, shared, pending; AND) inside
+    `query()`, `sortEntryIds` (date taken, note length, number of photos, seeded random), and
+    `allTags()` for the tag tabs (unit-tested).
+  - Client: `gallery-arrange.ts` (keep day sections for date order, one ungrouped section for other
+    sorts or when grouping is off, settings → attributes, columns per orientation); the tile
+    renders four display modes and Mihon-style icon badges (pending keeps
+    `gallery.tilePending.N`). The gallery header is an `AppBar`: title with "Signed in as"
+    (`home.signedInAs` stays visible), search, filter (tinted when active), and a ⋮ menu (open
+    random entry, Lock now, Trash, Sign out; U-03 opens `gallery.more` first). Tag tabs
+    (`tag-tabs.tsx`), a Paper extended FAB "New", and a selection bar with Select all.
+  - The filter sheet has Filter, Sort and Display tabs. The tags and dates fields stay under
+    Filter with their test ids (U-10).
+  - **Not done:** the kept-offline filter (pinned state lives in the originals service, not the
+    index), swipe between tag tabs, and collapsing the FAB on scroll.
+  - Paper's web `Menu` was dismissed by the same tap that opened it on touch devices; the menu
+    now opens on the next animation frame.
+  - `Screen` (non-scrolling) now uses `flex: 1`, so content no longer runs under the bottom bar.
+  - U-24 and U-25 were written after the code (no red run; slip noted).
+
 ## 9. Answered questions (programmer, 2026-11-14)
 
 | ID | Question | Answer |

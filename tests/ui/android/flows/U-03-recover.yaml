@@ -34,6 +34,8 @@ appId: com.x42697262.kodakiko
       text: .*${USERNAME}.*
     timeout: 60000
 - tapOn:
+    id: gallery.more
+- tapOn:
     id: home.signOut
 - runFlow: common/connect.yaml
 - tapOn:

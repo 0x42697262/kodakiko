@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { EN } from '../text/en';
 import { ICONS, type IconKey } from './icons';
@@ -22,6 +22,9 @@ export type AppBarMenuItem = {
 
 export function AppBar({
   title,
+  titleNode,
+  backIcon = 'back',
+  backLabel,
   subtitle,
   backTestID,
   onBack,
@@ -30,6 +33,9 @@ export function AppBar({
   menuTestID,
 }: {
   readonly title: string;
+  readonly titleNode?: ReactNode;
+  readonly backIcon?: IconKey;
+  readonly backLabel?: string;
   readonly subtitle?: string;
   readonly backTestID?: string;
   readonly onBack?: () => void;
@@ -45,12 +51,12 @@ export function AppBar({
       {backTestID === undefined ? null : (
         <Appbar.Action
           testID={backTestID}
-          icon={ICONS.back}
-          accessibilityLabel={EN['settings.back']}
+          icon={ICONS[backIcon]}
+          accessibilityLabel={backLabel ?? EN['settings.back']}
           onPress={onBack ?? (() => router.back())}
         />
       )}
-      <Appbar.Content title={title} {...(subtitle === undefined ? {} : { subtitle })} />
+      <Appbar.Content title={titleNode ?? title} accessibilityLabel={title} {...(subtitle === undefined ? {} : { subtitle })} />
       {actions.map((action) => (
         <Appbar.Action
           key={action.key}
@@ -70,7 +76,7 @@ export function AppBar({
               {...(menuTestID === undefined ? {} : { testID: menuTestID })}
               icon={ICONS.overflow}
               accessibilityLabel={EN['gallery.more']}
-              onPress={() => setMenuOpen(true)}
+              onPress={() => requestAnimationFrame(() => setMenuOpen(true))}
             />
           }
         >
