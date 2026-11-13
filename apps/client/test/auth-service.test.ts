@@ -1,4 +1,5 @@
 import sodiumLib from 'libsodium-wrappers-sumo';
+import { WORDLIST_EN } from '@kodakiko/core';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { decodeBytes, encodeBytes } from '@kodakiko/contract';
@@ -824,7 +825,8 @@ describe('review additions', () => {
     const { sodium, server, words } = await accountWithSecrets();
     const app = await startApp(server, createDevice(), sodium);
     const swapped = [...words];
-    [swapped[0], swapped[1]] = [swapped[1] ?? '', swapped[0] ?? ''];
+    const lastWord = swapped.at(-1) ?? '';
+    swapped[swapped.length - 1] = WORDLIST_EN[WORDLIST_EN.indexOf(lastWord) ^ 1] ?? '';
 
     await expect(
       app.service.recover({

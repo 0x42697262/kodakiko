@@ -12,6 +12,10 @@ import { createLifecycle, type Lifecycle } from '../adapters/lifecycle/lifecycle
 import { createLocationProvider, type LocationProvider } from '../adapters/location/location';
 import { createMediaToolkit } from '../adapters/media/media-toolkit';
 import { createTempFiles, type TempFiles } from '../adapters/temp-files/temp-files';
+import { createPlaintextSink } from '../adapters/plaintext-sink/plaintext-sink';
+import { createLocalOriginalSource, type OriginalSource } from '../services/originals/original-source';
+import { placeholderVideoLauncher, type VideoLauncher } from '../services/video/video-launcher';
+import type { GalleryNotice } from '../features/gallery/gallery-notice-model';
 import { createRowStore } from '../adapters/rowstore/rowstore';
 import { createServerUrlStore, type ServerUrlStore } from '../adapters/server-url/server-url';
 import { createSessionStore, type SessionStore } from '../adapters/session/session-store';
@@ -82,6 +86,9 @@ export type Services = {
   readonly lastIndexBuild: Observable<IndexBuildReport | null>;
   readonly thumbnails: ThumbnailSource;
   readonly galleryFilter: GalleryFilterStore;
+  readonly originals: OriginalSource;
+  readonly galleryNotice: Observable<GalleryNotice | null>;
+  readonly videoLauncher: VideoLauncher;
 };
 
 export type AppContext = {
@@ -237,6 +244,16 @@ export async function createAppContext(): Promise<AppContext> {
     sodium,
   });
   const galleryFilter = createGalleryFilterStore();
+  const galleryNotice = createObservable<GalleryNotice | null>(null);
+  const originals = createLocalOriginalSource({
+    rowStore,
+    fileStore,
+    entryKeys: stack.entryKeys,
+    sodium,
+    clock: systemClock,
+    readMetadata: entries.readMetadata,
+    sink: createPlaintextSink({ tempFiles }),
+  });
   await tempFiles.wipe().catch(() => undefined);
   bindAccountLifecycle(accountState, {
     onUnlocked: () => {
@@ -251,7 +268,9 @@ export async function createAppContext(): Promise<AppContext> {
       stack.sync.stop();
       index.clear();
       thumbnails.clear();
+      originals.clearAll().catch(() => undefined);
       galleryFilter.reset();
+      galleryNotice.set(null);
       stack.entryKeys.clear();
       boundSettings.unload();
       captureTray.clear(true).catch(() => undefined);
@@ -292,6 +311,9 @@ export async function createAppContext(): Promise<AppContext> {
       location: createLocationProvider(),
       entries,
       tagSuggestions: createIndexTagSuggestionSource(index),
+      originals,
+      galleryNotice,
+      videoLauncher: placeholderVideoLauncher,
       savedNotice: createObservable<number | null>(null),
       index,
       lastIndexBuild,

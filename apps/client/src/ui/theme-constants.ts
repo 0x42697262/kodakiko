@@ -38,3 +38,4 @@ export const MIN_TOUCH_TARGET = 44;
 export const BORDER_WIDTH = 1;
 export const DISABLED_OPACITY = 0.5;
 export const MULTILINE_MIN_HEIGHT = 120;
+export const FONT_FAMILY_MONO = 'monospace';

@@ -204,6 +204,24 @@ must replace it before any release (the release checklist in spec 21 verifies `c
    changed) lists the remaining ids; tested with combinations, including "remove one and reorder
    the rest", whose `edit` must pass `applyEntryEdit` on the metadata after the removal.
 
+## 4a. Implementation notes (2026-11-12, Opus)
+
+- Plaintext for viewing goes through a platform port `PlaintextSink`
+  (`src/adapters/plaintext-sink/`): web collects a `Blob` and returns an object URL; Android writes a
+  `TempFiles.create('view', ext)` file. `createLocalOriginalSource` takes it as a dependency, plus
+  `readMetadata` for the MIME type; MIME → extension map in `keys/mime-extensions.ts`.
+- Gallery notices ("That entry no longer exists.", "Moved to trash." + Undo) use a
+  `services.galleryNotice` observable shown by `GalleryNoticeBanner` in the gallery.
+- `/entry/[id]` became `app/entry/[id]/index.tsx` (with `app/entry/[id]/edit.tsx` beside it).
+- Capture add mode: `/capture?entryId=…` → `CaptureScreen addToEntry`; the import hook takes an
+  optional limit override (`maxMediaPerEntry − current count`).
+- U-12 needs spec 14 (entries from another device have no local thumbnail or original before
+  downloads exist); its flow files are parked in `tests/ui/pending/` and spec 14 moves them back
+  (07c §8 updated).
+- The flaky 07b test "recovery decodes the words locally" now breaks the checksum
+  deterministically (flip the last word's lowest bit) instead of swapping two words (≈1/256 of
+  swaps kept a valid checksum).
+
 ## 5. Verification checklist
 
 - [ ] `pnpm verify` green.

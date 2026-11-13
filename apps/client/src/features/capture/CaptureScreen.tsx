@@ -16,12 +16,18 @@ import { useTheme } from '../../ui/theme';
 import { TrayStrip } from './TrayStrip';
 import { useCaptureImport } from './use-capture-import';
 
-export function CaptureScreen() {
+export type CaptureScreenProps = { readonly addToEntry?: { readonly entryId: string; readonly currentCount: number } };
+
+export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   const router = useRouter();
   const { services } = useAppContext();
   const { colors } = useTheme();
-  const { items, pending, messages, maxMediaPerEntry, addInputs, remove } = useCaptureImport();
+  const configLimit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
+  const limitOverride = addToEntry === undefined ? null : Math.max(0, configLimit - addToEntry.currentCount);
+  const { items, pending, messages, maxMediaPerEntry, addInputs, remove } = useCaptureImport(limitOverride);
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
+  const [leftover, setLeftover] = useState(() => (addToEntry === undefined ? 0 : services.captureTray.items.length));
+  const [adding, setAdding] = useState(false);
   const maxUploadBytes = (services.config.get() ?? CONFIG_FALLBACK).maxUploadBytes;
   const empty = items.length === 0 && pending === 0;
 
@@ -38,6 +44,42 @@ export function CaptureScreen() {
   async function discard(): Promise<void> {
     await services.captureTray.clear(true);
     leave();
+  }
+
+  async function addToExisting(): Promise<void> {
+    if (addToEntry === undefined) return;
+    setAdding(true);
+    try {
+      await services.entries.addMedia(addToEntry.entryId, services.captureTray.items);
+      await services.captureTray.clear(false);
+      leave();
+    } catch {
+      setAdding(false);
+    }
+  }
+
+  if (leftover > 0) {
+    return (
+      <Screen testID={CAPTURE_IDS.screen}>
+        <View testID={CAPTURE_IDS.discardPanel} style={styles.panel}>
+          <Text style={[styles.panelText, { color: colors.text }]}>{EN['capture.discardInProgress'](leftover)}</Text>
+          <View style={styles.row}>
+            <Button
+              testID={testId('capture.discard')}
+              label={EN['capture.discard']}
+              variant="danger"
+              onPress={() => {
+                services.captureTray
+                  .clear(true)
+                  .then(() => setLeftover(0))
+                  .catch(() => undefined);
+              }}
+            />
+            <Button testID={testId('capture.cancelAdd')} label={EN['capture.cancelAdd']} variant="secondary" onPress={leave} />
+          </View>
+        </View>
+      </Screen>
+    );
   }
 
   return (
@@ -81,12 +123,22 @@ export function CaptureScreen() {
           variant="secondary"
           onPress={close}
         />
-        <Button
-          testID={testId('capture.next')}
-          label={EN['capture.next']}
-          disabled={items.length === 0}
-          onPress={() => router.push(APP_ROUTES.entryNew as Href)}
-        />
+        {addToEntry === undefined ? (
+          <Button
+            testID={testId('capture.next')}
+            label={EN['capture.next']}
+            disabled={items.length === 0}
+            onPress={() => router.push(APP_ROUTES.entryNew as Href)}
+          />
+        ) : (
+          <Button
+            testID={testId('capture.addToEntry')}
+            label={EN['capture.addToEntry']}
+            disabled={items.length === 0 || pending > 0}
+            busy={adding}
+            onPress={() => addToExisting().catch(() => undefined)}
+          />
+        )}
       </View>
     </Screen>
   );

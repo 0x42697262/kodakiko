@@ -15,7 +15,7 @@ export type CaptureImport = {
   readonly remove: (mediaId: string) => void;
 };
 
-export function useCaptureImport(): CaptureImport {
+export function useCaptureImport(limitOverride: number | null = null): CaptureImport {
   const { services } = useAppContext();
   const tray = services.captureTray;
   const items = useSyncExternalStore(tray.subscribe, () => tray.items);
@@ -23,7 +23,7 @@ export function useCaptureImport(): CaptureImport {
   const [messages, setMessages] = useState<readonly string[]>([]);
   const queue = useRef<Promise<void>>(Promise.resolve());
   const locationRequested = useRef(false);
-  const maxMediaPerEntry = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
+  const maxMediaPerEntry = limitOverride ?? (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
 
   const requestLocationOnce = useCallback(() => {
     if (locationRequested.current || !services.deviceSettings.get().locationForCaptures) return;
@@ -36,7 +36,7 @@ export function useCaptureImport(): CaptureImport {
 
   const importOne = useCallback(
     async (input: MediaInput, generation: number): Promise<void> => {
-      const limit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
+      const limit = limitOverride ?? (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
       const outcome = await services.mediaImport.importOne(input, {
         used: tray.items.length,
         limit,

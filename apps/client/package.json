@@ -43,6 +43,7 @@
     "expo-video-thumbnails": "catalog:",
     "idb": "catalog:",
     "libsodium-wrappers-sumo": "catalog:",
+    "marked": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-native": "catalog:",

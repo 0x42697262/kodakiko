@@ -1,6 +1,7 @@
 import '../src/config/zod-config';
 import { Stack } from 'expo-router';
-import { LogBox } from 'react-native';
+import { LogBox, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppContextProvider } from '../src/composition/app-context';
 import { UI_TEST_MODE } from '../src/config/build-flags';
@@ -21,10 +22,14 @@ function ThemedStack() {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <AppContextProvider>
-        <ThemedStack />
-      </AppContextProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <AppContextProvider>
+          <ThemedStack />
+        </AppContextProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({ root: { flex: 1 } });
