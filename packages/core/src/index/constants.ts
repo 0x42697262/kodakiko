@@ -1,0 +1,9 @@
+export const NOTE_PREVIEW_CHARS = 140;
+export const TOKEN_MIN_CHARS = 2;
+export const MAX_INDEX_TOKENS_PER_ENTRY = 500;
+export const TOKEN_UNICODE_FORM = 'NFKC';
+export const TOKEN_SEPARATOR_PATTERN = /[^\p{L}\p{N}]+/u;
+export const YEAR_END = 4;
+export const MONTH_DAY_START = 5;
+export const LOCAL_DATE_SEPARATOR = '-';
+export const SORT_BEFORE = -1;

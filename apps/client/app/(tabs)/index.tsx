@@ -1,34 +1,5 @@
-import { StyleSheet, Text } from 'react-native';
-import { useAccountState, useAppContext } from '../../src/composition/app-context';
-import { SavedBanner } from '../../src/features/entries/SavedBanner';
-import { SyncStatusBanner } from '../../src/features/sync/sync-status-banner';
-import { EN } from '../../src/text/en';
-import { Button } from '../../src/ui/Button';
-import { Screen } from '../../src/ui/Screen';
-import { FONT_SIZE } from '../../src/ui/theme-constants';
-import { useTheme } from '../../src/ui/theme';
+import { GalleryScreen } from '../../src/features/gallery/GalleryScreen';
 
-export default function GalleryPlaceholder() {
-  const { services } = useAppContext();
-  const state = useAccountState();
-  const { colors } = useTheme();
-  const username = state.kind === 'unlocked' ? state.username : '';
-  return (
-    <Screen testID="home.screen">
-      <SyncStatusBanner />
-      <SavedBanner />
-      <Text testID="home.signedInAs" style={[styles.title, { color: colors.text }]}>
-        {EN['home.signedInAs'](username)}
-      </Text>
-      <Button
-        testID="home.signOut"
-        label={EN['home.signOut']}
-        onPress={() => {
-          services.auth.signOut().catch(() => undefined);
-        }}
-      />
-    </Screen>
-  );
+export default function GalleryRoute() {
+  return <GalleryScreen />;
 }
-
-const styles = StyleSheet.create({ title: { fontSize: FONT_SIZE.title, fontWeight: '600' } });

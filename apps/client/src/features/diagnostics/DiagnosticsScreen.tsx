@@ -11,6 +11,8 @@ import { useTheme } from '../../ui/theme';
 import { measureKdf, runVectors } from './diagnostics-runs';
 import { fileStoreSelfTest } from './filestore-self-test';
 import { rowStoreSelfTest } from './rowstore-self-test';
+import { runIndexBenchmark } from './index-benchmark';
+import { INDEX_BENCHMARK_ENTRIES, UNLOCK_BUDGET_MS } from '../../constants/gallery-constants';
 import { enqueueUploadSelfTest, scheduleUploadSelfTestCleanup } from './upload-self-test';
 
 type Action = { readonly key: StaticTextKey; readonly run: () => Promise<readonly string[]> };
@@ -101,6 +103,26 @@ export function DiagnosticsScreen() {
         );
         app.services.sync.notifyLocalWrite();
         return [EN['sync.diagnosticsUploadTestResult'](result.objectId, result.sizeBytes)];
+      },
+    },
+    {
+      key: 'diagnostics.indexBenchmark',
+      run: async () => {
+        const result = await runIndexBenchmark({
+          sodium,
+          randomId: app.randomId,
+          clock: app.clock,
+          count: INDEX_BENCHMARK_ENTRIES,
+        });
+        const last = app.services.lastIndexBuild.get();
+        return [
+          EN['diagnostics.indexBenchmarkBuild'](result.entries, result.buildMs, result.entriesPerSecond),
+          EN['diagnostics.indexBenchmarkQuery'](result.queryMs),
+          EN['diagnostics.indexBenchmarkVerdict'](result.withinBudget, UNLOCK_BUDGET_MS),
+          ...(last === null
+            ? []
+            : [EN['diagnostics.indexLastBuild'](last.entries, last.unreadable, last.durationMs)]),
+        ];
       },
     },
   ];

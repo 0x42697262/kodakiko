@@ -129,6 +129,24 @@ const STALE = Symbol('stale');
 
 type Loaded = { readonly row: EntryRow; readonly entryKey: Uint8Array; readonly current: Metadata };
 
+export function openEntryMetadata(
+  sodium: Sodium,
+  entryKey: Uint8Array,
+  entryId: string,
+  blob: Uint8Array,
+): Metadata {
+  return openJson(
+    sodium,
+    entryKey,
+    blob,
+    EntryMetadataV1,
+    METADATA_SCHEMA_VERSION,
+    NO_MIGRATIONS,
+    AD_CONTEXTS.entryMetadata,
+    entryId,
+  );
+}
+
 function uniqueIds(entryIds: readonly string[]): string[] {
   return [...new Set(entryIds)];
 }
@@ -162,16 +180,7 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
   }
 
   function openMetadata(entryKey: Uint8Array, entryId: string, blob: Uint8Array): Metadata {
-    return openJson(
-      sodium,
-      entryKey,
-      blob,
-      EntryMetadataV1,
-      METADATA_SCHEMA_VERSION,
-      NO_MIGRATIONS,
-      AD_CONTEXTS.entryMetadata,
-      entryId,
-    );
+    return openEntryMetadata(sodium, entryKey, entryId, blob);
   }
 
   function sealMetadata(entryKey: Uint8Array, entryId: string, metadata: Metadata): Uint8Array {

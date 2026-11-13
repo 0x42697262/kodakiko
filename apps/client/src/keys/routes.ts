@@ -13,4 +13,9 @@ export const APP_ROUTES = Object.freeze({
   diagnostics: '/settings/diagnostics',
   capture: '/capture',
   entryNew: '/entry/new',
+  trash: '/trash',
 } as const);
+
+export function entryRoute(entryId: string): `/entry/${string}` {
+  return `/entry/${entryId}`;
+}

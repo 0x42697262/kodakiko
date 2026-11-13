@@ -33,7 +33,22 @@ import type { EntryKeys } from '../services/keys/entry-keys';
 import { createEntriesService, type EntriesService } from '../services/entries/entries-service';
 import { createImportService, type ImportService } from '../services/media/import-service';
 import { createBoundDeviceSettings } from '../services/settings/bound-device-settings';
-import { EMPTY_TAG_SUGGESTIONS, type TagSuggestionSource } from '../services/tags/tag-suggestions';
+import type { TagSuggestionSource } from '../services/tags/tag-suggestions';
+import {
+  createIndexService,
+  createIndexTagSuggestionSource,
+  type IndexBuildReport,
+  type IndexService,
+} from '../services/index/index-service';
+import {
+  createLocalThumbnailSource,
+  type ThumbnailSource,
+} from '../services/thumbnails/thumbnail-source';
+import {
+  createGalleryFilterStore,
+  type GalleryFilterStore,
+} from '../features/gallery/gallery-store';
+import { GALLERY_LOG_EVENTS } from '../keys/gallery-ids';
 import type { DeviceSettings } from '../services/settings/device-settings';
 import { createSyncStack } from '../services/sync/create-sync-stack';
 import type { NotificationPrompt } from '../services/sync/notification-prompt';
@@ -63,6 +78,10 @@ export type Services = {
   readonly entries: EntriesService;
   readonly tagSuggestions: TagSuggestionSource;
   readonly savedNotice: Observable<number | null>;
+  readonly index: IndexService;
+  readonly lastIndexBuild: Observable<IndexBuildReport | null>;
+  readonly thumbnails: ThumbnailSource;
+  readonly galleryFilter: GalleryFilterStore;
 };
 
 export type AppContext = {
@@ -195,10 +214,34 @@ export async function createAppContext(): Promise<AppContext> {
       return state.kind === 'unlocked' ? { userId: state.userId } : null;
     },
   });
+  const lastIndexBuild = createObservable<IndexBuildReport | null>(null);
+  const index = createIndexService({
+    sodium,
+    rowStore,
+    entryKeys: stack.entryKeys,
+    events,
+    clock: systemClock,
+    account: () => {
+      const state = accountState.get();
+      return state.kind === 'unlocked' ? { userId: state.userId } : null;
+    },
+    onBuilt: (report) => {
+      lastIndexBuild.set(report);
+      if (__DEV__) console.info(GALLERY_LOG_EVENTS.indexBuilt, JSON.stringify(report));
+    },
+  });
+  const thumbnails = createLocalThumbnailSource({
+    fileStore,
+    rowStore,
+    entryKeys: stack.entryKeys,
+    sodium,
+  });
+  const galleryFilter = createGalleryFilterStore();
   await tempFiles.wipe().catch(() => undefined);
   bindAccountLifecycle(accountState, {
     onUnlocked: () => {
       stack.sync.start();
+      index.build().catch(() => undefined);
       boundSettings
         .load()
         .catch(() => undefined);
@@ -206,6 +249,9 @@ export async function createAppContext(): Promise<AppContext> {
     },
     onLeftUnlocked: () => {
       stack.sync.stop();
+      index.clear();
+      thumbnails.clear();
+      galleryFilter.reset();
       stack.entryKeys.clear();
       boundSettings.unload();
       captureTray.clear(true).catch(() => undefined);
@@ -245,8 +291,12 @@ export async function createAppContext(): Promise<AppContext> {
       deviceSettings: boundSettings.settings,
       location: createLocationProvider(),
       entries,
-      tagSuggestions: EMPTY_TAG_SUGGESTIONS,
+      tagSuggestions: createIndexTagSuggestionSource(index),
       savedNotice: createObservable<number | null>(null),
+      index,
+      lastIndexBuild,
+      thumbnails,
+      galleryFilter,
     },
   };
 }

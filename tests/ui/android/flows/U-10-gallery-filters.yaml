@@ -1,0 +1,52 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- runFlow: common/connect.yaml
+- runFlow: common/sign-in.yaml
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.2
+    timeout: 60000
+- assertVisible:
+    id: gallery.dayHeader.2
+- assertNotVisible:
+    id: gallery.tile.3
+- tapOn:
+    id: gallery.filter
+- tapOn:
+    id: tags.field
+- inputText: a
+- pressKey: Enter
+- tapOn:
+    id: tags.field
+- inputText: b
+- pressKey: Enter
+- hideKeyboard
+- tapOn:
+    id: filter.apply
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.0
+    timeout: 10000
+- assertNotVisible:
+    id: gallery.tile.1
+- tapOn:
+    id: gallery.clearAll
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.2
+    timeout: 10000
+- tapOn:
+    id: gallery.search
+- tapOn:
+    id: gallery.searchField
+- inputText: lake
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.0
+    timeout: 10000
+- assertNotVisible:
+    id: gallery.tile.1

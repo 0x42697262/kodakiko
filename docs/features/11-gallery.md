@@ -255,6 +255,14 @@ snapshot of D-46 becomes a new spec).
 4. Thumbnail source: plain file → uri; encrypted local object → decrypts to the original bytes
    (compare the blob/data URI payload); LRU evicts the 301st and releases it.
 
+## 7a. Implementation decisions (2026-11-12)
+
+- The gallery keeps `home.signedInAs` and `home.signOut` until spec 20 moves sign-out to Settings
+  (the UI flows depend on them).
+- Filter sheet "Reset" clears the sheet's fields only; nothing changes until "Apply".
+- Accepted additions: optional `urls` argument of `createLocalThumbnailSource`, id
+  `gallery.dayHeader.n` in `keys/gallery-ids.ts`, shared `openEntryMetadata`.
+
 ## 8. Verification checklist
 
 - [ ] `pnpm verify` green.
