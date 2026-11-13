@@ -8,7 +8,7 @@ Android app and a mobile-friendly web app built from one Expo codebase.
 
 <p>
   <img src="docs/screenshots/web-mobile-gallery.png" alt="Gallery on a phone-sized browser" width="220">
-  <img src="docs/screenshots/web-mobile-viewer.png" alt="Entry viewer with a markdown note" width="220">
+  <img src="docs/screenshots/web-mobile-viewer-note.png" alt="Entry viewer with a markdown note" width="220">
   <img src="docs/screenshots/web-mobile-calendar.png" alt="Calendar" width="220">
 </p>
 

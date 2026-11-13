@@ -18,6 +18,7 @@ const SETTLE_MS = 1_500;
 const OFFSET = '+01:00';
 const TILES = /^gallery\.tile\.\d+$/;
 const PENDING = /^gallery\.tilePending\.\d+$/;
+const VISIBLE_CAPTURE = '[data-testid="gallery.capture"]:visible';
 const DESKTOP: BrowserContextOptions = { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } };
 const MOBILE: BrowserContextOptions = { ...devices['Pixel 7'] };
 const RIDGE = { latitude: 46.5586, longitude: 7.8355 };
@@ -84,7 +85,7 @@ async function prepareMedia(): Promise<void> {
 }
 
 async function createThroughUi(page: Page, entry: DemoEntry): Promise<void> {
-  await page.getByTestId('gallery.capture').click();
+  await page.locator(VISIBLE_CAPTURE).click();
   await page.getByTestId('capture.fileInput').setInputFiles(entry.files.map((file) => join(DATED_DIRECTORY, file)));
   await expect(page.getByTestId(`capture.trayItem.${entry.files.length - 1}`)).toBeVisible({ timeout: SYNC_WAIT_MS });
   await page.getByTestId('capture.next').click();
@@ -94,14 +95,15 @@ async function createThroughUi(page: Page, entry: DemoEntry): Promise<void> {
     await page.getByTestId('tags.field').press('Enter');
   }
   await page.getByTestId('compose.save').click();
-  await expect(page.getByTestId('gallery.capture')).toBeVisible({ timeout: SYNC_WAIT_MS });
+  await expect(page.getByTestId('compose.note')).toHaveCount(0, { timeout: SYNC_WAIT_MS });
+  await expect(page.locator(VISIBLE_CAPTURE)).toHaveCount(1, { timeout: SYNC_WAIT_MS });
 }
 
 async function author(browser: Browser, account: SeededAccount, entries: readonly DemoEntry[]): Promise<void> {
   const context = await browser.newContext(DESKTOP);
   const page = await context.newPage();
   await signInThroughUi(page, account);
-  await expect(page.getByTestId('gallery.capture')).toBeVisible({ timeout: SYNC_WAIT_MS });
+  await expect(page.locator(VISIBLE_CAPTURE)).toHaveCount(1, { timeout: SYNC_WAIT_MS });
   for (const entry of entries) await createThroughUi(page, entry);
   await expect(page.getByTestId(TILES)).toHaveCount(entries.length, { timeout: SYNC_WAIT_MS });
   await expect(page.getByTestId(PENDING)).toHaveCount(0, { timeout: SYNC_WAIT_MS });
@@ -151,7 +153,7 @@ async function captureSet(browser: Browser, options: BrowserContextOptions, pref
 
   await page.getByTestId('gallery.tile.0').click();
   await expect(page.getByTestId('markdown.view')).toBeVisible({ timeout: SYNC_WAIT_MS });
-  await shot(page, `${prefix}-viewer`);
+  if (prefix === 'web-mobile') await shot(page, `${prefix}-viewer`);
   await page.getByTestId('markdown.view').scrollIntoViewIfNeeded();
   await shot(page, `${prefix}-viewer-note`);
   await page.getByTestId('viewer.back').click();

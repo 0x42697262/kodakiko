@@ -120,7 +120,8 @@ export function ComposeScreen() {
         ...(locationOverride === undefined ? {} : { location: locationOverride }),
       });
       services.savedNotice.set(clock.now());
-      router.dismissTo(APP_ROUTES.root as Href);
+      if (router.canDismiss()) router.dismissAll();
+      else router.replace(APP_ROUTES.root as Href);
     } catch {
       leaving.current = false;
       setFailed(true);

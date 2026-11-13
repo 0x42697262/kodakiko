@@ -201,10 +201,12 @@ async function ownEntryIds(
   context: Awaited<ReturnType<typeof createTestClientContext>>,
   tag: string | null,
 ): Promise<string[]> {
+  const state = context.accountState.get();
+  const userId = state.kind === 'unlocked' ? state.userId : null;
   const rows = await context.rowStore.transaction((tx) => tx.entries.all());
   const selected: string[] = [];
   for (const row of rows) {
-    if (row.trashedAt !== null) continue;
+    if (row.trashedAt !== null || row.ownerId !== userId) continue;
     if (tag !== null && !(await context.entries.readMetadata(row.id)).tags.includes(tag)) continue;
     selected.push(row.id);
   }

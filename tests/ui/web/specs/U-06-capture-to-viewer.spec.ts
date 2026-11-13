@@ -20,6 +20,8 @@ test('U-06 capture two files, save with a note and a tag, open the entry in the 
   await page.getByTestId('compose.save').click();
 
   await expect(page.getByTestId('gallery.tile.0')).toBeVisible();
+  await expect(page.locator('[data-testid="gallery.screen"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="capture.screen"]')).toHaveCount(0);
   await page.getByTestId('gallery.tile.0').click();
   await expect(page.getByTestId('viewer.pageIndicator')).toHaveText('1 / 2');
   await expect(page.getByTestId('location.coordinates')).toContainText('48.85840, 2.29450');
