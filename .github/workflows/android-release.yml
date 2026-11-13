@@ -59,6 +59,7 @@ jobs:
 
       - name: Build signed release APK
         working-directory: apps/client/android
+        shell: bash
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -68,12 +69,25 @@ jobs:
           keystore="$(mktemp)"
           trap 'rm -f "$keystore"' EXIT
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$keystore"
+          log="$RUNNER_TEMP/gradle.log"
+          set +e
           ./gradlew assembleRelease \
             -PreactNativeArchitectures="$ABI" \
             -Pandroid.injected.signing.store.file="$keystore" \
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD" 2>&1 | tee "$log"
+          status="${PIPESTATUS[0]}"
+          set -e
+          if [ "$status" -ne 0 ]; then
+            summary="$(sed -n '/What went wrong:/,/\* Try:/p' "$log" | head -n 40)"
+            [ -n "$summary" ] || summary="$(tail -n 40 "$log")"
+            summary="${summary//'%'/'%25'}"
+            summary="${summary//$'\r'/'%0D'}"
+            summary="${summary//$'\n'/'%0A'}"
+            echo "::error title=Gradle build failed::$summary"
+            exit "$status"
+          fi
 
       - name: Check the signature is not the debug key
         run: |
