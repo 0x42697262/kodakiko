@@ -350,7 +350,7 @@ The programmer asked for a GitHub Release of the Android APK **per tag only** (s
 before the rest of phase 2. `.github/workflows/android-release.yml` (on `push: tags: ['v*']`) is the
 Android part of §6:
 1. Checks that the tag equals `v` + `app.config.ts` `version`.
-2. Runs `pnpm verify`; installs NDK 27.0.12077973, CMake 3.22.1, platform 37 and build-tools 37.0.0.
+2. Runs `pnpm verify`; installs NDK 27.0.12077973, CMake 3.22.1, platform `android-37.0` (the SDK repository has no plain `android-37`) and build-tools 37.0.0.
 3. `prebuild:android`, then `assembleRelease -PreactNativeArchitectures=arm64-v8a` with the
    `android.injected.signing.*` properties from the four secrets `ANDROID_KEYSTORE_BASE64`,
    `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` (keystore in a temp
