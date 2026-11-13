@@ -17,6 +17,10 @@ export const APP_ROUTES = Object.freeze({
   calendar: '/calendar',
 } as const);
 
+export function playRoute(entryId: string, mediaId: string): `/play/${string}/${string}` {
+  return `/play/${entryId}/${mediaId}`;
+}
+
 export function entryRoute(entryId: string): `/entry/${string}` {
   return `/entry/${entryId}`;
 }

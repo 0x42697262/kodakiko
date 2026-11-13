@@ -16,6 +16,7 @@ function ThemedStack() {
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
     >
       <Stack.Screen name="capture" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="play/[entryId]/[mediaId]" options={{ presentation: 'fullScreenModal' }} />
     </Stack>
   );
 }

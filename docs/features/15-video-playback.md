@@ -165,6 +165,29 @@ lifetime.
 3. Android source logic with a fake FileStore and a fake file sink (Node): decrypts to the original
    bytes; abort deletes the partial file.
 
+## 6a. Implementation notes (2026-11-12, Opus)
+
+- §3.3 step 6 changed: the worker no longer fetches the whole clamped range in one bucket
+  request. It answers with a streamed body and fetches **one chunk per bucket request on demand**,
+  keeping the last `SW_CHUNK_CACHE_SIZE = 4` decrypted chunks (LRU) plus the final chunk (pinned
+  after the truncation check). Reason: Chrome reads about 1 MiB of each response, cancels it and
+  re-requests from its read position; the one-fetch design downloaded every object twice (observed
+  in U-13: 12.98 MB for a 6.49 MB object). Only the first chunk is decrypted before the response
+  starts, so damaged first chunks still answer `502`; a later failure ends the stream with an
+  error.
+- The handler lives in `web/sw/media-handler.ts` (Node-testable); `media-sw.ts` re-exports
+  `handleMediaRequest` and wires the worker events. Message types are in `web/sw/messages.ts`.
+- `createDecryptingVideoSource` (`src/services/video/`) is the shared, tested decrypt-to-file logic.
+  Android uses it with `TempFiles.create('play', …)`; the web fallback uses it with a Blob
+  collector. `TempFiles.wipePurpose(purpose)` was added for `releaseAll`.
+- Platform files must not import their own base name (`./video-source` from
+  `video-source.web.ts` resolves to itself in Metro → "Maximum call stack" at startup), so the
+  shared code is in `video-source-shared.ts`.
+- `VideoView` on web drops `testID`, so a wrapping `View` carries `video.player`.
+- `activity.touch()` while playing arrives with spec 16 (no activity service exists yet).
+- U-13 was written after the code (deviation from D-72). It delays bucket responses by 250 ms,
+  because on a local network Chrome buffers the whole 6.5 MB fixture before the seek runs.
+
 ## 7. Verification checklist
 
 - [ ] `pnpm verify` green.

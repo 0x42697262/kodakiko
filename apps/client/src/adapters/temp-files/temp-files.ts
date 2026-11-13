@@ -12,6 +12,7 @@ export type TempFile = {
 export interface TempFiles {
   readonly create: (purpose: TempPurpose, extension: string) => Promise<TempFile>;
   readonly wipe: () => Promise<void>;
+  readonly wipePurpose: (purpose: TempPurpose) => Promise<void>;
   readonly list: () => Promise<readonly string[]>;
 }
 

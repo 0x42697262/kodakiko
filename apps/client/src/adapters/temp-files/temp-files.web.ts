@@ -8,6 +8,7 @@ export function createTempFiles(_deps: TempFilesDeps): TempFiles {
       throw new TempFilesUnsupportedError(EN['tempFiles.unsupported']);
     },
     wipe: async () => undefined,
+    wipePurpose: async () => undefined,
     list: async () => [],
   };
 }

@@ -131,7 +131,6 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
             disabled={!playable}
             onPress={() => services.videoLauncher.open(entryId, media.mediaId)}
           />
-          {!playable && __DEV__ ? <Body testID={testId('viewer.playUnavailable')} text={EN['viewer.playUnavailable']} /> : null}
         </View>
       </View>
     );

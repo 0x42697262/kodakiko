@@ -19,7 +19,9 @@ import { createDownloader, type Downloader } from '../services/downloads/downloa
 import { createWifiUploadPolicy } from '../services/downloads/upload-policy';
 import { createCachingThumbnailSource, type ThumbnailCacheService } from '../services/thumbnails/thumbnail-cache';
 import { createNetworkInfo } from '../adapters/network/network';
-import { placeholderVideoLauncher, type VideoLauncher } from '../services/video/video-launcher';
+import type { VideoLauncher } from '../services/video/video-launcher';
+import type { VideoSource } from '../services/video/video-source';
+import { createVideoSource } from '../adapters/video-source/video-source';
 import type { GalleryNotice } from '../features/gallery/gallery-notice-model';
 import { createRowStore } from '../adapters/rowstore/rowstore';
 import { createServerUrlStore, type ServerUrlStore } from '../adapters/server-url/server-url';
@@ -34,7 +36,7 @@ import { DEVICE_SETTINGS_DEFAULTS } from '../constants/device-settings-defaults'
 import { ORPHAN_SWEEP_AGE_MS } from '../constants/media-constants';
 import { createCaptureTrayStore, type CaptureTrayStore } from '../features/capture/capture-tray-store';
 import { MEDIA_LOG_EVENTS } from '../keys/media-keys';
-import { APP_ROUTES } from '../keys/routes';
+import { APP_ROUTES, playRoute } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
@@ -94,6 +96,7 @@ export type Services = {
   readonly downloader: Downloader;
   readonly galleryNotice: Observable<GalleryNotice | null>;
   readonly videoLauncher: VideoLauncher;
+  readonly videoSource: VideoSource;
 };
 
 export type AppContext = {
@@ -290,6 +293,21 @@ export async function createAppContext(): Promise<AppContext> {
     isWifi: () => network.isWifi(),
     now: systemClock.now,
   });
+  const videoSource = createVideoSource({
+    rowStore,
+    fileStore,
+    entryKeys: stack.entryKeys,
+    sodium,
+    http,
+    readMetadata: entries.readMetadata,
+    downloader,
+    tempFiles,
+    randomId,
+  });
+  const videoLauncher: VideoLauncher = {
+    canPlay: () => true,
+    open: (entryId, mediaId) => router.push(playRoute(entryId, mediaId)),
+  };
   stack.sync.onPassCompleted(() => {
     if (accountState.get().kind !== 'unlocked') return;
     downloader.resume();
@@ -311,6 +329,7 @@ export async function createAppContext(): Promise<AppContext> {
       stack.sync.stop();
       index.clear();
       downloader.abortAll();
+      videoSource.releaseAll().catch(() => undefined);
       thumbnails.clear();
       originals.clearAll().catch(() => undefined);
       galleryFilter.reset();
@@ -358,7 +377,8 @@ export async function createAppContext(): Promise<AppContext> {
       originals,
       downloader,
       galleryNotice,
-      videoLauncher: placeholderVideoLauncher,
+      videoLauncher,
+      videoSource,
       savedNotice: createObservable<number | null>(null),
       index,
       lastIndexBuild,

@@ -1,6 +1,6 @@
 import { Directory, File, FileMode, Paths } from 'expo-file-system';
 import { createRandomId } from '../ids';
-import { tempFileName, tmpDirectory } from '../../keys/paths';
+import { TEMP_FILE_SEPARATOR, tempFileName, tmpDirectory } from '../../keys/paths';
 import { EN } from '../../text/en';
 import { hashAccountKey } from '../account-key';
 import type { TempFile, TempFiles, TempFilesDeps } from './temp-files';
@@ -12,6 +12,19 @@ function listRecursive(directory: Directory): readonly string[] {
     if (entry instanceof Directory) uris.push(...listRecursive(entry));
   }
   return uris;
+}
+
+function deleteMatching(directory: Directory, prefix: string): void {
+  for (const entry of directory.list()) {
+    if (entry instanceof Directory) deleteMatching(entry, prefix);
+    else if (entry.name.startsWith(prefix)) {
+      try {
+        entry.delete();
+      } catch {
+        continue;
+      }
+    }
+  }
 }
 
 export function createTempFiles(deps: TempFilesDeps): TempFiles {
@@ -58,6 +71,10 @@ export function createTempFiles(deps: TempFilesDeps): TempFiles {
           continue;
         }
       }
+    },
+    wipePurpose: async (purpose) => {
+      const prefix = `${purpose}${TEMP_FILE_SEPARATOR}`;
+      deleteMatching(new Directory(Paths.cache), prefix);
     },
     list: async () => listRecursive(new Directory(Paths.cache)),
   };
