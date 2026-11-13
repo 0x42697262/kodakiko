@@ -222,6 +222,13 @@ must replace it before any release (the release checklist in spec 21 verifies `c
   deterministically (flip the last word's lowest bit) instead of swapping two words (≈1/256 of
   swaps kept a valid checksum).
 
+- Fix (2026-11-13): the viewer screen scrolls (`Screen scroll`), so the note is reachable on
+  phones.
+- Fix (2026-11-13, spec 10 code): saving a new entry used `router.dismissTo('/')`, which pushed a
+  second gallery and left the capture modal mounted under it. It now dismisses the stack and
+  replaces it with `/` only when the stack's first screen is not the tabs. U-06 asserts one
+  gallery screen and no capture screen after saving.
+
 ## 5. Verification checklist
 
 - [ ] `pnpm verify` green.

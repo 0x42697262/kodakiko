@@ -28,3 +28,5 @@ export function entryRoute(entryId: string): `/entry/${string}` {
 export function dayRoute(localDate: string): `/day/${string}` {
   return `/day/${localDate}`;
 }
+
+export const TABS_ROUTE_NAME = '(tabs)';

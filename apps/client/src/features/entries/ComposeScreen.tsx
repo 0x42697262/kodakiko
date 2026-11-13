@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { useNavigation, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NOTE_MAX_CHARS, TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
@@ -16,7 +16,7 @@ import {
   TILE_SIZE,
 } from '../../constants/entry-constants';
 import { ENTRY_IDS } from '../../keys/entry-ids';
-import { APP_ROUTES } from '../../keys/routes';
+import { APP_ROUTES, TABS_ROUTE_NAME } from '../../keys/routes';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
@@ -36,6 +36,7 @@ type EntryLocation = NonNullable<ReturnType<typeof buildNewEntryMetadata>['locat
 
 export function ComposeScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { services, clock } = useAppContext();
   const { colors } = useTheme();
   const tray = services.captureTray;
@@ -120,8 +121,9 @@ export function ComposeScreen() {
         ...(locationOverride === undefined ? {} : { location: locationOverride }),
       });
       services.savedNotice.set(clock.now());
+      const firstRoute = navigation.getState()?.routes[0]?.name;
       if (router.canDismiss()) router.dismissAll();
-      else router.replace(APP_ROUTES.root as Href);
+      if (firstRoute !== TABS_ROUTE_NAME) router.replace(APP_ROUTES.root as Href);
     } catch {
       leaving.current = false;
       setFailed(true);
