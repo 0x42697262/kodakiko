@@ -43,6 +43,7 @@ function WordGrid({ words }: { readonly words: readonly string[] }) {
 
 function ConfirmStep({ words }: { readonly words: readonly string[] }) {
   const { services, sodium } = useAppContext();
+  const { colors } = useTheme();
   const router = useRouter();
   const positions = useMemo(
     () =>
@@ -81,7 +82,7 @@ function ConfirmStep({ words }: { readonly words: readonly string[] }) {
       ) : null}
       {positions.map((position, index) => (
         <View key={position}>
-          <Text testID={listTestId(TEST_IDS.recoveryKeyConfirmLabel, index)}>
+          <Text testID={listTestId(TEST_IDS.recoveryKeyConfirmLabel, index)} style={[styles.confirmLabel, { color: colors.text }]}>
             {EN['recoveryKey.confirmWord'](position)}
           </Text>
           <TextField
@@ -149,6 +150,7 @@ export function RecoveryKeyScreen() {
 
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
+  confirmLabel: { fontSize: FONT_SIZE.body, fontWeight: '600' },
   cell: {
     width: `${FULL_PERCENT / RECOVERY_GRID_COLUMNS}%`,
     flexDirection: 'row',
