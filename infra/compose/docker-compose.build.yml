@@ -1,0 +1,9 @@
+services:
+  caddy:
+    build:
+      context: ../..
+      dockerfile: infra/docker/caddy.Dockerfile
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/api.Dockerfile

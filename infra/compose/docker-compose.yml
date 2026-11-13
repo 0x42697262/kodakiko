@@ -1,0 +1,89 @@
+name: kodakiko
+
+services:
+  caddy:
+    image: ${REGISTRY}/kodakiko-caddy:${KODAKIKO_VERSION}
+    ports:
+      - '${BIND_IP:?set BIND_IP to the VPN address}:80:80'
+      - '${BIND_IP:?set BIND_IP to the VPN address}:443:443'
+    environment:
+      DOMAIN: ${DOMAIN:?}
+      ACME_EMAIL: ${ACME_EMAIL:?}
+      DNS_API_TOKEN: ${DNS_API_TOKEN:?}
+      S3_MAX_BODY: ${S3_MAX_BODY:-9MiB}
+      S3_PUBLIC_ORIGIN: https://s3.kodakiko.${DOMAIN}
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    image: ${REGISTRY}/kodakiko-api:${KODAKIKO_VERSION}
+    env_file: .env.api
+    environment:
+      DATABASE_URL: postgres://kodakiko:${POSTGRES_PASSWORD:?}@postgres:5432/kodakiko
+      SERVER_VERSION: ${KODAKIKO_VERSION}
+    read_only: true
+    tmpfs:
+      - /tmp
+    depends_on:
+      postgres:
+        condition: service_healthy
+      garage:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: kodakiko
+      POSTGRES_USER: kodakiko
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kodakiko -d kodakiko']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  garage:
+    image: dxflrs/garage:v2.5.0@sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5
+    command: ['/garage', 'server']
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:?}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:?}
+    volumes:
+      - ../garage/garage.toml:/etc/garage.toml:ro
+      - ${GARAGE_DATA_PATH:-garage-data}:/var/lib/garage
+    restart: unless-stopped
+
+  garage-setup:
+    profiles: ['setup']
+    image: node:22.23.4-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d
+    command: ['node', '/scripts/garage-bootstrap.ts']
+    environment:
+      GARAGE_ADMIN_URL: http://garage:3903
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:?}
+      S3_BUCKET: ${S3_BUCKET:-kodakiko}
+    volumes:
+      - ../scripts/garage-bootstrap.ts:/scripts/garage-bootstrap.ts:ro
+    depends_on:
+      - garage
+
+  backup:
+    profiles: ['backup']
+    image: rclone/rclone:1.75.2@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5
+    volumes:
+      - ${BACKUP_DIR:?}:/backup
+      - rclone-config:/config/rclone
+
+volumes:
+  caddy-data:
+  caddy-config:
+  pg-data:
+  garage-data:
+  rclone-config:

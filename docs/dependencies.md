@@ -143,10 +143,10 @@ Pinned by digest when first pulled; the digest is recorded here in the same comm
 |---|---|---|---|
 | `postgres` | `17` @ `sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f` (pulled 2026-11-12) | recorded | database (`deployment.md` §2), also the test database (spec 03) |
 | `dxflrs/garage` | `v2.5.0` @ `sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5` (linux/amd64, pulled 2026-11-12) | recorded | object storage (F-S3-02) |
-| `caddy` | `2` builder + runtime; runtime `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03` (pulled 2026-11-12, used by the UI stack) | runtime recorded; builder to record (spec 21) | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
-| `node` | `22-bookworm-slim` | to record | server runtime and build stages (spec 21) |
-| `caddy` | `2-builder` | to record | xcaddy build with `CADDY_VERSION` and `DNS_MODULE` pinned (spec 21, D-68) |
-| `rclone/rclone` | latest 1.x at pull time | to record | bucket backups (spec 21, operations guide) |
+| `caddy` | runtime `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03` (pulled 2026-11-12, used by the UI stack and the production image) | recorded | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
+| `node` | `22.23.4-bookworm-slim` @ `sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d` (tag pushed 2026-11-05, recorded 2026-11-13; the floating `22-bookworm-slim` tag was 2 days old, under the 7-day rule) | recorded | API runtime, build stages, `garage-setup` (spec 21) |
+| `caddy` | `2.11.8-builder` @ `sha256:d4eb070c36154bd2d4c94b40359a03c6168346d5af5404963c74691ab77fb63f` (tag pushed 2026-11-05) | recorded | xcaddy build with `CADDY_VERSION=v2.11.8` and `DNS_MODULE=github.com/caddy-dns/cloudflare@v0.2.4` (spec 21, D-68); the production runtime stage reuses the recorded `caddy:2` digest above |
+| `rclone/rclone` | `1.75.2` @ `sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5` (tag pushed 2026-10-09; 1.76.0 was 7 days old) | recorded | backups: dump copy and bucket sync (spec 21, operations guide §5) |
 
 ### Deliberately excluded
 

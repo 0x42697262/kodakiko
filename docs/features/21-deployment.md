@@ -306,6 +306,44 @@ Each item: what to check and the expected result.
   `icon-512.png`, generated once from the app icon), linked from the web HTML through Expo's web
   config (`app.config.ts` `web.favicon` and a `+html.tsx` adding `<link rel="manifest">`).
 
+## 7b. Implementation notes, phase 1 (2026-11-13, Opus)
+
+- **Images (§1):** `infra/docker/api.Dockerfile` and `caddy.Dockerfile`, plus a root
+  `.dockerignore`. Base images are pinned to version tags at least 7 days old (node `22.23.4`,
+  caddy `2.11.8-builder`, rclone `1.75.2`; `docs/dependencies.md`). The floating tags named in §1
+  had been rebuilt 2 days earlier. The API image was built and smoke-tested against the test
+  Postgres: migrations ran, `/health/live` returned 200, `/api/v1/config` answered, and it ran with
+  a read-only root filesystem (248 MB). **The Caddy image was not built (UNVERIFIED):** the Node
+  client install plus the Go build need about 2–3 GB, and the build machine had 4.7 GB free with
+  a 4 GB floor. The Caddyfile was checked with `caddy adapt` (stock `caddy:2`, with the DNS block
+  swapped for `tls internal`): both sites parse.
+- **Garage bootstrap:** the Garage image has no shell, so `bootstrap.sh` cannot run in it. The
+  bootstrap is `infra/scripts/garage-bootstrap.ts`, which uses the Garage admin API v2
+  (`GetClusterStatus`, `UpdateClusterLayout`/`ApplyClusterLayout`, `GetBucketInfo`/`CreateBucket`,
+  `ListKeys`/`CreateKey`, `AllowBucketKey`). It runs as `garage-setup` in the pinned node image.
+  Unit-tested with a fake API and run twice against real Garage v2.5.0 (idempotent; the secret is
+  printed only when the key is created). Garage takes `GARAGE_RPC_SECRET` and `GARAGE_ADMIN_TOKEN`
+  from env (verified), so `infra/garage/garage.toml` holds no secrets.
+- **Compose (§3):** server settings live in `.env.api` (`.env.api.example`), not in `.env`.
+  Otherwise `env_file: .env` would hand the DNS token, Garage admin token and Postgres password to
+  the API container. `.env` (`.env.example`) holds only the compose variables. `DATABASE_URL` and
+  `SERVER_VERSION` are set by compose. A `backup` profile service runs rclone. Validated with
+  `docker compose config` (ports bound to `BIND_IP` only; no compose-only secret in `api`).
+- **Backups (§4.5):** `infra/scripts/backup.sh` (dump → prune 14 daily + 8 weekly Sundays → rclone
+  copy and bucket sync, with the Garage remote defined by `RCLONE_CONFIG_GARAGE_*` env) and
+  `infra/systemd/kodakiko-backup.{service,timer}`. The prune rule was checked on dated files; the
+  full script was not run against a live stack.
+- **CSP hashes (§2.3)** and **`scripts/check-licenses.ts`** (needed by the §1.2 web stage) are done
+  with tests. Root-level scripts get `vitest.scripts.config.ts` and `tsconfig.scripts.json`; the
+  root `test` and `typecheck` scripts now include them. The real dependency tree passes D-70.
+- **§7a:** `renovate.json`; web manifest and icons (`apps/client/public/manifest.json`,
+  `assets/icon-192.png`/`icon-512.png`, generated with ImageMagick because no app icon existed).
+  `+html.tsx` is used only for `static`/`server` output; with `single` output Expo reads
+  `public/index.html` as the template (verified in `@expo/cli` 58.1.19 `webTemplate.js`), so the
+  manifest link is there. `web.favicon` is set.
+- `FAKE_PARAMS_SECRET` must be base64url; the operations guide gives
+  `openssl rand -base64 32 | tr '+/' '-_' | tr -d '='`.
+
 ## 8. Tests and verification
 
 - [ ] `pnpm verify`; CI green on a pull request (all five jobs).

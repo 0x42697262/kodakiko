@@ -1,0 +1,52 @@
+{
+	email {$ACME_EMAIL}
+}
+
+(tls_dns) {
+	tls {
+		dns cloudflare {env.DNS_API_TOKEN}
+	}
+}
+
+kodakiko.{$DOMAIN} {
+	import tls_dns
+	encode zstd gzip
+	handle /api/* {
+		request_body {
+			max_size 2MiB
+		}
+		reverse_proxy api:8080
+	}
+	handle /health/* {
+		reverse_proxy api:8080
+	}
+	handle /media-sw.js {
+		import snippets/security-headers.caddy
+		header Cache-Control "no-cache"
+		root * /srv/web
+		file_server
+	}
+	handle /_expo/static/* {
+		import snippets/security-headers.caddy
+		header Cache-Control "public, max-age=31536000, immutable"
+		root * /srv/web
+		file_server
+	}
+	handle {
+		import snippets/security-headers.caddy
+		header Cache-Control "no-cache"
+		root * /srv/web
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+s3.kodakiko.{$DOMAIN} {
+	import tls_dns
+	request_body {
+		max_size {$S3_MAX_BODY}
+	}
+	reverse_proxy garage:3900 {
+		header_up Host {host}
+	}
+}

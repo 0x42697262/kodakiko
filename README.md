@@ -29,7 +29,10 @@ More screenshots: [docs/screenshots](docs/screenshots/README.md).
 | Video playback: web streams through a service worker that decrypts byte ranges; Android plays a temp file | Done |
 | App lock: auto-lock (background on Android, idle on web), lock now, biometric unlock, "keep me unlocked" on web | Done |
 | Read-only sharing of journals with other users on the same server, with security codes | Done |
-| Public links, admin tools, settings and export, production deployment | In progress (specs 18–21) |
+| Public links with metadata stripped from photos and videos; admin screen and CLI | Done |
+| Settings, password change, account deletion, journal export to zip files | Done |
+| Local-only mode on Android: use the app without a server, connect one later | Done |
+| Production deployment: Docker images, Caddy with DNS-01 TLS, compose stack, backups ([operations guide](docs/operations.md)) | Done (phase 1, local builds); CI and release workflow in phase 2 |
 
 Verified on desktop browsers and the Android emulator. Still to check on a real phone: background
 uploads, biometric unlock, and key-derivation timing.
@@ -48,7 +51,7 @@ implementation-notes section that records what changed during the build.
 - **Storage:** Garage (S3-compatible) holds immutable encrypted objects; the server never sees
   plaintext, keys or file names.
 - **Deployment target:** a Docker Compose stack (Caddy, API, Postgres, Garage) reached over a VPN
-  first, ready to go public later.
+  first, ready to go public later. Setup, backups and restore: [docs/operations.md](docs/operations.md).
 
 Start with [docs/architecture.md](docs/architecture.md) for the system map; the full document index
 is in [docs/README.md](docs/README.md).

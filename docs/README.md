@@ -13,6 +13,7 @@
 | `design/client.md` | Navigation, screens, state, composition root, platform adapters |
 | `design/security.md` | Threat model, key handling, headers, rate limits, verification checklist |
 | `design/deployment.md` | Compose stack, profiles private/public, VPN, DNS-01 TLS, backups, flags registry |
+| `operations.md` | Running the production stack: DNS, first run, backups, restore drill, updates, going public, secret rotation |
 | `adr/` | One ADR per major decision (0001..0010) |
 | `dependencies.md` | Dependency allowlist, pnpm policy, CI gates (D-11) |
 | `operations.md` | Production operations: first run, DNS, firewall, backups, restore drill, updates, going public (written in spec 21) |

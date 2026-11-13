@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "minimumReleaseAge": "7 days",
+  "rangeStrategy": "pin",
+  "separateMajorMinor": true,
+  "separateMinorPatch": false,
+  "automerge": false,
+  "groupName": null,
+  "packageRules": [
+    {
+      "matchPackageNames": ["*"],
+      "groupName": null,
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["libsodium*", "react-native-libsodium"],
+      "labels": ["needs-crypto-review"],
+      "automerge": false
+    }
+  ]
+}

@@ -19,7 +19,7 @@ const config: ExpoConfig = {
       'android.permission.WRITE_EXTERNAL_STORAGE',
     ],
   },
-  web: { output: 'single', bundler: 'metro' },
+  web: { output: 'single', bundler: 'metro', favicon: './assets/icon-192.png' },
   plugins: [
     'expo-router',
     'react-native-libsodium',

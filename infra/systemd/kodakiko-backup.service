@@ -1,0 +1,9 @@
+[Unit]
+Description=Kodakiko nightly backup (database dump and bucket copy)
+Wants=network-online.target docker.service
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+Environment=COMPOSE_DIR=/opt/kodakiko/infra/compose
+ExecStart=/opt/kodakiko/infra/scripts/backup.sh

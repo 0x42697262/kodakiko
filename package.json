@@ -3,16 +3,19 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.17.0",
-  "engines": { "node": ">=22.18.0" },
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "scripts": {
     "verify": "pnpm lint && pnpm typecheck && pnpm test",
     "lint": "eslint . --max-warnings 0",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r --filter '!@kodakiko/e2e' test",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.scripts.json",
+    "test": "pnpm -r --filter '!@kodakiko/e2e' test && pnpm test:scripts",
     "test:e2e": "pnpm --filter @kodakiko/e2e test",
     "format": "prettier --write .",
     "ui:web": "pnpm --filter @kodakiko/ui-tests test:web",
-    "ui:android": "pnpm --filter @kodakiko/ui-tests test:android"
+    "ui:android": "pnpm --filter @kodakiko/ui-tests test:android",
+    "test:scripts": "vitest run --config vitest.scripts.config.ts"
   },
   "devDependencies": {
     "@types/node": "catalog:",
