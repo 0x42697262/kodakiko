@@ -247,6 +247,41 @@ button (Android: `Linking.openURL(\`geo:${lat},${lon}?q=${lat},${lon}\`)`; web:
    `addTagToMany` offline → sync → device B sees the tag on all 3.
 4. `formatEntryTime` table (today, yesterday, this year, last year, offsets ±).
 
+## 5a. Implementation decisions and review 1 (2026-11-12)
+
+Decisions: (a) pull writes kv `account.homeCollectionId` when it upserts the owned `home` collection
+and the key is missing (the service keeps its RowStore fallback); (b) `createFromTray` input gains
+`location?: LocationV1 | null` (`undefined` = computed, `null` = removed) and compose shows "Remove
+Location"; (c) accepted: ids in `keys/entry-ids.ts`, the in-memory `savedNotice`, the fake toolkit,
+bulk tag skip rules, `collectionOwner` "Remove from This Journal" disabled until spec 17.
+
+Review additions (test-first):
+1. `deletePermanently` queues `deleteEntry` when `baseRevision >= 1` **or** its `createEntry` item has
+   `attempts > 0` **or** the entry is in flight (`SyncService.isEntryInFlight(entryId)`, exposing the
+   driver's in-flight set); only a never-attempted, not-in-flight create is simply dropped.
+2. `setTrashed` cancels the opposite item only if it is `queued`, `attempts === 0` and not in flight;
+   otherwise it enqueues its own kind.
+3. While saving, compose disables strip/move/remove/change/tags; `createFromTray` reads the tray
+   `generation` first and throws if it or the items changed after its awaits; it detaches the items
+   before the transaction (`captureTray.take()`: removes without deleting files, restored on failure),
+   so a lock-triggered clear cannot delete committed files.
+4. `edit` takes `Omit<EntryEdit, 'addMedia' | 'removeMediaId'>` and throws `InvalidEditError` if
+   either field is present at runtime.
+5. `applyEntryEdit` and `buildNewEntryMetadata` normalize, deduplicate and sort tags; an invalid tag
+   → `InvalidEditError`.
+6. `addMedia` checks `items.length > 0` and `current + new ≤ config.maxMediaPerEntry`.
+7. `trash`, `restore`, `deletePermanently` return `BulkResult` (`changed`, `skipped`) for bulk calls;
+   the bulk sheet shows it.
+8. `addMedia` wipes new media keys after commit; `entryKeys.forget(entryId, mediaId?)` is called after
+   `removeMedia` and `deletePermanently`.
+9. `edit`, `addMedia` and `removeMedia` re-check inside their write transaction that the entry's
+   `metadataBlob` and `baseRevision` are unchanged since they sealed; otherwise re-read and retry (up
+   to `EDIT_RETRY_ATTEMPTS = 5`).
+10. Time editor: "Use original time" resets the offset too (`onDone(original)`); compose clears the
+    time override when the tray changes.
+11. Tests: B-025 asserts device `b` still has `trashedAt === null`; the media-key wrap test unwraps
+    with `AD_CONTEXTS.mediaKeyByEntry` and compares to a copy of the tray key.
+
 ## 6. Verification checklist
 
 - [ ] `pnpm verify` and e2e green (paste summaries).
