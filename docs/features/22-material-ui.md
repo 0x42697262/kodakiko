@@ -289,6 +289,43 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
 | OQ-3 | Material You colors | Later |
 | OQ-4 | Tags management and Statistics screens | Yes (phase 5) |
 
+## 11. Additions requested 2026-11-14 (phase 5b, v0.1.3)
+
+Every behavior below is a device setting (on/off or a choice), so each one can be switched back.
+
+### 11.1 Full screen
+- Setting **Full screen** (Appearance, default **on**, Android): hides the status bar and the
+  navigation bar (immersive, swipe from an edge to show them for a moment). Uses `expo-status-bar`
+  and `expo-navigation-bar` (Expo SDK 58: ~58.0.4 each).
+- Setting **Hide bars on scroll** (Appearance, default on): the gallery's top bar, the tag tabs
+  and the bottom navigation slide away while scrolling down and come back when scrolling up
+  (Material "hide on scroll"). The FAB shrinks to an icon at the same time.
+
+### 11.2 Power-user information
+- **Entry details** (viewer ⋮ › Details, also an `info` action in the viewer bar): ids, taken
+  time with offset, created/edited times, version, collections, tags, location with coordinates
+  and source; per photo or video: file name, type, size, dimensions, duration, capture time from
+  EXIF, upload state, whether the original and thumbnail are on this device, encrypted size and
+  chunk size. Copy buttons for ids.
+- **Statistics** (More › Statistics): entries, photos, videos, notes, tags (top 10 with counts),
+  first and last entry, entries per month (bar chart, last 12 months) and per year; storage:
+  originals and thumbnails on this device, waiting to upload, server usage and quota; sync: last
+  sync, queued and failed items.
+- Setting **Show technical details** (Advanced, default off): ids and file sizes in the list
+  display mode and in the viewer header.
+
+### 11.3 Camera
+- **Photo / Video mode switch** under the shutter (segmented). Tap takes a photo in Photo mode
+  and starts/stops recording in Video mode. The recording timer stays.
+- Setting **Hold shutter to record** (Capture, default off). When on, holding the shutter in Photo
+  mode records a video, capped at **Maximum hold-to-record length** (choice 5, 10, 15, 30, 60,
+  120 s; default 15 s).
+- Setting **Camera app** (Capture): *Kodakiko camera* (default) or *Phone's camera app*. The
+  phone's camera app is opened with `expo-image-picker` `launchCameraAsync`; the returned photo
+  or video joins the tray. The setting's summary warns that some camera apps also keep their own
+  copy in the phone's gallery (unencrypted).
+- Keep the screen on while capturing (`captureKeepScreenOn`) via `expo-keep-awake` ~58.0.3.
+
 ## 10. Verification checklist
 
 - [ ] `pnpm verify`, `pnpm ui:web`, e2e green after each phase.
