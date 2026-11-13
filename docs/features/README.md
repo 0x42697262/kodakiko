@@ -75,3 +75,4 @@ point at private addresses.
 | 20 | `20-settings-export.md` settings screens, password change, recovery key display, account deletion, journal export (D-52, D-66) | 14, 16-19 |
 | 20a | `20a-local-only-mode.md` Android local-only mode: on-device account, no sync, eviction off, connect a server later (D-83) | 08, 14, 16, 20 |
 | 21 | `21-deployment.md` production images and compose, Caddy DNS-01 + CSP hashes, Garage setup + CORS, operations guide, CI and release workflows, release checklist | all |
+| 22 | `22-material-ui.md` Material 3 UI modeled on Mihon: app bars, icon bottom navigation, More tab, tag tabs, Filter/Sort/Display sheet, declarative settings (D-84) | all client specs |
