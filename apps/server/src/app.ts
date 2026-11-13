@@ -30,6 +30,9 @@ import {
 import { registerRequestContext, setResponseContext } from './http/request-context.ts';
 import { registerAuthRoutes } from './http/routes/auth.ts';
 import { registerCollectionsRoutes } from './http/routes/collections.ts';
+import { registerSharingRoutes } from './http/routes/sharing.ts';
+import { createSharingController } from './http/controllers/sharing-controller.ts';
+import { createSharingService } from './services/sharing-service.ts';
 import { registerEntriesRoutes } from './http/routes/entries.ts';
 import { registerMediaRoutes } from './http/routes/media.ts';
 import { registerSyncRoutes } from './http/routes/sync.ts';
@@ -151,5 +154,10 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   );
   registerCollectionsRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
   registerSyncRoutes(app, { controller: collectionsController, rateLimitFor, requireSession });
+  registerSharingRoutes(app, {
+    controller: createSharingController(createSharingService({ db, settings, clock, logger: app.log })),
+    rateLimitFor,
+    requireSession,
+  });
   return app;
 }

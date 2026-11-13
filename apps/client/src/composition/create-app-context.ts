@@ -69,6 +69,8 @@ import { createActivitySource, pageVisibility } from '../adapters/activity/activ
 import { AUTO_LOCK_MODE } from '../constants/auto-lock-mode';
 import { createAutoLock, type ActivitySource, type AutoLock } from '../services/lock/auto-lock';
 import { createLockService } from '../services/lock/lock-service';
+import { createCollectionNames, type CollectionNames } from '../services/sharing/collection-names';
+import { createSharingService, type SharingService } from '../services/sharing/sharing-service';
 import { createEventBus, type AppEventBus, type AppEvents } from './events';
 import {
   createAccountState,
@@ -100,6 +102,8 @@ export type Services = {
   readonly galleryNotice: Observable<GalleryNotice | null>;
   readonly videoLauncher: VideoLauncher;
   readonly lock: LockControl;
+  readonly sharing: SharingService;
+  readonly collectionNames: CollectionNames;
   readonly videoSource: VideoSource;
 };
 
@@ -332,6 +336,25 @@ export async function createAppContext(): Promise<AppContext> {
     thumbnails.prefetchAll().catch(() => undefined);
   });
   await tempFiles.wipe().catch(() => undefined);
+  const sharing = createSharingService({
+    sodium,
+    http,
+    rowStore,
+    fileStore,
+    entryKeys: stack.entryKeys,
+    account: () => {
+      const state = accountState.get();
+      return state.kind === 'unlocked' ? { userId: state.userId, keys: state.keys } : null;
+    },
+    sharingEnabled: () => config.get()?.sharingEnabled === true,
+    randomId,
+    clock: systemClock,
+    afterChange: (entryIds) => {
+      if (entryIds.length > 0) events.emit('entriesChanged', [...entryIds]);
+      stack.sync.syncNow().catch(() => undefined);
+    },
+  });
+  const collectionNames = createCollectionNames({ sodium, rowStore, entryKeys: stack.entryKeys });
   const returnTo = createObservable<string | null>(null);
   const lockService = createLockService({
     accountState,
@@ -353,6 +376,7 @@ export async function createAppContext(): Promise<AppContext> {
           boundSettings.unload();
         },
       },
+      { name: 'clearCollectionNames', run: () => collectionNames.clear() },
       { name: 'wipeKeys', run: () => stack.entryKeys.clear() },
     ],
     unlockSteps: [
@@ -460,6 +484,8 @@ export async function createAppContext(): Promise<AppContext> {
       galleryNotice,
       videoLauncher,
       lock: lockControl,
+      sharing,
+      collectionNames,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,

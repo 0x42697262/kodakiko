@@ -25,6 +25,10 @@ export default function TabsLayout() {
         name="calendar"
         options={{ title: EN['tabs.calendar'], tabBarButtonTestID: testId('tabs.calendar') }}
       />
+      <Tabs.Screen
+        name="shared"
+        options={{ title: EN['tabs.shared'], tabBarButtonTestID: testId('tabs.shared') }}
+      />
     </Tabs>
   );
 }

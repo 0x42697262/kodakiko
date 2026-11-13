@@ -124,6 +124,8 @@ export const SETTINGS_DEFAULTS = Object.freeze({
   accountDeletionGraceDays: 7,
   jobExpireSessionsIntervalMinutes: 1440,
   maxCollectionMetadataBytes: 4096,
+  maxRecipientsPerCollection: 50,
+  maxSharedCollectionsPerUser: 200,
   storageRegion: 'garage',
   storageForcePathStyle: 'true',
   storageRequestTimeoutMs: 15000,
@@ -159,6 +161,8 @@ export const SETTINGS_BOUNDS = Object.freeze({
   inviteDefaultExpiryDaysMax: 90,
   accountDeletionGraceDaysMax: 90,
   maxCollectionMetadataBytesMin: 256,
+  maxRecipientsPerCollectionMax: 500,
+  maxSharedCollectionsPerUserMax: 10_000,
   fakeParamsSecretMinBytes: 32,
   bucketNameMinChars: 3,
   bucketNameMaxChars: 63,
@@ -272,3 +276,5 @@ export const CLI_FLAGS = Object.freeze({
 });
 export const CLI_INVITE_EXPIRES_DAYS_MIN = 1;
 export const CLI_INVITE_EXPIRES_DAYS_MAX = 90;
+
+export const SEALED_SHARE_BYTES = 104;

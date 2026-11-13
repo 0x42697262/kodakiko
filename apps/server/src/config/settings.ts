@@ -57,6 +57,10 @@ export type Settings = {
     readonly tombstoneRetentionDays: number;
   };
   readonly entries: { readonly trashDays: number };
+  readonly sharing: {
+    readonly maxRecipientsPerCollection: number;
+    readonly maxSharedCollectionsPerUser: number;
+  };
   readonly auth: {
     readonly fakeParamsSecret: Uint8Array;
     readonly sessionIdleDays: number;
@@ -236,6 +240,16 @@ const envSchema = z
       SETTINGS_DEFAULTS.jobExpireSessionsIntervalMinutes,
       1,
       Number.MAX_SAFE_INTEGER,
+    ),
+    MAX_RECIPIENTS_PER_COLLECTION: integer(
+      SETTINGS_DEFAULTS.maxRecipientsPerCollection,
+      1,
+      SETTINGS_BOUNDS.maxRecipientsPerCollectionMax,
+    ),
+    MAX_SHARED_COLLECTIONS_PER_USER: integer(
+      SETTINGS_DEFAULTS.maxSharedCollectionsPerUser,
+      1,
+      SETTINGS_BOUNDS.maxSharedCollectionsPerUserMax,
     ),
     MAX_COLLECTION_METADATA_BYTES: integer(
       SETTINGS_DEFAULTS.maxCollectionMetadataBytes,
@@ -427,6 +441,10 @@ function toSettings(env: Env): Settings {
       tombstoneRetentionDays: env.TOMBSTONE_RETENTION_DAYS,
     },
     entries: { trashDays: env.TRASH_DAYS },
+    sharing: {
+      maxRecipientsPerCollection: env.MAX_RECIPIENTS_PER_COLLECTION,
+      maxSharedCollectionsPerUser: env.MAX_SHARED_COLLECTIONS_PER_USER,
+    },
     auth: {
       fakeParamsSecret: env.FAKE_PARAMS_SECRET,
       sessionIdleDays: env.SESSION_IDLE_DAYS,

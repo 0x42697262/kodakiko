@@ -1,4 +1,5 @@
-import type { RowStoreTx } from '../../adapters/rowstore/rowstore';
+import type { FileStore } from '../../adapters/filestore/filestore';
+import type { RowStore, RowStoreTx } from '../../adapters/rowstore/rowstore';
 import { entryIdOfPayload } from './outbox-rows';
 
 export async function removeMediaRows(tx: RowStoreTx, mediaId: string): Promise<readonly string[]> {
@@ -29,4 +30,25 @@ export async function deleteFiles(
   objectIds: readonly string[],
 ): Promise<void> {
   for (const objectId of objectIds) await fileStore.delete(objectId);
+}
+
+export async function dropLocalCollection(
+  rowStore: RowStore,
+  fileStore: FileStore,
+  collectionId: string,
+): Promise<readonly string[]> {
+  const changed = new Set<string>();
+  const files: string[] = [];
+  await rowStore.transaction(async (tx) => {
+    for (const membership of await tx.memberships.byCollection(collectionId)) {
+      await tx.memberships.delete([membership.collectionId, membership.entryId]);
+      changed.add(membership.entryId);
+      if ((await tx.memberships.byEntry(membership.entryId)).length === 0) {
+        files.push(...(await removeEntryRows(tx, membership.entryId)));
+      }
+    }
+    await tx.collections.delete(collectionId);
+  });
+  await deleteFiles(fileStore, files);
+  return [...changed];
 }

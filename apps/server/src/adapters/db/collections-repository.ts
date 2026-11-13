@@ -33,6 +33,7 @@ export type ReadableCollection = {
   readonly tombstonesPrunedThroughSeq: number;
   readonly createdAt: Date;
   readonly metaUpdatedAt: Date;
+  readonly recipientCount: number | null;
 };
 
 type Executor = Kysely<Database>;
@@ -84,6 +85,12 @@ function readableQuery(executor: Executor, userId: string) {
       'collections.tombstonesPrunedThroughSeq',
       'collections.createdAt',
       'collections.metaUpdatedAt',
+      (builder) =>
+        builder
+          .selectFrom('collectionShares as counted')
+          .select(builder.fn.countAll<string>().as('count'))
+          .whereRef('counted.collectionId', '=', 'collections.id')
+          .as('shareCount'),
     ]);
 }
 
@@ -109,6 +116,7 @@ function toReadable(row: ReadableSelection, userId: string): ReadableCollection 
     tombstonesPrunedThroughSeq: row.tombstonesPrunedThroughSeq,
     createdAt: row.createdAt,
     metaUpdatedAt: row.metaUpdatedAt,
+    recipientCount: owner && row.kind === 'shared' ? Number(row.shareCount ?? 0) : null,
   };
 }
 
@@ -172,6 +180,44 @@ export function createCollectionsRepository(db: Kysely<Database>) {
         .orderBy(sql`collections.id ${collateClause()}`)
         .execute();
       return readableRows(rows, userId);
+    },
+
+    async insertOwned(
+      executor: Executor,
+      row: NewHomeCollection & { readonly kind: 'shared' | 'link' },
+    ): Promise<InsertHomeResult> {
+      try {
+        await executor
+          .insertInto('collections')
+          .values({
+            id: row.id,
+            ownerId: row.ownerId,
+            kind: row.kind,
+            keyByOwner: row.keyByOwner,
+            metadataBlob: row.metadataBlob,
+            createdAt: row.now,
+            updatedAt: row.now,
+            metaUpdatedAt: row.now,
+          })
+          .execute();
+        return 'inserted';
+      } catch (error) {
+        return insertHomeResultOf(error);
+      }
+    },
+
+    async deleteCollection(executor: Executor, id: string): Promise<void> {
+      await executor.deleteFrom('collections').where('id', '=', id).execute();
+    },
+
+    async countOwnedShared(executor: Executor, ownerId: string): Promise<number> {
+      const row = await executor
+        .selectFrom('collections')
+        .select((builder) => builder.fn.countAll<string>().as('count'))
+        .where('ownerId', '=', ownerId)
+        .where('kind', '=', 'shared')
+        .executeTakeFirstOrThrow();
+      return Number(row.count);
     },
 
     async insertHome(home: NewHomeCollection): Promise<InsertHomeResult> {

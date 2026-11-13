@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { API_PREFIX, ROUTES, ROUTE_PATTERNS } from '../src/index.ts';
 
-const PLACEHOLDER = ':id';
+const PLACEHOLDER_PATTERN = /:[A-Za-z]+/g;
 
 describe('routes', () => {
   it('has the same keys in ROUTE_PATTERNS and ROUTES', () => {
@@ -11,7 +11,8 @@ describe('routes', () => {
   it('builds each pattern from placeholders', () => {
     for (const key of Object.keys(ROUTE_PATTERNS) as (keyof typeof ROUTE_PATTERNS)[]) {
       const builder = ROUTES[key] as (...parts: string[]) => string;
-      const placeholders = Array.from({ length: builder.length }, () => PLACEHOLDER);
+      const placeholders = ROUTE_PATTERNS[key].match(PLACEHOLDER_PATTERN) ?? [];
+      expect(placeholders).toHaveLength(builder.length);
       expect(builder(...placeholders)).toBe(ROUTE_PATTERNS[key]);
     }
   });

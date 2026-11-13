@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
+import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
+import { sharingErrorText } from '../sharing/sharing-errors';
 import { ENTRY_IDS } from '../../keys/entry-ids';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
@@ -21,14 +23,14 @@ export type BulkActionsSheetProps = {
   readonly onDone?: () => void;
 };
 
-type Panel = 'menu' | 'addTag' | 'removeTag' | 'confirmDelete';
+type Panel = 'menu' | 'addTag' | 'removeTag' | 'confirmDelete' | 'share';
 
 function resultMessage(result: BulkResult): string {
   const updated = EN['bulk.updated'](result.changed);
   return result.skipped > 0 ? `${updated} ${EN['bulk.skipped'](result.skipped)}` : updated;
 }
 
-export function BulkActionsSheet({ ids, mode, onDone }: BulkActionsSheetProps) {
+export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkActionsSheetProps) {
   const { services } = useAppContext();
   const { colors } = useTheme();
   const [panel, setPanel] = useState<Panel>('menu');
@@ -65,11 +67,27 @@ export function BulkActionsSheet({ ids, mode, onDone }: BulkActionsSheetProps) {
           testID={testId('bulk.removeFromJournal')}
           label={EN['bulk.removeFromJournal']}
           variant="secondary"
-          disabled
-          onPress={() => undefined}
+          busy={busy}
+          disabled={collectionId === undefined}
+          onPress={() => {
+            if (collectionId === undefined) return;
+            setBusy(true);
+            services.sharing
+              .removeEntries(collectionId, ids)
+              .then(() => {
+                setMessage(EN['bulk.updated'](ids.length));
+                onDone?.();
+              })
+              .catch((caught: unknown) => setMessage(sharingErrorText(caught)))
+              .finally(() => setBusy(false));
+          }}
         />
       </View>
     );
+  }
+
+  if (panel === 'share') {
+    return <ShareEntriesSheet entryIds={ids} />;
   }
 
   if (panel === 'confirmDelete') {
@@ -166,6 +184,9 @@ export function BulkActionsSheet({ ids, mode, onDone }: BulkActionsSheetProps) {
             busy={busy}
             onPress={() => void run(() => services.entries.trash(ids))}
           />
+          {services.config.get()?.sharingEnabled === true ? (
+            <Button testID={testId('bulk.share')} label={EN['bulk.share']} variant="secondary" onPress={() => setPanel('share')} />
+          ) : null}
         </>
       ) : (
         <>

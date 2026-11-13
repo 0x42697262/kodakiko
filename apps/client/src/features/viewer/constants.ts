@@ -8,6 +8,7 @@ export const VIEWER_IDS = Object.freeze({
   confirmSheet: 'viewer.confirmSheet',
   tagChip: 'viewer.tagChip',
   time: 'viewer.time',
+  sharedBy: 'viewer.sharedBy',
   previewLabel: 'viewer.showingPreview',
   downloading: 'viewer.downloading',
   downloadFailed: 'viewer.downloadFailed',

@@ -200,6 +200,15 @@ export function GalleryScreen() {
       {overlay === 'more' ? (
         <Sheet testID={GALLERY_IDS.moreMenu} onClose={() => setOverlay('none')}>
           <Button
+            testID={testId('settings.accountTitle')}
+            label={EN['settings.accountTitle']}
+            variant="secondary"
+            onPress={() => {
+              setOverlay('none');
+              router.push('/settings/account' as Href);
+            }}
+          />
+          <Button
             testID={testId('lock.lockNow')}
             label={EN['lock.lockNow']}
             variant="secondary"

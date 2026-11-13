@@ -1,4 +1,5 @@
 export const LOG_EVENTS = Object.freeze({
+  shareCreated: 'share.created',
   serverStarted: 'server.started',
   serverStopping: 'server.stopping',
   dbMigrationFailed: 'db.migration_failed',

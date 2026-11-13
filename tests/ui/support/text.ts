@@ -1,4 +1,6 @@
 export const STACK_TEXT = Object.freeze({
+  seedShareFlagOff: 'seedShare needs FLAG_SHARING=true on the UI server.',
+  seedShareIncomplete: (added: number, wanted: number) => `seedShare added ${added} of ${wanted} entries.`,
   commandFailed: (command: string, detail: string) => `Command failed: ${command}\n${detail}`,
   commandTimedOut: (command: string) => `Command timed out: ${command}`,
   workspaceRootMissing: (start: string) => `Cannot find the workspace root above ${start}.`,

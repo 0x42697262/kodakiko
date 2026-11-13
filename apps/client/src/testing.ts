@@ -1,3 +1,4 @@
+import { ROUTES, publicConfigSchema, type PublicConfigDto } from '@kodakiko/contract';
 import { startKdfParams, type Sodium } from '@kodakiko/core';
 import { systemClock, type Clock } from './adapters/clock';
 import { createHttpClient } from './adapters/http/http';
@@ -15,6 +16,7 @@ import type { Lifecycle } from './adapters/lifecycle/lifecycle';
 import { createMemoryMediaToolkit } from './adapters/memory/memory-media-toolkit';
 import { createWebUploader } from './adapters/uploader/uploader.web';
 import { bindAccountLifecycle } from './composition/account-lifecycle';
+import { createSharingService, type SharingService } from './services/sharing/sharing-service';
 import { createAccountState, createObservable } from './composition/account-state';
 import { createEventBus, type AppEventBus, type AppEvents } from './composition/events';
 import { SEED_TRAY_LIMIT } from './constants/entry-constants';
@@ -41,6 +43,7 @@ export function createTestAuthContext(input: TestAuthContextInput): TestAuthCont
   const sessionStore = createMemorySessionStore();
   const accountState = createAccountState({ kind: 'signedOut' });
   const activeAccountKey = createObservable<string | null>(null);
+  let currentConfig: PublicConfigDto | null = null;
   const http = createHttpClient({
     baseUrl: async () => input.baseUrl,
     sessionToken: async () => {
@@ -73,9 +76,24 @@ export function createTestAuthContext(input: TestAuthContextInput): TestAuthCont
     activeAccountKey,
     inviteToken: createObservable<string | null>(null),
     config: {
-      get: () => null,
-      refresh: async () => null,
-      accept: () => undefined,
+      get: () => currentConfig,
+      refresh: async () => {
+        try {
+          currentConfig = await http.request({
+            method: 'GET',
+            path: ROUTES.config(),
+            responseSchema: publicConfigSchema,
+            auth: 'none',
+            idempotent: true,
+          });
+        } catch {
+          return currentConfig;
+        }
+        return currentConfig;
+      },
+      accept: (config) => {
+        currentConfig = config;
+      },
       subscribe: () => () => undefined,
     },
     deviceLabel: () => TEST_DEVICE_LABEL,
@@ -104,6 +122,7 @@ export type TestClientContext = TestAuthContext &
     readonly entries: EntriesService;
     readonly captureTray: CaptureTrayStore;
     readonly mediaImport: ImportService;
+    readonly sharing: SharingService;
   };
 
 export type TrayFile = { readonly bytes: Uint8Array; readonly fileName: string };
@@ -173,6 +192,23 @@ export async function createTestClientContext(
       return state.kind === 'unlocked' ? { userId: state.userId } : null;
     },
   });
+  const sharing = createSharingService({
+    sodium: input.sodium,
+    http: auth.http,
+    rowStore: auth.rowStore,
+    fileStore: auth.fileStore,
+    entryKeys: stack.entryKeys,
+    account: () => {
+      const state = auth.accountState.get();
+      return state.kind === 'unlocked' ? { userId: state.userId, keys: state.keys } : null;
+    },
+    sharingEnabled: () => auth.config.get()?.sharingEnabled === true,
+    randomId: auth.randomId,
+    clock: input.clock,
+    afterChange: (entryIds) => {
+      if (entryIds.length > 0) events.emit('entriesChanged', [...entryIds]);
+    },
+  });
   bindAccountLifecycle(auth.accountState, {
     onUnlocked: () => undefined,
     onLeftUnlocked: () => {
@@ -181,7 +217,7 @@ export async function createTestClientContext(
       captureTray.clear(true).catch(() => undefined);
     },
   });
-  return { ...auth, ...stack, events, uploader, entries, captureTray, mediaImport };
+  return { ...auth, ...stack, events, uploader, entries, captureTray, mediaImport, sharing };
 }
 
 export async function importIntoTray(

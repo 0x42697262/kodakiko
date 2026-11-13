@@ -69,6 +69,7 @@ export function toCollectionDto(row: ReadableCollection): CollectionDto {
     lastSeq: row.lastSeq,
     createdAt: row.createdAt.toISOString(),
     metaUpdatedAt: row.metaUpdatedAt.toISOString(),
+    recipientCount: row.recipientCount,
   } as CollectionDto;
 }
 

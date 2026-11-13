@@ -24,7 +24,7 @@ import { STORAGE_KEYS } from '../../keys/storage-keys';
 import { SYNC_LOG_EVENTS } from '../../keys/sync-keys';
 import { EN } from '../../text/en';
 import { entryIdOfPayload } from './outbox-rows';
-import { deleteFiles, removeEntryRows, removeMediaRows } from './local-delete';
+import { deleteFiles, dropLocalCollection, removeEntryRows, removeMediaRows } from './local-delete';
 import { SYNC_CALLS } from './sync-calls';
 
 const MAX_RESYNC_RESTARTS = 3;
@@ -69,19 +69,8 @@ export function createPull(deps: PullDeps): Pull {
   }
 
   async function dropCollection(collectionId: string): Promise<void> {
-    const changed = new Set<string>();
-    const files: string[] = [];
-    await rowStore.transaction(async (tx) => {
-      for (const membership of await tx.memberships.byCollection(collectionId)) {
-        await tx.memberships.delete([membership.collectionId, membership.entryId]);
-        changed.add(membership.entryId);
-        if ((await tx.memberships.byEntry(membership.entryId)).length === 0) {
-          files.push(...(await removeEntryRows(tx, membership.entryId)));
-        }
-      }
-      await tx.collections.delete(collectionId);
-    });
-    await finish(changed, files);
+    const changed = await dropLocalCollection(rowStore, fileStore, collectionId);
+    await finish(new Set(changed), []);
   }
 
   async function refetchCollection(collectionId: string): Promise<void> {

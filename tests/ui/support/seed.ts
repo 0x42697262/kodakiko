@@ -174,3 +174,30 @@ export async function seedEntries(
     await pause(SEED_SETTLE_POLL_MS);
   }
 }
+
+export type SeededShare = { readonly collectionId: string };
+
+export async function seedShare(
+  owner: SeededAccount,
+  recipient: SeededAccount,
+  input: { readonly name: string; readonly entryIds: readonly string[] },
+): Promise<SeededShare> {
+  const context = await createTestClientContext({
+    baseUrl: WEB_ORIGIN,
+    fetcher: fetch,
+    sodium: await createNodeSodium(),
+    clock: SYSTEM_CLOCK,
+  });
+  await context.auth.signIn({ username: owner.username, password: owner.password, keepSignedIn: false });
+  const config = await context.config.refresh();
+  if (config?.sharingEnabled !== true) throw new Error(STACK_TEXT.seedShareFlagOff);
+  await context.sync.syncNow();
+  const collectionId = await context.sharing.createJournal(input.name);
+  const result = await context.sharing.addEntries(collectionId, input.entryIds);
+  if (result.added.length !== input.entryIds.length) {
+    throw new Error(STACK_TEXT.seedShareIncomplete(result.added.length, input.entryIds.length));
+  }
+  await context.sharing.share(collectionId, await context.sharing.lookupRecipient(recipient.username));
+  await context.sync.syncNow();
+  return { collectionId };
+}

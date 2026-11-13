@@ -35,10 +35,11 @@ import { MarkdownView } from '../markdown/markdown-view';
 import { ZoomablePhoto } from '../media/zoomable-photo';
 import { ORIGINAL_WINDOW, PAGE_ASPECT, PERCENT, PAGE_MAX_SCREEN_SHARE, VIEWER_IDS } from './constants';
 import { useViewerKeys } from './use-viewer-keys';
+import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 type Descriptor = Metadata['media'][number];
-type Overlay = 'none' | 'more' | 'confirmDelete';
+type Overlay = 'none' | 'more' | 'confirmDelete' | 'share';
 
 type PageProps = {
   readonly entryId: string;
@@ -183,6 +184,31 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
   );
 }
 
+function useOwnerName(entryId: string, own: boolean): string | null {
+  const { rowStore } = useAppContext();
+  const [name, setName] = useState<string | null>(null);
+  useEffect(() => {
+    if (own) return undefined;
+    let cancelled = false;
+    rowStore
+      .transaction(async (tx) => {
+        for (const membership of await tx.memberships.byEntry(entryId)) {
+          const collection = await tx.collections.get(membership.collectionId);
+          if (collection !== null && collection.role === 'viewer') return collection.ownerUsername;
+        }
+        return null;
+      })
+      .then((found) => {
+        if (!cancelled) setName(found);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [rowStore, entryId, own]);
+  return name;
+}
+
 function useMetadata(entryId: string, summary: IndexedEntry | null): Metadata | null {
   const { services } = useAppContext();
   const version = useIndexVersion();
@@ -216,6 +242,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   const status = useIndexStatus();
   const summary = useIndexedEntry(entryId);
   const metadata = useMetadata(entryId, summary);
+  const ownerName = useOwnerName(entryId, summary?.isOwn ?? true);
   const [width, setWidth] = useState(0);
   const [page, setPage] = useState(0);
   const [zoomed, setZoomed] = useState(false);
@@ -308,6 +335,11 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
           </View>
         ) : null}
       </View>
+      {owner || ownerName === null ? null : (
+        <Text testID={VIEWER_IDS.sharedBy} style={{ color: colors.textMuted }}>
+          {EN['shared.sharedBy'](ownerName)}
+        </Text>
+      )}
       {summary.trashed && owner ? (
         <View style={styles.block}>
           <Banner testID={testId('viewer.inTrash')} kind="info" message={EN['viewer.inTrash']} />
@@ -426,14 +458,21 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               <Button testID={testId('viewer.trash')} label={EN['viewer.trash']} variant="secondary" onPress={() => trash().catch(() => undefined)} />
             </>
           ) : null}
-          <Button
-            testID={testId('viewer.share')}
-            label={EN['viewer.share']}
-            variant="secondary"
-            disabled
-            onPress={() => undefined}
-          />
-          {sharingAvailable ? null : <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />}
+          {owner ? (
+            <Button
+              testID={testId('viewer.share')}
+              label={EN['viewer.share']}
+              variant="secondary"
+              disabled={!sharingAvailable}
+              onPress={() => setOverlay('share')}
+            />
+          ) : null}
+          {sharingAvailable || !owner ? null : <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />}
+        </Sheet>
+      ) : null}
+      {overlay === 'share' ? (
+        <Sheet testID={VIEWER_IDS.moreSheet} onClose={() => setOverlay('none')}>
+          <ShareEntriesSheet entryIds={[entryId]} />
         </Sheet>
       ) : null}
       {overlay === 'confirmDelete' ? (

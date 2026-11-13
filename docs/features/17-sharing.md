@@ -204,6 +204,29 @@ shares with B → B syncs and sees both entries (decrypts metadata and one origi
 entry → B's next sync no longer has it; B leaves → B has no entries of A; A trashes an entry in the
 journal → B no longer sees it; A restores it → B sees it again.
 
+## 4a. Implementation notes (2026-11-12, Opus)
+
+- Server: `sharing-service.ts`, `shares-repository.ts`, `routes/sharing.ts`,
+  `controllers/sharing-controller.ts`. `recipientCount` is computed in the readable-collection
+  query (a share-count subquery) and is required in the DTO: Fastify's response serializer
+  validates without applying Zod defaults. Add-entry and share answer `{}` with `201`/`200`.
+- Contract route test now reads placeholder names from each pattern (multi-param routes such as
+  `/collections/:id/entries/:entryId`); `ROUTES.userPublicKey` does not URI-encode
+  (usernames are normalized ASCII).
+- Client: `SharingService` takes `fileStore` (leave drops local rows and files) and
+  `afterChange(entryIds)` (emits `entriesChanged`, starts a sync). `SharingError.reason` is
+  `offline | disabled | locked | userNotFound | alreadyShared | notOwner`. The drop logic is the
+  shared `dropLocalCollection` (`sync/local-delete.ts`), also used by pull.
+- The "My Shared Journals" rows show the entry count; `recipientCount` is not shown yet (local
+  collection rows don't store it).
+- Lock step `clearCollectionNames` was added before `wipeKeys`.
+- `/settings/account` (security code) is a minimal screen until spec 20. It is reached from the
+  gallery More menu › Account; U-17 navigates there instead of `page.goto`, which reloads and
+  locks the web app (07c updated).
+- The test client context (`src/testing.ts`) now has a real `config.refresh()` and a `sharing`
+  service; the UI harness gained `seedShare`.
+- e2e `scenarios/sharing.test.ts` covers the §4 flow.
+
 ## 5. Verification checklist
 
 - [ ] `pnpm verify`, server integration and e2e green.
