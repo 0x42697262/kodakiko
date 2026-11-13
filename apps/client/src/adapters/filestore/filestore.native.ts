@@ -11,6 +11,7 @@ import {
   plainThumbnailFileName,
 } from '../../keys/paths';
 import { EN } from '../../text/en';
+import { DownloadSizeMismatchError } from './download-errors';
 import { hashAccountKey } from '../account-key';
 import type { FileStore, FileStoreDeps } from './filestore';
 
@@ -76,6 +77,24 @@ export function createFileStore(deps: FileStoreDeps): FileStore {
         deleteIfExists(final);
         partial.rename(objectFileName(objectId));
         return total;
+      } catch (error) {
+        deleteIfExists(partial);
+        throw error;
+      }
+    },
+    downloadObject: async (objectId, urlFactory, expectedSize, onProgress, signal) => {
+      const partial = new File(requireObjects(), partialFileName(objectId));
+      deleteIfExists(partial);
+      try {
+        const task = File.createDownloadTask(await urlFactory(), partial, {
+          signal,
+          onProgress: ({ bytesWritten }) => onProgress(bytesWritten),
+        });
+        await task.downloadAsync();
+        const received = partial.exists ? partial.size : 0;
+        if (received !== expectedSize) throw new DownloadSizeMismatchError(expectedSize, received);
+        deleteIfExists(objectFile(objectId));
+        partial.rename(objectFileName(objectId));
       } catch (error) {
         deleteIfExists(partial);
         throw error;

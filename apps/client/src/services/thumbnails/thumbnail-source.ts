@@ -31,7 +31,7 @@ export type LocalThumbnailSourceDeps = {
 
 function noop(): void {}
 
-function decryptWhole(
+export function decryptWhole(
   sodium: Sodium,
   variantKey: Uint8Array,
   ciphertext: Uint8Array,

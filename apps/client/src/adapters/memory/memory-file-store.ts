@@ -1,6 +1,7 @@
 import { concatBytes } from '@kodakiko/core';
 import { PLAIN_THUMBNAILS_DIRECTORY, plainThumbnailFileName } from '../../keys/paths';
 import { EN } from '../../text/en';
+import { DownloadHttpError, DownloadSizeMismatchError } from '../filestore/download-errors';
 import type { FileStore } from '../filestore/filestore';
 
 const MEMORY_URI_SCHEME = 'memory://';
@@ -11,10 +12,20 @@ type AccountFiles = {
   readonly plainThumbnails: Map<string, StoredObject>;
 };
 
-export type MemoryFileStoreOptions = { readonly now?: () => number };
+export type MemoryFileStoreOptions = {
+  readonly now?: () => number;
+  readonly fetchBytes?: (url: string, signal: AbortSignal) => Promise<Uint8Array>;
+};
+
+async function fetchWithGlobalFetch(url: string, signal: AbortSignal): Promise<Uint8Array> {
+  const response = await fetch(url, { signal });
+  if (!response.ok) throw new DownloadHttpError(response.status);
+  return new Uint8Array(await response.arrayBuffer());
+}
 
 export function createMemoryFileStore(options: MemoryFileStoreOptions = {}): FileStore {
   const now = options.now ?? Date.now;
+  const fetchBytes = options.fetchBytes ?? fetchWithGlobalFetch;
   const accounts = new Map<string, AccountFiles>();
   let files: AccountFiles | null = null;
 
@@ -40,6 +51,12 @@ export function createMemoryFileStore(options: MemoryFileStoreOptions = {}): Fil
       const bytes = concatBytes(...parts);
       current().objects.set(objectId, { bytes, modifiedAt: now() });
       return bytes.length;
+    },
+    downloadObject: async (objectId, urlFactory, expectedSize, onProgress, signal) => {
+      const bytes = await fetchBytes(await urlFactory(), signal);
+      onProgress(bytes.length);
+      if (bytes.length !== expectedSize) throw new DownloadSizeMismatchError(expectedSize, bytes.length);
+      current().objects.set(objectId, { bytes, modifiedAt: now() });
     },
     readRange: async (objectId, offset, length) => stored(objectId).slice(offset, offset + length),
     size: async (objectId) => current().objects.get(objectId)?.bytes.length ?? null,

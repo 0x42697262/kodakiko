@@ -15,6 +15,9 @@ import { createImportService } from '../../src/services/media/import-service';
 import type { DeviceSettingsValue } from '../../src/services/settings/device-settings';
 import { createAccountFixture, type AccountFixture } from './entry-fixtures';
 import { createMemoryFileStore } from './memory-filestore';
+import type { FileStore } from '../../src/adapters/filestore/filestore';
+import { createLocalThumbnailSource, type ThumbnailSource } from '../../src/services/thumbnails/thumbnail-source';
+import { createLocalOriginalSource, type OriginalSource } from '../../src/services/originals/original-source';
 import { createMemoryRowStore } from './memory-rowstore';
 
 export const FIRST_NOW_ISO = '2026-11-12T10:00:00.000Z';
@@ -81,15 +84,24 @@ export type EntriesHarness = {
   readonly entryRow: (entryId: string) => Promise<EntryRow>;
   readonly outboxKinds: () => Promise<string[]>;
   readonly markSynced: (entryId: string) => Promise<void>;
+  readonly markUploaded: (entryId: string) => Promise<void>;
+  readonly thumbnails: ThumbnailSource;
+  readonly originals: OriginalSource;
+  readonly sinkBytes: (uri: string) => Uint8Array | undefined;
   readonly createEntry: (
     mediaBytes: readonly Uint8Array[],
     input?: { note?: string; tags?: readonly string[] },
   ) => Promise<string>;
 };
 
-export async function createEntriesHarness(sodium: Sodium): Promise<EntriesHarness> {
+export type EntriesHarnessOptions = { readonly fileStore?: FileStore };
+
+export async function createEntriesHarness(
+  sodium: Sodium,
+  options: EntriesHarnessOptions = {},
+): Promise<EntriesHarness> {
   const rowStore = createMemoryRowStore();
-  const fileStore = createMemoryFileStore();
+  const fileStore = options.fileStore ?? createMemoryFileStore();
   const fixture = await createAccountFixture(sodium, rowStore, fileStore);
   await rowStore.kvSetJson(STORAGE_KEYS.accountHomeCollectionId, fixture.homeCollectionId);
   let nowMs = Date.parse(FIRST_NOW_ISO);
@@ -217,6 +229,56 @@ export async function createEntriesHarness(sodium: Sodium): Promise<EntriesHarne
       time: null,
     });
   }
+  async function markUploaded(entryId: string): Promise<void> {
+    await rowStore.transaction(async (tx) => {
+      for (const media of await tx.media.byEntry(entryId)) {
+        for (const row of await tx.objects.byMedia(media.id)) {
+          await tx.objects.put({ ...row, uploadState: 'uploaded' });
+        }
+      }
+    });
+  }
+  const sinkContents = new Map<string, Uint8Array>();
+  let sinkCounter = 0;
+  const thumbnails = createLocalThumbnailSource({
+    fileStore,
+    rowStore,
+    entryKeys,
+    sodium,
+    urls: { create: (bytes) => `thumb:${bytes.length}:${(sinkCounter += 1)}`, revoke: () => undefined },
+  });
+  const originals = createLocalOriginalSource({
+    rowStore,
+    fileStore,
+    entryKeys,
+    sodium,
+    clock,
+    readMetadata: (entryId) => service.readMetadata(entryId),
+    sink: {
+      begin: async (mimeType) => {
+        const parts: Uint8Array[] = [];
+        return {
+          write: async (bytes) => {
+            parts.push(bytes.slice());
+          },
+          finish: async () => {
+            sinkCounter += 1;
+            const uri = `sink:${mimeType}:${sinkCounter}`;
+            const total = parts.reduce((sum, part) => sum + part.length, 0);
+            const joined = new Uint8Array(total);
+            let offset = 0;
+            for (const part of parts) {
+              joined.set(part, offset);
+              offset += part.length;
+            }
+            sinkContents.set(uri, joined);
+            return { uri, release: async () => undefined };
+          },
+          abort: async () => undefined,
+        };
+      },
+    },
+  });
   return {
     hooks,
     entryKeys,
@@ -236,6 +298,10 @@ export async function createEntriesHarness(sodium: Sodium): Promise<EntriesHarne
     outboxKinds: async () =>
       (await rowStore.transaction((tx) => tx.outbox.all())).map((row) => row.kind),
     markSynced,
+    markUploaded,
+    thumbnails,
+    originals,
+    sinkBytes: (uri: string) => sinkContents.get(uri),
     createEntry,
   };
 }

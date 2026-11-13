@@ -13,7 +13,12 @@ import { createLocationProvider, type LocationProvider } from '../adapters/locat
 import { createMediaToolkit } from '../adapters/media/media-toolkit';
 import { createTempFiles, type TempFiles } from '../adapters/temp-files/temp-files';
 import { createPlaintextSink } from '../adapters/plaintext-sink/plaintext-sink';
-import { createLocalOriginalSource, type OriginalSource } from '../services/originals/original-source';
+import { createLocalOriginalSource } from '../services/originals/original-source';
+import { createDownloadingOriginalSource, type OriginalsService } from '../services/originals/originals-service';
+import { createDownloader, type Downloader } from '../services/downloads/downloader';
+import { createWifiUploadPolicy } from '../services/downloads/upload-policy';
+import { createCachingThumbnailSource, type ThumbnailCacheService } from '../services/thumbnails/thumbnail-cache';
+import { createNetworkInfo } from '../adapters/network/network';
 import { placeholderVideoLauncher, type VideoLauncher } from '../services/video/video-launcher';
 import type { GalleryNotice } from '../features/gallery/gallery-notice-model';
 import { createRowStore } from '../adapters/rowstore/rowstore';
@@ -46,7 +51,6 @@ import {
 } from '../services/index/index-service';
 import {
   createLocalThumbnailSource,
-  type ThumbnailSource,
 } from '../services/thumbnails/thumbnail-source';
 import {
   createGalleryFilterStore,
@@ -84,9 +88,10 @@ export type Services = {
   readonly savedNotice: Observable<number | null>;
   readonly index: IndexService;
   readonly lastIndexBuild: Observable<IndexBuildReport | null>;
-  readonly thumbnails: ThumbnailSource;
+  readonly thumbnails: ThumbnailCacheService;
   readonly galleryFilter: GalleryFilterStore;
-  readonly originals: OriginalSource;
+  readonly originals: OriginalsService;
+  readonly downloader: Downloader;
   readonly galleryNotice: Observable<GalleryNotice | null>;
   readonly videoLauncher: VideoLauncher;
 };
@@ -181,6 +186,8 @@ export async function createAppContext(): Promise<AppContext> {
     onSessionInvalid: () => accountState.set({ kind: 'signedOut' }),
     log: consoleLogger,
     requestNotificationPermission,
+    uploadPolicy: { allowed: (sizeBytes) => uploadPolicy.allowed(sizeBytes) },
+    thumbnailCache: { afterUpload: (objectId) => thumbnails.afterUpload(objectId) },
   });
   const tempFiles = createTempFiles({ sodium, activeAccountKey: () => activeAccountKey.get() });
   const boundSettings = createBoundDeviceSettings({
@@ -237,22 +244,56 @@ export async function createAppContext(): Promise<AppContext> {
       if (__DEV__) console.info(GALLERY_LOG_EVENTS.indexBuilt, JSON.stringify(report));
     },
   });
-  const thumbnails = createLocalThumbnailSource({
-    fileStore,
+  const network = createNetworkInfo();
+  const uploadPolicy = createWifiUploadPolicy({
+    network,
+    settings: () => boundSettings.settings.get(),
+    initialWifi: true,
+  });
+  uploadPolicy.onChange(() => {
+    if (accountState.get().kind === 'unlocked') stack.sync.notifyLocalWrite();
+    originals.downloadPinned().catch(() => undefined);
+  });
+  const downloader = createDownloader({
+    http,
     rowStore,
+    fileStore,
+    clock: systemClock,
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+    isOffline: () => stack.sync.status().offline,
+  });
+  const thumbnails = createCachingThumbnailSource({
+    local: createLocalThumbnailSource({ fileStore, rowStore, entryKeys: stack.entryKeys, sodium }),
+    downloader,
+    rowStore,
+    fileStore,
     entryKeys: stack.entryKeys,
     sodium,
+    settings: () => boundSettings.settings.get(),
   });
   const galleryFilter = createGalleryFilterStore();
   const galleryNotice = createObservable<GalleryNotice | null>(null);
-  const originals = createLocalOriginalSource({
+  const originals = createDownloadingOriginalSource({
+    local: createLocalOriginalSource({
+      rowStore,
+      fileStore,
+      entryKeys: stack.entryKeys,
+      sodium,
+      clock: systemClock,
+      readMetadata: entries.readMetadata,
+      sink: createPlaintextSink({ tempFiles }),
+    }),
+    downloader,
     rowStore,
     fileStore,
-    entryKeys: stack.entryKeys,
-    sodium,
-    clock: systemClock,
-    readMetadata: entries.readMetadata,
-    sink: createPlaintextSink({ tempFiles }),
+    settings: () => boundSettings.settings.get(),
+    isWifi: () => network.isWifi(),
+    now: systemClock.now,
+  });
+  stack.sync.onPassCompleted(() => {
+    if (accountState.get().kind !== 'unlocked') return;
+    downloader.resume();
+    thumbnails.prefetchAll().catch(() => undefined);
   });
   await tempFiles.wipe().catch(() => undefined);
   bindAccountLifecycle(accountState, {
@@ -263,10 +304,13 @@ export async function createAppContext(): Promise<AppContext> {
         .load()
         .catch(() => undefined);
       sweepOrphans(rowStore, fileStore).catch(() => undefined);
+      originals.enforceCap().catch(() => undefined);
+      originals.downloadPinned().catch(() => undefined);
     },
     onLeftUnlocked: () => {
       stack.sync.stop();
       index.clear();
+      downloader.abortAll();
       thumbnails.clear();
       originals.clearAll().catch(() => undefined);
       galleryFilter.reset();
@@ -312,6 +356,7 @@ export async function createAppContext(): Promise<AppContext> {
       entries,
       tagSuggestions: createIndexTagSuggestionSource(index),
       originals,
+      downloader,
       galleryNotice,
       videoLauncher: placeholderVideoLauncher,
       savedNotice: createObservable<number | null>(null),

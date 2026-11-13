@@ -13,6 +13,13 @@ export interface FileStore {
   readonly writePlainThumbnail: (mediaId: string, bytes: Uint8Array) => Promise<void>;
   readonly plainThumbnailUri: (mediaId: string) => string | null;
   readonly deletePlainThumbnail: (mediaId: string) => Promise<void>;
+  readonly downloadObject: (
+    objectId: string,
+    urlFactory: () => Promise<string>,
+    expectedSize: number,
+    onProgress: (bytes: number) => void,
+    signal: AbortSignal,
+  ) => Promise<void>;
   readonly sweepOrphans: (
     knownObjectIds: ReadonlySet<string>,
     olderThanMs: number,

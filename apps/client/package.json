@@ -31,6 +31,7 @@
     "expo-constants": "catalog:",
     "expo-file-system": "catalog:",
     "expo-image": "catalog:",
+    "expo-network": "catalog:",
     "expo-image-manipulator": "catalog:",
     "expo-image-picker": "catalog:",
     "expo-linking": "catalog:",

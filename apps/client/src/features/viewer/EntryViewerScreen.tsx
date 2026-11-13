@@ -33,7 +33,7 @@ import { Sheet } from '../gallery/sheet';
 import { useThumbnail } from '../gallery/thumbnail';
 import { MarkdownView } from '../markdown/markdown-view';
 import { ZoomablePhoto } from '../media/zoomable-photo';
-import { ORIGINAL_WINDOW, PAGE_ASPECT, PAGE_MAX_SCREEN_SHARE, VIEWER_IDS } from './constants';
+import { ORIGINAL_WINDOW, PAGE_ASPECT, PERCENT, PAGE_MAX_SCREEN_SHARE, VIEWER_IDS } from './constants';
 import { useViewerKeys } from './use-viewer-keys';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
@@ -51,11 +51,36 @@ type PageProps = {
   readonly onZoomChange: (zoomed: boolean) => void;
 };
 
+function useOriginalDownload(mediaId: string, enabled: boolean): { readonly received: number; readonly total: number } | null {
+  const { services } = useAppContext();
+  const [progress, setProgress] = useState<{ readonly received: number; readonly total: number } | null>(null);
+  useEffect(() => {
+    if (!enabled) return undefined;
+    let unsubscribe: (() => void) | null = null;
+    let cancelled = false;
+    services.originals
+      .originalObjectId(mediaId)
+      .then((objectId) => {
+        if (cancelled || objectId === null) return;
+        unsubscribe = services.downloader.onProgress(objectId, (received, total) => setProgress({ received, total }));
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+      setProgress(null);
+    };
+  }, [mediaId, enabled, services.originals, services.downloader]);
+  return progress;
+}
+
 function MediaPage({ entryId, media, position, width, height, active, near, onZoomChange }: PageProps) {
   const { services } = useAppContext();
   const { colors } = useTheme();
   const thumbnail = useThumbnail(entryId, media.mediaId);
-  const [original, setOriginal] = useState<OriginalRef | 'missing' | null>(null);
+  const [original, setOriginal] = useState<OriginalRef | 'missing' | 'failed' | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const progress = useOriginalDownload(media.mediaId, near && media.kind === 'photo');
 
   useEffect(() => {
     if (!near || media.kind !== 'photo') return undefined;
@@ -72,13 +97,15 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
         if (cancelled) ref.release().catch(() => undefined);
         else setOriginal(ref);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (!cancelled) setOriginal('failed');
+      });
     return () => {
       cancelled = true;
       setOriginal(null);
       opened?.release().catch(() => undefined);
     };
-  }, [near, entryId, media.mediaId, media.kind, services.originals]);
+  }, [near, entryId, media.mediaId, media.kind, services.originals, attempt]);
 
   const page = { width, height };
   if (media.kind === 'video') {
@@ -109,7 +136,8 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
       </View>
     );
   }
-  const uri = original !== null && original !== 'missing' ? original.uri : thumbnail;
+  const loaded = original !== null && typeof original === 'object';
+  const uri = loaded ? original.uri : thumbnail;
   return (
     <View testID={listTestId(TEST_IDS.viewerPage, position)} style={[styles.page, page, { backgroundColor: colors.surface }]}>
       {uri === null ? null : (
@@ -128,6 +156,29 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
         <Text testID={VIEWER_IDS.previewLabel} style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}>
           {EN['viewer.showingPreview']}
         </Text>
+      ) : null}
+      {original === null && progress !== null ? (
+        <Text testID={VIEWER_IDS.downloading} style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+          {progress.total > 0
+            ? EN['viewer.downloadProgress'](Math.floor((progress.received / progress.total) * PERCENT))
+            : EN['viewer.downloading']}
+        </Text>
+      ) : null}
+      {original === 'failed' ? (
+        <View style={styles.failedRow}>
+          <Text testID={VIEWER_IDS.downloadFailed} style={[styles.failedText, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+            {EN['viewer.downloadFailed']}
+          </Text>
+          <Button
+            testID={testId('viewer.retry')}
+            label={EN['viewer.retry']}
+            variant="secondary"
+            onPress={() => {
+              setOriginal(null);
+              setAttempt((value) => value + 1);
+            }}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -170,6 +221,19 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   const [page, setPage] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const [overlay, setOverlay] = useState<Overlay>('none');
+  const [pinned, setPinned] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    services.originals
+      .isPinned(entryId)
+      .then((value) => {
+        if (!cancelled) setPinned(value);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [entryId, services.originals]);
   const list = useRef<FlatList<Descriptor>>(null);
   const config = services.config.get();
   const sharingAvailable = config?.sharingEnabled === true || config?.publicLinksEnabled === true;
@@ -231,14 +295,16 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     <Screen testID={VIEWER_IDS.screen}>
       <View style={styles.header}>
         <Button testID={testId('viewer.back')} label={EN['viewer.back']} variant="secondary" onPress={onBack} />
-        {owner && !summary.trashed && !summary.unreadable ? (
+        {!summary.trashed && !summary.unreadable ? (
           <View style={styles.actions}>
-            <Button
-              testID={testId('viewer.edit')}
-              label={EN['viewer.edit']}
-              variant="secondary"
-              onPress={() => router.push(`${entryRoute(entryId)}/edit`)}
-            />
+            {owner ? (
+              <Button
+                testID={testId('viewer.edit')}
+                label={EN['viewer.edit']}
+                variant="secondary"
+                onPress={() => router.push(`${entryRoute(entryId)}/edit`)}
+              />
+            ) : null}
             <Button testID={testId('viewer.more')} label={EN['viewer.more']} variant="secondary" onPress={() => setOverlay('more')} />
           </View>
         ) : null}
@@ -338,15 +404,29 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
       {overlay === 'more' ? (
         <Sheet testID={VIEWER_IDS.moreSheet} onClose={() => setOverlay('none')}>
           <Button
-            testID={testId('viewer.addMedia')}
-            label={EN['viewer.addMedia']}
+            testID={testId(pinned ? 'viewer.removeOffline' : 'viewer.keepOffline')}
+            label={pinned ? EN['viewer.removeOffline'] : EN['viewer.keepOffline']}
             variant="secondary"
             onPress={() => {
               setOverlay('none');
-              router.push({ pathname: APP_ROUTES.capture, params: { entryId } });
+              const change = pinned ? services.originals.unpinEntry(entryId) : services.originals.pinEntry(entryId);
+              change.then(() => setPinned(!pinned)).catch(() => undefined);
             }}
           />
-          <Button testID={testId('viewer.trash')} label={EN['viewer.trash']} variant="secondary" onPress={() => trash().catch(() => undefined)} />
+          {owner ? (
+            <>
+              <Button
+                testID={testId('viewer.addMedia')}
+                label={EN['viewer.addMedia']}
+                variant="secondary"
+                onPress={() => {
+                  setOverlay('none');
+                  router.push({ pathname: APP_ROUTES.capture, params: { entryId } });
+                }}
+              />
+              <Button testID={testId('viewer.trash')} label={EN['viewer.trash']} variant="secondary" onPress={() => trash().catch(() => undefined)} />
+            </>
+          ) : null}
           <Button
             testID={testId('viewer.share')}
             label={EN['viewer.share']}
@@ -379,6 +459,8 @@ const styles = StyleSheet.create({
   block: { gap: SPACING.md },
   page: { overflow: 'hidden' },
   playOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', gap: SPACING.sm },
+  failedRow: { position: 'absolute', left: SPACING.sm, right: SPACING.sm, bottom: SPACING.sm, gap: SPACING.xs, alignItems: 'flex-start' },
+  failedText: { paddingHorizontal: SPACING.sm, borderRadius: RADIUS.sm, fontSize: FONT_SIZE.caption },
   previewLabel: { position: 'absolute', left: SPACING.sm, bottom: SPACING.sm, paddingHorizontal: SPACING.sm, borderRadius: RADIUS.sm, fontSize: FONT_SIZE.caption },
   indicator: { textAlign: 'center', fontSize: FONT_SIZE.caption },
   time: { fontSize: FONT_SIZE.headline, fontWeight: '600' },

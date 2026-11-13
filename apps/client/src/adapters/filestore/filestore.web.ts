@@ -7,6 +7,7 @@ import {
   partialFileName,
 } from '../../keys/paths';
 import { EN } from '../../text/en';
+import { DownloadHttpError, DownloadSizeMismatchError } from './download-errors';
 import { hashAccountKey } from '../account-key';
 import type { FileStore, FileStoreDeps } from './filestore';
 
@@ -110,6 +111,37 @@ export function createFileStore(deps: FileStoreDeps): FileStore {
         const total = await copyChunks(partial, chunks);
         await renameFile(directory, partial, partialName, objectFileName(objectId));
         return total;
+      } catch (error) {
+        await removeQuietly(partialName);
+        throw error;
+      }
+    },
+    downloadObject: async (objectId, urlFactory, expectedSize, onProgress, signal) => {
+      const directory = requireObjects();
+      const partialName = partialFileName(objectId);
+      await removeQuietly(partialName);
+      const partial = await directory.getFileHandle(partialName, { create: true });
+      try {
+        const response = await fetch(await urlFactory(), { signal });
+        if (!response.ok || response.body === null) throw new DownloadHttpError(response.status);
+        const writable = await partial.createWritable();
+        let received = 0;
+        try {
+          const reader = response.body.getReader();
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            await writable.write(value);
+            received += value.length;
+            onProgress(received);
+          }
+          await writable.close();
+        } catch (error) {
+          await writable.abort();
+          throw error;
+        }
+        if (received !== expectedSize) throw new DownloadSizeMismatchError(expectedSize, received);
+        await renameFile(directory, partial, partialName, objectFileName(objectId));
       } catch (error) {
         await removeQuietly(partialName);
         throw error;

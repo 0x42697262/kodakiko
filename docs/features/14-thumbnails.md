@@ -153,6 +153,21 @@ Sodium:
    listener fires with Wi-Fi → uploads.
 8. Device settings schema: defaults per platform; invalid update rejected.
 
+## 8a. Implementation notes (2026-11-12, Opus)
+
+- `Downloader` adds `abortAll()` (lock/sign-out) and `resume()` (called after each sync pass to
+  restart background jobs paused while offline). Errors: `ObjectUnavailableError` (404 → row
+  `unavailable`), `DownloadCancelledError`; `DownloadSizeMismatchError` is not retried.
+- API call `OBJECT_CALLS.download` lives in `src/services/downloads/object-calls.ts`.
+- The memory FileStore takes an optional `fetchBytes` so tests serve ciphertext without a network.
+- `OriginalsService` adds `originalObjectId(mediaId)` (viewer progress subscription) and
+  `downloadPinned()` (run on unlock and when the network turns to Wi-Fi).
+- `createWifiUploadPolicy` keeps a cached Wi-Fi flag because spec 08's `UploadPolicy.allowed` is
+  synchronous; a change notifies the sync service (`notifyLocalWrite`) so held uploads retry.
+- The viewer's "Keep Offline" / "Remove from Offline" is in the More sheet for owners and
+  viewers; Edit, Add, and Trash stay owner-only.
+- U-12 moved back from `tests/ui/pending/` and passes on web desktop.
+
 ## 9. Verification checklist
 
 - [ ] `pnpm verify` and e2e green.
