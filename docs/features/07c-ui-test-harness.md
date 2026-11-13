@@ -347,6 +347,8 @@ rows in `behaviors.md` point here.
 | U-19 | W-d | B-100 | `seedAccount({ role: 'admin' })` → Settings › Admin → New Invite → URL shown → a second context signs up with it → People shows the new user → set quota 1 GB → the row shows it | 20 (the Settings row that opens Admin is spec 20's) |
 | U-20 | W-d | B-102 | `page.addInitScript` deletes `window.showDirectoryPicker` (forces the download fallback, spec 20 §7.3) → `seedEntries` 2 entries → Settings › Export → collect every `download` → unzip in Node with `fflate` → one `entry.md` per entry; media bytes equal the fixture files | 20 |
 | U-21 | A | B-104 | sign in → Settings › Account → Change Server… → confirm → `welcome.serverLabel` visible and empty | 20 |
+| U-22 | A | — | `launchApp clearState` → `welcome.local` → local setup (username, password, `localSetup.understand`) → recovery key confirm → capture a photo with the emulator camera → `gallery.tile.0` visible and no `gallery.tilePending.0` | 20a |
+| U-23 | A | — | part 2 of U-22's device state (no `clearState`): sidecar seeds an invite → Settings › Account › Connect a Server… (`10.0.2.2` UI stack, invite link, password) → `connect.done`; sidecar checks the server has 1 entry for the username | 20a |
 
 Behaviors that stay `manual` (neither tool can drive them here; recorded in `behaviors.md`):
 fingerprint unlock (B-009 Android), the background upload notification and resume (B-060),

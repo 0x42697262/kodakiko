@@ -7,7 +7,7 @@ repository). Implementation phase 1 (D-73) starts with spec 01. No open question
 ## Interview progress
 
 | Round | Topic | State |
-|---|---|---|
+| --- | --- | --- |
 | 1 | Architecture: storage, users, recovery, offline, stack | Done |
 | 1b | Follow-ups: local copies policy, sharing scope, thumbnail encryption | Done |
 | 2 | Capture and gallery | Done |
@@ -42,7 +42,7 @@ repository). Implementation phase 1 (D-73) starts with spec 01. No open question
 ## Decisions
 
 | ID | Decision | Source |
-|---|---|---|
+| --- | --- | --- |
 | D-01 | Own server holds the encrypted metadata index and auth; encrypted file blobs go to any S3-compatible bucket (MinIO at home, Backblaze B2, Cloudflare R2, Wasabi, AWS). Storage providers see only ciphertext | Round 1, answer 1A |
 | D-02 | Devices also keep local copies, encrypted at rest. Policy details: D-09, D-12 | Round 1, answer 1A addition |
 | D-03 | Multi-user means separate private accounts on one self-hosted server (family/friends) | Round 1, answer 2A |
@@ -123,6 +123,7 @@ repository). Implementation phase 1 (D-73) starts with spec 01. No open question
 | D-80 | Android toolchain via `flake.nix` (nixpkgs pinned to akon-money's revision `d4079514`, so store paths are shared): platform 37, build-tools 37.0.0, CMake 3.22.1 (CMake 4 rejects expo-sqlite/react-native-libsodium `cmake_minimum_required(3.4.1)`), NDK **27.0.12077973** reused from the store instead of React Native 0.88's 27.1.12297006 (saves ~2.5 GB; Expo reads `ext.ndkVersion` first), JDK 17. No emulator in the Kodakiko shell: UI tests use the existing `akon` AVD (API 34 x86_64, KVM) started from akon-money's shell. Cost measured: 0.7 GB | Programmer: "only 8.1 GiB free" |
 | D-81 | Android UI flows reach the UI stack through the emulator host alias `10.0.2.2` (not `adb reverse`, which forwards nothing on this setup, F-AND-02): Caddy site `http://:9580`, `10.0.2.2` added to the dev-only local-HTTP hosts, API started with `PUBLIC_BASE_URL`/`S3_PUBLIC_ENDPOINT` on `10.0.2.2` for the Android runner | Opus, debugging spec 07b Android flows |
 | D-82 | **Temporary (programmer, 2026-11-12):** implementer agents run on **Opus 5.5** instead of Sonnet 5.5 (runner default `anthropic-account-2/claude-opus-5-5`, fallback `anthropic/claude-opus-5-5`; in-session agents also Opus). Switch back to Sonnet only when the programmer says so. The implementer rules (spec-only, test-first, guard) are unchanged | Programmer |
+| D-83 | **Local-only mode (Android only).** `/welcome` offers "Use without a server" next to entering a server address. Account keys are created on the device with the spec 04 crypto (password + recovery key; biometric unlock as in spec 16); entries stay in the local index and outbox, nothing syncs. The user can **connect a server later**, which uploads everything through the normal sync path. Data safety: original eviction (spec 14) is **off** in this mode and setup shows a warning that the phone holds the only copy (journal export, spec 20, is the backup); no periodic export reminder. Web has no local-only mode (browser storage can be evicted). Built as new spec **20a** between 20 and 21; spec 20 stays as written. Details open in OI-6 | Programmer 2026-11-14: 1A 2A 3B 4A 5A |
 | D-41 | Two deployment profiles with **identical code**: `private` (now: VPN-only, D-36) and `public` (later: reachable from the internet). The difference is ingress and config only. Everything a public deployment needs is built from day one (see "Public deployment readiness" below); turning public on is a documented checklist, not a code change | Programmer: "what if I open this to public? ... for now my own private network, but opening to the public is an architecture that should be supported" |
 | D-29 | Round 3 defaults accepted: threat model as stated; username sign-in, no email; account deletion = immediate lock + erase after 7 days, cancellable; HTTPS required; rate limits on sign-in, invite redemption, share-link access | Round 3 defaults, no objection |
 
@@ -158,7 +159,7 @@ repository). Implementation phase 1 (D-73) starts with spec 01. No open question
 ## Reference projects
 
 | Project | Why relevant | Verified? |
-|---|---|---|
+| --- | --- | --- |
 | Ente (ente.io), photos | Open source, E2EE photos, self-hostable server ("Museum"), S3-compatible storage, libsodium, sharing via sealed collection keys, SRP login, recovery key. Most likely the project the programmer forgot | Audit by Cure53: UNVERIFIED. Verify the audit reports and the current crypto scheme from Ente's repo and docs before writing the crypto spec |
 | Cryptomator | Open source encrypted vault placed on any cloud drive | Audit by Cure53: UNVERIFIED |
 
@@ -169,7 +170,7 @@ sharing keys, quotas, presigned upload/download URLs). Almost all logic runs on 
 sharing code **between the Android and web clients** matters most.
 
 | Option | For | Against |
-|---|---|---|
+| --- | --- | --- |
 | A. TypeScript: Expo (React Native) + React web + Node (Fastify) + Postgres | One language; one shared package for crypto, domain rules, Zod schemas and the sync engine; Sonnet is strongest in TS/React; iOS later is mostly free; matches guidelines 13.1/13.3 | Large-file chunked encryption in React Native needs native file I/O and JSI crypto (react-native-libsodium, Expo FileSystem File API); decrypted video playback needs a temp-file or local-stream strategy |
 | B. Flutter (mobile + web) + Go server (Ente's stack) | Fast native camera and gallery; single UI codebase; Go server is one small binary, low RAM on a home server | Flutter web is heavy and renders on a canvas (Ente itself uses Next.js for its web app); two languages; no shared code with the server |
 | C. Native Kotlin Android + React web + server | Best Android performance and camera control | Three codebases; iOS later is a rewrite; the most code for Sonnet to write |
@@ -187,17 +188,18 @@ way.
 ## Open questions
 
 | ID | Question | Recommended |
-|---|---|---|
+| --- | --- | --- |
 | OI-3 | ~~DNS provider~~ — closed: **Cloudflare** (D-68 default confirmed) | Closed 2026-11-11 |
 | OI-4 | ~~UI test tooling~~ — closed: Playwright + Maestro (D-74) | Closed 2026-11-11 |
 | OI-5 | ~~Android id~~ — closed: `com.x42697262.kodakiko` (D-53) | Closed 2026-11-11 |
+| OI-6 | ~~Spec 20a details~~ — closed: settled in `docs/features/20a-local-only-mode.md` §0 (reuse device keys and ids at connect; username chosen locally and changeable at connect; server-only rows hidden; `account.mode` gates sync, refresh and eviction; local mode ships in phase 1 debug APKs, signed release builds stay in phase 2) | Closed 2026-11-14 (Opus) |
 | RISK-1-result | 2026-11-12: Argon2id 256 MiB × 16 ops — web (Firefox, Ryzen 5 5600H) median 4.6 s; Android emulator (API 34 x86_64, KVM) median 4.3 s; vectors 38/38 on native libsodium (D-79 confirmed). A real phone measurement is still required before release | Measured by Sonnet (web) and Opus (emulator) |
 | RISK-1 | Argon2id at 4 GiB total work may be too slow on web (single-thread WASM) or freeze Android's JS thread; spec 04 records a Node baseline, spec 07a measures on a phone and in a browser against an 8 s budget; over budget = programmer decides whether to lower the floor | Measured in spec 07 |
 
 Answered round 5 questions, kept for the record:
 
 | ID | Question | Answer |
-|---|---|---|
+| --- | --- | --- |
 | R5-1 | Media encryption format. Fact F-CRY-01: secretstream cannot seek, which breaks D-32 (web video seeking). Proposal: replace secretstream for media with the STREAM construction exactly as age uses it (F-CRY-02), on libsodium `crypto_aead_xchacha20poly1305_ietf`: per-file random key, nonce = 16-byte random file prefix + 7-byte big-endian chunk counter + 1-byte final flag, 1 MiB plaintext chunks. Seekable, audited design lineage, and `react-native-libsodium` already exposes this function natively, so D-30 (patching PR #108) is no longer needed. A switch to STREAM; B keep secretstream and give up seeking (whole-file decrypt like Ente) | A |
 | R5-2 | Meaning of "write" permission on a shared journal (A collaborators add own entries; B also edit others') | Neither: read-only sharing (D-39) |
 | R5-3 | HTTPS inside the VPN (A own domain + DNS-01; B Tailscale certs; C self-signed) | A (D-40) |
@@ -252,7 +254,7 @@ or moderate; quotas and invite-only limit abuse, open sign-up removes that limit
 ## Round 2: capture and gallery
 
 | ID | Question | Recommended |
-|---|---|---|
+| --- | --- | --- |
 | R2-1 | App opens to: A camera directly (QuickSnap feel); B gallery with a capture button | A |
 | R2-2 | Entry model: A one entry = one moment (media + note + own timestamp), gallery groups by day; B one entry per day you keep appending to | A |
 | R2-3 | Capture: A back/front switch, tap = photo, hold = video, shots collect in a tray until Save; B A plus dual front+back shot (BeReal style) | A |
@@ -283,7 +285,7 @@ length with constant memory. The real costs grow with file size, not seconds:
 ### Round 2 second half (answered: R2-6 A, R2-7 A, R2-8 B, R2-9 A, R2-10 A)
 
 | ID | Question | Recommended |
-|---|---|---|
+| --- | --- | --- |
 | R2-6 | Video limit: A no length cap; per-file size cap and per-user quota in server config; resumable uploads; setting "upload large files on Wi-Fi only"; B length cap (configurable, default 3 min) | A |
 | R2-7 | Adding media: A camera plus picking existing photos/videos from the phone gallery (entry time defaults to the photo's original time); B camera only | A |
 | R2-8 | Gallery layout: A grid of entries grouped under day headers, newest first, with a jump-to-date picker; B A plus a month calendar view showing a thumbnail on days with entries | B |
@@ -293,7 +295,7 @@ length with constant memory. The real costs grow with file size, not seconds:
 ## Round 3: security and operations (answered: R3-1 A, R3-2 A, R3-3 A, R3-4 A, R3-5 A)
 
 | ID | Question | Recommended |
-|---|---|---|
+| --- | --- | --- |
 | R3-1 | Login proof: A the client derives a separate login key from the Argon2id output (libsodium KDF subkey); the server stores only a hash of it; the encryption key is a different subkey and never leaves the device. Only libsodium, no extra crypto dependency. B SRP like Ente (password-derived value never sent, but needs an SRP library that must be audited) | A |
 | R3-2 | Photo metadata and location: A keep original files untouched (EXIF and GPS stay inside the encrypted file); strip EXIF/GPS from files shared through public links; show location as coordinates with "Open in Maps"; no in-app map in v1 (map tiles reveal the area to the tile provider); B strip location at capture/import; C A plus an in-app map view | A |
 | R3-3 | App lock: A Android unlock with fingerprint/PIN on open, auto-lock after 5 min in background (configurable); web keeps keys in memory only, locks after 15 min idle, "Keep me unlocked on this browser" opt-in; B no app lock while signed in | A |
@@ -315,7 +317,7 @@ Defaults stated with round 3 (programmer may object):
 ## Round 4: decisions forced by verified facts (answered: all A, see D-30..D-35)
 
 | ID | Question | Recommended |
-|---|---|---|
+| --- | --- | --- |
 | R4-1 | Android file encryption. Fact F-LIB-02: `react-native-libsodium` has no secretstream natively. A apply PR #108 as a pinned `pnpm patch`, reviewed by us, with known-answer tests proving byte-identical output with web `libsodium-wrappers`; 4 MiB chunks pass through JSI; all behind a `FileCipher` interface so B can replace it later. B own Expo native module (Kotlin + C++ JNI over libsodium) doing file-to-file encryption; fastest, plaintext never in JS, most native code. C self-built chunked XChaCha20-Poly1305 AEAD from exposed functions; violates "no hand-made crypto" and is incompatible with web secretstream | A |
 | R4-2 | Removing a member from a shared journal. Fact F-ENTE-13: Ente does not rotate keys. A like Ente: server removes access immediately, no key rotation, UI states that content already seen may have been kept; B rotate the collection key and re-wrap every file key in the collection (only helps if the server itself is compromised) | A |
 | R4-3 | Web video playback. Fact F-ENTE-15: Ente decrypts the whole file into memory. A our service worker answers the video element's range requests, fetches only the needed 4 MiB ciphertext chunks, decrypts them, returns 206 responses: instant start, seeking, constant memory; B whole-file decrypt into a Blob with a size cap, larger videos download-only. Android in both cases v1: decrypt to a temp file in app cache, play, delete on lock (start delay grows with length) | A |

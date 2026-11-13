@@ -40,7 +40,7 @@ Each file is a complete build task. Rules for the implementing model (Sonnet):
 
 | Phase | Specs | Result |
 |---|---|---|
-| 1 — local | 01-20, and spec 21 §1-§4 and §7a (images built locally with `docker-compose.build.yml`, the local compose stack, Caddy with DNS-01 for the programmer's domain pointing at the LAN/VPN address, operations guide, web manifest) | The app runs against a server on the programmer's own machine or network; the Android app picks its server at first run and can change it (Settings › Account) |
+| 1 — local | 01-20, 20a, and spec 21 §1-§4 and §7a (images built locally with `docker-compose.build.yml`, the local compose stack, Caddy with DNS-01 for the programmer's domain pointing at the LAN/VPN address, operations guide, web manifest) | The app runs against a server on the programmer's own machine or network; the Android app picks its server at first run and can change it (Settings › Account) |
 | 2 — online | spec 21 §5-§7 (CI, release workflow, registry images, release checklist, Renovate) and the public profile | Hosted or public deployments, signed release APKs |
 
 Build order note: 07c is built **before** 07b (its letter is only a name), so every screen spec
@@ -73,4 +73,5 @@ point at private addresses.
 | 18 | `18-public-links.md` link collections, stripped photo copies, viewer page, expiry job (flag `public_links`) | 15, 16, 17 |
 | 19 | `19-admin.md` admin routes, screens, CLI commands, stats, account refresh | 04, 05, 07b, 16, 18 |
 | 20 | `20-settings-export.md` settings screens, password change, recovery key display, account deletion, journal export (D-52, D-66) | 14, 16-19 |
+| 20a | `20a-local-only-mode.md` Android local-only mode: on-device account, no sync, eviction off, connect a server later (D-83) | 08, 14, 16, 20 |
 | 21 | `21-deployment.md` production images and compose, Caddy DNS-01 + CSP hashes, Garage setup + CORS, operations guide, CI and release workflows, release checklist | all |
