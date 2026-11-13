@@ -28,6 +28,8 @@ import { useSelection, type Selection } from './use-selection';
 
 type Overlay = 'none' | 'filter' | 'actions' | 'more';
 
+const SETTINGS_GLYPH = '\u2699';
+
 function SelectionHeader({ selection, onActions }: { readonly selection: Selection; readonly onActions: () => void }) {
   const { colors } = useTheme();
   return (
@@ -142,6 +144,15 @@ export function GalleryScreen() {
             >
               <Text style={[styles.buttonText, { color: colors.text }]}>{EN['gallery.moreGlyph']}</Text>
             </Pressable>
+            <Pressable
+              testID="gallery.settings"
+              accessibilityRole="button"
+              accessibilityLabel={EN['settings.open']}
+              onPress={() => router.push('/settings' as Href)}
+              style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            >
+              <Text style={[styles.buttonText, { color: colors.text }]}>{SETTINGS_GLYPH}</Text>
+            </Pressable>
           </View>
         </View>
       )}
@@ -199,15 +210,6 @@ export function GalleryScreen() {
       {overlay === 'filter' ? <FilterSheet onClose={() => setOverlay('none')} /> : null}
       {overlay === 'more' ? (
         <Sheet testID={GALLERY_IDS.moreMenu} onClose={() => setOverlay('none')}>
-          <Button
-            testID={testId('settings.accountTitle')}
-            label={EN['settings.accountTitle']}
-            variant="secondary"
-            onPress={() => {
-              setOverlay('none');
-              router.push('/settings/account' as Href);
-            }}
-          />
           <Button
             testID={testId('lock.lockNow')}
             label={EN['lock.lockNow']}

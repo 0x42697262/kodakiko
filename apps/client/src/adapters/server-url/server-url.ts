@@ -25,11 +25,13 @@ export type ServerChoice =
 export interface ServerUrlStore {
   readonly current: () => Promise<string | null>;
   readonly choose: (input: string) => Promise<ServerChoice>;
+  readonly clear?: () => Promise<void>;
 }
 
 export type ServerUrlStorage = {
   readonly get: () => Promise<string | null>;
   readonly set: (value: string) => Promise<void>;
+  readonly clear?: () => Promise<void>;
 };
 
 export type ServerUrlDeps = {
@@ -102,5 +104,6 @@ export function createServerUrlStore(deps?: ServerUrlDeps): ServerUrlStore {
     await resolved.storage.set(origin);
     return { ok: true, baseUrl: origin, config, inviteToken: inviteTokenOf(parsed.url) };
   }
-  return { current: () => resolved.storage.get(), choose };
+  const clear = resolved.storage.clear;
+  return { current: () => resolved.storage.get(), choose, ...(clear === undefined ? {} : { clear }) };
 }

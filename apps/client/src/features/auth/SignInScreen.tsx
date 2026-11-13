@@ -14,6 +14,8 @@ import { useTheme } from '../../ui/theme';
 import { errorBanner } from './error-text';
 import { useSubmit } from './use-submit';
 
+const DATE_CHARS = 10;
+
 export function SignInScreen() {
   const { services } = useAppContext();
   const state = useAccountState();
@@ -26,6 +28,7 @@ export function SignInScreen() {
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const { busy, error, submit } = useSubmit(() => setPassword(''));
   const banner = error === null ? null : errorBanner(error);
+  const deletionDueAt = services.auth.deletionScheduledFor();
 
   const signIn = () =>
     submit(async () => {
@@ -38,6 +41,13 @@ export function SignInScreen() {
       <Title testID="signIn.title" text={EN['signIn.title']} />
       {banner === null ? null : (
         <Banner testID={banner.testID} kind="error" message={banner.message} />
+      )}
+      {deletionDueAt === null ? null : (
+        <Banner
+          testID="signIn.deletionScheduled"
+          kind="info"
+          message={EN['account.deletionScheduled'](deletionDueAt.slice(0, DATE_CHARS))}
+        />
       )}
       <TextField
         testID="signIn.username"

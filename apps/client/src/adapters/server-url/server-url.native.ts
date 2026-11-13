@@ -14,6 +14,7 @@ export function createServerUrlStore(): ServerUrlStore {
     storage: {
       get: () => SecureStore.getItemAsync(SECURE_STORE_KEYS.server),
       set: (value) => SecureStore.setItemAsync(SECURE_STORE_KEYS.server, value),
+      clear: () => SecureStore.deleteItemAsync(SECURE_STORE_KEYS.server),
     },
   });
 }

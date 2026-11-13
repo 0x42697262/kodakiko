@@ -7,6 +7,7 @@ import {
   keyBundleDto,
   paramsRequest,
   recoveryCompleteRequest,
+  passwordChangeRequest,
   recoveryStartRequest,
   signInRequest,
   signUpRequest,
@@ -225,6 +226,28 @@ export function createFakeAuthServer(): FakeAuthServer {
     [`POST ${ROUTES.authSignOut()}`]: (_body, token) => {
       if (token !== null) sessions.delete(token);
       return undefined;
+    },
+    [`POST ${ROUTES.authPassword()}`]: (body, token) => {
+      const user = sessionUser(token);
+      const request = passwordChangeRequest.parse(body);
+      if (request.currentLoginKey !== user.loginKey) throw failure(STATUS_UNAUTHORIZED, 'INVALID_CREDENTIALS');
+      user.loginKey = request.loginKey;
+      user.bundle = {
+        ...user.bundle,
+        salt: request.salt,
+        opsLimit: request.opsLimit,
+        memLimitBytes: request.memLimitBytes,
+        masterKeyByKek: request.masterKeyByKek,
+      };
+      sessions.clear();
+      return { session: issueSession(user, 'Test Device') };
+    },
+    [`POST ${ROUTES.usersMeDelete()}`]: (_body, token) => {
+      const user = sessionUser(token);
+      user.status = 'pending_deletion';
+      user.deletionDueAt = new Date(SESSION_LIFETIME_MS).toISOString();
+      sessions.clear();
+      return { deletionDueAt: user.deletionDueAt };
     },
     [`POST ${ROUTES.usersMeDeleteCancel()}`]: (_body, token) => {
       const user = sessionUser(token);

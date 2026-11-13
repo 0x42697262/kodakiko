@@ -5,6 +5,7 @@ import { uiUsername, type UiProject } from '../../support/usernames.ts';
 const TILES = /^gallery\.tile\.\d+$/;
 const SYNC_WAIT_MS = 60_000;
 const JOURNAL_NAME = 'Picnics';
+const VISIBLE_BACK = '[data-testid="settings.back"]:visible';
 
 let owner: SeededAccount;
 let recipient: SeededAccount;
@@ -49,13 +50,14 @@ test('U-17 a recipient browses a shared journal read-only, codes match, and leav
 
   await recipientPage.getByTestId('shared.back').click();
   await recipientPage.getByTestId('tabs.gallery').click();
-  await recipientPage.getByTestId('gallery.more').click();
-  await recipientPage.getByTestId('settings.accountTitle').click();
+  await recipientPage.getByTestId('gallery.settings').click();
+  await recipientPage.getByTestId('settings.row.account').click();
   const ownCode = await recipientPage.getByTestId('settings.securityCode').textContent();
   expect(seenByOwner?.trim()).toBeTruthy();
   expect(ownCode?.trim()).toBe(seenByOwner?.trim());
 
-  await recipientPage.getByTestId('shared.back').click();
+  await recipientPage.locator(VISIBLE_BACK).click();
+  await recipientPage.locator(VISIBLE_BACK).click();
   await recipientPage.getByTestId('tabs.shared').click();
   await recipientPage.getByTestId('shared.withMeRow.0').click();
   await recipientPage.getByTestId('collection.more').click();

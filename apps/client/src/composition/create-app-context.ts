@@ -73,6 +73,9 @@ import { createCollectionNames, type CollectionNames } from '../services/sharing
 import { createSharingService, type SharingService } from '../services/sharing/sharing-service';
 import { createAccountService, type AccountService } from '../services/account/account-service';
 import { createAdminClient, type AdminClient } from '../services/admin/admin-service';
+import { EMPTY_GALLERY_FILTER } from '../features/gallery/filter-model';
+import { createExportService, type ExportService } from '../services/export/export-service';
+import { createFflateArchiveWriter } from '../adapters/archive/fflate-archive-writer';
 import { createPublicLinksService, type PublicLinksService } from '../services/links/public-links-service';
 import { createLinkStripper } from '../services/links/link-stripper';
 import { createPhotoReencoder } from '../adapters/photo-reencoder/photo-reencoder';
@@ -112,6 +115,7 @@ export type Services = {
   readonly links: PublicLinksService;
   readonly account: AccountService;
   readonly admin: AdminClient;
+  readonly exporter: ExportService;
   readonly videoSource: VideoSource;
 };
 
@@ -386,11 +390,36 @@ export async function createAppContext(): Promise<AppContext> {
   lifecycle.subscribeActive((active) => {
     if (active && accountState.get().kind === 'unlocked') account.refreshMe().catch(() => undefined);
   });
+  const exporter = createExportService({
+    entryIds: async () => {
+      const current = index.index();
+      if (current === null) return [];
+      return current
+        .query(EMPTY_GALLERY_FILTER)
+        .flatMap((section) => section.entryIds)
+        .filter((entryId) => {
+          const entry = current.get(entryId);
+          return entry !== null && entry.isOwn && !entry.unreadable;
+        })
+        .reverse();
+    },
+    readMetadata: entries.readMetadata,
+    entryKeys: stack.entryKeys,
+    rowStore,
+    fileStore,
+    fetchObject: (objectId) => downloader.fetchObject(objectId, 'opened'),
+    enforceCap: () => originals.enforceCap(),
+    sodium,
+    autoLock: { pause: () => autoLock.pause(), resume: () => autoLock.resume() },
+    clock: systemClock,
+    createArchiveWriter: createFflateArchiveWriter,
+  });
   const returnTo = createObservable<string | null>(null);
   const lockService = createLockService({
     accountState,
     log: (event, data) => consoleLogger.warn(event, { step: String(data.step) }),
     lockSteps: [
+      { name: 'cancelExport', run: () => exporter.cancel() },
       { name: 'stopSync', run: () => stack.sync.stop() },
       { name: 'cancelDownloads', run: () => downloader.abortAll() },
       { name: 'releaseVideo', run: () => videoSource.releaseAll() },
@@ -522,6 +551,7 @@ export async function createAppContext(): Promise<AppContext> {
       links,
       account,
       admin,
+      exporter,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,

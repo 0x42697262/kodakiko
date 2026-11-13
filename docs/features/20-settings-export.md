@@ -269,6 +269,32 @@ Add `fflate` (allowlist) to `apps/client`.
 - Password change flow (fake HTTP): kv updated, session replaced; wrong current password → no request.
 - Account deletion screen logic: button disabled until the username matches.
 
+## 8a. Implementation notes (2026-11-14, Opus)
+
+- Core `export/` (`layout.ts`, `constants.ts`, `text.ts`). `EXPORT_MTIME_MIN`/`MAX` are midday UTC
+  (1980-01-01, 2099-12-31) so no time zone shifts them out of the ZIP range.
+- Client export service deps differ from §7.2: `entryIds()` (own readable non-trashed entries; the
+  app takes them from the index), `readMetadata`, `fetchObject`, `enforceCap`. The service sorts
+  by time itself. `ArchiveWriter`/`PartSink` types live in `services/export/archive.ts`.
+  Cancelling is also checked after `finish` and before a part is closed, so a cancel during the
+  last write aborts that part. Lock step 0 `cancelExport` is wired.
+- Destinations: `adapters/export-destination/` (Android SAF directory, web `showDirectoryPicker`,
+  web download fallback). `pickExportDestination()` returns
+  `{ kind: 'chosen', destination, downloads } | { kind: 'cancelled' }`.
+- Auth additions as listed, plus `deletionScheduledFor()` for the sign-in banner.
+  `ServerUrlStore.clear` is optional (Android SecureStore delete; web has none). Change Server is
+  Android only.
+- Screens: `features/settings/*` with shared `settings-ui.tsx` (switches use `role`/`aria-checked`,
+  which React Native Web needs for `aria-checked`). Choice lists are in
+  `constants/settings-constants.ts`. The gallery has a gear button (`gallery.settings`).
+  `home.signedInAs`/`home.signOut` stay in the gallery, because U-01..U-05 assert them. The spec 17
+  "Account" shortcut in the gallery More menu was removed (U-17 now goes through Settings).
+- Turning on "Add location" probes `location.currentPosition`; no position → back off with the
+  denied message.
+- `assets/licenses.json` is committed as `[]`.
+- UI flows: U-16, U-19 and U-20 pass on web desktop. U-15 and U-21 (Android) are written and run
+  in the batched Android round.
+
 ## 9. Verification checklist
 
 - [ ] `pnpm verify` and e2e green.

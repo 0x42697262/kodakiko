@@ -13,6 +13,9 @@ import {
   type RecoveryStartRequest,
   type SignInRequest,
   type SignUpRequest,
+  passwordChangeResponse,
+  deletionRequestResponse,
+  type PasswordChangeRequest,
 } from '@kodakiko/contract';
 import type { ApiCall } from '../adapters/http/http';
 import { RESTORE_TIMEOUT_MS, SIGN_OUT_TIMEOUT_MS } from '../constants/auth-constants';
@@ -80,6 +83,21 @@ export const AUTH_CALLS = Object.freeze({
     auth: 'session',
     idempotent: false,
     timeoutMs: SIGN_OUT_TIMEOUT_MS,
+  }),
+  changePassword: (body: PasswordChangeRequest): ApiCall<z.infer<typeof passwordChangeResponse>> => ({
+    method: 'POST',
+    path: ROUTES.authPassword(),
+    body,
+    responseSchema: passwordChangeResponse,
+    auth: 'session',
+    idempotent: false,
+  }),
+  requestDeletion: (): ApiCall<z.infer<typeof deletionRequestResponse>> => ({
+    method: 'POST',
+    path: ROUTES.usersMeDelete(),
+    responseSchema: deletionRequestResponse,
+    auth: 'session',
+    idempotent: false,
   }),
   cancelDeletion: (): ApiCall<z.infer<typeof userDto>> => ({
     method: 'POST',

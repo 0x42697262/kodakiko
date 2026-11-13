@@ -1,0 +1,9 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    stopApp: false
+- extendedWaitUntil:
+    visible:
+      id: lock.title
+    timeout: 30000

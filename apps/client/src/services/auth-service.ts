@@ -10,6 +10,7 @@ import {
 import {
   AD_CONTEXTS,
   DecryptionError,
+  createPasswordChangeMaterial,
   WrongPasswordError,
   checkPasswordPolicy,
   createRecoveryCompletion,
@@ -86,6 +87,12 @@ export type AuthService = {
   readonly setKeepUnlocked: (enabled: boolean) => Promise<void>;
   readonly keepUnlocked: () => Promise<boolean>;
   readonly activeUsername: () => string | null;
+  readonly changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  readonly revealRecoveryWords: (password: string) => Promise<readonly string[]>;
+  readonly verifyPassword: (password: string) => Promise<boolean>;
+  readonly requestAccountDeletion: () => Promise<{ readonly deletionDueAt: string }>;
+  readonly deletionScheduledFor: () => string | null;
+  readonly changeServer: () => Promise<void>;
 };
 
 export type AuthServiceContext = {
@@ -621,6 +628,117 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     }
   }
 
+  let deletionNotice: string | null = null;
+
+  async function requireStored() {
+    const stored = await loadAccount(rowStore);
+    if (stored === null) throw new AuthError('generic');
+    return stored;
+  }
+
+  async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const stored = await requireStored();
+    requirePolicy(newPassword, stored.username);
+    const accountKey = requireAccountKey();
+    let material;
+    try {
+      material = await createPasswordChangeMaterial(
+        sodium,
+        {
+          userId: stored.userId,
+          currentPassword,
+          newPassword,
+          currentParams: kdfParamsOf(stored.bundle),
+          cachedMasterKeyByKek: stored.bundle.masterKeyByKek,
+        },
+        context.kdfStartParams,
+      );
+    } catch (error) {
+      throw toAuthError(error);
+    }
+    try {
+      const response = await http.request(
+        AUTH_CALLS.changePassword({
+          currentLoginKey: encodeBytes(material.currentLoginKey),
+          salt: encodeBytes(material.salt),
+          opsLimit: material.opsLimit,
+          memLimitBytes: material.memLimitBytes,
+          loginKey: encodeBytes(material.loginKey),
+          masterKeyByKek: encodeBytes(material.masterKeyByKek),
+        }),
+      );
+      const persist = (await keyVault.capabilities(accountKey)).persistent;
+      await sessionStore.save(accountKey, response.session.token, persist);
+      await saveKeyBundle(rowStore, {
+        ...stored.bundle,
+        salt: material.salt,
+        opsLimit: material.opsLimit,
+        memLimitBytes: material.memLimitBytes,
+        masterKeyByKek: material.masterKeyByKek,
+      });
+    } catch (error) {
+      throw toAuthError(error);
+    } finally {
+      wipe(material.currentLoginKey);
+      wipe(material.loginKey);
+    }
+  }
+
+  async function revealRecoveryWords(password: string): Promise<readonly string[]> {
+    const stored = await requireStored();
+    let keys: AccountKeys;
+    try {
+      keys = await openWithPassword(password, stored.userId, stored.bundle);
+    } catch (error) {
+      throw toAuthError(error);
+    }
+    try {
+      const recoveryKey = unwrapKey(sodium, keys.masterKey, stored.bundle.recoveryKeyByMaster, AD_CONTEXTS.recoveryKeyByMaster, stored.userId);
+      try {
+        return encodeRecoveryKey(sodium, recoveryKey);
+      } finally {
+        wipe(recoveryKey);
+      }
+    } finally {
+      wipeKeys(keys);
+    }
+  }
+
+  async function verifyPassword(password: string): Promise<boolean> {
+    const stored = await requireStored();
+    try {
+      wipeKeys(await openWithPassword(password, stored.userId, stored.bundle));
+      return true;
+    } catch (error) {
+      if (error instanceof WrongPasswordError || error instanceof DecryptionError) return false;
+      throw error;
+    }
+  }
+
+  async function requestAccountDeletion(): Promise<{ readonly deletionDueAt: string }> {
+    const stored = await requireStored();
+    const accountKey = requireAccountKey();
+    let response;
+    try {
+      response = await http.request(AUTH_CALLS.requestDeletion());
+    } catch (error) {
+      throw toAuthError(error);
+    }
+    deletionNotice = response.deletionDueAt;
+    await saveDeletionDueAt(rowStore, response.deletionDueAt);
+    await attempt(() => sessionStore.clear(accountKey));
+    setSignedOut(stored.username);
+    return { deletionDueAt: response.deletionDueAt };
+  }
+
+  async function changeServer(): Promise<void> {
+    await signOut();
+    await attempt(() => context.serverUrl.clear?.() ?? Promise.resolve());
+    await attempt(() => context.globalStore.delete(GLOBAL_STORE_KEYS.serverConfig));
+    deletionNotice = null;
+    accountState.set({ kind: 'noServer' });
+  }
+
   async function setKeepUnlocked(enabled: boolean): Promise<void> {
     const vault = keyVault.keepUnlocked;
     const accountKey = context.activeAccountKey.get();
@@ -686,5 +804,11 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     setKeepUnlocked,
     keepUnlocked,
     activeUsername: () => readActiveAccount()?.username ?? null,
+    changePassword,
+    revealRecoveryWords,
+    verifyPassword,
+    requestAccountDeletion,
+    deletionScheduledFor: () => deletionNotice,
+    changeServer,
   };
 }

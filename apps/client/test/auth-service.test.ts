@@ -901,3 +901,64 @@ describe('review additions', () => {
     expect(await service.recoveryPending()).toBe(false);
   });
 });
+
+describe('settings additions (spec 20)', () => {
+  it('changePassword sends the new material, replaces the session and stores the new parameters', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await signUpAlice(server, device, sodium);
+    const accountKey = accountKeyOf(server);
+    const before = await device.sessionStore.load(accountKey);
+    const loginBefore = server.user(USERNAME).loginKey;
+    await app.service.changePassword(PASSWORD, NEW_PASSWORD);
+    expect(server.user(USERNAME).loginKey).not.toBe(loginBefore);
+    expect(await device.sessionStore.load(accountKey)).not.toBe(before);
+    expect(await app.service.verifyPassword(NEW_PASSWORD)).toBe(true);
+    expect(await app.service.verifyPassword(PASSWORD)).toBe(false);
+  });
+
+  it('a wrong current password sends no request', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await signUpAlice(server, device, sodium);
+    await expect(app.service.changePassword('wrong password entirely', NEW_PASSWORD)).rejects.toMatchObject({ reason: 'wrongPassword' });
+    expect(server.count(ROUTES.authPassword())).toBe(0);
+  });
+
+  it('revealRecoveryWords returns the sign-up words for the right password only', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await signUpAlice(server, device, sodium);
+    expect(await app.service.revealRecoveryWords(PASSWORD)).toEqual(app.recoveryWords);
+    await expect(app.service.revealRecoveryWords('nope nope nope nope')).rejects.toMatchObject({ reason: 'wrongPassword' });
+  });
+
+  it('requestAccountDeletion signs out, keeps local data and remembers the date for sign-in', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await signUpAlice(server, device, sodium);
+    const accountKey = accountKeyOf(server);
+    const { deletionDueAt } = await app.service.requestAccountDeletion();
+    expect(app.accountState.get()).toEqual({ kind: 'signedOut', username: USERNAME });
+    expect(await device.sessionStore.load(accountKey)).toBeNull();
+    expect(app.service.deletionScheduledFor()).toBe(deletionDueAt);
+    expect(server.user(USERNAME).status).toBe('pending_deletion');
+  });
+
+  it('changeServer signs out and forgets the server', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await signUpAlice(server, device, sodium);
+    const cleared = vi.fn(async () => undefined);
+    (app.context.serverUrl as { clear?: () => Promise<void> }).clear = cleared;
+    await app.service.changeServer();
+    expect(cleared).toHaveBeenCalledTimes(1);
+    expect(app.accountState.get().kind).toBe('noServer');
+    expect(device.globalStore.get('kodakiko.serverConfig')).toBeNull();
+  });
+});

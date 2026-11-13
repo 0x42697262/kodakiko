@@ -41,6 +41,7 @@
     "expo-secure-store": "catalog:",
     "expo-sqlite": "catalog:",
     "expo-video": "catalog:",
+    "fflate": "catalog:",
     "expo-video-thumbnails": "catalog:",
     "idb": "catalog:",
     "libsodium-wrappers-sumo": "catalog:",
