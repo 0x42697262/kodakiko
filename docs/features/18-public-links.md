@@ -320,6 +320,36 @@ with the URL secret, decrypts both; `readImageMetadata` of the decrypted JPEG an
 video show no GPS and no
 date; `one_view` link: second open fails; revoke → open fails.
 
+## 3a. Implementation notes (2026-11-14, Opus)
+
+- Server: `public-links-service.ts`, `public-links-repository.ts`, `routes/public-links.ts`,
+  `domain/link-tokens.ts`, job `expire-public-links.ts`. `create` also requires both variants of
+  every media to be `uploaded`. Spec 17's `deleteCollection` delegates `kind = link` through the
+  `deleteLinkCollection` dependency.
+- Core `media/strip.ts`: the plan is `{ segments, outputSize, moov }`, where each segment is either
+  in-memory bytes or a source copy range. This replaces `head` + `copyRanges`, which could not
+  express a `moov` after the `mdat`. `planWebmDateStrip` returns the same plan shape, and the
+  rewritten `moov` is kept for verification (`moovHasMetadata`). A 32-bit `stco` overflow cannot
+  happen: stripping only removes bytes, so offsets only shrink. The planned overflow test
+  therefore checks the reachable failure instead: a chunk offset outside every `mdat` →
+  `UnsupportedVideoError`.
+- Client: `LinkStripper` holds the shared photo/video logic and verification, and takes a platform
+  `PhotoReencoder` (`adapters/photo-reencoder/`: web canvas, Android ImageManipulator via a temp
+  file). The test context (`src/testing.ts`) uses `removeJpegMetadataSegments`, because Node has
+  no image encoder. The real browser re-encode is covered by U-18's download check.
+- `PublicLinksService` deps: `fetchObject` (downloader `'opened'`), `baseUrl` (server URL),
+  `readMetadata`. Uploads go through `link-uploads.ts` (presign → `Uploader.enqueue` → wait →
+  confirm → delete local files). `decryptWhole` moved to `services/media/decrypt-whole.ts` so Node
+  test code can import it without platform modules.
+- Viewer page: `app/_layout.tsx` renders `PublicViewerProvider` (sodium + an HTTP client on
+  `window.location.origin`) instead of the app context for `/s/…`. `ApiCall.auth` gained
+  `viewToken`. The decrypt logic is `features/link-viewer/link-session.ts` (also used by the e2e
+  "viewer"). Photos show contain-fit without pinch zoom in v1 of the viewer page (open item).
+  Video goes through the media worker, with `needUrl` answered by re-fetching the entries page,
+  or through the Blob fallback.
+- `/links/new?entries=…` (from the share sheet) and `/settings/links` (list, copy/share,
+  revoke). Spec 20 links the list from Settings.
+
 ## 4. Verification checklist
 
 - [ ] `pnpm verify`, server integration, e2e green.

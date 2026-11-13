@@ -16,7 +16,7 @@ import type { DeviceSettingsValue } from '../../src/services/settings/device-set
 import { createAccountFixture, type AccountFixture } from './entry-fixtures';
 import { createMemoryFileStore } from './memory-filestore';
 import type { FileStore } from '../../src/adapters/filestore/filestore';
-import { createLocalThumbnailSource, type ThumbnailSource } from '../../src/services/thumbnails/thumbnail-source';
+import { createLocalThumbnailSource, decryptWhole, type ThumbnailSource } from '../../src/services/thumbnails/thumbnail-source';
 import { createLocalOriginalSource, type OriginalSource } from '../../src/services/originals/original-source';
 import { createMemoryRowStore } from './memory-rowstore';
 
@@ -88,6 +88,7 @@ export type EntriesHarness = {
   readonly thumbnails: ThumbnailSource;
   readonly originals: OriginalSource;
   readonly sinkBytes: (uri: string) => Uint8Array | undefined;
+  readonly thumbnailPlaintext: (entryId: string, mediaId: string) => Promise<Uint8Array>;
   readonly createEntry: (
     mediaBytes: readonly Uint8Array[],
     input?: { note?: string; tags?: readonly string[] },
@@ -302,6 +303,13 @@ export async function createEntriesHarness(
     thumbnails,
     originals,
     sinkBytes: (uri: string) => sinkContents.get(uri),
+    thumbnailPlaintext: async (entryId: string, mediaId: string) => {
+      const rows = await rowStore.transaction((tx) => tx.objects.byMedia(mediaId));
+      const row = rows.find((candidate) => candidate.variant === 'thumbnail');
+      if (row === undefined) throw new Error(`no thumbnail for ${mediaId}`);
+      const key = await entryKeys.variantKey(entryId, mediaId, 'thumbnail');
+      return decryptWhole(sodium, key, await fileStore.readRange(row.id, 0, row.sizeBytes), row.plaintextSize);
+    },
     createEntry,
   };
 }

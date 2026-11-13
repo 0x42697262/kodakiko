@@ -1,10 +1,4 @@
-import {
-  STREAM_HEADER_BYTES,
-  concatBytes,
-  createStreamDecryptor,
-  wipe,
-  type Sodium,
-} from '@kodakiko/core';
+import { wipe, type Sodium } from '@kodakiko/core';
 import type { FileStore } from '../../adapters/filestore/filestore';
 import type { ObjectRow, RowStore } from '../../adapters/rowstore/rowstore';
 import {
@@ -13,6 +7,9 @@ import {
 } from '../../adapters/thumbnail-urls/thumbnail-urls';
 import { THUMBNAIL_MEMORY_CACHE_ITEMS } from '../../constants/gallery-constants';
 import type { EntryKeys } from '../keys/entry-keys';
+import { decryptWhole } from '../media/decrypt-whole';
+
+export { decryptWhole } from '../media/decrypt-whole';
 
 export type ThumbnailRef = { readonly uri: string; readonly release: () => void };
 
@@ -30,28 +27,6 @@ export type LocalThumbnailSourceDeps = {
 };
 
 function noop(): void {}
-
-export function decryptWhole(
-  sodium: Sodium,
-  variantKey: Uint8Array,
-  ciphertext: Uint8Array,
-  plaintextSize: number,
-): Uint8Array {
-  const decryptor = createStreamDecryptor(
-    sodium,
-    variantKey,
-    ciphertext.subarray(0, STREAM_HEADER_BYTES),
-    plaintextSize,
-  );
-  const { chunkCount, chunkCiphertextSize } = decryptor.layout;
-  const parts: Uint8Array[] = [];
-  for (let index = 0; index < chunkCount; index += 1) {
-    const start = STREAM_HEADER_BYTES + index * chunkCiphertextSize;
-    parts.push(decryptor.decryptNext(ciphertext.subarray(start, start + chunkCiphertextSize)));
-  }
-  decryptor.finish();
-  return concatBytes(...parts);
-}
 
 export function createLocalThumbnailSource(deps: LocalThumbnailSourceDeps): ThumbnailSource {
   const { fileStore, rowStore, entryKeys, sodium } = deps;

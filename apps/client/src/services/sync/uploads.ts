@@ -41,7 +41,7 @@ type ObjectContext = { readonly object: ObjectRow; readonly entryId: string | nu
 
 type PreparedUpload = { readonly objectId: string; readonly job: UploadJob };
 
-function partsFromPresign(response: PresignResponse, sizeBytes: number): readonly UploadPart[] {
+export function partsFromPresign(response: PresignResponse, sizeBytes: number): readonly UploadPart[] {
   if (response.mode === 'single') {
     return [{ partNumber: SINGLE_PART_NUMBER, url: response.url, offset: 0, length: sizeBytes }];
   }

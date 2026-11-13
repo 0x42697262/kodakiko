@@ -17,6 +17,8 @@ import { createMemoryMediaToolkit } from './adapters/memory/memory-media-toolkit
 import { createWebUploader } from './adapters/uploader/uploader.web';
 import { bindAccountLifecycle } from './composition/account-lifecycle';
 import { createSharingService, type SharingService } from './services/sharing/sharing-service';
+import { createPublicLinksService, type PublicLinksService } from './services/links/public-links-service';
+import { createLinkStripper, type ReencodedPhoto } from './services/links/link-stripper';
 import { createAccountState, createObservable } from './composition/account-state';
 import { createEventBus, type AppEventBus, type AppEvents } from './composition/events';
 import { SEED_TRAY_LIMIT } from './constants/entry-constants';
@@ -123,6 +125,7 @@ export type TestClientContext = TestAuthContext &
     readonly captureTray: CaptureTrayStore;
     readonly mediaImport: ImportService;
     readonly sharing: SharingService;
+    readonly links: PublicLinksService;
   };
 
 export type TrayFile = { readonly bytes: Uint8Array; readonly fileName: string };
@@ -209,6 +212,24 @@ export async function createTestClientContext(
       if (entryIds.length > 0) events.emit('entriesChanged', [...entryIds]);
     },
   });
+  const links = createPublicLinksService({
+    http: auth.http,
+    sodium: input.sodium,
+    account: () => {
+      const state = auth.accountState.get();
+      return state.kind === 'unlocked' ? state.keys : null;
+    },
+    readMetadata: (entryId) => entries.readMetadata(entryId),
+    entryKeys: stack.entryKeys,
+    rowStore: auth.rowStore,
+    fileStore: auth.fileStore,
+    fetchObject: async () => undefined,
+    stripper: createLinkStripper({ reencodePhoto: removeJpegMetadataSegments }),
+    uploader,
+    baseUrl: async () => input.baseUrl,
+    randomId: auth.randomId,
+    clock: input.clock,
+  });
   bindAccountLifecycle(auth.accountState, {
     onUnlocked: () => undefined,
     onLeftUnlocked: () => {
@@ -217,7 +238,7 @@ export async function createTestClientContext(
       captureTray.clear(true).catch(() => undefined);
     },
   });
-  return { ...auth, ...stack, events, uploader, entries, captureTray, mediaImport, sharing };
+  return { ...auth, ...stack, events, uploader, entries, captureTray, mediaImport, sharing, links };
 }
 
 export async function importIntoTray(
@@ -243,3 +264,39 @@ export async function importIntoTray(
 }
 
 export { createWrappersSodium } from './adapters/sodium/sodium-wrappers';
+export { ApiError, createHttpClient } from './adapters/http/http';
+export { createLinkSession } from './features/link-viewer/link-session';
+
+const JPEG_PREFIX = 0xff;
+const JPEG_SOI = 0xd8;
+const JPEG_SOS = 0xda;
+const JPEG_APP_FIRST = 0xe1;
+const JPEG_APP_LAST = 0xef;
+const JPEG_HEADER_BYTES = 2;
+const JPEG_LENGTH_BYTES = 2;
+const BYTE_SHIFT = 8;
+const PLACEHOLDER_EDGE = 1;
+
+export async function removeJpegMetadataSegments(bytes: Uint8Array): Promise<ReencodedPhoto> {
+  if (bytes[0] !== JPEG_PREFIX || bytes[1] !== JPEG_SOI) throw new Error('not a JPEG');
+  const kept: Uint8Array[] = [bytes.subarray(0, JPEG_HEADER_BYTES)];
+  let position = JPEG_HEADER_BYTES;
+  while (position + JPEG_HEADER_BYTES <= bytes.length) {
+    const marker = bytes[position + 1] ?? 0;
+    if (marker === JPEG_SOS) {
+      kept.push(bytes.subarray(position));
+      break;
+    }
+    const length = ((bytes[position + JPEG_HEADER_BYTES] ?? 0) << BYTE_SHIFT) | (bytes[position + JPEG_HEADER_BYTES + 1] ?? 0);
+    const end = position + JPEG_HEADER_BYTES + Math.max(length, JPEG_LENGTH_BYTES);
+    if (marker < JPEG_APP_FIRST || marker > JPEG_APP_LAST) kept.push(bytes.subarray(position, end));
+    position = end;
+  }
+  const out = new Uint8Array(kept.reduce((sum, part) => sum + part.length, 0));
+  let offset = 0;
+  for (const part of kept) {
+    out.set(part, offset);
+    offset += part.length;
+  }
+  return { bytes: out, width: PLACEHOLDER_EDGE, height: PLACEHOLDER_EDGE };
+}

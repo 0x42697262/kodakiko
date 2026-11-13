@@ -1,11 +1,13 @@
 import '../src/config/zod-config';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import { LogBox, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppContextProvider } from '../src/composition/app-context';
 import { UI_TEST_MODE } from '../src/config/build-flags';
 import { ReturnToRecorder } from '../src/features/lock/ReturnToRecorder';
+import { PublicViewerProvider } from '../src/features/link-viewer/public-viewer-context';
+import { LINK_PATH_PREFIX as PUBLIC_LINK_PREFIX } from '../src/services/links/link-url';
 import { useTheme } from '../src/ui/theme';
 
 if (UI_TEST_MODE) LogBox.ignoreAllLogs(true);
@@ -23,13 +25,20 @@ function ThemedStack() {
 }
 
 export default function RootLayout() {
+  const publicLink = usePathname().startsWith(PUBLIC_LINK_PREFIX);
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <AppContextProvider>
-          <ThemedStack />
-          <ReturnToRecorder />
-        </AppContextProvider>
+        {publicLink ? (
+          <PublicViewerProvider>
+            <ThemedStack />
+          </PublicViewerProvider>
+        ) : (
+          <AppContextProvider>
+            <ThemedStack />
+            <ReturnToRecorder />
+          </AppContextProvider>
+        )}
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

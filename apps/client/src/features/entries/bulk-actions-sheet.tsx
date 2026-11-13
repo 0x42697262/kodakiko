@@ -184,7 +184,7 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             busy={busy}
             onPress={() => void run(() => services.entries.trash(ids))}
           />
-          {services.config.get()?.sharingEnabled === true ? (
+          {services.config.get()?.sharingEnabled === true || services.config.get()?.publicLinksEnabled === true ? (
             <Button testID={testId('bulk.share')} label={EN['bulk.share']} variant="secondary" onPress={() => setPanel('share')} />
           ) : null}
         </>

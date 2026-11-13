@@ -18,7 +18,7 @@ export type ApiCall<Response> = {
   readonly path: string;
   readonly body?: unknown;
   readonly responseSchema: z.ZodType<Response>;
-  readonly auth: 'session' | 'none' | { readonly linkToken: string };
+  readonly auth: 'session' | 'none' | { readonly linkToken: string; readonly viewToken?: string | null };
   readonly idempotent: boolean;
   readonly timeoutMs?: number;
 };
@@ -112,6 +112,9 @@ export function createHttpClient(deps: HttpClientDeps): HttpClient {
       if (token !== null) headers.set(HTTP_HEADERS.authorization, `${BEARER_PREFIX}${token}`);
     } else if (call.auth !== 'none') {
       headers.set(HTTP_HEADERS.linkToken, call.auth.linkToken);
+      if (call.auth.viewToken !== undefined && call.auth.viewToken !== null) {
+        headers.set(HTTP_HEADERS.viewToken, call.auth.viewToken);
+      }
     }
     return headers;
   }

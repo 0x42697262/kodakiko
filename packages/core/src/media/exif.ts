@@ -357,3 +357,11 @@ export async function readImageMetadata(
     return emptyMetadata(!(error instanceof MediaRangeError && limited));
   }
 }
+
+export function hasExifSegment(bytes: Uint8Array): boolean {
+  try {
+    return locateJpeg(bytes) !== null;
+  } catch {
+    return true;
+  }
+}

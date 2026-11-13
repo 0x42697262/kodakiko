@@ -71,6 +71,9 @@ import { createAutoLock, type ActivitySource, type AutoLock } from '../services/
 import { createLockService } from '../services/lock/lock-service';
 import { createCollectionNames, type CollectionNames } from '../services/sharing/collection-names';
 import { createSharingService, type SharingService } from '../services/sharing/sharing-service';
+import { createPublicLinksService, type PublicLinksService } from '../services/links/public-links-service';
+import { createLinkStripper } from '../services/links/link-stripper';
+import { createPhotoReencoder } from '../adapters/photo-reencoder/photo-reencoder';
 import { createEventBus, type AppEventBus, type AppEvents } from './events';
 import {
   createAccountState,
@@ -104,6 +107,7 @@ export type Services = {
   readonly lock: LockControl;
   readonly sharing: SharingService;
   readonly collectionNames: CollectionNames;
+  readonly links: PublicLinksService;
   readonly videoSource: VideoSource;
 };
 
@@ -355,6 +359,24 @@ export async function createAppContext(): Promise<AppContext> {
     },
   });
   const collectionNames = createCollectionNames({ sodium, rowStore, entryKeys: stack.entryKeys });
+  const links = createPublicLinksService({
+    http,
+    sodium,
+    account: () => {
+      const state = accountState.get();
+      return state.kind === 'unlocked' ? state.keys : null;
+    },
+    readMetadata: entries.readMetadata,
+    entryKeys: stack.entryKeys,
+    rowStore,
+    fileStore,
+    fetchObject: (objectId) => downloader.fetchObject(objectId, 'opened'),
+    stripper: createLinkStripper({ reencodePhoto: createPhotoReencoder({ tempFiles }) }),
+    uploader,
+    baseUrl: async () => (await serverUrl.current()) ?? '',
+    randomId,
+    clock: systemClock,
+  });
   const returnTo = createObservable<string | null>(null);
   const lockService = createLockService({
     accountState,
@@ -486,6 +508,7 @@ export async function createAppContext(): Promise<AppContext> {
       lock: lockControl,
       sharing,
       collectionNames,
+      links,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,

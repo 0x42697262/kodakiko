@@ -1,4 +1,5 @@
 import { COLLECTION_NAME_MAX_CHARS } from '@kodakiko/contract';
+import { useRouter, type Href } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
@@ -12,6 +13,7 @@ import { Body } from '../../ui/Typography';
 import { SPACING } from '../../ui/theme-constants';
 import { sharingErrorText } from './sharing-errors';
 import { SHARING_IDS } from './sharing-ids';
+import { LINK_IDS } from '../links/links-ids';
 import { useSharedCollections } from './use-shared-collections';
 
 type Panel = 'menu' | 'journals' | 'new';
@@ -32,6 +34,8 @@ export function ShareEntriesSheet({ entryIds }: { readonly entryIds: readonly st
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ readonly kind: 'info' | 'error'; readonly text: string } | null>(null);
   const enabled = services.config.get()?.sharingEnabled === true;
+  const linksEnabled = services.config.get()?.publicLinksEnabled === true;
+  const router = useRouter();
   const mine = collections?.filter((collection) => collection.role === 'owner') ?? [];
 
   async function addTo(collectionId: () => Promise<string>): Promise<void> {
@@ -55,6 +59,14 @@ export function ShareEntriesSheet({ entryIds }: { readonly entryIds: readonly st
         <>
           <Button testID={SHARING_IDS.addTo} label={EN['shared.addTo']} variant="secondary" disabled={!enabled} onPress={() => setPanel('journals')} />
           {enabled ? null : <Body testID={testId('shared.sharingOffHint')} text={EN['shared.sharingOffHint']} />}
+          <Button
+            testID={LINK_IDS.createFromSheet}
+            label={EN['links.createLink']}
+            variant="secondary"
+            disabled={!linksEnabled}
+            onPress={() => router.push(`/links/new?entries=${entryIds.join(',')}` as Href)}
+          />
+          {linksEnabled ? null : <Body testID={testId('links.offHint')} text={EN['links.offHint']} />}
         </>
       ) : null}
       {panel === 'journals' ? (
