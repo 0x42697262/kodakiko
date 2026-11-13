@@ -1,7 +1,9 @@
 appId: com.x42697262.kodakiko
 ---
 - tapOn:
-    id: gallery.settings
+    id: tabs.more
+- tapOn:
+    id: more.settings
 - tapOn:
     id: settings.row.account
 - tapOn:

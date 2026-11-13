@@ -7,10 +7,12 @@ appId: com.x42697262.kodakiko
 - runFlow: common/sign-in.yaml
 - extendedWaitUntil:
     visible:
-      id: gallery.settings
+      id: tabs.more
     timeout: 60000
 - tapOn:
-    id: gallery.settings
+    id: tabs.more
+- tapOn:
+    id: more.settings
 - tapOn:
     id: settings.row.security
 - tapOn:

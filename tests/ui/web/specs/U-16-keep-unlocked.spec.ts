@@ -25,7 +25,8 @@ test('U-16 keep me unlocked survives idle time and a browser restart; Lock Now t
     await page.clock.install();
     await signInThroughUi(page, account);
     await expect(page.getByTestId('gallery.capture')).toBeVisible({ timeout: SYNC_WAIT_MS });
-    await page.getByTestId('gallery.settings').click();
+    await page.getByTestId('tabs.more').click();
+    await page.getByTestId('more.settings').click();
     await page.getByTestId('settings.row.security').click();
     await page.getByTestId('settings.keepUnlocked').click();
     await expect(page.getByTestId('settings.keepUnlocked')).toHaveAttribute('aria-checked', 'true');

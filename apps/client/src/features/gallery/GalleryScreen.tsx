@@ -28,7 +28,6 @@ import { useSelection, type Selection } from './use-selection';
 
 type Overlay = 'none' | 'filter' | 'actions' | 'more';
 
-const SETTINGS_GLYPH = '\u2699';
 
 function SelectionHeader({ selection, onActions }: { readonly selection: Selection; readonly onActions: () => void }) {
   const { colors } = useTheme();
@@ -143,15 +142,6 @@ export function GalleryScreen() {
               style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
             >
               <Text style={[styles.buttonText, { color: colors.text }]}>{EN['gallery.moreGlyph']}</Text>
-            </Pressable>
-            <Pressable
-              testID="gallery.settings"
-              accessibilityRole="button"
-              accessibilityLabel={EN['settings.open']}
-              onPress={() => router.push('/settings' as Href)}
-              style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
-            >
-              <Text style={[styles.buttonText, { color: colors.text }]}>{SETTINGS_GLYPH}</Text>
             </Pressable>
           </View>
         </View>

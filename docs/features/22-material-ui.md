@@ -183,7 +183,7 @@ the search action lists matching items across all screens.
 [true], `galleryShowCounts` [false], `gallerySort` [`{ key: 'takenAt', descending: true }`],
 `galleryFilters` [all off], `hideShared` [false], `onThisDay` [true], `confirmTrash` [true],
 `captureStartCamera` [`back`], `captureKeepScreenOn` [true], `hideNotePreviews` [false],
-`secureScreen` [false]. Older stored settings parse with these defaults.
+`secureScreen` [true]. Older stored settings parse with these defaults.
 
 Core changes: `GalleryFilter` gains `triState` filters and `sort`; `query()` applies them (pure
 functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays in the client.
@@ -212,14 +212,33 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
 - Manual (Android): no grey bar under the bottom navigation; capture preview fills the screen;
   dark mode has no black-on-dark text anywhere (the spec 07b recovery-label bug class).
 
-## 9. Open questions (programmer)
+## 8a. Implementation notes
 
-| ID | Question | Recommended |
+- **Phase 1 (2026-11-14):**
+  - Dependencies added; `pnpm licenses` still passes D-70.
+  - `ui/icons.tsx` (semantic `ICONS` map; every name checked against the MaterialIcons glyph map),
+    `ui/paper-theme.ts` (MD3 theme from `COLORS`), `ui/AppBar.tsx`. `PaperProvider` in the root
+    layout with MaterialIcons as Paper's icon renderer.
+  - Bottom bar: `features/navigation/material-tab-bar.tsx`, a Paper `BottomNavigation.Bar` passed
+    as the expo-router `tabBar`. It uses expo-router 58's own tab-bar props (`navigateToTab`, no
+    `navigation`). Shared is hidden in local mode and when sharing is off. Tab scenes use the theme
+    background.
+  - More tab `features/more/MoreScreen.tsx` (Lock now, Trash, Data and storage, Settings, About;
+    Tags and Statistics come in phase 5). The gallery gear is gone; U-16, U-17, U-19, U-20 (web) and
+    U-15, U-21, U-23 (Android) now go through `tabs.more` › `more.settings`.
+  - `SettingsPage` uses `AppBar` (back keeps `settings.back`).
+  - `plugins/with-system-bars.js` sets `android:enforceNavigationBarContrast=false` (unit-tested;
+    checked on a device at the next APK build).
+  - `test/tabs-layout.test.ts` mocks the new tab-bar module and hooks; assertions unchanged.
+
+## 9. Answered questions (programmer, 2026-11-14)
+
+| ID | Question | Answer |
 |---|---|---|
-| OQ-1 | Bottom tabs: Gallery, Calendar, Shared, More (Shared hidden in local mode and when sharing is off) | Yes |
-| OQ-2 | Secure screen needs `expo-screen-capture` (Expo, MIT, native) | Add it in phase 2 |
-| OQ-3 | Material You colors from the wallpaper (Android 12+, needs a native package) | Later, separate decision |
-| OQ-4 | Statistics and Tags management screens are new features | Include (phase 5) |
+| OQ-1 | Bottom tabs Gallery, Calendar, Shared, More (Shared hidden in local mode and when sharing is off) | Yes |
+| OQ-2 | Secure screen via `expo-screen-capture` | Yes, configurable, **on by default** (`secureScreen` default `true`, §6) |
+| OQ-3 | Material You colors | Later |
+| OQ-4 | Tags management and Statistics screens | Yes (phase 5) |
 
 ## 10. Verification checklist
 

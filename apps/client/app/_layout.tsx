@@ -8,6 +8,9 @@ import { UI_TEST_MODE } from '../src/config/build-flags';
 import { ReturnToRecorder } from '../src/features/lock/ReturnToRecorder';
 import { PublicViewerProvider } from '../src/features/link-viewer/public-viewer-context';
 import { LINK_PATH_PREFIX as PUBLIC_LINK_PREFIX } from '../src/services/links/link-url';
+import { PaperProvider } from 'react-native-paper';
+import { PaperIcon } from '../src/ui/icons';
+import { paperTheme } from '../src/ui/paper-theme';
 import { useTheme } from '../src/ui/theme';
 
 if (UI_TEST_MODE) LogBox.ignoreAllLogs(true);
@@ -24,21 +27,26 @@ function ThemedStack() {
   );
 }
 
+const PAPER_SETTINGS = { icon: PaperIcon };
+
 export default function RootLayout() {
   const publicLink = usePathname().startsWith(PUBLIC_LINK_PREFIX);
+  const { scheme } = useTheme();
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        {publicLink ? (
-          <PublicViewerProvider>
-            <ThemedStack />
-          </PublicViewerProvider>
-        ) : (
-          <AppContextProvider>
-            <ThemedStack />
-            <ReturnToRecorder />
-          </AppContextProvider>
-        )}
+        <PaperProvider theme={paperTheme(scheme)} settings={PAPER_SETTINGS}>
+          {publicLink ? (
+            <PublicViewerProvider>
+              <ThemedStack />
+            </PublicViewerProvider>
+          ) : (
+            <AppContextProvider>
+              <ThemedStack />
+              <ReturnToRecorder />
+            </AppContextProvider>
+          )}
+        </PaperProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

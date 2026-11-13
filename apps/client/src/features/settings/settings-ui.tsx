@@ -1,22 +1,20 @@
-import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SWITCH_DISABLED_OPACITY, SWITCH_TRACK_PADDING } from '../../constants/settings-constants';
-import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
+import { AppBar } from '../../ui/AppBar';
 import { Screen } from '../../ui/Screen';
-import { Title } from '../../ui/Typography';
 import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 
 export function SettingsPage({ testID, title, children }: { readonly testID: string; readonly title: string; readonly children: ReactNode }) {
-  const router = useRouter();
   return (
-    <Screen testID={testID} scroll>
-      <Button testID="settings.back" label={EN['settings.back']} variant="secondary" onPress={() => router.back()} />
-      <Title text={title} />
-      <View style={styles.body}>{children}</View>
-    </Screen>
+    <View style={styles.page}>
+      <AppBar title={title} backTestID="settings.back" />
+      <Screen testID={testID} scroll>
+        <View style={styles.body}>{children}</View>
+      </Screen>
+    </View>
   );
 }
 
@@ -104,6 +102,7 @@ const KNOB = 20;
 const TRACK_WIDTH = 44;
 
 const styles = StyleSheet.create({
+  page: { flex: 1 },
   body: { gap: SPACING.md },
   group: { gap: SPACING.xs },
   row: { minHeight: MIN_TOUCH_TARGET, padding: SPACING.md, borderWidth: BORDER_WIDTH, borderRadius: RADIUS.md, gap: SPACING.xs, justifyContent: 'center' },

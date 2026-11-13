@@ -17,7 +17,8 @@ test('U-19 an admin invites a new user and sets their quota', async ({ page, bro
   const newcomer = uiUsername('U-19', testInfo.project.name as UiProject, 1);
   await signInThroughUi(page, admin);
   await expect(page.getByTestId('gallery.capture')).toBeVisible({ timeout: SYNC_WAIT_MS });
-  await page.getByTestId('gallery.settings').click();
+  await page.getByTestId('tabs.more').click();
+  await page.getByTestId('more.settings').click();
   await page.getByTestId('settings.row.admin').click();
   await page.getByTestId('admin.segment.invites').click();
   await page.getByTestId('admin.newInvite').click();

@@ -19,7 +19,10 @@ vi.mock('expo-router', () => ({
 }));
 vi.mock('../src/composition/app-context', () => ({
   useAccountState: () => ({ kind: accountKind }),
+  useAccountMode: () => 'server',
+  useAppContext: () => ({ services: { config: { get: () => null } } }),
 }));
+vi.mock('../src/features/navigation/material-tab-bar', () => ({ MaterialTabBar: () => null }));
 
 const { default: TabsLayout } = await import('../app/(tabs)/_layout');
 

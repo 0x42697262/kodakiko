@@ -42,6 +42,7 @@ const config: ExpoConfig = {
     ],
     './plugins/with-android-hardening',
     './plugins/with-android-toolchain',
+    './plugins/with-system-bars',
   ],
   experiments: { typedRoutes: true },
 };

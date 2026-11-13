@@ -27,7 +27,8 @@ test('U-20 the export falls back to downloads and every zip holds the entries an
   });
   await signInThroughUi(page, account);
   await expect(page.getByTestId(/^gallery\.tile\.\d+$/)).toHaveCount(2, { timeout: SYNC_WAIT_MS });
-  await page.getByTestId('gallery.settings').click();
+  await page.getByTestId('tabs.more').click();
+  await page.getByTestId('more.settings').click();
   await page.getByTestId('settings.row.export').click();
   const downloads: Uint8Array[] = [];
   page.on('download', (download) => {

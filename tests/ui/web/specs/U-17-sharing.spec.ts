@@ -50,7 +50,8 @@ test('U-17 a recipient browses a shared journal read-only, codes match, and leav
 
   await recipientPage.getByTestId('shared.back').click();
   await recipientPage.getByTestId('tabs.gallery').click();
-  await recipientPage.getByTestId('gallery.settings').click();
+  await recipientPage.getByTestId('tabs.more').click();
+  await recipientPage.getByTestId('more.settings').click();
   await recipientPage.getByTestId('settings.row.account').click();
   const ownCode = await recipientPage.getByTestId('settings.securityCode').textContent();
   expect(seenByOwner?.trim()).toBeTruthy();
