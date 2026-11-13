@@ -6,7 +6,21 @@ import {
   DEVICE_SETTINGS_SCHEMA_VERSION,
   MIN_LARGE_UPLOAD_THRESHOLD_BYTES,
 } from '../../constants/device-settings-constants';
+import {
+  APP_THEMES,
+  CAMERA_SIDES,
+  DATE_FORMATS,
+  GALLERY_COLUMNS_AUTO,
+  GALLERY_COLUMNS_MAX,
+  GALLERY_DISPLAY_MODES,
+  GALLERY_SORT_KEYS,
+  START_SCREENS,
+  TRI_STATES,
+} from '../../constants/ui-settings-constants';
 import { STORAGE_KEYS } from '../../keys/storage-keys';
+
+const columns = z.number().int().min(GALLERY_COLUMNS_AUTO).max(GALLERY_COLUMNS_MAX);
+const triState = z.enum(TRI_STATES);
 
 export const deviceSettingsSchema = z.object({
   schemaVersion: z.literal(DEVICE_SETTINGS_SCHEMA_VERSION),
@@ -16,6 +30,39 @@ export const deviceSettingsSchema = z.object({
   largeUploadThresholdBytes: z.number().int().min(MIN_LARGE_UPLOAD_THRESHOLD_BYTES),
   locationForCaptures: z.boolean(),
   autoLockMinutes: z.number().int().min(AUTO_LOCK_MINUTES_MIN).max(AUTO_LOCK_MINUTES_MAX),
+  appTheme: z.enum(APP_THEMES),
+  dateFormat: z.enum(DATE_FORMATS),
+  relativeDates: z.boolean(),
+  startScreen: z.enum(START_SCREENS),
+  galleryDisplayMode: z.enum(GALLERY_DISPLAY_MODES),
+  galleryColumnsPortrait: columns,
+  galleryColumnsLandscape: columns,
+  galleryGroupByDay: z.boolean(),
+  galleryBadges: z.object({
+    video: z.boolean(),
+    photoCount: z.boolean(),
+    note: z.boolean(),
+    pending: z.boolean(),
+    keptOffline: z.boolean(),
+  }),
+  galleryShowTagTabs: z.boolean(),
+  galleryShowCounts: z.boolean(),
+  gallerySort: z.object({ key: z.enum(GALLERY_SORT_KEYS), descending: z.boolean() }),
+  galleryFilters: z.object({
+    video: triState,
+    note: triState,
+    multiple: triState,
+    shared: triState,
+    pending: triState,
+    keptOffline: triState,
+  }),
+  hideShared: z.boolean(),
+  onThisDay: z.boolean(),
+  confirmTrash: z.boolean(),
+  captureStartCamera: z.enum(CAMERA_SIDES),
+  captureKeepScreenOn: z.boolean(),
+  hideNotePreviews: z.boolean(),
+  secureScreen: z.boolean(),
 });
 
 export type DeviceSettingsValue = Omit<z.infer<typeof deviceSettingsSchema>, 'schemaVersion'>;

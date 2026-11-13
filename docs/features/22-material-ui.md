@@ -231,6 +231,25 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
     checked on a device at the next APK build).
   - `test/tabs-layout.test.ts` mocks the new tab-bar module and hooks; assertions unchanged.
 
+- **Phase 2 (2026-11-14):**
+  - The `DeviceSettingsValue` fields of §6 are added **without** a schema version bump. Stored
+    settings are parsed field by field, and missing fields take defaults, so a bump would only reset
+    every user's settings (deviation from §6). Defaults: `constants/ui-settings-constants.ts`,
+    spread into both platform defaults.
+  - Widgets: `ui/preferences/` (`PreferenceList` with header, text, switch, choice (radio dialog)
+    and info rows). Choice options have the test id `<testID>.<value>`, so U-15 opens
+    `settings.autoLock` and then taps `settings.autoLock.1`. Switch rows keep `role="switch"` and
+    `aria-checked` (U-16). No slider widget: items per row is a choice 0 (Auto)–10.
+  - Settings main list with icons, summaries and search (`settings-search.ts`, unit-tested).
+    New screens Appearance, Gallery and Capture; Security, Data and storage (now holds Export,
+    so U-20 opens `settings.row.storage` first) and the main list are ported to preferences.
+    Add-location moved to Capture.
+  - Theme choice: module store in `ui/theme.ts` set by `SettingsBinders`. Secure screen via
+    `expo-screen-capture` on Android: on by default, and on before the settings load (lock
+    screen).
+  - Not yet applied to the screens they affect (phase 3+): date format, relative dates, start
+    screen, gallery display settings, hide shared, hide note previews, camera side, keep screen on.
+
 ## 9. Answered questions (programmer, 2026-11-14)
 
 | ID | Question | Answer |

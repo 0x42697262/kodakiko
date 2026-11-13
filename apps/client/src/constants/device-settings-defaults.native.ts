@@ -1,4 +1,5 @@
 import type { DeviceSettingsValue } from '../services/settings/device-settings';
+import { UI_SETTINGS_DEFAULTS } from './ui-settings-constants';
 
 export const DEVICE_SETTINGS_DEFAULTS: DeviceSettingsValue = Object.freeze({
   encryptThumbnails: false,
@@ -7,4 +8,5 @@ export const DEVICE_SETTINGS_DEFAULTS: DeviceSettingsValue = Object.freeze({
   largeUploadThresholdBytes: 104_857_600,
   locationForCaptures: false,
   autoLockMinutes: 5,
+  ...UI_SETTINGS_DEFAULTS,
 });

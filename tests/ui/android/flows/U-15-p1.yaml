@@ -16,5 +16,7 @@ appId: com.x42697262.kodakiko
 - tapOn:
     id: settings.row.security
 - tapOn:
+    id: settings.autoLock
+- tapOn:
     id: settings.autoLock.1
 - pressKey: Home

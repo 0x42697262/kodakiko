@@ -1,22 +1,37 @@
-import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { ComponentProps, ReactNode } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { SWITCH_DISABLED_OPACITY, SWITCH_TRACK_PADDING } from '../../constants/settings-constants';
 import { Button } from '../../ui/Button';
 import { AppBar } from '../../ui/AppBar';
-import { Screen } from '../../ui/Screen';
 import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 
-export function SettingsPage({ testID, title, children }: { readonly testID: string; readonly title: string; readonly children: ReactNode }) {
+export function SettingsPage({
+  testID,
+  title,
+  children,
+  padded = true,
+  actions,
+}: {
+  readonly testID: string;
+  readonly title: string;
+  readonly children: ReactNode;
+  readonly padded?: boolean;
+  readonly actions?: ComponentProps<typeof AppBar>['actions'];
+}) {
+  const { colors } = useTheme();
   return (
-    <View style={styles.page}>
-      <AppBar title={title} backTestID="settings.back" />
-      <Screen testID={testID} scroll>
-        <View style={styles.body}>{children}</View>
-      </Screen>
-    </View>
+    <SafeAreaView testID={testID} edges={SAFE_EDGES} style={[styles.page, { backgroundColor: colors.background }]}>
+      <AppBar title={title} backTestID="settings.back" {...(actions === undefined ? {} : { actions })} />
+      <ScrollView contentContainerStyle={padded ? styles.body : styles.flush} keyboardShouldPersistTaps="handled">
+        {children}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const SAFE_EDGES = ['top', 'left', 'right'] as const;
 
 export function SettingsRow({ testID, label, detail, onPress }: { readonly testID: string; readonly label: string; readonly detail?: string; readonly onPress: () => void }) {
   const { colors } = useTheme();
@@ -103,7 +118,8 @@ const TRACK_WIDTH = 44;
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
-  body: { gap: SPACING.md },
+  body: { gap: SPACING.md, padding: SPACING.lg },
+  flush: { paddingBottom: SPACING.xl },
   group: { gap: SPACING.xs },
   row: { minHeight: MIN_TOUCH_TARGET, padding: SPACING.md, borderWidth: BORDER_WIDTH, borderRadius: RADIUS.md, gap: SPACING.xs, justifyContent: 'center' },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

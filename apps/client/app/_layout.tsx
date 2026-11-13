@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppContextProvider } from '../src/composition/app-context';
 import { UI_TEST_MODE } from '../src/config/build-flags';
 import { ReturnToRecorder } from '../src/features/lock/ReturnToRecorder';
+import { SettingsBinders } from '../src/features/settings/SettingsBinders';
 import { PublicViewerProvider } from '../src/features/link-viewer/public-viewer-context';
 import { LINK_PATH_PREFIX as PUBLIC_LINK_PREFIX } from '../src/services/links/link-url';
 import { PaperProvider } from 'react-native-paper';
@@ -44,6 +45,7 @@ export default function RootLayout() {
             <AppContextProvider>
               <ThemedStack />
               <ReturnToRecorder />
+            <SettingsBinders />
             </AppContextProvider>
           )}
         </PaperProvider>

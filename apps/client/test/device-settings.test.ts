@@ -15,6 +15,29 @@ const ACCOUNT_KEY = 'host/user';
 const MIN_THRESHOLD_BYTES = 1_048_576;
 const STORED_SHAPE = z.record(z.string(), z.unknown());
 
+const SPEC_22_DEFAULTS = {
+  appTheme: 'system',
+  dateFormat: 'system',
+  relativeDates: true,
+  startScreen: 'gallery',
+  galleryDisplayMode: 'comfortableGrid',
+  galleryColumnsPortrait: 0,
+  galleryColumnsLandscape: 0,
+  galleryGroupByDay: true,
+  galleryBadges: { video: true, photoCount: true, note: true, pending: true, keptOffline: false },
+  galleryShowTagTabs: true,
+  galleryShowCounts: false,
+  gallerySort: { key: 'takenAt', descending: true },
+  galleryFilters: { video: 'off', note: 'off', multiple: 'off', shared: 'off', pending: 'off', keptOffline: 'off' },
+  hideShared: false,
+  onThisDay: true,
+  confirmTrash: true,
+  captureStartCamera: 'back',
+  captureKeepScreenOn: true,
+  hideNotePreviews: false,
+  secureScreen: true,
+} as const;
+
 let rowStore: RowStore;
 
 beforeEach(async () => {
@@ -35,6 +58,7 @@ describe('device settings defaults', () => {
       largeUploadThresholdBytes: 104_857_600,
       locationForCaptures: false,
       autoLockMinutes: 5,
+      ...SPEC_22_DEFAULTS,
     });
   });
 
@@ -46,7 +70,40 @@ describe('device settings defaults', () => {
       largeUploadThresholdBytes: 104_857_600,
       locationForCaptures: false,
       autoLockMinutes: 15,
+      ...SPEC_22_DEFAULTS,
     });
+  });
+});
+
+describe('spec 22 settings', () => {
+  it('fills the spec 22 fields with defaults for settings stored before spec 22', async () => {
+    await rowStore.kvSetJson(STORAGE_KEYS.settingsDevice, {
+      schemaVersion: 1,
+      encryptThumbnails: false,
+      originalCacheCapBytes: 0,
+      largeUploadsOnWifiOnly: false,
+      largeUploadThresholdBytes: 104_857_600,
+      locationForCaptures: true,
+      autoLockMinutes: 30,
+    });
+    const settings = await createDeviceSettings({ rowStore, defaults: NATIVE_DEFAULTS });
+    expect(settings.get()).toEqual({
+      ...NATIVE_DEFAULTS,
+      encryptThumbnails: false,
+      originalCacheCapBytes: 0,
+      largeUploadsOnWifiOnly: false,
+      locationForCaptures: true,
+      autoLockMinutes: 30,
+    });
+  });
+
+  it('rejects unknown choices and out-of-range columns', () => {
+    const valid = { schemaVersion: 1, ...NATIVE_DEFAULTS };
+    expect(deviceSettingsSchema.safeParse({ ...valid, appTheme: 'sepia' }).success).toBe(false);
+    expect(deviceSettingsSchema.safeParse({ ...valid, galleryColumnsPortrait: 11 }).success).toBe(false);
+    expect(deviceSettingsSchema.safeParse({ ...valid, galleryColumnsPortrait: 10 }).success).toBe(true);
+    expect(deviceSettingsSchema.safeParse({ ...valid, galleryFilters: { ...valid.galleryFilters, video: 'maybe' } }).success).toBe(false);
+    expect(deviceSettingsSchema.safeParse({ ...valid, gallerySort: { key: 'random', descending: false } }).success).toBe(true);
   });
 });
 

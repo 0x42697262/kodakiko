@@ -1,3 +1,4 @@
+import { UI_SETTINGS_DEFAULTS } from '../../src/constants/ui-settings-constants';
 import type { PublicConfigDto } from '@kodakiko/contract';
 import type { Sodium } from '@kodakiko/core';
 import type { Clock } from '../../src/adapters/clock';
@@ -37,6 +38,7 @@ const SETTINGS: DeviceSettingsValue = {
   largeUploadThresholdBytes: 104_857_600,
   locationForCaptures: false,
   autoLockMinutes: 5,
+  ...UI_SETTINGS_DEFAULTS,
 };
 
 const DEFAULT_MAX_MEDIA = 20;

@@ -1,3 +1,4 @@
+import { UI_SETTINGS_DEFAULTS } from '../src/constants/ui-settings-constants';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { MediaDescriptorV1, type PublicConfigDto } from '@kodakiko/contract';
 import {
@@ -86,6 +87,7 @@ const SETTINGS: DeviceSettingsValue = {
   largeUploadThresholdBytes: 104_857_600,
   locationForCaptures: false,
   autoLockMinutes: 5,
+  ...UI_SETTINGS_DEFAULTS,
 };
 
 let sodium: Sodium;
