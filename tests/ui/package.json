@@ -6,6 +6,7 @@
     "test": "vitest run support",
     "typecheck": "tsc --noEmit",
     "test:web": "playwright test -c web/playwright.config.ts",
+    "screenshots": "playwright test -c screenshots/playwright.config.ts",
     "test:android": "node scripts/build-android-runner.ts && node android/dist/run.mjs",
     "install:maestro": "sh android/install-maestro.sh",
     "fixtures": "sh ../fixtures/media/generate.sh"
