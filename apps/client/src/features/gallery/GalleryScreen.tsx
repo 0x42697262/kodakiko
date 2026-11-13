@@ -200,6 +200,15 @@ export function GalleryScreen() {
       {overlay === 'more' ? (
         <Sheet testID={GALLERY_IDS.moreMenu} onClose={() => setOverlay('none')}>
           <Button
+            testID={testId('lock.lockNow')}
+            label={EN['lock.lockNow']}
+            variant="secondary"
+            onPress={() => {
+              setOverlay('none');
+              services.lock.lockNow().catch(() => undefined);
+            }}
+          />
+          <Button
             testID={testId('gallery.trash')}
             label={EN['gallery.trash']}
             variant="secondary"

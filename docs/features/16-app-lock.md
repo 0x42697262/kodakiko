@@ -205,6 +205,32 @@ journal. Locking manually turns this off." Shown only on web.
    deleted; disable → `null`; the stored `CryptoKey` has `extractable === false`.
 6. Return-to logic (pure function `nextRouteAfterUnlock(returnTo, entryExists)`).
 
+## 8a. Implementation notes (2026-11-12, Opus)
+
+- `LockService` adds `bind()` (one subscription: leaving `unlocked` by any other path runs the lock
+  steps once; entering `unlocked` runs `afterUnlock()`, so the auth service needs no new call),
+  `idle()` and `lockCount()`. `bindAccountLifecycle` is no longer used by the app (kept for
+  `src/testing.ts` and its tests).
+- The account keys are still wiped by the auth service's state subscriber at the moment the
+  state leaves `unlocked`, which is earlier than step 11. Step `wipeKeys` clears the entry-key cache.
+  Steps 0 and 10 (specs 20, 17) are absent. Extra steps: `loadSettings` (unlock step 0) and
+  `boundSettings.unload()` inside `clearUiState`.
+- Sign-out: `AuthServiceContext.beforeSignOut` runs `lock('signOut')` and then cancels native
+  uploads. Session invalid: `lock('sessionInvalid')`, then `signedOut`, then cancel uploads.
+- `KeyVault.capabilities(accountKey?)`; web adds the optional `keyVault.keepUnlocked`
+  (`enable` / `disable`). The logic is `createPersistentVault` (`persistent-vault.ts`,
+  `VaultStorage`); IndexedDB is opened lazily. Auth adds `setKeepUnlocked`, `keepUnlocked` and
+  `activeUsername`; `services.lock` (`LockControl`) holds `lockNow`, `setKeepUnlocked`, `autoLock`
+  (pause/resume for spec 20), `activity`, `returnTo` and `lockedInSession`.
+- `createAutoLock` takes `onVisible` (page visibility; no-op on Android) as a dependency.
+- `returnTo` is a separate observable recorded by `ReturnToRecorder` in `app/_layout.tsx`, not a
+  field of the account-state store. Route components already render `<Redirect>` in the same
+  render as the state change, so there is no cover view.
+- The lock screen auto-prompts for biometrics only after an in-session lock; at app start,
+  `restore()` already prompts (it also loads the web keep-unlocked key).
+- The "Keep me unlocked" switch is added with the Settings screen (spec 20). The "Key material
+  present?" diagnostics probe is not built yet (open item).
+
 ## 9. Verification checklist
 
 - [ ] `pnpm verify` green.

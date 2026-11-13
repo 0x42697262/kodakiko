@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppContextProvider } from '../src/composition/app-context';
 import { UI_TEST_MODE } from '../src/config/build-flags';
+import { ReturnToRecorder } from '../src/features/lock/ReturnToRecorder';
 import { useTheme } from '../src/ui/theme';
 
 if (UI_TEST_MODE) LogBox.ignoreAllLogs(true);
@@ -27,6 +28,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AppContextProvider>
           <ThemedStack />
+          <ReturnToRecorder />
         </AppContextProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

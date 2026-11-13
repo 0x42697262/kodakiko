@@ -11,6 +11,7 @@ import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useViewerKeys } from '../viewer/use-viewer-keys';
+import { ACTIVITY_THROTTLE_MS } from '../../services/lock/constants';
 import { prepareProblem, type VideoProblem } from './video-errors';
 
 const PERCENT = 100;
@@ -20,6 +21,13 @@ function Player({ uri, onProblem }: { readonly uri: string; readonly onProblem: 
     instance.loop = false;
     instance.play();
   });
+  const { services } = useAppContext();
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (player.playing) services.lock.activity.touch();
+    }, ACTIVITY_THROTTLE_MS);
+    return () => clearInterval(timer);
+  }, [player, services.lock.activity]);
   useEventListener(player, 'statusChange', ({ status, error }) => {
     if (status !== 'error') return;
     const gone = error?.message.includes('410') ?? false;

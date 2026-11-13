@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useAppContext } from '../../composition/app-context';
 import { APP_ROUTES } from '../../keys/routes';
@@ -15,7 +15,8 @@ import { useSubmit } from './use-submit';
 export function RecoverScreen() {
   const { services } = useAppContext();
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const { username: prefilled } = useLocalSearchParams<{ username?: string }>();
+  const [username, setUsername] = useState(prefilled ?? '');
   const [words, setWords] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');

@@ -1,22 +1,68 @@
+import { openDB } from 'idb';
 import { wipe, type Sodium } from '@kodakiko/core';
 import type { KeyVault } from './keyvault';
+import { createPersistentVault, type VaultRecord, type VaultStorage } from './persistent-vault';
 
-export function createKeyVault(_deps: { readonly sodium: Sodium }): KeyVault {
+const VAULT_DATABASE = 'kodakiko-keys';
+const VAULT_DATABASE_VERSION = 1;
+const VAULT_STORE = 'vault';
+
+function createIdbVaultStorage(): VaultStorage {
+  let opened: ReturnType<typeof openDB> | null = null;
+  function database(): ReturnType<typeof openDB> {
+    opened ??= openDB(VAULT_DATABASE, VAULT_DATABASE_VERSION, {
+      upgrade: (db) => {
+        if (!db.objectStoreNames.contains(VAULT_STORE)) db.createObjectStore(VAULT_STORE);
+      },
+    });
+    return opened;
+  }
+  return {
+    get: async (id) => ((await (await database()).get(VAULT_STORE, id)) as VaultRecord | undefined) ?? null,
+    put: async (id, record) => {
+      await (await database()).put(VAULT_STORE, record, id);
+    },
+    delete: async (id) => {
+      await (await database()).delete(VAULT_STORE, id);
+    },
+  };
+}
+
+export function createKeyVault(deps: { readonly sodium: Sodium }): KeyVault {
   const keys = new Map<string, Uint8Array>();
+  const persistent = createPersistentVault({
+    sodium: deps.sodium,
+    storage: createIdbVaultStorage(),
+    subtle: globalThis.crypto.subtle,
+    randomValues: (bytes) => globalThis.crypto.getRandomValues(bytes),
+  });
 
-  async function forget(accountKey: string): Promise<void> {
+  function forgetMemory(accountKey: string): void {
     const stored = keys.get(accountKey);
     if (stored !== undefined) wipe(stored);
     keys.delete(accountKey);
   }
 
   return {
-    capabilities: async () => ({ persistent: false, biometric: false }),
+    capabilities: async (accountKey) => ({
+      persistent: accountKey === undefined ? false : await persistent.hasRecord(accountKey).catch(() => false),
+      biometric: false,
+    }),
     storeMasterKey: async (accountKey, masterKey) => {
-      await forget(accountKey);
+      forgetMemory(accountKey);
       keys.set(accountKey, masterKey.slice());
     },
-    loadMasterKey: async (accountKey) => keys.get(accountKey)?.slice() ?? null,
-    forget,
+    loadMasterKey: async (accountKey) => {
+      const stored = await persistent.load(accountKey).catch(() => null);
+      return stored ?? keys.get(accountKey)?.slice() ?? null;
+    },
+    forget: async (accountKey) => {
+      forgetMemory(accountKey);
+      await persistent.disablePersistence(accountKey).catch(() => undefined);
+    },
+    keepUnlocked: {
+      enable: (accountKey, masterKey) => persistent.enablePersistence(accountKey, masterKey),
+      disable: (accountKey) => persistent.disablePersistence(accountKey),
+    },
   };
 }

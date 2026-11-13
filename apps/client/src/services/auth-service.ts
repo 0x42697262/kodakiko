@@ -83,6 +83,9 @@ export type AuthService = {
   readonly recoveryPending: () => Promise<boolean>;
   readonly cancelDeletion: () => Promise<void>;
   readonly signOut: () => Promise<void>;
+  readonly setKeepUnlocked: (enabled: boolean) => Promise<void>;
+  readonly keepUnlocked: () => Promise<boolean>;
+  readonly activeUsername: () => string | null;
 };
 
 export type AuthServiceContext = {
@@ -105,6 +108,7 @@ export type AuthServiceContext = {
   readonly kdfStartParams: (salt: Uint8Array) => KdfParams;
   readonly showSecuring: () => void;
   readonly dismissSecuring: () => void;
+  readonly beforeSignOut?: () => Promise<void>;
 };
 
 const activeAccountSchema = z.object({
@@ -616,7 +620,29 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     }
   }
 
+  async function setKeepUnlocked(enabled: boolean): Promise<void> {
+    const vault = keyVault.keepUnlocked;
+    const accountKey = context.activeAccountKey.get();
+    if (vault === undefined || accountKey === null) return;
+    const token = await sessionStore.load(accountKey);
+    if (enabled) {
+      const state = accountState.get();
+      if (state.kind !== 'unlocked') return;
+      await vault.enable(accountKey, state.keys.masterKey);
+    } else {
+      await vault.disable(accountKey);
+    }
+    if (token !== null) await sessionStore.save(accountKey, token, enabled);
+  }
+
+  async function keepUnlocked(): Promise<boolean> {
+    const accountKey = context.activeAccountKey.get();
+    if (keyVault.keepUnlocked === undefined || accountKey === null) return false;
+    return (await keyVault.capabilities(accountKey)).persistent;
+  }
+
   async function signOut(): Promise<void> {
+    await attempt(() => context.beforeSignOut?.() ?? Promise.resolve());
     const accountKey = context.activeAccountKey.get();
     await attempt(() => http.request(AUTH_CALLS.signOut()));
     if (accountKey !== null) {
@@ -656,5 +682,8 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     recoveryPending,
     cancelDeletion,
     signOut,
+    setKeepUnlocked,
+    keepUnlocked,
+    activeUsername: () => readActiveAccount()?.username ?? null,
   };
 }

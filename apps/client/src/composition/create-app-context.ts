@@ -65,7 +65,10 @@ import type { NotificationPrompt } from '../services/sync/notification-prompt';
 import type { SyncService } from '../services/sync/sync-service';
 import type { UploadCoordinator } from '../services/sync/uploads';
 import { EN } from '../text/en';
-import { bindAccountLifecycle } from './account-lifecycle';
+import { createActivitySource, pageVisibility } from '../adapters/activity/activity';
+import { AUTO_LOCK_MODE } from '../constants/auto-lock-mode';
+import { createAutoLock, type ActivitySource, type AutoLock } from '../services/lock/auto-lock';
+import { createLockService } from '../services/lock/lock-service';
 import { createEventBus, type AppEventBus, type AppEvents } from './events';
 import {
   createAccountState,
@@ -96,7 +99,18 @@ export type Services = {
   readonly downloader: Downloader;
   readonly galleryNotice: Observable<GalleryNotice | null>;
   readonly videoLauncher: VideoLauncher;
+  readonly lock: LockControl;
   readonly videoSource: VideoSource;
+};
+
+export type LockControl = {
+  readonly lockNow: () => Promise<void>;
+  readonly setKeepUnlocked: (enabled: boolean) => Promise<void>;
+  readonly keepUnlocked: () => boolean;
+  readonly autoLock: AutoLock;
+  readonly activity: ActivitySource;
+  readonly returnTo: Observable<string | null>;
+  readonly lockedInSession: () => boolean;
 };
 
 export type AppContext = {
@@ -147,7 +161,7 @@ export async function createAppContext(): Promise<AppContext> {
       const accountKey = activeAccountKey.get();
       return accountKey === null ? null : sessionStore.load(accountKey);
     },
-    onSessionInvalid: () => accountState.set({ kind: 'signedOut' }),
+    onSessionInvalid: () => sessionInvalid(),
   });
   const globalStore = createGlobalStore();
   const inviteToken = createObservable<string | null>(null);
@@ -173,6 +187,10 @@ export async function createAppContext(): Promise<AppContext> {
     kdfStartParams: startKdfParams,
     showSecuring: () => router.push(APP_ROUTES.securing),
     dismissSecuring: () => router.back(),
+    beforeSignOut: async () => {
+      await lockService.lock('signOut');
+      await uploader.cancelAll();
+    },
   });
   const events = createEventBus<AppEvents>();
   const uploader = createUploader({ fileStore });
@@ -186,7 +204,7 @@ export async function createAppContext(): Promise<AppContext> {
     clock: systemClock,
     lifecycle,
     accountState,
-    onSessionInvalid: () => accountState.set({ kind: 'signedOut' }),
+    onSessionInvalid: () => sessionInvalid(),
     log: consoleLogger,
     requestNotificationPermission,
     uploadPolicy: { allowed: (sizeBytes) => uploadPolicy.allowed(sizeBytes) },
@@ -314,34 +332,97 @@ export async function createAppContext(): Promise<AppContext> {
     thumbnails.prefetchAll().catch(() => undefined);
   });
   await tempFiles.wipe().catch(() => undefined);
-  bindAccountLifecycle(accountState, {
-    onUnlocked: () => {
-      stack.sync.start();
-      index.build().catch(() => undefined);
-      boundSettings
-        .load()
-        .catch(() => undefined);
-      sweepOrphans(rowStore, fileStore).catch(() => undefined);
-      originals.enforceCap().catch(() => undefined);
-      originals.downloadPinned().catch(() => undefined);
-    },
-    onLeftUnlocked: () => {
-      stack.sync.stop();
-      index.clear();
-      downloader.abortAll();
-      videoSource.releaseAll().catch(() => undefined);
-      thumbnails.clear();
-      originals.clearAll().catch(() => undefined);
-      galleryFilter.reset();
-      galleryNotice.set(null);
-      stack.entryKeys.clear();
-      boundSettings.unload();
-      captureTray.clear(true).catch(() => undefined);
-      tempFiles.wipe().catch(() => undefined);
-      const kind = accountState.get().kind;
-      if (kind === 'signedOut' || kind === 'noServer') uploader.cancelAll().catch(() => undefined);
-    },
+  const returnTo = createObservable<string | null>(null);
+  const lockService = createLockService({
+    accountState,
+    log: (event, data) => consoleLogger.warn(event, { step: String(data.step) }),
+    lockSteps: [
+      { name: 'stopSync', run: () => stack.sync.stop() },
+      { name: 'cancelDownloads', run: () => downloader.abortAll() },
+      { name: 'releaseVideo', run: () => videoSource.releaseAll() },
+      { name: 'releaseOriginals', run: () => originals.clearAll() },
+      { name: 'clearThumbnails', run: () => thumbnails.clear() },
+      { name: 'clearTray', run: () => captureTray.clear(true) },
+      { name: 'wipeTemp', run: () => tempFiles.wipe() },
+      { name: 'clearIndex', run: () => index.clear() },
+      {
+        name: 'clearUiState',
+        run: () => {
+          galleryFilter.reset();
+          galleryNotice.set(null);
+          boundSettings.unload();
+        },
+      },
+      { name: 'wipeKeys', run: () => stack.entryKeys.clear() },
+    ],
+    unlockSteps: [
+      { name: 'loadSettings', run: () => boundSettings.load() },
+      { name: 'startSync', run: () => stack.sync.start() },
+      { name: 'buildIndex', run: () => index.build() },
+      { name: 'sweepOrphans', run: () => sweepOrphans(rowStore, fileStore) },
+      {
+        name: 'enforceCache',
+        run: async () => {
+          await originals.enforceCap();
+          originals.downloadPinned().catch(() => undefined);
+        },
+      },
+    ],
   });
+  function sessionInvalid(): void {
+    lockService
+      .lock('sessionInvalid')
+      .finally(() => {
+        accountState.set({ kind: 'signedOut' });
+        uploader.cancelAll().catch(() => undefined);
+      })
+      .catch(() => undefined);
+  }
+  let keepUnlockedCached = false;
+  const activity = createActivitySource(systemClock.now);
+  const autoLock = createAutoLock({
+    mode: AUTO_LOCK_MODE,
+    lifecycle,
+    clock: systemClock,
+    settings: boundSettings.settings,
+    lockService,
+    accountState,
+    keepUnlocked: () => keepUnlockedCached,
+    activity,
+    onVisible: pageVisibility.onVisible,
+  });
+  async function refreshKeepUnlocked(): Promise<void> {
+    keepUnlockedCached = await auth.keepUnlocked().catch(() => false);
+  }
+  async function setKeepUnlocked(enabled: boolean): Promise<void> {
+    await auth.setKeepUnlocked(enabled);
+    await refreshKeepUnlocked();
+  }
+  lockService.bind();
+  let autoLockRunning = false;
+  function syncAutoLock(): void {
+    const unlocked = accountState.get().kind === 'unlocked';
+    if (unlocked && !autoLockRunning) {
+      autoLock.start();
+      refreshKeepUnlocked().catch(() => undefined);
+    }
+    if (!unlocked && autoLockRunning) autoLock.stop();
+    autoLockRunning = unlocked;
+  }
+  accountState.subscribe(syncAutoLock);
+  syncAutoLock();
+  const lockControl: LockControl = {
+    lockNow: async () => {
+      await setKeepUnlocked(false);
+      await lockService.lock('manual');
+    },
+    setKeepUnlocked,
+    keepUnlocked: () => keepUnlockedCached,
+    autoLock,
+    activity,
+    returnTo,
+    lockedInSession: () => lockService.lockCount() > 0,
+  };
   await auth.restore();
   return {
     sodium,
@@ -378,6 +459,7 @@ export async function createAppContext(): Promise<AppContext> {
       downloader,
       galleryNotice,
       videoLauncher,
+      lock: lockControl,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,
