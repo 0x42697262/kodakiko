@@ -1,0 +1,96 @@
+name: Android release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  NDK_VERSION: 27.0.12077973
+  CMAKE_VERSION: 3.22.1
+  ANDROID_PLATFORM: android-37
+  BUILD_TOOLS: 37.0.0
+  ABI: arm64-v8a
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - run: corepack enable
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Tag matches the app version
+        run: |
+          version="$(node --input-type=module -e "const c = (await import('./apps/client/app.config.ts')).default; console.log(c.version)")"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match app.config.ts version $version" >&2
+            exit 1
+          fi
+
+      - run: pnpm verify
+
+      - name: Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "ndk;$NDK_VERSION" "cmake;$CMAKE_VERSION" "platforms;$ANDROID_PLATFORM" "build-tools;$BUILD_TOOLS"
+
+      - run: pnpm --filter @kodakiko/client prebuild:android
+
+      - name: Build signed release APK
+        working-directory: apps/client/android
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          keystore="$(mktemp)"
+          trap 'rm -f "$keystore"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$keystore"
+          ./gradlew assembleRelease \
+            -PreactNativeArchitectures="$ABI" \
+            -Pandroid.injected.signing.store.file="$keystore" \
+            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+
+      - name: Check the signature is not the debug key
+        run: |
+          apk=apps/client/android/app/build/outputs/apk/release/app-release.apk
+          signer="$("$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" verify --print-certs "$apk" | grep 'certificate DN')"
+          echo "$signer"
+          if printf '%s' "$signer" | grep -q 'CN=Android Debug'; then
+            echo "The APK is signed with the debug key" >&2
+            exit 1
+          fi
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          name="kodakiko-${GITHUB_REF_NAME}-${ABI}.apk"
+          mkdir -p release
+          cp apps/client/android/app/build/outputs/apk/release/app-release.apk "release/$name"
+          (cd release && sha256sum "$name" > "$name.sha256")
+          gh release create "$GITHUB_REF_NAME" release/* --title "Kodakiko $GITHUB_REF_NAME" --generate-notes

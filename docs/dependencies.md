@@ -148,6 +148,16 @@ Pinned by digest when first pulled; the digest is recorded here in the same comm
 | `caddy` | `2.11.8-builder` @ `sha256:d4eb070c36154bd2d4c94b40359a03c6168346d5af5404963c74691ab77fb63f` (tag pushed 2026-11-05) | recorded | xcaddy build with `CADDY_VERSION=v2.11.8` and `DNS_MODULE=github.com/caddy-dns/cloudflare@v0.2.4` (spec 21, D-68); the production runtime stage reuses the recorded `caddy:2` digest above |
 | `rclone/rclone` | `1.75.2` @ `sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5` (tag pushed 2026-10-09; 1.76.0 was 7 days old) | recorded | backups: dump copy and bucket sync (spec 21, operations guide §5) |
 
+### CI actions
+
+Pinned by commit SHA (spec 21 §5); each release was older than 7 days when pinned (2026-11-13).
+
+| Action | Version | Commit | Used by |
+|---|---|---|---|
+| `actions/checkout` | v7.0.1 (2026-07-20) | `3d3c42e5aac5ba805825da76410c181273ba90b1` | `android-release.yml` |
+| `actions/setup-node` | v7.1.0 (2026-10-08) | `949feb2413d6458794dcd2491c4babbbce0c15c1` | `android-release.yml` |
+| `actions/setup-java` | v6.2.0 (2026-11-04) | `77dd5b2ce225ea11469928ac317850245a74ae78` | `android-release.yml` |
+
 ### Deliberately excluded
 
 | Package | Reason |

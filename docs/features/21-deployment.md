@@ -344,6 +344,25 @@ Each item: what to check and the expected result.
 - `FAKE_PARAMS_SECRET` must be base64url; the operations guide gives
   `openssl rand -base64 32 | tr '+/' '-_' | tr -d '='`.
 
+## 7c. Android release workflow brought forward (2026-11-13, programmer request)
+
+The programmer asked for a GitHub Release of the Android APK **per tag only** (signed, `arm64-v8a`)
+before the rest of phase 2. `.github/workflows/android-release.yml` (on `push: tags: ['v*']`) is the
+Android part of §6:
+1. Checks that the tag equals `v` + `app.config.ts` `version`.
+2. Runs `pnpm verify`; installs NDK 27.0.12077973, CMake 3.22.1, platform 37 and build-tools 37.0.0.
+3. `prebuild:android`, then `assembleRelease -PreactNativeArchitectures=arm64-v8a` with the
+   `android.injected.signing.*` properties from the four secrets `ANDROID_KEYSTORE_BASE64`,
+   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` (keystore in a temp
+   file, removed on exit).
+4. Fails if `apksigner` shows the debug certificate. Otherwise publishes
+   `kodakiko-<tag>-arm64-v8a.apk` and its `.sha256` with `gh release create --generate-notes`.
+
+Not yet included from §6: image push, SBOM and licenses assets, and the full `ci.yml` jobs. UNVERIFIED
+until the first tag runs: that the injected signing properties override the Expo template's debug
+signing config (the `apksigner` step catches it if not), and that a release (R8/Hermes) build of
+the app works at all — no release APK has been built yet (phase 1 builds debug only).
+
 ## 8. Tests and verification
 
 - [ ] `pnpm verify`; CI green on a pull request (all five jobs).
