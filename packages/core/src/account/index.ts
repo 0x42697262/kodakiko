@@ -3,6 +3,7 @@ export * from './derive.ts';
 export * from './errors.ts';
 export * from './kdf-params.ts';
 export * from './key-bundle.ts';
+export * from './local.ts';
 export * from './password-change.ts';
 export * from './password-policy.ts';
 export * from './recovery.ts';

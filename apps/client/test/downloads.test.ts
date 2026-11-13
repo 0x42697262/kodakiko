@@ -283,6 +283,25 @@ describe('originals', () => {
     const mediaId = (await harness.service.readMetadata(entryId)).media[0]?.mediaId ?? '';
     expect((await objectRows(mediaId)).find((row) => row.variant === 'original')?.localState).toBe('present');
   });
+
+  it('local-only mode never evicts, neither by cap nor by clearing (spec 20a)', async () => {
+    const local = createDownloadingOriginalSource({
+      local: harness.originals,
+      downloader,
+      rowStore: harness.fixture.rowStore,
+      fileStore: harness.fixture.fileStore,
+      settings: () => settings,
+      isWifi: async () => true,
+      localOnly: () => true,
+    });
+    const entryId = await harness.createEntry([fakeJpeg(3_000_000)]);
+    await harness.markUploaded(entryId);
+    settings.originalCacheCapBytes = 1;
+    await local.enforceCap();
+    await local.clearOriginals();
+    const mediaId = (await harness.service.readMetadata(entryId)).media[0]?.mediaId ?? '';
+    expect((await objectRows(mediaId)).find((row) => row.variant === 'original')?.localState).toBe('present');
+  });
 });
 
 describe('upload policy', () => {

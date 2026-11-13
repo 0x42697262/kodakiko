@@ -29,6 +29,7 @@ export type DownloadingOriginalSourceDeps = {
   readonly settings: () => { readonly originalCacheCapBytes: number };
   readonly isWifi: () => Promise<boolean>;
   readonly now?: () => number;
+  readonly localOnly?: () => boolean;
 };
 
 const NO_LIMIT = 0;
@@ -96,7 +97,7 @@ export function createDownloadingOriginalSource(deps: DownloadingOriginalSourceD
 
   async function enforceCap(): Promise<void> {
     const cap = deps.settings().originalCacheCapBytes;
-    if (cap === NO_LIMIT) return;
+    if (cap === NO_LIMIT || deps.localOnly?.() === true) return;
     const present = await rowStore.transaction((tx) => tx.objects.presentOriginalsByAccess());
     let total = present.reduce((sum, row) => sum + row.sizeBytes, 0);
     const pinned = await pinnedEntryIds();
@@ -109,6 +110,7 @@ export function createDownloadingOriginalSource(deps: DownloadingOriginalSourceD
   }
 
   async function clearOriginals(): Promise<void> {
+    if (deps.localOnly?.() === true) return;
     const present = await rowStore.transaction((tx) => tx.objects.presentOriginalsByAccess());
     const pinned = await pinnedEntryIds();
     for (const row of present) if (await evictable(row, pinned)) await evict(row);

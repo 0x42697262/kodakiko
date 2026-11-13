@@ -1,7 +1,7 @@
 import { useRouter, type Href } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
@@ -46,13 +46,14 @@ export function SharedScreen() {
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const enabled = services.config.get()?.sharingEnabled === true;
+  const local = useAccountMode() === 'local';
+  const enabled = !local && services.config.get()?.sharingEnabled === true;
 
   if (!enabled) {
     return (
       <Screen testID={SHARING_IDS.screen}>
         <Title text={EN['shared.tab']} />
-        <Body testID={SHARING_IDS.flagOff} text={EN['shared.flagOff']} />
+        <Body testID={SHARING_IDS.flagOff} text={local ? EN['shared.localOnly'] : EN['shared.flagOff']} />
       </Screen>
     );
   }

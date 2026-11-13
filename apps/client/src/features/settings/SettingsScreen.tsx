@@ -1,7 +1,7 @@
 import { useRouter, type Href } from 'expo-router';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Text } from 'react-native';
-import { useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
 import { useTheme } from '../../ui/theme';
@@ -20,7 +20,8 @@ export function SettingsScreen() {
   useEffect(() => {
     services.account.isAdmin().then(setAdmin).catch(() => setAdmin(false));
   }, [services.account]);
-  const links = services.config.get()?.publicLinksEnabled === true;
+  const local = useAccountMode() === 'local';
+  const links = !local && services.config.get()?.publicLinksEnabled === true;
   const rows: readonly Row[] = [
     { key: 'account', label: EN['settings.rowAccount'], route: '/settings/account', shown: true },
     { key: 'security', label: EN['settings.rowSecurity'], route: '/settings/security', shown: true },
@@ -28,7 +29,7 @@ export function SettingsScreen() {
     { key: 'sync', label: EN['settings.rowSync'], route: '/settings/sync', shown: true },
     { key: 'links', label: EN['settings.rowLinks'], route: '/settings/links', shown: links },
     { key: 'export', label: EN['settings.rowExport'], route: '/settings/export', shown: true },
-    { key: 'admin', label: EN['settings.rowAdmin'], route: '/settings/admin', shown: admin },
+    { key: 'admin', label: EN['settings.rowAdmin'], route: '/settings/admin', shown: admin && !local },
     { key: 'about', label: EN['settings.rowAbout'], route: '/settings/about', shown: true },
   ];
   const signOut = () => {
@@ -43,7 +44,9 @@ export function SettingsScreen() {
           <SettingsRow key={row.key} testID={`settings.row.${row.key}`} label={row.label} onPress={() => router.push(row.route as Href)} />
         ))}
       <SettingsRow testID="settings.row.lockNow" label={EN['settings.lockNow']} onPress={() => services.lock.lockNow().catch(() => undefined)} />
-      <SettingsRow testID="settings.row.signOut" label={EN['settings.signOut']} onPress={() => (sync.queued > 0 ? setConfirmingSignOut(true) : signOut())} />
+      {local ? null : (
+        <SettingsRow testID="settings.row.signOut" label={EN['settings.signOut']} onPress={() => (sync.queued > 0 ? setConfirmingSignOut(true) : signOut())} />
+      )}
       {confirmingSignOut ? (
         <Sheet testID="settings.signOutSheet" onClose={() => setConfirmingSignOut(false)}>
           <Text style={{ color: colors.text }}>{EN['settings.signOutConfirm']}</Text>

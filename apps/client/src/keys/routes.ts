@@ -2,6 +2,7 @@ export const APP_ROUTES = Object.freeze({
   root: '/',
   tabs: '/(tabs)',
   welcome: '/welcome',
+  localSetup: '/local-setup',
   invite: '/invite',
   signUp: '/sign-up',
   signIn: '/sign-in',

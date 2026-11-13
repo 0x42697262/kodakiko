@@ -3,6 +3,8 @@ export const STORAGE_KEYS = Object.freeze({
   accountUsername: 'account.username',
   accountKdfParams: 'account.kdfParams',
   accountMasterKeyByKek: 'account.masterKeyByKek',
+  accountMasterKeyByRecovery: 'account.masterKeyByRecovery',
+  accountMode: 'account.mode',
   accountRecoveryKeyByMaster: 'account.recoveryKeyByMaster',
   accountPublicKey: 'account.publicKey',
   accountPrivateKeyByMaster: 'account.privateKeyByMaster',

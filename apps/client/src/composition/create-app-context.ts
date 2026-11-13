@@ -38,6 +38,7 @@ import { createCaptureTrayStore, type CaptureTrayStore } from '../features/captu
 import { MEDIA_LOG_EVENTS } from '../keys/media-keys';
 import { APP_ROUTES, playRoute } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
+import type { AccountMode } from '../constants/auth-constants';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
 import type { EntryKeys } from '../services/keys/entry-keys';
@@ -183,7 +184,10 @@ export async function createAppContext(): Promise<AppContext> {
   const inviteToken = createObservable<string | null>(null);
   const config = createConfigService({ http, globalStore, lifecycle });
   const randomId = createRandomId(sodium);
+  const accountMode = createObservable<AccountMode>('server');
+  const localOnly = (): boolean => accountMode.get() === 'local';
   const auth = createAuthService({
+    accountMode,
     sodium,
     http,
     serverUrl,
@@ -222,6 +226,7 @@ export async function createAppContext(): Promise<AppContext> {
     accountState,
     onSessionInvalid: () => sessionInvalid(),
     log: consoleLogger,
+    localOnly,
     requestNotificationPermission,
     uploadPolicy: { allowed: (sizeBytes) => uploadPolicy.allowed(sizeBytes) },
     thumbnailCache: { afterUpload: (objectId) => thumbnails.afterUpload(objectId) },
@@ -311,6 +316,7 @@ export async function createAppContext(): Promise<AppContext> {
   const galleryFilter = createGalleryFilterStore();
   const galleryNotice = createObservable<GalleryNotice | null>(null);
   const originals = createDownloadingOriginalSource({
+    localOnly,
     local: createLocalOriginalSource({
       rowStore,
       fileStore,
@@ -387,8 +393,13 @@ export async function createAppContext(): Promise<AppContext> {
   });
   const account = createAccountService({ http, rowStore });
   const admin = createAdminClient({ http });
+  accountMode.subscribe(() => {
+    if (localOnly() || accountState.get().kind !== 'unlocked') return;
+    stack.sync.start();
+    account.refreshMe().catch(() => undefined);
+  });
   lifecycle.subscribeActive((active) => {
-    if (active && accountState.get().kind === 'unlocked') account.refreshMe().catch(() => undefined);
+    if (active && !localOnly() && accountState.get().kind === 'unlocked') account.refreshMe().catch(() => undefined);
   });
   const exporter = createExportService({
     entryIds: async () => {
@@ -442,7 +453,7 @@ export async function createAppContext(): Promise<AppContext> {
     ],
     unlockSteps: [
       { name: 'loadSettings', run: () => boundSettings.load() },
-      { name: 'startSync', run: () => stack.sync.start() },
+      { name: 'startSync', run: () => (localOnly() ? undefined : stack.sync.start()) },
       { name: 'buildIndex', run: () => index.build() },
       { name: 'sweepOrphans', run: () => sweepOrphans(rowStore, fileStore) },
       {
@@ -452,7 +463,7 @@ export async function createAppContext(): Promise<AppContext> {
           originals.downloadPinned().catch(() => undefined);
         },
       },
-      { name: 'refreshMe', run: async () => void (await account.refreshMe()) },
+      { name: 'refreshMe', run: async () => (localOnly() ? undefined : void (await account.refreshMe())) },
     ],
   });
   function sessionInvalid(): void {

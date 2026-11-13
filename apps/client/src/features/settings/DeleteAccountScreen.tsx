@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useAccountState, useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAccountState, useAppContext } from '../../composition/app-context';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
@@ -14,6 +14,7 @@ export function DeleteAccountScreen() {
   const router = useRouter();
   const { services } = useAppContext();
   const state = useAccountState();
+  const local = useAccountMode() === 'local';
   const username = state.kind === 'unlocked' ? state.username : '';
   const graceDays = (services.config.get() ?? CONFIG_FALLBACK).accountDeletionGraceDays;
   const [typed, setTyped] = useState('');
@@ -29,6 +30,11 @@ export function DeleteAccountScreen() {
         setError(EN['settings.passwordWrong']);
         return;
       }
+      if (local) {
+        await services.auth.eraseLocal();
+        router.replace('/welcome');
+        return;
+      }
       await services.auth.requestAccountDeletion();
       router.replace('/sign-in');
     } catch {
@@ -39,14 +45,14 @@ export function DeleteAccountScreen() {
   }
 
   return (
-    <SettingsPage testID="settings.deleteScreen" title={EN['settings.deleteTitle']}>
-      <Body text={EN['settings.deleteText'](graceDays)} />
+    <SettingsPage testID="settings.deleteScreen" title={local ? EN['settings.erase'] : EN['settings.deleteTitle']}>
+      <Body text={local ? EN['settings.eraseText'] : EN['settings.deleteText'](graceDays)} />
       <TextField testID="settings.deleteUsername" label={EN['settings.deleteTypeUsername']} value={typed} onChangeText={setTyped} autoCapitalize="none" />
       <TextField testID="settings.deletePassword" label={EN['settings.deletePassword']} value={password} onChangeText={setPassword} secureTextEntry />
       {error === null ? null : <Banner testID="settings.error" kind="error" message={error} />}
       <Button
         testID="settings.deleteConfirm"
-        label={EN['settings.deleteAction']}
+        label={local ? EN['settings.eraseAction'] : EN['settings.deleteAction']}
         variant="danger"
         busy={busy}
         disabled={!deletionAllowed(typed, username, password)}

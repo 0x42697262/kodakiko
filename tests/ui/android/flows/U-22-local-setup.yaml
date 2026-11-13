@@ -1,0 +1,56 @@
+appId: com.x42697262.kodakiko
+---
+- launchApp:
+    appId: com.x42697262.kodakiko
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: welcome.local
+    timeout: 180000
+- tapOn:
+    id: welcome.local
+- tapOn:
+    id: localSetup.understand
+- tapOn:
+    id: localSetup.username
+- inputText: ${USERNAME}
+- tapOn:
+    id: localSetup.password
+- inputText: ${PASSWORD}
+- tapOn:
+    id: localSetup.confirm
+- inputText: ${PASSWORD}
+- tapOn:
+    id: localSetup.create
+- extendedWaitUntil:
+    visible:
+      id: recoveryKey.word.1
+    timeout: 60000
+- runFlow: common/recovery-words.yaml
+- tapOn:
+    id: recoveryKey.confirmSubmit
+- tapOn:
+    id: gallery.capture
+- extendedWaitUntil:
+    visible:
+      id: capture.shutter
+    timeout: 30000
+- tapOn:
+    id: capture.shutter
+- extendedWaitUntil:
+    visible:
+      id: capture.trayItem.0
+    timeout: 30000
+- tapOn:
+    id: capture.next
+- scrollUntilVisible:
+    element:
+      id: compose.save
+- tapOn:
+    id: compose.save
+- extendedWaitUntil:
+    visible:
+      id: gallery.tile.0
+    timeout: 60000
+- assertNotVisible:
+    id: gallery.tilePending.0

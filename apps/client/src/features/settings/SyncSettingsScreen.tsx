@@ -1,7 +1,8 @@
 import type { OutboxRow } from '../../adapters/rowstore/rowstore';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { Text } from 'react-native';
-import { useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAppContext } from '../../composition/app-context';
+import { useRouter, type Href } from 'expo-router';
 import { listTestId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
@@ -41,6 +42,8 @@ export function SyncSettingsScreen() {
   const status = useSyncExternalStore(services.sync.subscribe, services.sync.status);
   const [dead, setDead] = useState<readonly OutboxRow[]>([]);
   const [busy, setBusy] = useState(false);
+  const local = useAccountMode() === 'local';
+  const router = useRouter();
 
   const reload = useCallback(() => {
     rowStore
@@ -50,6 +53,15 @@ export function SyncSettingsScreen() {
   }, [rowStore]);
 
   useEffect(reload, [reload, status.dead, status.queued]);
+
+  if (local) {
+    return (
+      <SettingsPage testID="settings.syncScreen" title={EN['settings.rowSync']}>
+        <Body testID="settings.syncLocalOnly" text={EN['sync.localOnly']} />
+        <Button testID="settings.syncConnect" label={EN['settings.connect']} onPress={() => router.push('/settings/connect' as Href)} />
+      </SettingsPage>
+    );
+  }
 
   return (
     <SettingsPage testID="settings.syncScreen" title={EN['settings.rowSync']}>

@@ -77,12 +77,25 @@ function WebActions() {
   );
 }
 
+function LocalButton() {
+  const router = useRouter();
+  return (
+    <Button
+      testID="welcome.local"
+      label={EN['welcome.local']}
+      variant="secondary"
+      onPress={() => router.push(APP_ROUTES.localSetup)}
+    />
+  );
+}
+
 export function WelcomeScreen() {
   return (
     <Screen testID="welcome.screen" scroll>
       <Title testID="welcome.title" text={EN['welcome.title']} />
       <Body testID="welcome.subtitle" text={EN['welcome.subtitle']} />
       {platformTraits.chooseServerAtWelcome ? <ServerForm /> : <WebActions />}
+      {platformTraits.localMode ? <LocalButton /> : null}
     </Screen>
   );
 }

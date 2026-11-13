@@ -14,7 +14,7 @@ import {
   type NativeSyntheticEvent,
 } from 'react-native';
 import type { z } from 'zod';
-import { useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { APP_ROUTES, entryRoute } from '../../keys/routes';
 import { TEST_IDS, listTestId, testId } from '../../keys/test-ids';
 import type { OriginalRef } from '../../services/originals/original-source';
@@ -262,6 +262,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   }, [entryId, services.originals]);
   const list = useRef<FlatList<Descriptor>>(null);
   const config = services.config.get();
+  const local = useAccountMode() === 'local';
   const sharingAvailable = config?.sharingEnabled === true || config?.publicLinksEnabled === true;
 
   useEffect(() => {
@@ -458,7 +459,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               <Button testID={testId('viewer.trash')} label={EN['viewer.trash']} variant="secondary" onPress={() => trash().catch(() => undefined)} />
             </>
           ) : null}
-          {owner ? (
+          {owner && !local ? (
             <Button
               testID={testId('viewer.share')}
               label={EN['viewer.share']}
@@ -467,7 +468,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               onPress={() => setOverlay('share')}
             />
           ) : null}
-          {sharingAvailable || !owner ? null : <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />}
+          {sharingAvailable || !owner || local ? null : <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />}
         </Sheet>
       ) : null}
       {overlay === 'share' ? (

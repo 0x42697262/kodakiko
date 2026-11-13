@@ -19,7 +19,7 @@ type TextFieldProps = {
   readonly maxLength?: number;
   readonly onKeyPress?: (key: string) => void;
   readonly editable?: boolean;
-  readonly keyboardType?: 'default' | 'number-pad' | 'decimal-pad';
+  readonly keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'url';
 };
 
 export function TextField({

@@ -74,6 +74,7 @@ export type SyncServiceDeps = {
   readonly accountState: AccountStateStore;
   readonly onSessionInvalid: () => void;
   readonly log: Logger;
+  readonly localOnly?: () => boolean;
 };
 
 type PassTotals = {
@@ -376,7 +377,7 @@ export function createSyncService(deps: SyncServiceDeps): SyncService {
 
   async function onePass(): Promise<SyncReport> {
     const startedAt = clock.now();
-    if (deps.accountState.get().kind !== 'unlocked') {
+    if (deps.accountState.get().kind !== 'unlocked' || deps.localOnly?.() === true) {
       return { pushed: 0, pulledEntries: 0, failed: 0, durationMs: 0 };
     }
     setStatus({ running: true });

@@ -31,6 +31,7 @@ import {
 } from './services/auth-service';
 import { createEntriesService, type EntriesService } from './services/entries/entries-service';
 import { createImportService, type ImportService } from './services/media/import-service';
+import type { AccountMode } from './constants/auth-constants';
 import { createSyncStack, type SyncStack } from './services/sync/create-sync-stack';
 
 export type TestAuthContextInput = {
@@ -60,7 +61,20 @@ export function createTestAuthContext(input: TestAuthContextInput): TestAuthCont
     http,
     serverUrl: {
       current: async () => input.baseUrl,
-      choose: async () => ({ ok: false, reason: 'invalid' }),
+      choose: async () => {
+        try {
+          const config = await http.request({
+            method: 'GET',
+            path: ROUTES.config(),
+            responseSchema: publicConfigSchema,
+            auth: 'none',
+            idempotent: true,
+          });
+          return { ok: true, baseUrl: input.baseUrl, config, inviteToken: null };
+        } catch {
+          return { ok: false, reason: 'unreachable' };
+        }
+      },
     },
     sessionStore,
     keyVault: createKeyVault({ sodium: input.sodium }),
@@ -102,6 +116,7 @@ export function createTestAuthContext(input: TestAuthContextInput): TestAuthCont
     kdfStartParams: startKdfParams,
     showSecuring: () => undefined,
     dismissSecuring: () => undefined,
+    accountMode: createObservable<AccountMode>('server'),
   };
   return { ...context, auth: createAuthService(context) };
 }
@@ -158,6 +173,7 @@ export async function createTestClientContext(
     accountState: auth.accountState,
     onSessionInvalid: () => auth.accountState.set({ kind: 'signedOut' }),
     log: input.log ?? silentLogger,
+    localOnly: () => auth.auth.mode.get() === 'local',
     requestNotificationPermission: null,
     ...(input.random === undefined ? {} : { random: input.random }),
   });

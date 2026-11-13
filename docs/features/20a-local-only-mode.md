@@ -191,6 +191,31 @@ only on this phone.", `shared.localOnly` "Connect a server to share journals.", 
   continues U-22's state in a second part): Settings › Account › Connect a Server… with the UI
   stack and an invite → `connect.done` → the tile is uploaded (server state check by sidecar).
 
+## 4a. Implementation notes (2026-11-14, Opus)
+
+- **Test-first slip:** the client auth additions (`setUpLocal`, `connectServer`, `eraseLocal`, the
+  local branches of `restore`, `unlockWithPassword`, `changePassword`, `recover`) were written
+  before their tests. The tests in `auth-service.test.ts` (`local-only mode (spec 20a)`, 6 tests)
+  came right after and pass. The core function, the sync and eviction guards, and the e2e scenario
+  were written red first.
+- The mode lives in one observable created in `create-app-context.ts` and passed to the auth
+  service (`AuthServiceContext.accountMode`, exposed as `auth.mode`, read by `useAccountMode()`).
+  `localOnly` is a dependency of the sync service (a pass returns an empty report) and of the
+  originals service (`enforceCap` and `clearOriginals` return). A mode change to `server` while
+  unlocked starts sync and refreshes the account.
+- Account key prefix `local` + `/` + userId. The active-account record is schema version 2 with
+  `mode`.
+- **Additions not in §3.3:** Sign Out is hidden in local mode, because sign-out destroys the stores
+  and the phone holds the only copy ("Erase This Journal…" is the explicit path). On the recover
+  screen the username field is hidden in local mode.
+- The connect screen sends the invite field through `extractInviteToken`. A connect error clears
+  the chosen server URL again.
+- `src/testing.ts`: `serverUrl.choose` now probes `/api/v1/config` and returns the harness base
+  URL, so e2e can connect. e2e `scenarios/local-only.test.ts` passes.
+- Android flows: U-22 (`U-22-local-setup.yaml`) and U-23 (runs U-22's part again, then
+  `U-23-connect.yaml`). The sidecar format has no post-run server check, so U-23 asserts
+  `connect.done` only; the e2e scenario covers the upload. Both run in the batched Android round.
+
 ## 5. Verification checklist
 
 - [ ] `pnpm verify`, e2e green.

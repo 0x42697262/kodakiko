@@ -17,6 +17,8 @@ import {
   createSignUpMaterial,
   decodeRecoveryWords,
   deriveForSignIn,
+  rebuildSignUpRequest,
+  type StoredLocalAccount,
   encodeRecoveryKey,
   isValidUsername,
   normalizeRecoveryInput,
@@ -41,8 +43,8 @@ import type { Lifecycle } from '../adapters/lifecycle/lifecycle';
 import type { RowStore } from '../adapters/rowstore/rowstore';
 import type { ServerChoice, ServerUrlStore } from '../adapters/server-url/server-url';
 import type { SessionStore } from '../adapters/session/session-store';
-import type { AccountStateStore, Observable } from '../composition/account-state';
-import { ACTIVE_ACCOUNT_SCHEMA_VERSION } from '../constants/auth-constants';
+import { createObservable, type AccountStateStore, type Observable } from '../composition/account-state';
+import { ACTIVE_ACCOUNT_SCHEMA_VERSION, LOCAL_ACCOUNT_KEY_PREFIX, type AccountMode } from '../constants/auth-constants';
 import { HTTP_STATUS } from '../constants/http-constants';
 import { ACCOUNT_KEY_SEPARATOR, GLOBAL_STORE_KEYS } from '../keys/auth-keys';
 import { STORAGE_KEYS } from '../keys/storage-keys';
@@ -52,6 +54,7 @@ import {
   saveAccountData,
   saveDeletionDueAt,
   saveKeyBundle,
+  saveRole,
   type StoredAccount,
 } from './account-storage';
 import { AUTH_CALLS } from './auth-calls';
@@ -93,6 +96,15 @@ export type AuthService = {
   readonly requestAccountDeletion: () => Promise<{ readonly deletionDueAt: string }>;
   readonly deletionScheduledFor: () => string | null;
   readonly changeServer: () => Promise<void>;
+  readonly setUpLocal: (input: { readonly username: string; readonly password: string }) => Promise<{ recoveryWords: readonly string[] }>;
+  readonly connectServer: (input: {
+    readonly serverInput: string;
+    readonly inviteToken: string | null;
+    readonly username: string;
+    readonly password: string;
+  }) => Promise<void>;
+  readonly eraseLocal: () => Promise<void>;
+  readonly mode: Observable<AccountMode>;
 };
 
 export type AuthServiceContext = {
@@ -116,12 +128,14 @@ export type AuthServiceContext = {
   readonly showSecuring: () => void;
   readonly dismissSecuring: () => void;
   readonly beforeSignOut?: () => Promise<void>;
+  readonly accountMode?: Observable<AccountMode>;
 };
 
 const activeAccountSchema = z.object({
   schemaVersion: z.number().int(),
   accountKey: z.string(),
   username: z.string(),
+  mode: z.enum(['local', 'server']).optional(),
 });
 
 type ActiveAccount = z.infer<typeof activeAccountSchema>;
@@ -164,6 +178,7 @@ function requirePolicy(password: string, username: string): void {
 
 export function createAuthService(context: AuthServiceContext): AuthService {
   const { sodium, http, rowStore, fileStore, sessionStore, keyVault, accountState } = context;
+  const accountMode = context.accountMode ?? createObservable<AccountMode>('server');
 
   let previousState = accountState.get();
   accountState.subscribe(() => {
@@ -188,12 +203,14 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     }
   }
 
-  function writeActiveAccount(accountKey: string, username: string): void {
+  function writeActiveAccount(accountKey: string, username: string, mode: AccountMode = 'server'): void {
     const value: ActiveAccount = {
       schemaVersion: ACTIVE_ACCOUNT_SCHEMA_VERSION,
       accountKey,
       username,
+      mode,
     };
+    accountMode.set(mode);
     context.globalStore.set(GLOBAL_STORE_KEYS.activeAccount, JSON.stringify(value));
   }
 
@@ -339,7 +356,7 @@ export function createAuthService(context: AuthServiceContext): AuthService {
       try {
         keys = await openWithPassword(password, stored.userId, stored.bundle);
       } catch (error) {
-        if (!(error instanceof WrongPasswordError)) throw error;
+        if (!(error instanceof WrongPasswordError) || accountMode.get() === 'local') throw error;
         const fresh = await fetchFreshBundle(accountKey, stored.username);
         if (fresh === null) throw error;
         keys = await openWithPassword(password, stored.userId, fresh);
@@ -365,6 +382,15 @@ export function createAuthService(context: AuthServiceContext): AuthService {
   }
 
   async function restore(): Promise<void> {
+    const remembered = readActiveAccount();
+    if (remembered?.mode === 'local') {
+      context.activeAccountKey.set(remembered.accountKey);
+      accountMode.set('local');
+      await openStores(remembered.accountKey);
+      accountState.set({ kind: 'locked' });
+      await unlockWithDevice();
+      return;
+    }
     if ((await context.serverUrl.current()) === null) {
       accountState.set({ kind: 'noServer' });
       return;
@@ -534,6 +560,10 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     words: string;
     newPassword: string;
   }): Promise<void> {
+    if (accountMode.get() === 'local') {
+      await recoverLocal(input.words, input.newPassword);
+      return;
+    }
     const username = normalizeUsername(input.username);
     let opened: { masterKey: Uint8Array; recoveryKey: Uint8Array } | null = null;
     let completion: RecoveryCompleteBytes | null = null;
@@ -656,6 +686,21 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     } catch (error) {
       throw toAuthError(error);
     }
+    if (accountMode.get() === 'local') {
+      try {
+        await saveKeyBundle(rowStore, {
+          ...stored.bundle,
+          salt: material.salt,
+          opsLimit: material.opsLimit,
+          memLimitBytes: material.memLimitBytes,
+          masterKeyByKek: material.masterKeyByKek,
+        });
+      } finally {
+        wipe(material.currentLoginKey);
+        wipe(material.loginKey);
+      }
+      return;
+    }
     try {
       const response = await http.request(
         AUTH_CALLS.changePassword({
@@ -739,6 +784,206 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     accountState.set({ kind: 'noServer' });
   }
 
+  async function setUpLocal(input: { readonly username: string; readonly password: string }): Promise<{ recoveryWords: readonly string[] }> {
+    const username = normalizeUsername(input.username);
+    if (!isValidUsername(username)) throw new AuthError('usernameInvalid');
+    requirePolicy(input.password, username);
+    context.showSecuring();
+    await context.lifecycle.afterInteractions();
+    let material: SignUpMaterial | null = null;
+    try {
+      material = await createSignUpMaterial(
+        sodium,
+        {
+          username,
+          password: input.password,
+          homeCollectionName: EN['defaults.homeCollectionName'],
+          createdAtUtc: context.clock.nowIso(),
+          randomId: context.randomId,
+        },
+        context.kdfStartParams,
+      );
+      const { request, secrets } = material;
+      const accountKey = `${LOCAL_ACCOUNT_KEY_PREFIX}${ACCOUNT_KEY_SEPARATOR}${request.userId}`;
+      context.activeAccountKey.set(accountKey);
+      await openStores(accountKey);
+      await saveAccountData(rowStore, {
+        userId: request.userId,
+        username,
+        bundle: {
+          salt: request.salt,
+          opsLimit: request.opsLimit,
+          memLimitBytes: request.memLimitBytes,
+          masterKeyByKek: request.masterKeyByKek,
+          recoveryKeyByMaster: request.recoveryKeyByMaster,
+          publicKey: request.publicKey,
+          privateKeyByMaster: request.privateKeyByMaster,
+        },
+        recoveryConfirmed: false,
+        homeCollectionId: secrets.homeCollectionId,
+        deletionDueAt: null,
+      });
+      await rowStore.kvSet(STORAGE_KEYS.accountMasterKeyByRecovery, request.masterKeyByRecovery);
+      await rowStore.kvSetJson(STORAGE_KEYS.accountMode, 'local');
+      await rowStore.transaction((tx) =>
+        tx.collections.put({
+          id: request.homeCollection.id,
+          kind: 'home',
+          ownerId: request.userId,
+          ownerUsername: username,
+          role: 'owner',
+          keyMaterial: request.homeCollection.keyByOwner,
+          metadataBlob: request.homeCollection.metadataBlob,
+          metaUpdatedAt: context.clock.nowIso(),
+          serverLastSeq: 0,
+          cursorSeq: 0,
+        }),
+      );
+      await keyVault.storeMasterKey(accountKey, secrets.masterKey);
+      writeActiveAccount(accountKey, username, 'local');
+      unlockedState({ userId: request.userId, username }, {
+        masterKey: secrets.masterKey,
+        privateKey: secrets.privateKey,
+        publicKey: secrets.publicKey,
+      });
+      return { recoveryWords: material.recoveryWords };
+    } catch (error) {
+      if (material !== null) wipeKeys(material.secrets);
+      context.dismissSecuring();
+      throw toAuthError(error);
+    } finally {
+      if (material !== null) {
+        wipe(material.request.loginKey);
+        wipe(material.request.recoveryLoginKey);
+        wipe(material.secrets.homeCollectionKey);
+      }
+    }
+  }
+
+  async function storedLocalAccount(): Promise<StoredLocalAccount> {
+    const stored = await requireStored();
+    const masterKeyByRecovery = await rowStore.kvGet(STORAGE_KEYS.accountMasterKeyByRecovery);
+    const homeId = await rowStore.kvGetJson(STORAGE_KEYS.accountHomeCollectionId, z.string());
+    const home = homeId === null ? null : await rowStore.transaction((tx) => tx.collections.get(homeId));
+    if (masterKeyByRecovery === null || home === null) throw new AuthError('generic');
+    return {
+      userId: stored.userId,
+      kdfParams: kdfParamsOf(stored.bundle),
+      masterKeyByKek: stored.bundle.masterKeyByKek,
+      masterKeyByRecovery,
+      recoveryKeyByMaster: stored.bundle.recoveryKeyByMaster,
+      publicKey: stored.bundle.publicKey,
+      privateKeyByMaster: stored.bundle.privateKeyByMaster,
+      homeCollection: { id: home.id, keyByOwner: home.keyMaterial, metadataBlob: home.metadataBlob },
+    };
+  }
+
+  async function recoverLocal(wordsInput: string, newPassword: string): Promise<void> {
+    const local = await storedLocalAccount();
+    const stored = await requireStored();
+    let opened: { masterKey: Uint8Array; recoveryKey: Uint8Array } | null = null;
+    try {
+      const words = normalizeRecoveryInput(wordsInput);
+      opened = openRecovery(sodium, words, local.userId, local.masterKeyByRecovery);
+      requirePolicy(newPassword, stored.username);
+      const completion = await createRecoveryCompletion(
+        sodium,
+        { userId: local.userId, newPassword, masterKey: opened.masterKey, recoveryKey: opened.recoveryKey },
+        context.kdfStartParams,
+      );
+      wipe(completion.loginKey);
+      wipe(completion.recoveryLoginKey);
+      await saveKeyBundle(rowStore, {
+        ...stored.bundle,
+        salt: completion.salt,
+        opsLimit: completion.opsLimit,
+        memLimitBytes: completion.memLimitBytes,
+        masterKeyByKek: completion.masterKeyByKek,
+      });
+      await rowStore.kvSetJson(STORAGE_KEYS.accountRecoveryConfirmed, true);
+      const accountKey = requireAccountKey();
+      await keyVault.storeMasterKey(accountKey, opened.masterKey);
+      const privateKey = unwrapPrivateKey(opened.masterKey, local.userId, stored.bundle.privateKeyByMaster);
+      unlockedState(stored, { masterKey: opened.masterKey, privateKey, publicKey: stored.bundle.publicKey });
+    } catch (error) {
+      if (opened !== null) wipe(opened.masterKey);
+      throw toAuthError(error);
+    } finally {
+      if (opened !== null) wipe(opened.recoveryKey);
+    }
+  }
+
+  async function connectServer(input: {
+    readonly serverInput: string;
+    readonly inviteToken: string | null;
+    readonly username: string;
+    readonly password: string;
+  }): Promise<void> {
+    const username = normalizeUsername(input.username);
+    if (!isValidUsername(username)) throw new AuthError('usernameInvalid');
+    const accountKey = requireAccountKey();
+    const local = await storedLocalAccount();
+    const choice = await context.serverUrl.choose(input.serverInput);
+    if (!choice.ok) throw new AuthError(choice.reason === 'not_https' ? 'notHttps' : choice.reason === 'unreachable' ? 'unreachable' : 'notKodakiko');
+    let request: Awaited<ReturnType<typeof rebuildSignUpRequest>> | null = null;
+    try {
+      request = await rebuildSignUpRequest(sodium, { password: input.password, username, stored: local });
+      const response = await http.request(
+        AUTH_CALLS.signUp({
+          userId: idSchema.parse(request.userId),
+          username: request.username,
+          inviteToken: input.inviteToken ?? choice.inviteToken,
+          deviceLabel: context.deviceLabel(),
+          salt: encodeBytes(request.salt),
+          opsLimit: request.opsLimit,
+          memLimitBytes: request.memLimitBytes,
+          loginKey: encodeBytes(request.loginKey),
+          recoveryLoginKey: encodeBytes(request.recoveryLoginKey),
+          publicKey: encodeBytes(request.publicKey),
+          masterKeyByKek: encodeBytes(request.masterKeyByKek),
+          masterKeyByRecovery: encodeBytes(request.masterKeyByRecovery),
+          recoveryKeyByMaster: encodeBytes(request.recoveryKeyByMaster),
+          privateKeyByMaster: encodeBytes(request.privateKeyByMaster),
+          homeCollection: {
+            id: idSchema.parse(request.homeCollection.id),
+            keyByOwner: encodeBytes(request.homeCollection.keyByOwner),
+            metadataBlob: encodeBytes(request.homeCollection.metadataBlob),
+          },
+        }),
+      );
+      context.config.accept(choice.config);
+      await sessionStore.save(accountKey, response.session.token, true);
+      await rowStore.kvSetJson(STORAGE_KEYS.accountMode, 'server');
+      await rowStore.kvSetJson(STORAGE_KEYS.accountUsername, username);
+      await saveRole(rowStore, response.user.role);
+      writeActiveAccount(accountKey, username, 'server');
+      const state = accountState.get();
+      if (state.kind === 'unlocked') accountState.set({ ...state, username });
+    } catch (error) {
+      await attempt(() => context.serverUrl.clear?.() ?? Promise.resolve());
+      throw toAuthError(error);
+    } finally {
+      if (request !== null) {
+        wipe(request.loginKey);
+        wipe(request.recoveryLoginKey);
+      }
+    }
+  }
+
+  async function eraseLocal(): Promise<void> {
+    await attempt(() => context.beforeSignOut?.() ?? Promise.resolve());
+    const accountKey = context.activeAccountKey.get();
+    if (accountKey !== null) {
+      await attempt(() => keyVault.forget(accountKey));
+      await attempt(() => rowStore.destroy(accountKey));
+      await attempt(() => fileStore.destroy(accountKey));
+    }
+    context.activeAccountKey.set(null);
+    await attempt(() => context.globalStore.delete(GLOBAL_STORE_KEYS.activeAccount));
+    accountMode.set('server');
+    accountState.set({ kind: (await context.serverUrl.current()) === null ? 'noServer' : 'signedOut' });
+  }
+
   async function setKeepUnlocked(enabled: boolean): Promise<void> {
     const vault = keyVault.keepUnlocked;
     const accountKey = context.activeAccountKey.get();
@@ -810,5 +1055,9 @@ export function createAuthService(context: AuthServiceContext): AuthService {
     requestAccountDeletion,
     deletionScheduledFor: () => deletionNotice,
     changeServer,
+    setUpLocal,
+    connectServer,
+    eraseLocal,
+    mode: accountMode,
   };
 }

@@ -2,7 +2,9 @@ import type { PublicConfigDto } from '@kodakiko/contract';
 
 export const RESTORE_TIMEOUT_MS = 5_000;
 export const SIGN_OUT_TIMEOUT_MS = 5_000;
-export const ACTIVE_ACCOUNT_SCHEMA_VERSION = 1;
+export const ACTIVE_ACCOUNT_SCHEMA_VERSION = 2;
+export const LOCAL_ACCOUNT_KEY_PREFIX = 'local';
+export type AccountMode = 'local' | 'server';
 export const RECOVERY_CONFIRM_COUNT = 3;
 export const RANDOM_INDEX_LIMIT = 256;
 export const RANDOM_INDEX_BYTES = 1;

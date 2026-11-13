@@ -42,6 +42,7 @@ const FAKE_ARGON2_OPS = 2;
 const FAKE_ARGON2_MEM_BYTES = 8_388_608;
 const FLOOR_OPS = 32;
 const MASTER_KEY_BYTES = 32;
+const WORDS_PER_KEY = 24;
 
 function floorParams(salt: Uint8Array): KdfParams {
   return { salt, opsLimit: FLOOR_OPS, memLimitBytes: ARGON2ID_MIN_MEM_BYTES };
@@ -121,7 +122,7 @@ async function startApp(
   server: FakeAuthServer,
   device: Device,
   sodium: Sodium,
-  overrides: { readonly keyVault?: KeyVault } = {},
+  overrides: { readonly keyVault?: KeyVault; readonly noServer?: boolean } = {},
 ) {
   const accountState = createAccountState({ kind: 'signedOut' });
   const activeAccountKey = createObservable<string | null>(null);
@@ -139,7 +140,7 @@ async function startApp(
   const context: AuthServiceContext = {
     sodium,
     http,
-    serverUrl: { current: async () => BASE_URL, choose },
+    serverUrl: { current: async () => (overrides.noServer === true ? null : BASE_URL), choose },
     sessionStore: device.sessionStore,
     keyVault: overrides.keyVault ?? createKeyVault({ sodium }),
     rowStore: device.rowStore,
@@ -960,5 +961,133 @@ describe('settings additions (spec 20)', () => {
     expect(cleared).toHaveBeenCalledTimes(1);
     expect(app.accountState.get().kind).toBe('noServer');
     expect(device.globalStore.get('kodakiko.serverConfig')).toBeNull();
+  });
+});
+
+const CONFIG = {
+  apiVersion: 1,
+  signupMode: 'invite',
+  sharingEnabled: true,
+  publicLinksEnabled: true,
+  maxMediaPerEntry: 20,
+  maxUploadBytes: 1000,
+  defaultQuotaBytes: 0,
+  trashDays: 30,
+  accountDeletionGraceDays: 7,
+  serverVersion: '0.1.0',
+} as const;
+const VALID_INVITE = `kdk_i_${'a'.repeat(43)}`;
+
+async function localAlice(server: FakeAuthServer, device: Device, sodium: Sodium) {
+  const app = await startApp(server, device, sodium, { noServer: true });
+  app.accountState.set({ kind: 'noServer' });
+  const result = await app.service.setUpLocal({ username: USERNAME, password: PASSWORD });
+  return { ...app, recoveryWords: result.recoveryWords };
+}
+
+function localAccountKey(app: { readonly context: AuthServiceContext }): string {
+  const key = app.context.activeAccountKey.get();
+  if (key === null) throw new Error('expected an account key');
+  return key;
+}
+
+describe('local-only mode (spec 20a)', () => {
+  it('setUpLocal sends no request, stores the recovery wrap and the local mode, and ends unlocked', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await localAlice(server, device, sodium);
+    expect(server.calls).toHaveLength(0);
+    expect(app.recoveryWords).toHaveLength(WORDS_PER_KEY);
+    expect(localAccountKey(app).startsWith('local/')).toBe(true);
+    expect(await device.rowStore.kvGetJson(STORAGE_KEYS.accountMode, z.string())).toBe('local');
+    expect(await device.rowStore.kvGet(STORAGE_KEYS.accountMasterKeyByRecovery)).not.toBeNull();
+    expect(app.service.mode.get()).toBe('local');
+    expect(app.accountState.get()).toMatchObject({ kind: 'unlocked', username: USERNAME });
+  });
+
+  it('restores without a server, unlocks with the password and never fetches a key bundle', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    await localAlice(server, device, sodium);
+    const again = await startApp(server, device, sodium, { noServer: true });
+    await again.service.restore();
+    expect(again.accountState.get().kind).toBe('locked');
+    expect(again.service.mode.get()).toBe('local');
+    await expect(again.service.unlockWithPassword('wrong password entirely')).rejects.toMatchObject({ reason: 'wrongPassword' });
+    await again.service.unlockWithPassword(PASSWORD);
+    expect(again.accountState.get().kind).toBe('unlocked');
+    expect(server.calls).toHaveLength(0);
+  });
+
+  it('local password change and local recovery change only the stored wrap and keep the master key', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await localAlice(server, device, sodium);
+    const state = app.accountState.get();
+    if (state.kind !== 'unlocked') throw new Error('expected unlocked');
+    const masterKey = state.keys.masterKey.slice();
+    await app.service.changePassword(PASSWORD, NEW_PASSWORD);
+    expect(await app.service.verifyPassword(NEW_PASSWORD)).toBe(true);
+    expect(await app.service.verifyPassword(PASSWORD)).toBe(false);
+    await app.service.recover({ username: USERNAME, words: app.recoveryWords.join(' '), newPassword: PASSWORD });
+    expect(await app.service.verifyPassword(PASSWORD)).toBe(true);
+    const after = app.accountState.get();
+    if (after.kind !== 'unlocked') throw new Error('expected unlocked');
+    expect(after.keys.masterKey).toEqual(masterKey);
+    expect(server.calls).toHaveLength(0);
+  });
+
+  it('connectServer registers the stored keys and ids and switches to server mode', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const app = await localAlice(server, device, sodium);
+    const accountKey = localAccountKey(app);
+    const userId = app.accountState.get().kind === 'unlocked' ? (app.accountState.get() as { userId: string }).userId : '';
+    const wrapBefore = await device.rowStore.kvGet(STORAGE_KEYS.accountMasterKeyByKek);
+    app.choose.mockResolvedValue({ ok: true, baseUrl: BASE_URL, config: CONFIG, inviteToken: null });
+    await app.service.connectServer({ serverInput: BASE_URL, inviteToken: VALID_INVITE, username: USERNAME, password: PASSWORD });
+    const registered = server.user(USERNAME);
+    expect(registered.id).toBe(userId);
+    expect(registered.bundle.masterKeyByKek).toBe(encodeBytes(wrapBefore ?? new Uint8Array()));
+    expect(app.service.mode.get()).toBe('server');
+    expect(await device.rowStore.kvGetJson(STORAGE_KEYS.accountMode, z.string())).toBe('server');
+    expect(app.context.activeAccountKey.get()).toBe(accountKey);
+    expect(await device.sessionStore.load(accountKey)).not.toBeNull();
+    expect(app.accept).toHaveBeenCalledWith(CONFIG);
+    const relogin = await startApp(server, createDevice(), sodium);
+    await relogin.service.signIn({ username: USERNAME, password: PASSWORD, keepSignedIn: false });
+    expect(relogin.accountState.get()).toMatchObject({ kind: 'unlocked', userId });
+  });
+
+  it('a taken username leaves the account local', async () => {
+    const server = createFakeAuthServer();
+    const { sodium } = await createTestSodium();
+    await signUpAlice(server, createDevice(), sodium);
+    const device = createDevice();
+    const app = await localAlice(server, device, sodium);
+    app.choose.mockResolvedValue({ ok: true, baseUrl: BASE_URL, config: CONFIG, inviteToken: null });
+    await expect(
+      app.service.connectServer({ serverInput: BASE_URL, inviteToken: null, username: USERNAME, password: PASSWORD }),
+    ).rejects.toMatchObject({ reason: 'usernameTaken' });
+    expect(app.service.mode.get()).toBe('local');
+    expect(await device.rowStore.kvGetJson(STORAGE_KEYS.accountMode, z.string())).toBe('local');
+  });
+
+  it('eraseLocal destroys the stores and forgets the account', async () => {
+    const server = createFakeAuthServer();
+    const device = createDevice();
+    const { sodium } = await createTestSodium();
+    const rowDestroy = vi.spyOn(device.rowStore, 'destroy');
+    const app = await localAlice(server, device, sodium);
+    const accountKey = localAccountKey(app);
+    await app.service.eraseLocal();
+    expect(rowDestroy).toHaveBeenCalledWith(accountKey);
+    expect(device.globalStore.get('kodakiko.activeAccount')).toBeNull();
+    expect(app.accountState.get().kind).toBe('noServer');
+    expect(server.calls).toHaveLength(0);
   });
 });

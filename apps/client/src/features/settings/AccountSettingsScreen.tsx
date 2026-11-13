@@ -1,7 +1,7 @@
 import { useFocusEffect, useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { Platform, StyleSheet, Text } from 'react-native';
-import { useAccountState, useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAccountState, useAppContext } from '../../composition/app-context';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';
 import { listTestId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
@@ -23,6 +23,7 @@ export function AccountSettingsScreen() {
   const { services, serverUrl } = useAppContext();
   const { colors } = useTheme();
   const state = useAccountState();
+  const local = useAccountMode() === 'local';
   const user = useSyncExternalStore(services.account.user.subscribe, services.account.user.get);
   const sync = useSyncExternalStore(services.sync.subscribe, services.sync.status);
   const [host, setHost] = useState('');
@@ -36,6 +37,7 @@ export function AccountSettingsScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (local) return () => setWords(null);
       services.account
         .refreshMe()
         .then((fresh) => {
@@ -47,7 +49,7 @@ export function AccountSettingsScreen() {
         setWords(null);
         setPassword('');
       };
-    }, [services.account]),
+    }, [services.account, local]),
   );
 
   useEffect(() => {
@@ -77,24 +79,39 @@ export function AccountSettingsScreen() {
   return (
     <SettingsPage testID="settings.accountScreen" title={EN['settings.accountTitle']}>
       <LabeledValue testID="settings.username" label={EN['settings.username']} value={username} />
-      <LabeledValue testID="settings.server" label={EN['settings.server']} value={host} />
-      {user === null ? null : (
+      {local ? (
+        <>
+          <Body testID="settings.localOnly" text={EN['settings.localOnly']} />
+          <SettingsRow testID="settings.row.connect" label={EN['settings.connect']} onPress={() => router.push('/settings/connect' as Href)} />
+        </>
+      ) : (
+        <LabeledValue testID="settings.server" label={EN['settings.server']} value={host} />
+      )}
+      {user === null || local ? null : (
         <Body
           testID="settings.storageUse"
           text={`${EN['settings.storageUse'](formatBytes(user.usedBytes), formatBytes(quota))}${stale && refreshedAt !== null ? ` (${EN['settings.asOf'](refreshedAt.slice(0, TIME_CHARS).replace('T', ' '))})` : ''}`}
         />
       )}
-      {Platform.OS === 'android' ? (
+      {Platform.OS === 'android' && !local ? (
         <Button testID="settings.changeServer" label={EN['settings.changeServer']} variant="secondary" onPress={() => setChangingServer(true)} />
       ) : null}
-      <Text style={{ color: colors.textMuted }}>{EN['settings.securityCode']}</Text>
-      <Text testID={SHARING_IDS.securityCodeOwn} selectable style={[styles.code, { color: colors.text }]}>
-        {services.sharing.myFingerprint()}
-      </Text>
-      <Body text={EN['settings.securityCodeOthers']} />
+      {local ? null : (
+        <>
+          <Text style={{ color: colors.textMuted }}>{EN['settings.securityCode']}</Text>
+          <Text testID={SHARING_IDS.securityCodeOwn} selectable style={[styles.code, { color: colors.text }]}>
+            {services.sharing.myFingerprint()}
+          </Text>
+          <Body text={EN['settings.securityCodeOthers']} />
+        </>
+      )}
       <SettingsRow testID="settings.row.password" label={EN['settings.changePassword']} onPress={() => router.push('/settings/password' as Href)} />
       <SettingsRow testID="settings.row.recovery" label={EN['settings.showRecovery']} onPress={() => setRevealing(true)} />
-      <SettingsRow testID="settings.row.deleteAccount" label={EN['settings.deleteAccount']} onPress={() => router.push('/settings/delete-account' as Href)} />
+      <SettingsRow
+        testID="settings.row.deleteAccount"
+        label={local ? EN['settings.erase'] : EN['settings.deleteAccount']}
+        onPress={() => router.push('/settings/delete-account' as Href)}
+      />
       {changingServer ? (
         <Sheet testID="settings.changeServerSheet" onClose={() => setChangingServer(false)}>
           <Text style={{ color: colors.text }}>{EN['settings.changeServerTitle']}</Text>

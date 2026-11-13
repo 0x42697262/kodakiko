@@ -29,6 +29,7 @@ export type SyncStackDeps = {
   readonly accountState: AccountStateStore;
   readonly onSessionInvalid: () => void;
   readonly log: Logger;
+  readonly localOnly?: () => boolean;
   readonly requestNotificationPermission: NotificationPermissionRequest;
   readonly random?: () => number;
   readonly uploadPolicy?: UploadPolicy;
@@ -93,6 +94,7 @@ export function createSyncStack(deps: SyncStackDeps): SyncStack {
     accountState: deps.accountState,
     onSessionInvalid: deps.onSessionInvalid,
     log: deps.log,
+    ...(deps.localOnly === undefined ? {} : { localOnly: deps.localOnly }),
   });
   return { sync, uploads, entryKeys, notificationPrompt };
 }

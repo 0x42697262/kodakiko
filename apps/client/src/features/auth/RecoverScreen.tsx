@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useAppContext } from '../../composition/app-context';
+import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { APP_ROUTES } from '../../keys/routes';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
@@ -17,6 +17,7 @@ export function RecoverScreen() {
   const router = useRouter();
   const { username: prefilled } = useLocalSearchParams<{ username?: string }>();
   const [username, setUsername] = useState(prefilled ?? '');
+  const local = useAccountMode() === 'local';
   const [words, setWords] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -44,13 +45,15 @@ export function RecoverScreen() {
       {banner === null ? null : (
         <Banner testID={banner.testID} kind="error" message={banner.message} />
       )}
-      <TextField
-        testID="recover.username"
-        selectOnFocus
-        label={EN['recover.username']}
-        value={username}
-        onChangeText={setUsername}
-      />
+      {local ? null : (
+        <TextField
+          testID="recover.username"
+          selectOnFocus
+          label={EN['recover.username']}
+          value={username}
+          onChangeText={setUsername}
+        />
+      )}
       <TextField
         testID="recover.words"
         label={EN['recover.words']}

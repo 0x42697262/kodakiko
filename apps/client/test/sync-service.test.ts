@@ -38,6 +38,7 @@ let handler: (item: OutboxRow) => Promise<ExecutorResult> | ExecutorResult;
 let calls: number[];
 let pullResults: Array<{ pulledEntries: number } | Error>;
 let pullCalls: number;
+let localOnly: boolean;
 let invalid: number;
 let accountState: ReturnType<typeof createAccountState>;
 let lifecycle: Lifecycle & { fireActive: (active: boolean) => void; fireOnline: () => void; activeUnsubscribed: () => boolean };
@@ -79,6 +80,7 @@ beforeEach(async () => {
   handler = () => 'done';
   pullResults = [];
   pullCalls = 0;
+  localOnly = false;
   invalid = 0;
   uploadedListeners = [];
   handledEvents = [];
@@ -143,12 +145,25 @@ beforeEach(async () => {
       invalid += 1;
     },
     log: { warn: () => undefined },
+    localOnly: () => localOnly,
   });
 });
 
 afterEach(() => {
   service.stop();
   vi.useRealTimers();
+});
+
+describe('local-only mode (spec 20a)', () => {
+  it('a pass pushes and pulls nothing and keeps the outbox', async () => {
+    localOnly = true;
+    await enqueue(row('trashEntry', fixture.randomId()));
+    const report = await service.syncNow();
+    expect(report.pushed).toBe(0);
+    expect(calls).toEqual([]);
+    expect(pullCalls).toBe(0);
+    expect(await outbox()).toHaveLength(1);
+  });
 });
 
 describe('push drain', () => {

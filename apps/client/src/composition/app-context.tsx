@@ -10,6 +10,7 @@ import { Text } from 'react-native';
 import { EN } from '../text/en';
 import { Screen } from '../ui/Screen';
 import { Spinner } from '../ui/Spinner';
+import type { AccountMode } from '../constants/auth-constants';
 import type { AccountState } from './account-state';
 import { createAppContext, type AppContext } from './create-app-context';
 
@@ -69,6 +70,11 @@ export function useAppContext(): AppContext {
   const context = useContext(Context);
   if (context === null) throw new Error(EN['app.contextMissing']);
   return context;
+}
+
+export function useAccountMode(): AccountMode {
+  const { services } = useAppContext();
+  return useSyncExternalStore(services.auth.mode.subscribe, services.auth.mode.get);
 }
 
 export function useAccountState(): AccountState {

@@ -70,6 +70,13 @@ export async function signUpDevice(harness: Harness, name: string): Promise<Devi
   return withUserId(device);
 }
 
+export async function setUpLocalDevice(harness: Harness, name: string): Promise<Device> {
+  const account = newAccount();
+  const device = await buildDevice(harness, name, account);
+  await device.context.auth.setUpLocal({ username: account.username, password: account.password });
+  return withUserId(device);
+}
+
 export async function signInDevice(
   harness: Harness,
   name: string,

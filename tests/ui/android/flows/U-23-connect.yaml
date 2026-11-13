@@ -1,0 +1,23 @@
+appId: com.x42697262.kodakiko
+---
+- tapOn:
+    id: gallery.settings
+- tapOn:
+    id: settings.row.account
+- tapOn:
+    id: settings.row.connect
+- tapOn:
+    id: connect.server
+- inputText: ${SERVER_INPUT}
+- tapOn:
+    id: connect.invite
+- inputText: ${SERVER_INPUT}
+- tapOn:
+    id: connect.password
+- inputText: ${PASSWORD}
+- tapOn:
+    id: connect.action
+- extendedWaitUntil:
+    visible:
+      id: connect.done
+    timeout: 120000
