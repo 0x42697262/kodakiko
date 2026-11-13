@@ -136,9 +136,30 @@ async function fixtureFile(name: FixtureName) {
   }
 }
 
+export type SeedFile = { readonly bytes: Uint8Array; readonly fileName: string };
+
+export type SeedFileEntry = Omit<SeedEntry, 'media'> & { readonly files: readonly SeedFile[] };
+
 export async function seedEntries(
   account: SeededAccount,
   entries: readonly SeedEntry[],
+): Promise<readonly { entryId: string }[]> {
+  const withFiles: SeedFileEntry[] = [];
+  for (const entry of entries) {
+    withFiles.push({
+      takenAtUtc: entry.takenAtUtc,
+      offsetMinutes: entry.offsetMinutes,
+      note: entry.note,
+      tags: entry.tags,
+      files: await Promise.all(entry.media.map(fixtureFile)),
+    });
+  }
+  return seedEntriesFromFiles(account, withFiles);
+}
+
+export async function seedEntriesFromFiles(
+  account: SeededAccount,
+  entries: readonly SeedFileEntry[],
 ): Promise<readonly { entryId: string }[]> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
@@ -154,8 +175,7 @@ export async function seedEntries(
   await context.sync.syncNow();
   const created: { entryId: string }[] = [];
   for (const entry of entries) {
-    const files = await Promise.all(entry.media.map(fixtureFile));
-    await importIntoTray(context, files);
+    await importIntoTray(context, entry.files);
     const entryId = await context.entries.createFromTray({
       note: entry.note,
       tags: entry.tags,
