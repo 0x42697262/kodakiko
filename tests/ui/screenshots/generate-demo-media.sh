@@ -34,4 +34,4 @@ magick -size 1200x1600 gradient:'#bfe3ff'-'#f9fdff' \
 magick -seed 3 -size 800x600 plasma:'#ff7eb3'-'#ffd86b' -blur 0x2 -resize ${W}x${H}! -modulate 100,120 -quality 88 flowers.jpg
 
 ffmpeg -hide_banner -loglevel error -y -f lavfi -i "mandelbrot=size=1280x720:rate=30" -t 6 \
-  -c:v libx264 -pix_fmt yuv420p -movflags +faststart fractal.mp4
+  -c:v libx264 -pix_fmt yuv420p -movflags +faststart -metadata creation_time=2026-11-12T07:16:00Z fractal.mp4

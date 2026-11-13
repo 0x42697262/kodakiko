@@ -197,10 +197,24 @@ export async function seedEntriesFromFiles(
 
 export type SeededShare = { readonly collectionId: string };
 
+async function ownEntryIds(
+  context: Awaited<ReturnType<typeof createTestClientContext>>,
+  tag: string | null,
+): Promise<string[]> {
+  const rows = await context.rowStore.transaction((tx) => tx.entries.all());
+  const selected: string[] = [];
+  for (const row of rows) {
+    if (row.trashedAt !== null) continue;
+    if (tag !== null && !(await context.entries.readMetadata(row.id)).tags.includes(tag)) continue;
+    selected.push(row.id);
+  }
+  return selected;
+}
+
 export async function seedShare(
   owner: SeededAccount,
   recipient: SeededAccount,
-  input: { readonly name: string; readonly entryIds: readonly string[] },
+  input: { readonly name: string; readonly entryIds?: readonly string[]; readonly tag?: string },
 ): Promise<SeededShare> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
@@ -212,10 +226,11 @@ export async function seedShare(
   const config = await context.config.refresh();
   if (config?.sharingEnabled !== true) throw new Error(STACK_TEXT.seedShareFlagOff);
   await context.sync.syncNow();
+  const entryIds = input.entryIds ?? (await ownEntryIds(context, input.tag ?? null));
   const collectionId = await context.sharing.createJournal(input.name);
-  const result = await context.sharing.addEntries(collectionId, input.entryIds);
-  if (result.added.length !== input.entryIds.length) {
-    throw new Error(STACK_TEXT.seedShareIncomplete(result.added.length, input.entryIds.length));
+  const result = await context.sharing.addEntries(collectionId, entryIds);
+  if (result.added.length !== entryIds.length) {
+    throw new Error(STACK_TEXT.seedShareIncomplete(result.added.length, entryIds.length));
   }
   await context.sharing.share(collectionId, await context.sharing.lookupRecipient(recipient.username));
   await context.sync.syncNow();

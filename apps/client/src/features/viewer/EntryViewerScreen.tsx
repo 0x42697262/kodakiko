@@ -318,7 +318,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
 
   const now = new Date(clock.now());
   return (
-    <Screen testID={VIEWER_IDS.screen}>
+    <Screen testID={VIEWER_IDS.screen} scroll>
       <View style={styles.header}>
         <Button testID={testId('viewer.back')} label={EN['viewer.back']} variant="secondary" onPress={onBack} />
         {!summary.trashed && !summary.unreadable ? (
