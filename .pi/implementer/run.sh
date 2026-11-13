@@ -5,7 +5,7 @@ cd "$ROOT"
 LABEL="$1"
 MESSAGE_FILE="$2"
 SESSION="${3:-}"
-MODELS=("${IMPLEMENTER_MODEL:-anthropic-account-2/claude-sonnet-5-5}" "anthropic/claude-sonnet-5-5")
+MODELS=("${IMPLEMENTER_MODEL:-anthropic-account-2/claude-opus-5-5}" "anthropic/claude-opus-5-5")
 MAX_ATTEMPTS="${IMPLEMENTER_MAX_ATTEMPTS:-6}"
 RETRY_WAIT_SECONDS="${IMPLEMENTER_RETRY_WAIT_SECONDS:-120}"
 LOG_DIR="$ROOT/.pi/implementer/logs"
