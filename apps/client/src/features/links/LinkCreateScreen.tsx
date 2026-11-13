@@ -18,7 +18,7 @@ import { BORDER_WIDTH, FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constan
 import { useTheme } from '../../ui/theme';
 import { useThumbnail } from '../gallery/thumbnail';
 import { copyText, shareText } from './clipboard';
-import { formatSize } from './format-size';
+import { formatBytes as formatSize } from '../format/format-bytes';
 import { LINK_IDS } from './links-ids';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;

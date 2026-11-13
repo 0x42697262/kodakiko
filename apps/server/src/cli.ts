@@ -2,6 +2,7 @@ import { createDatabase } from './adapters/db/database.ts';
 import { applyBucketCors } from './adapters/storage/bucket-cors.ts';
 import { createFailedSignInTracker } from './adapters/memory/failed-sign-in-tracker.ts';
 import { parseCreateInviteArguments } from './cli-arguments.ts';
+import { ADMIN_CLI_COMMANDS, runAdminCommand } from './cli-admin.ts';
 import { createMigrator } from './adapters/db/migrator.ts';
 import {
   EXIT_CODES,
@@ -106,7 +107,20 @@ async function help(): Promise<number> {
   return EXIT_CODES.success;
 }
 
+function adminCommand(name: string): Command {
+  return async (args) => {
+    const settings = loadSettings(process.env);
+    const db = createDatabase(settings.database, reportPoolError);
+    try {
+      return await runAdminCommand(name, args, { db, settings, print: (line) => printLines([line]), logger: silentLogger });
+    } finally {
+      await db.destroy();
+    }
+  };
+}
+
 const COMMANDS: Readonly<Record<string, Command>> = Object.freeze({
+  ...Object.fromEntries(ADMIN_CLI_COMMANDS.map((name) => [name, adminCommand(name)])),
   'migrate-status': migrateStatus,
   'create-invite': createInvite,
   'apply-bucket-cors': applyBucketCorsCommand,

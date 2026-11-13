@@ -237,6 +237,7 @@ export function createAuthService(context: AuthServiceContext): AuthService {
       recoveryConfirmed: input.recoveryConfirmed,
       homeCollectionId: input.homeCollectionId,
       deletionDueAt: input.user.deletionDueAt,
+      role: input.user.role,
     });
     await keyVault.storeMasterKey(accountKey, input.keys.masterKey);
   }

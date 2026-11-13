@@ -32,6 +32,8 @@ import { registerRequestContext, setResponseContext } from './http/request-conte
 import { registerAuthRoutes } from './http/routes/auth.ts';
 import { registerCollectionsRoutes } from './http/routes/collections.ts';
 import { registerSharingRoutes } from './http/routes/sharing.ts';
+import { registerAdminRoutes } from './http/routes/admin.ts';
+import { createAdminService } from './services/admin-service.ts';
 import { registerPublicLinksRoutes } from './http/routes/public-links.ts';
 import { createPublicLinksController } from './http/controllers/public-links-controller.ts';
 import { createPublicLinksService } from './services/public-links-service.ts';
@@ -125,6 +127,11 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   });
   registerUsersRoutes(app, {
     controller: createUsersController(authService),
+    rateLimitFor,
+    requireSession,
+  });
+  registerAdminRoutes(app, {
+    service: createAdminService({ db, clock, logger: app.log, createInvite: authService.createInvite }),
     rateLimitFor,
     requireSession,
   });

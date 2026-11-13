@@ -22,6 +22,7 @@ export type ConfigFallback = Pick<
   | 'accountDeletionGraceDays'
   | 'sharingEnabled'
   | 'publicLinksEnabled'
+  | 'defaultQuotaBytes'
 >;
 
 export const CONFIG_FALLBACK: ConfigFallback = Object.freeze({
@@ -32,5 +33,6 @@ export const CONFIG_FALLBACK: ConfigFallback = Object.freeze({
   accountDeletionGraceDays: 7,
   sharingEnabled: false,
   publicLinksEnabled: false,
+  defaultQuotaBytes: 107_374_182_400,
 });
 export const FULL_PERCENT = 100;

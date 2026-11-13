@@ -122,6 +122,25 @@ and limits show as round numbers) with the familiar labels `B, KB, MB, GB, TB`, 
 bytes and whole numbers shown without `.0`. Exact cases: `0` → `0 B`; `1023` → `1023 B`; `1536` →
 `1.5 KB`; `536870912` → `512 MB`; `2147483648` → `2 GB`; `3758096384` → `3.5 GB`.
 
+## 2a. Implementation notes (2026-11-14, Opus)
+
+- Server: `domain/admin.ts` (`formatBytesIec`, `roleChangeRefusal`), `services/admin-service.ts`,
+  `http/routes/admin.ts` (with `requireAdmin` = session + role check → `404`). The admin CLI
+  commands live in `cli-admin.ts` (`runAdminCommand(name, args, { db, settings, print, logger })`)
+  so integration tests run them against a test database; `cli.ts` registers them.
+- The user list pages by username with its own text cursor (`decodeTextCursor`) and `COLLATE "C"`
+  ordering. The shared cursor helper accepts ids only.
+- Over HTTP the `lastAdmin` refusal cannot happen: the acting admin is itself a second admin. It is
+  reachable only from the CLI (`actor: 'cli'`), and the CLI test covers it on a fresh database.
+- Client: `services/account/account-service.ts` (`refreshMe`, in-memory `user`, `isAdmin`), unlock
+  step `refreshMe`, lock step `clearAccount`, and a refresh on every return to the foreground.
+  Sign-in and sign-up store `account.role` through `saveAccountData`.
+  `services/admin/admin-service.ts` is `createAdminClient`. `formatBytes`
+  (`features/format/format-bytes.ts`) replaces spec 18's local `format-size.ts`.
+  `CONFIG_FALLBACK` gained `defaultQuotaBytes`.
+- `/settings/admin` shows People, Invites and Server. The Settings row comes with spec 20. There
+  is no UI flow for this spec in 07c.
+
 ## 3. Verification checklist
 
 - [ ] `pnpm verify` and server integration green.

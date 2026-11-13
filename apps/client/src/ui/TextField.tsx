@@ -19,6 +19,7 @@ type TextFieldProps = {
   readonly maxLength?: number;
   readonly onKeyPress?: (key: string) => void;
   readonly editable?: boolean;
+  readonly keyboardType?: 'default' | 'number-pad' | 'decimal-pad';
 };
 
 export function TextField({
@@ -38,6 +39,7 @@ export function TextField({
   maxLength,
   onKeyPress,
   editable = true,
+  keyboardType = 'default',
 }: TextFieldProps) {
   const { colors } = useTheme();
   return (
@@ -58,6 +60,7 @@ export function TextField({
         placeholderTextColor={colors.textMuted}
         maxLength={maxLength}
         editable={editable}
+        keyboardType={keyboardType}
         onKeyPress={onKeyPress === undefined ? undefined : (event) => onKeyPress(event.nativeEvent.key)}
         submitBehavior={multiline ? 'newline' : 'submit'}
         textAlignVertical={multiline ? 'top' : 'center'}

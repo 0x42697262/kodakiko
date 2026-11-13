@@ -1,5 +1,8 @@
 export const LOG_EVENTS = Object.freeze({
   shareCreated: 'share.created',
+  adminUserUpdated: 'admin.user_updated',
+  adminInviteCreated: 'admin.invite_created',
+  adminInviteRevoked: 'admin.invite_revoked',
   linkCreated: 'link.created',
   linkRevoked: 'link.revoked',
   linkExpired: 'link.expired',

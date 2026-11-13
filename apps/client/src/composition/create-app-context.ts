@@ -71,6 +71,8 @@ import { createAutoLock, type ActivitySource, type AutoLock } from '../services/
 import { createLockService } from '../services/lock/lock-service';
 import { createCollectionNames, type CollectionNames } from '../services/sharing/collection-names';
 import { createSharingService, type SharingService } from '../services/sharing/sharing-service';
+import { createAccountService, type AccountService } from '../services/account/account-service';
+import { createAdminClient, type AdminClient } from '../services/admin/admin-service';
 import { createPublicLinksService, type PublicLinksService } from '../services/links/public-links-service';
 import { createLinkStripper } from '../services/links/link-stripper';
 import { createPhotoReencoder } from '../adapters/photo-reencoder/photo-reencoder';
@@ -108,6 +110,8 @@ export type Services = {
   readonly sharing: SharingService;
   readonly collectionNames: CollectionNames;
   readonly links: PublicLinksService;
+  readonly account: AccountService;
+  readonly admin: AdminClient;
   readonly videoSource: VideoSource;
 };
 
@@ -377,6 +381,11 @@ export async function createAppContext(): Promise<AppContext> {
     randomId,
     clock: systemClock,
   });
+  const account = createAccountService({ http, rowStore });
+  const admin = createAdminClient({ http });
+  lifecycle.subscribeActive((active) => {
+    if (active && accountState.get().kind === 'unlocked') account.refreshMe().catch(() => undefined);
+  });
   const returnTo = createObservable<string | null>(null);
   const lockService = createLockService({
     accountState,
@@ -399,6 +408,7 @@ export async function createAppContext(): Promise<AppContext> {
         },
       },
       { name: 'clearCollectionNames', run: () => collectionNames.clear() },
+      { name: 'clearAccount', run: () => account.clear() },
       { name: 'wipeKeys', run: () => stack.entryKeys.clear() },
     ],
     unlockSteps: [
@@ -413,6 +423,7 @@ export async function createAppContext(): Promise<AppContext> {
           originals.downloadPinned().catch(() => undefined);
         },
       },
+      { name: 'refreshMe', run: async () => void (await account.refreshMe()) },
     ],
   });
   function sessionInvalid(): void {
@@ -509,6 +520,8 @@ export async function createAppContext(): Promise<AppContext> {
       sharing,
       collectionNames,
       links,
+      account,
+      admin,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,

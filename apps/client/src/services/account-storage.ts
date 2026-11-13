@@ -25,6 +25,7 @@ export type AccountData = {
   readonly recoveryConfirmed: boolean | null;
   readonly homeCollectionId: string | null;
   readonly deletionDueAt: string | null;
+  readonly role?: string;
 };
 
 export async function saveKeyBundle(rowStore: RowStore, bundle: KeyBundleBytes): Promise<void> {
@@ -50,6 +51,7 @@ export async function saveAccountData(rowStore: RowStore, data: AccountData): Pr
     await rowStore.kvSetJson(STORAGE_KEYS.accountHomeCollectionId, data.homeCollectionId);
   }
   await saveDeletionDueAt(rowStore, data.deletionDueAt);
+  if (data.role !== undefined) await saveRole(rowStore, data.role);
 }
 
 export async function saveDeletionDueAt(
@@ -99,4 +101,8 @@ export async function loadAccount(rowStore: RowStore): Promise<StoredAccount | n
     recoveryConfirmed: recoveryConfirmed ?? true,
     deletionDueAt,
   };
+}
+
+export async function saveRole(rowStore: RowStore, role: string): Promise<void> {
+  await rowStore.kvSetJson(STORAGE_KEYS.accountRole, role);
 }
