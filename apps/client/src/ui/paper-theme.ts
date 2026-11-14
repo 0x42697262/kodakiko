@@ -19,6 +19,7 @@ export function paperTheme(scheme: 'light' | 'dark', colors: ColorTokens = COLOR
       onSurfaceVariant: colors.textMuted,
       outline: colors.border,
       error: colors.danger,
+      inversePrimary: COLORS[scheme === 'dark' ? 'light' : 'dark'].primary,
       primaryContainer: colors.primary,
       onPrimaryContainer: colors.onPrimary,
       secondaryContainer: SECONDARY_CONTAINER[scheme],

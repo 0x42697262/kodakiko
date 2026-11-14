@@ -13,6 +13,8 @@ import { PaperProvider } from 'react-native-paper';
 import { PaperIcon } from '../src/ui/icons';
 import { paperTheme } from '../src/ui/paper-theme';
 import { useTheme } from '../src/ui/theme';
+import { SnackbarHost } from '../src/ui/SnackbarHost';
+import { NoticeSnackbars } from '../src/features/entries/notice-snackbars';
 
 if (UI_TEST_MODE) LogBox.ignoreAllLogs(true);
 
@@ -45,9 +47,11 @@ export default function RootLayout() {
             <AppContextProvider>
               <ThemedStack />
               <ReturnToRecorder />
-            <SettingsBinders />
+              <SettingsBinders />
+              <NoticeSnackbars />
             </AppContextProvider>
           )}
+          <SnackbarHost />
         </PaperProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

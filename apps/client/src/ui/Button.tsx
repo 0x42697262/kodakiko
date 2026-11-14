@@ -1,14 +1,6 @@
-import { StyleSheet, Text } from 'react-native';
-import { Touchable } from './Touchable';
-import { Spinner } from './Spinner';
-import {
-  BORDER_WIDTH,
-  DISABLED_OPACITY,
-  FONT_SIZE,
-  MIN_TOUCH_TARGET,
-  RADIUS,
-  SPACING,
-} from './theme-constants';
+import { StyleSheet } from 'react-native';
+import { Button as PaperButton } from 'react-native-paper';
+import { FONT_SIZE, MIN_TOUCH_TARGET } from './theme-constants';
 import { useTheme } from './theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger';
@@ -22,52 +14,33 @@ type ButtonProps = {
   readonly busy?: boolean;
 };
 
-export function Button({
-  testID,
-  label,
-  onPress,
-  variant = 'primary',
-  disabled = false,
-  busy = false,
-}: ButtonProps) {
+export function Button({ testID, label, onPress, variant = 'primary', disabled = false, busy = false }: ButtonProps) {
   const { colors } = useTheme();
   const inactive = disabled || busy;
-  const background = { primary: colors.primary, secondary: colors.surface, danger: colors.danger }[
-    variant
-  ];
-  const foreground = variant === 'secondary' ? colors.text : colors.onPrimary;
+  const colorProps =
+    variant === 'danger'
+      ? { buttonColor: colors.danger, textColor: colors.onPrimary }
+      : variant === 'secondary'
+        ? { textColor: colors.text }
+        : {};
   return (
-    <Touchable
+    <PaperButton
       testID={testID}
-      accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ disabled: inactive, busy }}
+      mode={variant === 'secondary' ? 'outlined' : 'contained'}
       disabled={inactive}
+      loading={busy}
       onPress={onPress}
-      style={[
-        styles.base,
-        { backgroundColor: background, borderColor: colors.border },
-        inactive && styles.inactive,
-      ]}
+      contentStyle={styles.content}
+      labelStyle={styles.label}
+      {...colorProps}
     >
-      {busy ? (
-        <Spinner testID={`${testID}.busy`} color={foreground} />
-      ) : (
-        <Text style={[styles.label, { color: foreground }]}>{label}</Text>
-      )}
-    </Touchable>
+      {label}
+    </PaperButton>
   );
 }
 
 const styles = StyleSheet.create({
-  base: {
-    minHeight: MIN_TOUCH_TARGET,
-    paddingHorizontal: SPACING.lg,
-    borderRadius: RADIUS.sm,
-    borderWidth: BORDER_WIDTH,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inactive: { opacity: DISABLED_OPACITY },
-  label: { fontSize: FONT_SIZE.headline, fontWeight: '600' },
+  content: { minHeight: MIN_TOUCH_TARGET },
+  label: { fontSize: FONT_SIZE.body, fontWeight: '600' },
 });

@@ -58,6 +58,17 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
   `allowFontScaling={false}` is forbidden; `scripts/test/client-lint-rules.test.ts` (red first).
   Unit test `touchable.test.ts` (red first).
 
+- **Phase 3:** `ui/Button` renders Paper `Button` (same props and test ids). `settings-ui`
+  `SettingsRow`/`SwitchRow` are Paper `List.Item` (native: the Paper `Switch` takes its own tap,
+  as in the B2 fix); `ChoiceRow` uses Paper `Chip`s. Snackbars: `ui/snackbar-store.ts` (unit test
+  red first) + `ui/SnackbarHost.tsx` in the root layout + `features/entries/notice-snackbars.tsx`
+  (entry saved, moved to trash, entry gone). Bulk results and Advanced results also use it; errors
+  stay `Banner`s. **Deviation:** the trash Snackbar keeps spec 13's existing Undo (restores the
+  entry); D-103's "no Undo" is read as "no new Undo actions". U-32 covers it (written with the
+  code). Found while checking: trashing from the viewer did `router.replace('/')`, which stacked a
+  second tab navigator (two tab bars on web); the viewer now goes back (or replaces when there is
+  no history). Paper `inversePrimary` follows the theme (Snackbar action color).
+
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
 | Screen | Action | Feels native? | Note |

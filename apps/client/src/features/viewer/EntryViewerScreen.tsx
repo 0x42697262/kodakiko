@@ -312,7 +312,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   useEffect(() => {
     if (status === 'ready' && summary === null) {
       services.galleryNotice.set({ kind: 'gone' });
-      router.replace(APP_ROUTES.root);
+      leaveToGallery();
     }
   }, [status, summary, services.galleryNotice, router]);
 
@@ -338,22 +338,27 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     setWidth(event.nativeEvent.layout.width);
   }
 
+  function leaveToGallery(): void {
+    if (router.canGoBack()) router.back();
+    else router.replace(APP_ROUTES.root);
+  }
+
   async function trash(): Promise<void> {
     setOverlay('none');
     await services.entries.trash([entryId]);
     services.galleryNotice.set({ kind: 'trashed', entryId });
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   async function deletePermanently(): Promise<void> {
     setOverlay('none');
     await services.entries.deletePermanently([entryId]);
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   function showTag(tag: string): void {
     services.galleryFilter.set({ ...EMPTY_GALLERY_FILTER, tags: [tag] });
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   const now = new Date(clock.now());

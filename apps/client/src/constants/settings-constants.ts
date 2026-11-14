@@ -6,4 +6,3 @@ export const LARGE_UPLOAD_THRESHOLD_CHOICES: readonly number[] = Object.freeze([
   52_428_800, 104_857_600, 262_144_000, 524_288_000, 1_073_741_824,
 ]);
 export const SWITCH_DISABLED_OPACITY = 0.5;
-export const SWITCH_TRACK_PADDING = 2;
