@@ -69,6 +69,15 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
   second tab navigator (two tab bars on web); the viewer now goes back (or replaces when there is
   no history). Paper `inversePrimary` follows the theme (Snackbar action color).
 
+- **Phase 4:** native-stack `slide_from_right` on Android (capture `slide_from_bottom`, player
+  `fade`); `android.predictiveBackGestureEnabled: true` (app-config test red first). `Sheet` slides
+  up on open and closes when its handle/header is dragged past 30% or flung (`sheet-drag.ts`,
+  unit test red first). **Deviation:** the drag uses React Native `PanResponder` with Reanimated
+  values, not Gesture Handler: Gesture Handler 3.3's pan (legacy builder and the new
+  `usePanGesture`) never activated on web in Playwright. On web the drag area is `userSelect:
+  'none'`, because a text selection makes React Native Web cancel the responder. **U-33**
+  (mobile project): a short drag springs back, a long drag closes the sheet.
+
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
 | Screen | Action | Feels native? | Note |

@@ -1,6 +1,6 @@
 import '../src/config/zod-config';
 import { Stack, usePathname } from 'expo-router';
-import { LogBox, StyleSheet } from 'react-native';
+import { LogBox, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppContextProvider } from '../src/composition/app-context';
@@ -22,15 +22,32 @@ function ThemedStack() {
   const { colors } = useTheme();
   return (
     <Stack
-      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+        ...(ANDROID ? { animation: 'slide_from_right' as const } : {}),
+      }}
     >
-      <Stack.Screen name="capture" options={{ presentation: 'modal' }} />
-      <Stack.Screen name="play/[entryId]/[mediaId]" options={{ presentation: 'fullScreenModal' }} />
+      <Stack.Screen
+        name="capture"
+        options={{
+          presentation: 'modal',
+          ...(ANDROID ? { animation: 'slide_from_bottom' as const } : {}),
+        }}
+      />
+      <Stack.Screen
+        name="play/[entryId]/[mediaId]"
+        options={{
+          presentation: 'fullScreenModal',
+          ...(ANDROID ? { animation: 'fade' as const } : {}),
+        }}
+      />
     </Stack>
   );
 }
 
 const PAPER_SETTINGS = { icon: PaperIcon };
+const ANDROID = Platform.OS === 'android';
 
 export default function RootLayout() {
   const publicLink = usePathname().startsWith(PUBLIC_LINK_PREFIX);

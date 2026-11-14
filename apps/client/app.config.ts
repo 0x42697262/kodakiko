@@ -28,6 +28,7 @@ const config: ExpoConfig = {
       backgroundColor: ICON_BACKGROUND_COLOR,
     },
     allowBackup: false,
+    predictiveBackGestureEnabled: true,
     permissions: ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO'],
     blockedPermissions: [
       'android.permission.READ_EXTERNAL_STORAGE',
