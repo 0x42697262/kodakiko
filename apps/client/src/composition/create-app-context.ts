@@ -226,7 +226,7 @@ export async function createAppContext(): Promise<AppContext> {
     accountState,
     onSessionInvalid: () => sessionInvalid(),
     log: consoleLogger,
-    localOnly,
+    localOnly: () => localOnly() || (boundSettings.settings.loaded() && boundSettings.settings.get().syncPaused),
     requestNotificationPermission,
     uploadPolicy: { allowed: (sizeBytes) => uploadPolicy.allowed(sizeBytes) },
     thumbnailCache: { afterUpload: (objectId) => thumbnails.afterUpload(objectId) },

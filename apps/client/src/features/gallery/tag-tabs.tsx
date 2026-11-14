@@ -3,6 +3,7 @@ import { useAppContext } from '../../composition/app-context';
 import { EN } from '../../text/en';
 import { useTheme } from '../../ui/theme';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
+import { orderTags } from '../tags/tag-order';
 import { useGalleryFilter, useIndexVersion } from './hooks';
 import { useMemo, useSyncExternalStore } from 'react';
 
@@ -15,7 +16,7 @@ export function TagTabs() {
   const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
   const filter = useGalleryFilter();
   const version = useIndexVersion();
-  const tags = useMemo(() => services.index.index()?.allTags() ?? [], [services.index, version]);
+  const tags = useMemo(() => orderTags(services.index.index()?.allTags() ?? [], settings.tagOrder), [services.index, version, settings.tagOrder]);
   const index = services.index.index();
   const base = index?.query({ ...filter, tags: [], attributes: undefined }) ?? [];
   const total = base.reduce((sum, section) => sum + section.entryIds.length, 0);

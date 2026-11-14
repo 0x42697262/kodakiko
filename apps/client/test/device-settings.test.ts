@@ -43,6 +43,8 @@ const SPEC_22_DEFAULTS = {
   holdToRecord: false,
   holdToRecordMaxSeconds: 15,
   cameraApp: 'kodakiko',
+  syncPaused: false,
+  tagOrder: [],
 } as const;
 
 let rowStore: RowStore;

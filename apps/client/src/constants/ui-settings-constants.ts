@@ -47,4 +47,6 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   holdToRecord: false,
   holdToRecordMaxSeconds: 15,
   cameraApp: 'kodakiko',
+  syncPaused: false,
+  tagOrder: Object.freeze([]) as readonly string[],
 } as const);

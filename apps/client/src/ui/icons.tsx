@@ -55,6 +55,8 @@ export const ICONS = Object.freeze({
   flip: 'flip-camera-android',
   map: 'map',
   favorite: 'favorite',
+  help: 'help-outline',
+  dragHandle: 'drag-handle',
   favoriteOff: 'favorite-border',
   place: 'place',
   locationOff: 'location-off',

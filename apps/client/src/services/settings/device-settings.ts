@@ -75,6 +75,8 @@ export const deviceSettingsSchema = z.object({
   holdToRecord: z.boolean(),
   holdToRecordMaxSeconds: z.number().refine((value) => (HOLD_TO_RECORD_SECONDS as readonly number[]).includes(value)),
   cameraApp: z.enum(CAMERA_APPS),
+  syncPaused: z.boolean(),
+  tagOrder: z.array(z.string()).readonly(),
 });
 
 export type DeviceSettingsValue = Omit<z.infer<typeof deviceSettingsSchema>, 'schemaVersion'>;

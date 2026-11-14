@@ -88,4 +88,16 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
   - Count pills next to the gallery title (`gallery.count`) and on tag tabs when "Show number of
     items" is on.
   - U-27 was written after the code (no red run).
+- **Phase 4 (2026-11-14):**
+  - Settings `syncPaused` and `tagOrder`. Pause sync gates sync passes only; original eviction
+    still applies, because the server holds the copies. Turning it off starts a sync.
+  - More in Mihon's layout: app logo, switches (Hide shared journals, Pause sync; the latter is
+    hidden in local mode), then Lock now, Tags, Statistics, Trash, Data and storage, then
+    Settings, About, Help (README link).
+  - Tags editor `/tags` (`TagsScreen`, `tag-order.ts` unit-tested red first): ordered list with
+    move up/down, count, rename and delete (through `renameTag`/`deleteTag` on every own entry,
+    so the change syncs), FAB Add (an empty tag stays in the order). Tag tabs follow `tagOrder`.
+    Up/down buttons instead of a drag handle (no drag-and-drop dependency).
+  - U-28 was written after the code; its first run failed on my own wrong position expectation
+    (a rename keeps the tag's place), which was corrected.
 
