@@ -1,6 +1,7 @@
 import { type Href } from 'expo-router';
 import { useRouter } from '../../navigation/use-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { ON_THIS_DAY_MAX_TILES, ON_THIS_DAY_TILE_PX } from '../../constants/gallery-constants';
 import { GALLERY_IDS } from '../../keys/gallery-ids';
 import { entryRoute } from '../../keys/routes';
@@ -16,14 +17,18 @@ function OnThisDayTile({ entryId, testID }: { readonly entryId: string; readonly
   const entry = useIndexedEntry(entryId);
   if (entry === null) return null;
   return (
-    <Pressable testID={testID} accessibilityRole="button" onPress={() => router.push(entryRoute(entryId) as Href)}>
+    <Touchable
+      testID={testID}
+      accessibilityRole="button"
+      onPress={() => router.push(entryRoute(entryId) as Href)}
+    >
       <Thumbnail
         entryId={entryId}
         mediaId={entry.coverMediaId}
         size={ON_THIS_DAY_TILE_PX}
         unreadable={entry.unreadable}
       />
-    </Pressable>
+    </Touchable>
   );
 }
 
@@ -33,13 +38,20 @@ export function OnThisDayCard() {
   if (groups.length === 0) return null;
   let tilePosition = 0;
   return (
-    <View testID={GALLERY_IDS.onThisDayCard} style={[styles.card, { backgroundColor: colors.surface }]}>
+    <View
+      testID={GALLERY_IDS.onThisDayCard}
+      style={[styles.card, { backgroundColor: colors.surface }]}
+    >
       <Text testID={testId('onThisDay.title')} style={[styles.title, { color: colors.text }]}>
         {EN['onThisDay.title']}
       </Text>
       <ScrollView horizontal contentContainerStyle={styles.groups}>
         {groups.map((group, groupPosition) => (
-          <View key={group.yearsAgo} testID={listTestId(GALLERY_IDS.onThisDayGroup, groupPosition)} style={styles.group}>
+          <View
+            key={group.yearsAgo}
+            testID={listTestId(GALLERY_IDS.onThisDayGroup, groupPosition)}
+            style={styles.group}
+          >
             <Text style={[styles.label, { color: colors.textMuted }]}>
               {EN['onThisDay.yearsAgo'](group.yearsAgo)}
             </Text>

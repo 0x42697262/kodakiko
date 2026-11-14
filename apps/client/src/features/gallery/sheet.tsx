@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { OVERLAY_ELEVATION, OVERLAY_Z_INDEX, SCRIM_OPACITY } from '../../constants/gallery-constants';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
+import {
+  OVERLAY_ELEVATION,
+  OVERLAY_Z_INDEX,
+  SCRIM_OPACITY,
+} from '../../constants/gallery-constants';
 import { RADIUS, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 
@@ -15,7 +20,7 @@ export function Sheet({ testID, onClose, children, header }: SheetProps) {
   const { colors } = useTheme();
   return (
     <View style={styles.overlay}>
-      <Pressable
+      <Touchable
         accessibilityRole="none"
         style={[StyleSheet.absoluteFill, { backgroundColor: colors.text, opacity: SCRIM_OPACITY }]}
         onPress={onClose}

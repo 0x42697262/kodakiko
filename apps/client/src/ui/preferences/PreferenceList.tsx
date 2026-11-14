@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../Touchable';
 import { Dialog, Portal, RadioButton, Switch } from 'react-native-paper';
 import { Icon, type IconKey } from '../icons';
 import { useTheme } from '../theme';
@@ -36,7 +37,7 @@ function Row({
 }) {
   const { colors } = useTheme();
   return (
-    <Pressable
+    <Touchable
       testID={testID}
       role={role ?? 'button'}
       aria-label={title}
@@ -44,19 +45,37 @@ function Row({
       aria-disabled={disabled}
       disabled={disabled || onPress === undefined}
       onPress={onPress}
-      style={({ pressed }) => [styles.row, { opacity: disabled ? DISABLED_OPACITY : 1, backgroundColor: pressed ? colors.surface : 'transparent' }]}
+      style={({ pressed }) => [
+        styles.row,
+        {
+          opacity: disabled ? DISABLED_OPACITY : 1,
+          backgroundColor: pressed ? colors.surface : 'transparent',
+        },
+      ]}
     >
-      <View style={styles.iconColumn}>{icon === undefined ? null : <Icon name={icon} size={ICON_SIZE} color={danger ? colors.danger : colors.primary} />}</View>
+      <View style={styles.iconColumn}>
+        {icon === undefined ? null : (
+          <Icon name={icon} size={ICON_SIZE} color={danger ? colors.danger : colors.primary} />
+        )}
+      </View>
       <View style={styles.texts}>
         <Text style={[styles.title, { color: danger ? colors.danger : colors.text }]}>{title}</Text>
-        {summary === undefined || summary === '' ? null : <Text style={[styles.summary, { color: colors.textMuted }]}>{summary}</Text>}
+        {summary === undefined || summary === '' ? null : (
+          <Text style={[styles.summary, { color: colors.textMuted }]}>{summary}</Text>
+        )}
       </View>
       {right === undefined ? null : <View style={styles.right}>{right}</View>}
-    </Pressable>
+    </Touchable>
   );
 }
 
-function ChoiceDialog({ item, onClose }: { readonly item: Extract<PreferenceItem, { kind: 'choice' }>; readonly onClose: () => void }) {
+function ChoiceDialog({
+  item,
+  onClose,
+}: {
+  readonly item: Extract<PreferenceItem, { kind: 'choice' }>;
+  readonly onClose: () => void;
+}) {
   return (
     <Portal>
       <Dialog visible onDismiss={onClose} testID={`${item.testID}.dialog`}>
@@ -102,13 +121,26 @@ export function PreferenceList({ items }: { readonly items: readonly PreferenceI
             return (
               <View key={item.key} style={styles.info}>
                 <Icon name="info" size={ICON_SIZE} color={colors.textMuted} />
-                <Text testID={item.testID} style={[styles.summary, styles.infoText, { color: colors.textMuted }]}>
+                <Text
+                  testID={item.testID}
+                  style={[styles.summary, styles.infoText, { color: colors.textMuted }]}
+                >
                   {item.text}
                 </Text>
               </View>
             );
           case 'text':
-            return <Row key={item.key} testID={item.testID} title={item.title} summary={item.summary} icon={item.icon} danger={item.danger ?? false} onPress={item.onPress} />;
+            return (
+              <Row
+                key={item.key}
+                testID={item.testID}
+                title={item.title}
+                summary={item.summary}
+                icon={item.icon}
+                danger={item.danger ?? false}
+                onPress={item.onPress}
+              />
+            );
           case 'switch':
             return (
               <Row
@@ -135,8 +167,16 @@ export function PreferenceList({ items }: { readonly items: readonly PreferenceI
           case 'choice':
             return (
               <View key={item.key}>
-                <Row testID={item.testID} title={item.title} summary={item.summary ?? choiceSummary(item)} icon={item.icon} onPress={() => setOpenChoice(item.key)} />
-                {openChoice === item.key ? <ChoiceDialog item={item} onClose={() => setOpenChoice(null)} /> : null}
+                <Row
+                  testID={item.testID}
+                  title={item.title}
+                  summary={item.summary ?? choiceSummary(item)}
+                  icon={item.icon}
+                  onPress={() => setOpenChoice(item.key)}
+                />
+                {openChoice === item.key ? (
+                  <ChoiceDialog item={item} onClose={() => setOpenChoice(null)} />
+                ) : null}
               </View>
             );
           default:
@@ -148,13 +188,30 @@ export function PreferenceList({ items }: { readonly items: readonly PreferenceI
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', minHeight: MIN_TOUCH_TARGET + SPACING.lg, paddingVertical: SPACING.md, paddingRight: SPACING.lg },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: MIN_TOUCH_TARGET + SPACING.lg,
+    paddingVertical: SPACING.md,
+    paddingRight: SPACING.lg,
+  },
   iconColumn: { width: ICON_COLUMN, alignItems: 'center' },
   texts: { flex: 1, gap: SPACING.xs },
   title: { fontSize: FONT_SIZE.body },
   summary: { fontSize: FONT_SIZE.caption },
   right: { paddingLeft: SPACING.md },
-  header: { fontSize: FONT_SIZE.caption, fontWeight: '600', paddingLeft: ICON_COLUMN, paddingTop: SPACING.lg, paddingBottom: SPACING.xs },
-  info: { flexDirection: 'row', gap: SPACING.lg, paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
+  header: {
+    fontSize: FONT_SIZE.caption,
+    fontWeight: '600',
+    paddingLeft: ICON_COLUMN,
+    paddingTop: SPACING.lg,
+    paddingBottom: SPACING.xs,
+  },
+  info: {
+    flexDirection: 'row',
+    gap: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+  },
   infoText: { flex: 1 },
 });

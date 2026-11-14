@@ -1,10 +1,17 @@
 import type { ComponentProps, ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { useSystemInsets } from '../../ui/system-insets';
 import { SWITCH_DISABLED_OPACITY, SWITCH_TRACK_PADDING } from '../../constants/settings-constants';
 import { Button } from '../../ui/Button';
 import { AppBar } from '../../ui/AppBar';
-import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
+import {
+  BORDER_WIDTH,
+  FONT_SIZE,
+  MIN_TOUCH_TARGET,
+  RADIUS,
+  SPACING,
+} from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 
 export function SettingsPage({
@@ -23,26 +30,66 @@ export function SettingsPage({
   const { colors } = useTheme();
   const insets = useSystemInsets();
   return (
-    <View testID={testID} style={[styles.page, { backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }]}>
-      <AppBar title={title} backTestID="settings.back" {...(actions === undefined ? {} : { actions })} />
-      <ScrollView contentContainerStyle={padded ? styles.body : styles.flush} keyboardShouldPersistTaps="handled">
+    <View
+      testID={testID}
+      style={[
+        styles.page,
+        {
+          backgroundColor: colors.background,
+          paddingTop: insets.top,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+      ]}
+    >
+      <AppBar
+        title={title}
+        backTestID="settings.back"
+        {...(actions === undefined ? {} : { actions })}
+      />
+      <ScrollView
+        contentContainerStyle={padded ? styles.body : styles.flush}
+        keyboardShouldPersistTaps="handled"
+      >
         {children}
       </ScrollView>
     </View>
   );
 }
 
-export function SettingsRow({ testID, label, detail, onPress }: { readonly testID: string; readonly label: string; readonly detail?: string; readonly onPress: () => void }) {
+export function SettingsRow({
+  testID,
+  label,
+  detail,
+  onPress,
+}: {
+  readonly testID: string;
+  readonly label: string;
+  readonly detail?: string;
+  readonly onPress: () => void;
+}) {
   const { colors } = useTheme();
   return (
-    <Pressable testID={testID} accessibilityRole="button" onPress={onPress} style={[styles.row, { borderColor: colors.border }]}>
+    <Touchable
+      testID={testID}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[styles.row, { borderColor: colors.border }]}
+    >
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
       {detail === undefined ? null : <Text style={{ color: colors.textMuted }}>{detail}</Text>}
-    </Pressable>
+    </Touchable>
   );
 }
 
-export function SwitchRow({ testID, label, value, disabled = false, hint, onChange }: {
+export function SwitchRow({
+  testID,
+  label,
+  value,
+  disabled = false,
+  hint,
+  onChange,
+}: {
   readonly testID: string;
   readonly label: string;
   readonly value: boolean;
@@ -53,7 +100,7 @@ export function SwitchRow({ testID, label, value, disabled = false, hint, onChan
   const { colors } = useTheme();
   return (
     <View style={styles.group}>
-      <Pressable
+      <Touchable
         testID={testID}
         role="switch"
         aria-label={label}
@@ -61,19 +108,35 @@ export function SwitchRow({ testID, label, value, disabled = false, hint, onChan
         aria-disabled={disabled}
         disabled={disabled}
         onPress={() => onChange(!value)}
-        style={[styles.row, styles.switchRow, { borderColor: colors.border, opacity: disabled ? SWITCH_DISABLED_OPACITY : 1 }]}
+        style={[
+          styles.row,
+          styles.switchRow,
+          { borderColor: colors.border, opacity: disabled ? SWITCH_DISABLED_OPACITY : 1 },
+        ]}
       >
         <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
         <View style={[styles.track, { backgroundColor: value ? colors.primary : colors.border }]}>
-          <View style={[styles.knob, { backgroundColor: colors.background, alignSelf: value ? 'flex-end' : 'flex-start' }]} />
+          <View
+            style={[
+              styles.knob,
+              { backgroundColor: colors.background, alignSelf: value ? 'flex-end' : 'flex-start' },
+            ]}
+          />
         </View>
-      </Pressable>
+      </Touchable>
       {hint === undefined ? null : <Text style={{ color: colors.textMuted }}>{hint}</Text>}
     </View>
   );
 }
 
-export function ChoiceRow<Value extends string | number>({ testID, label, choices, value, format, onChange }: {
+export function ChoiceRow<Value extends string | number>({
+  testID,
+  label,
+  choices,
+  value,
+  format,
+  onChange,
+}: {
   readonly testID: string;
   readonly label: string;
   readonly choices: readonly Value[];
@@ -100,7 +163,15 @@ export function ChoiceRow<Value extends string | number>({ testID, label, choice
   );
 }
 
-export function LabeledValue({ testID, label, value }: { readonly testID?: string; readonly label: string; readonly value: string }) {
+export function LabeledValue({
+  testID,
+  label,
+  value,
+}: {
+  readonly testID?: string;
+  readonly label: string;
+  readonly value: string;
+}) {
   const { colors } = useTheme();
   return (
     <View style={styles.valueRow}>
@@ -120,7 +191,14 @@ const styles = StyleSheet.create({
   body: { gap: SPACING.md, padding: SPACING.lg },
   flush: { paddingBottom: SPACING.xl },
   group: { gap: SPACING.xs },
-  row: { minHeight: MIN_TOUCH_TARGET, padding: SPACING.md, borderWidth: BORDER_WIDTH, borderRadius: RADIUS.md, gap: SPACING.xs, justifyContent: 'center' },
+  row: {
+    minHeight: MIN_TOUCH_TARGET,
+    padding: SPACING.md,
+    borderWidth: BORDER_WIDTH,
+    borderRadius: RADIUS.md,
+    gap: SPACING.xs,
+    justifyContent: 'center',
+  },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   label: { fontSize: FONT_SIZE.body },
   track: { width: TRACK_WIDTH, padding: SWITCH_TRACK_PADDING, borderRadius: KNOB },

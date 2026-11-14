@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Touchable } from './Touchable';
 import { Icon, type IconKey } from './icons';
 import { useTheme } from './theme';
 import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from './theme-constants';
@@ -19,12 +20,19 @@ export function ActionRow({ actions }: { readonly actions: readonly RowAction[] 
   return (
     <View style={styles.row}>
       {actions.map((action) => (
-        <Pressable key={action.key} testID={action.testID} role="button" aria-label={action.label} onPress={action.onPress} style={styles.action}>
+        <Touchable
+          key={action.key}
+          testID={action.testID}
+          role="button"
+          aria-label={action.label}
+          onPress={action.onPress}
+          style={styles.action}
+        >
           <Icon name={action.icon} size={ACTION_ICON_SIZE} color={colors.primary} />
           <Text numberOfLines={1} style={[styles.label, { color: colors.textMuted }]}>
             {action.label}
           </Text>
-        </Pressable>
+        </Touchable>
       ))}
     </View>
   );

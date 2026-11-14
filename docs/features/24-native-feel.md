@@ -52,6 +52,12 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
 
 ## 4. Implementation notes
 
+- **Phase 2:** `ui/Touchable.tsx` (Android foreground ripple in the text color at 12%, borderless
+  option; web dims to 70% while pressed). All 23 files with `<Pressable>` use it. ESLint:
+  `react-native` › `Pressable` is a restricted import outside `src/ui/`, and
+  `allowFontScaling={false}` is forbidden; `scripts/test/client-lint-rules.test.ts` (red first).
+  Unit test `touchable.test.ts` (red first).
+
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
 | Screen | Action | Feels native? | Note |

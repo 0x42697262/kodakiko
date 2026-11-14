@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import {
   SHUTTER_INNER_SIZE,
   SHUTTER_RING_WIDTH,
@@ -26,11 +27,14 @@ export function ShutterButton({
   onHoldEnd,
 }: ShutterButtonProps) {
   const { colors } = useTheme();
-  const handlers = useMemo(() => ({ onTap, onHoldStart, onHoldEnd }), [onTap, onHoldStart, onHoldEnd]);
+  const handlers = useMemo(
+    () => ({ onTap, onHoldStart, onHoldEnd }),
+    [onTap, onHoldStart, onHoldEnd],
+  );
   const gesture = useShutterGesture(handlers);
   const accent = recording ? colors.danger : colors.text;
   return (
-    <Pressable
+    <Touchable
       testID={TEST_IDS.captureShutter}
       accessibilityRole="button"
       accessibilityLabel={EN['capture.shutterLabel']}
@@ -41,7 +45,7 @@ export function ShutterButton({
       style={[styles.ring, { borderColor: accent }]}
     >
       <View style={[styles.inner, { backgroundColor: accent }]} />
-    </Pressable>
+    </Touchable>
   );
 }
 

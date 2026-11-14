@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { Touchable } from './Touchable';
 import { Spinner } from './Spinner';
 import {
   BORDER_WIDTH,
@@ -36,7 +37,7 @@ export function Button({
   ];
   const foreground = variant === 'secondary' ? colors.text : colors.onPrimary;
   return (
-    <Pressable
+    <Touchable
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -54,7 +55,7 @@ export function Button({
       ) : (
         <Text style={[styles.label, { color: foreground }]}>{label}</Text>
       )}
-    </Pressable>
+    </Touchable>
   );
 }
 

@@ -1,15 +1,8 @@
 import { isValidYearMonth, monthGrid, yearMonthOf, type CalendarCell } from '@kodakiko/core';
 import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type LayoutChangeEvent,
-} from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { useAppContext } from '../../composition/app-context';
 import {
   CALENDAR_CELL_GAP,
@@ -122,7 +115,7 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
   );
   const tappable = cell.inMonth && info !== undefined;
   return (
-    <Pressable
+    <Touchable
       testID={cell.inMonth ? calendarDayTestId(cell.localDate) : undefined}
       accessibilityRole="button"
       accessibilityLabel={cellLabel(cell.localDate, count)}
@@ -152,7 +145,7 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
       >
         {day}
       </Text>
-    </Pressable>
+    </Touchable>
   );
 }
 

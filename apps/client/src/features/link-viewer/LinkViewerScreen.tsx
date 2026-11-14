@@ -2,7 +2,8 @@ import { useEvent } from 'expo';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { ApiError } from '../../adapters/http/http';
 import { createMediaWorker, type MediaWorker } from '../../adapters/video-source/media-worker.web';
 import { MEDIA_STREAM_PATH, WEB_BLOB_PLAYBACK_MAX_BYTES } from '../../constants/video-constants';
@@ -16,7 +17,12 @@ import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { MarkdownView } from '../markdown/markdown-view';
 import { parseLinkFragment } from '../../services/links/link-url';
-import { createLinkSession, type LinkItem, type LinkSession, type OpenedLink } from './link-session';
+import {
+  createLinkSession,
+  type LinkItem,
+  type LinkSession,
+  type OpenedLink,
+} from './link-session';
 import { usePublicViewer } from './public-viewer-context';
 
 const TILE = 120;
@@ -52,7 +58,8 @@ type ViewState =
 function failureMessage(error: unknown, maxViews: number | null): string {
   if (!(error instanceof ApiError)) return EN['links.viewerInvalid'];
   if (error.code === 'LINK_EXPIRED') return EN['links.viewerExpired'];
-  if (error.code === 'LINK_VIEW_EXPIRED') return maxViews === 1 ? EN['links.viewerOneViewEnded'] : EN['links.viewerSessionEnded'];
+  if (error.code === 'LINK_VIEW_EXPIRED')
+    return maxViews === 1 ? EN['links.viewerOneViewEnded'] : EN['links.viewerSessionEnded'];
   return EN['links.viewerInvalid'];
 }
 
@@ -80,7 +87,12 @@ function useObjectUrls() {
   }, []);
 }
 
-function GridTile({ item, session, urlFor, onOpen }: {
+function GridTile({
+  item,
+  session,
+  urlFor,
+  onOpen,
+}: {
   readonly item: LinkItem;
   readonly session: LinkSession;
   readonly urlFor: (key: string, bytes: Uint8Array, type: string) => string;
@@ -93,7 +105,8 @@ function GridTile({ item, session, urlFor, onOpen }: {
     session
       .thumbnail(item)
       .then((bytes) => {
-        if (active) setUri(urlFor(`thumb:${item.thumbnail.id}`, bytes, item.descriptor.thumbnail.mimeType));
+        if (active)
+          setUri(urlFor(`thumb:${item.thumbnail.id}`, bytes, item.descriptor.thumbnail.mimeType));
       })
       .catch(() => undefined);
     return () => {
@@ -101,15 +114,19 @@ function GridTile({ item, session, urlFor, onOpen }: {
     };
   }, [item, session, urlFor]);
   return (
-    <Pressable
+    <Touchable
       testID={listTestId(LINK_IDS.item, item.position)}
       accessibilityRole="button"
       onPress={onOpen}
       style={[styles.tile, { backgroundColor: colors.surface }]}
     >
       {uri === null ? null : <Image source={{ uri }} style={styles.fill} contentFit="cover" />}
-      {item.descriptor.kind === 'video' ? <Text style={[styles.badge, { color: colors.onPrimary, backgroundColor: colors.text }]}>{'\u25B6'}</Text> : null}
-    </Pressable>
+      {item.descriptor.kind === 'video' ? (
+        <Text style={[styles.badge, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+          {'\u25B6'}
+        </Text>
+      ) : null}
+    </Touchable>
   );
 }
 
@@ -120,7 +137,12 @@ function hexId(bytes: Uint8Array): string {
   return Array.from(bytes, (byte) => byte.toString(HEX_RADIX).padStart(HEX_WIDTH, '0')).join('');
 }
 
-function VideoPane({ item, session, worker, playbacks }: {
+function VideoPane({
+  item,
+  session,
+  worker,
+  playbacks,
+}: {
   readonly item: LinkItem;
   readonly session: LinkSession;
   readonly worker: MediaWorker;
@@ -138,7 +160,20 @@ function VideoPane({ item, session, worker, playbacks }: {
         const playbackId = hexId(sodium.randomBytes(PLAYBACK_ID_BYTES));
         playbacks.set(playbackId, registration.objectId);
         const key = registration.key.slice().buffer;
-        worker.post({ type: 'register', playbackId, key, objectId: registration.objectId, downloadUrl: registration.downloadUrl, extraHeaders: registration.extraHeaders, plaintextSize: registration.plaintextSize, ciphertextSize: registration.ciphertextSize, mimeType: registration.mimeType }, [key]);
+        worker.post(
+          {
+            type: 'register',
+            playbackId,
+            key,
+            objectId: registration.objectId,
+            downloadUrl: registration.downloadUrl,
+            extraHeaders: registration.extraHeaders,
+            plaintextSize: registration.plaintextSize,
+            ciphertextSize: registration.ciphertextSize,
+            mimeType: registration.mimeType,
+          },
+          [key],
+        );
         registration.key.fill(0);
         release = () => {
           playbacks.delete(playbackId);
@@ -147,9 +182,12 @@ function VideoPane({ item, session, worker, playbacks }: {
         if (!cancelled) setUri(`${MEDIA_STREAM_PATH}${playbackId}`);
         return;
       }
-      if (item.descriptor.originalPlaintextBytes > WEB_BLOB_PLAYBACK_MAX_BYTES) throw new Error('too large');
+      if (item.descriptor.originalPlaintextBytes > WEB_BLOB_PLAYBACK_MAX_BYTES)
+        throw new Error('too large');
       const bytes = await session.original(item);
-      const url = URL.createObjectURL(new Blob([bytes.slice()], { type: item.descriptor.mimeType }));
+      const url = URL.createObjectURL(
+        new Blob([bytes.slice()], { type: item.descriptor.mimeType }),
+      );
       release = () => URL.revokeObjectURL(url);
       if (!cancelled) setUri(url);
     })().catch(() => {
@@ -178,7 +216,16 @@ function PublicPlayer({ uri }: { readonly uri: string }) {
   );
 }
 
-function Detail({ items, index, session, urlFor, worker, playbacks, onMove, onClose }: {
+function Detail({
+  items,
+  index,
+  session,
+  urlFor,
+  worker,
+  playbacks,
+  onMove,
+  onClose,
+}: {
   readonly items: readonly LinkItem[];
   readonly index: number;
   readonly session: LinkSession;
@@ -202,7 +249,8 @@ function Detail({ items, index, session, urlFor, worker, playbacks, onMove, onCl
     session
       .original(item)
       .then((bytes) => {
-        if (active) setPhotoUri(urlFor(`orig:${item.original.id}`, bytes, item.descriptor.mimeType));
+        if (active)
+          setPhotoUri(urlFor(`orig:${item.original.id}`, bytes, item.descriptor.mimeType));
       })
       .catch(() => undefined);
     return () => {
@@ -217,7 +265,10 @@ function Detail({ items, index, session, urlFor, worker, playbacks, onMove, onCl
     const bytes = await session.original(item);
     const url = URL.createObjectURL(new Blob([bytes.slice()], { type: item.descriptor.mimeType }));
     const anchor = document.createElement('a');
-    const extension = item.descriptor.kind === 'photo' ? PHOTO_EXTENSION : item.descriptor.mimeType.split('/')[1] ?? BINARY_EXTENSION;
+    const extension =
+      item.descriptor.kind === 'photo'
+        ? PHOTO_EXTENSION
+        : (item.descriptor.mimeType.split('/')[1] ?? BINARY_EXTENSION);
     anchor.href = url;
     anchor.download = `${DOWNLOAD_PREFIX}${item.position + 1}.${extension}`;
     document.body.appendChild(anchor);
@@ -230,21 +281,55 @@ function Detail({ items, index, session, urlFor, worker, playbacks, onMove, onCl
   return (
     <View testID={LINK_IDS.detail} style={styles.detail}>
       <View style={styles.row}>
-        <Button testID={LINK_IDS.back} label={EN['links.viewerBack']} variant="secondary" onPress={onClose} />
-        <Button testID={LINK_IDS.previous} label={EN['links.viewerPrevious']} variant="secondary" disabled={index === 0} onPress={() => onMove(index - 1)} />
-        <Button testID={LINK_IDS.next} label={EN['links.viewerNext']} variant="secondary" disabled={index >= items.length - 1} onPress={() => onMove(index + 1)} />
-        <Button testID={LINK_IDS.download} label={EN['links.viewerDownload']} variant="secondary" onPress={() => download().catch(() => undefined)} />
+        <Button
+          testID={LINK_IDS.back}
+          label={EN['links.viewerBack']}
+          variant="secondary"
+          onPress={onClose}
+        />
+        <Button
+          testID={LINK_IDS.previous}
+          label={EN['links.viewerPrevious']}
+          variant="secondary"
+          disabled={index === 0}
+          onPress={() => onMove(index - 1)}
+        />
+        <Button
+          testID={LINK_IDS.next}
+          label={EN['links.viewerNext']}
+          variant="secondary"
+          disabled={index >= items.length - 1}
+          onPress={() => onMove(index + 1)}
+        />
+        <Button
+          testID={LINK_IDS.download}
+          label={EN['links.viewerDownload']}
+          variant="secondary"
+          onPress={() => download().catch(() => undefined)}
+        />
       </View>
       <View style={[styles.media, { height, backgroundColor: colors.surface }]}>
         {item.descriptor.kind === 'photo' ? (
-          photoUri === null ? <Spinner testID="linkViewer.spinner" /> : <Image source={{ uri: photoUri }} style={styles.fill} contentFit="contain" />
+          photoUri === null ? (
+            <Spinner testID="linkViewer.spinner" />
+          ) : (
+            <Image source={{ uri: photoUri }} style={styles.fill} contentFit="contain" />
+          )
         ) : playing ? (
           <VideoPane item={item} session={session} worker={worker} playbacks={playbacks} />
         ) : (
-          <Button testID={LINK_IDS.play} label={EN['links.viewerPlay']} onPress={() => setPlaying(true)} />
+          <Button
+            testID={LINK_IDS.play}
+            label={EN['links.viewerPlay']}
+            onPress={() => setPlaying(true)}
+          />
         )}
       </View>
-      <Text style={{ color: colors.textMuted }}>{new Date(Date.parse(item.takenAtUtc) + item.utcOffsetMinutes * MINUTE_MS).toISOString().slice(0, DATE_CHARS)}</Text>
+      <Text style={{ color: colors.textMuted }}>
+        {new Date(Date.parse(item.takenAtUtc) + item.utcOffsetMinutes * MINUTE_MS)
+          .toISOString()
+          .slice(0, DATE_CHARS)}
+      </Text>
       {item.note.length === 0 ? null : (
         <View testID={LINK_IDS.note}>
           <MarkdownView source={item.note} />
@@ -273,7 +358,8 @@ export function LinkViewerScreen({ linkId }: { readonly linkId: string }) {
           sessionRef.current
             ?.refreshUrl(objectId)
             .then((downloadUrl) => {
-              if (downloadUrl !== null) created.post({ type: 'refreshUrl', playbackId, downloadUrl });
+              if (downloadUrl !== null)
+                created.post({ type: 'refreshUrl', playbackId, downloadUrl });
             })
             .catch(() => undefined);
         },
@@ -290,7 +376,13 @@ export function LinkViewerScreen({ linkId }: { readonly linkId: string }) {
       setState({ kind: 'failed', message: EN['links.viewerIncomplete'] });
       return;
     }
-    const created = createLinkSession({ sodium, http, linkId, secret, origin: window.location.origin });
+    const created = createLinkSession({
+      sodium,
+      http,
+      linkId,
+      secret,
+      origin: window.location.origin,
+    });
     secret.fill(0);
     sessionRef.current = created;
     setSession(created);
@@ -300,13 +392,19 @@ export function LinkViewerScreen({ linkId }: { readonly linkId: string }) {
         document.title = link.title;
         setState({ kind: 'ready', link });
       })
-      .catch((error: unknown) => setState({ kind: 'failed', message: failureMessage(error, null) }));
+      .catch((error: unknown) =>
+        setState({ kind: 'failed', message: failureMessage(error, null) }),
+      );
   }, [sodium, http, linkId]);
 
   if (state.kind === 'loading' || session === null) {
     return (
       <Screen testID={LINK_IDS.screen}>
-        {state.kind === 'failed' ? <Body testID={LINK_IDS.message} text={state.message} /> : <Body text={EN['links.viewerLoading']} />}
+        {state.kind === 'failed' ? (
+          <Body testID={LINK_IDS.message} text={state.message} />
+        ) : (
+          <Body text={EN['links.viewerLoading']} />
+        )}
       </Screen>
     );
   }
@@ -324,11 +422,26 @@ export function LinkViewerScreen({ linkId }: { readonly linkId: string }) {
       {index === null ? (
         <View style={styles.grid}>
           {link.items.map((item) => (
-            <GridTile key={item.original.id} item={item} session={session} urlFor={urlFor} onOpen={() => setIndex(item.position)} />
+            <GridTile
+              key={item.original.id}
+              item={item}
+              session={session}
+              urlFor={urlFor}
+              onOpen={() => setIndex(item.position)}
+            />
           ))}
         </View>
       ) : (
-        <Detail items={link.items} index={index} session={session} urlFor={urlFor} worker={worker} playbacks={playbacks} onMove={setIndex} onClose={() => setIndex(null)} />
+        <Detail
+          items={link.items}
+          index={index}
+          session={session}
+          urlFor={urlFor}
+          worker={worker}
+          playbacks={playbacks}
+          onMove={setIndex}
+          onClose={() => setIndex(null)}
+        />
       )}
       <Text testID={LINK_IDS.footer} style={[styles.footer, { color: colors.textMuted }]}>
         {EN['links.viewerFooter']}
@@ -341,7 +454,13 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs },
   tile: { width: TILE, height: TILE, overflow: 'hidden' },
   fill: { width: '100%', height: '100%' },
-  badge: { position: 'absolute', left: SPACING.xs, bottom: SPACING.xs, paddingHorizontal: SPACING.xs, fontSize: FONT_SIZE.caption },
+  badge: {
+    position: 'absolute',
+    left: SPACING.xs,
+    bottom: SPACING.xs,
+    paddingHorizontal: SPACING.xs,
+    fontSize: FONT_SIZE.caption,
+  },
   detail: { gap: SPACING.md },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   media: { width: '100%', alignItems: 'center', justifyContent: 'center' },

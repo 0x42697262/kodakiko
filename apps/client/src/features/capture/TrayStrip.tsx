@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { REMOVE_BUTTON_RADIUS, REMOVE_BUTTON_SIZE, TRAY_TILE_SIZE } from '../../constants/capture-constants';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
+import {
+  REMOVE_BUTTON_RADIUS,
+  REMOVE_BUTTON_SIZE,
+  TRAY_TILE_SIZE,
+} from '../../constants/capture-constants';
 import { CAPTURE_IDS } from '../../keys/capture-keys';
 import { TEST_IDS, listTestId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
@@ -30,7 +35,7 @@ function TrayTile({
   return (
     <View testID={listTestId(TEST_IDS.captureTrayItem, position)} style={styles.tile}>
       <Image source={{ uri }} style={styles.image} />
-      <Pressable
+      <Touchable
         testID={listTestId(CAPTURE_IDS.removeItem, position)}
         accessibilityRole="button"
         accessibilityLabel={EN['capture.removeItem'](position + 1)}
@@ -38,14 +43,18 @@ function TrayTile({
         style={[styles.remove, { backgroundColor: colors.surface, borderColor: colors.border }]}
       >
         <Text style={{ color: colors.text }}>{EN['capture.removeGlyph']}</Text>
-      </Pressable>
+      </Touchable>
     </View>
   );
 }
 
 export function TrayStrip({ items, pending, onRemove }: TrayStripProps) {
   return (
-    <ScrollView horizontal contentContainerStyle={styles.strip} showsHorizontalScrollIndicator={false}>
+    <ScrollView
+      horizontal
+      contentContainerStyle={styles.strip}
+      showsHorizontalScrollIndicator={false}
+    >
       {items.map((item, position) => (
         <TrayTile key={item.mediaId} item={item} position={position} onRemove={onRemove} />
       ))}

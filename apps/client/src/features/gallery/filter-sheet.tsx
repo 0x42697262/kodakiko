@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { DisplayTab, GroupTab, UnderlineTabs } from './sheet-tabs';
 import { useAppContext } from '../../composition/app-context';
 import { FILTER_DATE_FIELD_MIN_WIDTH } from '../../constants/gallery-constants';
@@ -90,7 +91,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
           {sortRows.map((row) => {
             const active = settings.gallerySort.key === row.key;
             return (
-              <Pressable
+              <Touchable
                 key={row.key}
                 testID={`sheet.sort.${row.key}`}
                 role="radio"
@@ -128,7 +129,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
                 >
                   {row.label}
                 </Text>
-              </Pressable>
+              </Touchable>
             );
           })}
         </View>
@@ -142,7 +143,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
           {triRows.map((row) => {
             const state = filters[row.key];
             return (
-              <Pressable
+              <Touchable
                 key={row.key}
                 testID={`sheet.filter.${row.key}`}
                 role="checkbox"
@@ -172,7 +173,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
                   />
                 </View>
                 <Text style={{ color: colors.text, fontSize: FONT_SIZE.body }}>{row.label}</Text>
-              </Pressable>
+              </Touchable>
             );
           })}
           <Text style={[styles.subtitle, { color: colors.textMuted }]}>

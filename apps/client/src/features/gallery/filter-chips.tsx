@@ -1,10 +1,17 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { useAppContext } from '../../composition/app-context';
 import { GALLERY_IDS } from '../../keys/gallery-ids';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
-import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
+import {
+  BORDER_WIDTH,
+  FONT_SIZE,
+  MIN_TOUCH_TARGET,
+  RADIUS,
+  SPACING,
+} from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { EMPTY_GALLERY_FILTER, isFilterActive } from './filter-model';
 import { useGalleryFilter } from './hooks';
@@ -27,7 +34,8 @@ export function FilterChips({ onClearAll }: { readonly onClearAll: () => void })
   const chips: Chip[] = filter.tags.map((tag) => ({
     key: `tag:${tag}`,
     label: tag,
-    remove: () => store.set({ ...store.get(), tags: store.get().tags.filter((name) => name !== tag) }),
+    remove: () =>
+      store.set({ ...store.get(), tags: store.get().tags.filter((name) => name !== tag) }),
   }));
   const dates = dateLabel(filter.fromDate, filter.toDate);
   if (dates !== null) {
@@ -57,7 +65,7 @@ export function FilterChips({ onClearAll }: { readonly onClearAll: () => void })
           >
             {chip.label}
           </Text>
-          <Pressable
+          <Touchable
             testID={listTestId(GALLERY_IDS.filterChipRemove, position)}
             accessibilityRole="button"
             accessibilityLabel={EN['gallery.removeFilter'](chip.label)}
@@ -65,7 +73,7 @@ export function FilterChips({ onClearAll }: { readonly onClearAll: () => void })
             style={styles.remove}
           >
             <Text style={{ color: colors.textMuted }}>{EN['gallery.removeGlyph']}</Text>
-          </Pressable>
+          </Touchable>
         </View>
       ))}
       <Button
