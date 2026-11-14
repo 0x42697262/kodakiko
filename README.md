@@ -32,6 +32,9 @@ More screenshots: [docs/screenshots](docs/screenshots/README.md).
 | Public links with metadata stripped from photos and videos; admin screen and CLI | Done |
 | Settings, password change, account deletion, journal export to zip files | Done |
 | Local-only mode on Android: use the app without a server, connect one later | Done |
+| Material 3 interface modeled on Mihon: icon navigation, tag tabs, Filter/Sort/Display/Group sheet, favorites, More tab, searchable settings with many options | Done |
+| Power-user detail: statistics cards, entry details, server and keys, advanced settings | Done |
+| Backup and restore: export to zip or passphrase-encrypted `.kdkx`, import into any account, `decrypt-export` script | Done |
 | Production deployment: Docker images, Caddy with DNS-01 TLS, compose stack, backups ([operations guide](docs/operations.md)) | Done (phase 1, local builds); CI and release workflow in phase 2 |
 
 Verified on desktop browsers and the Android emulator. Still to check on a real phone: background
