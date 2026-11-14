@@ -1,8 +1,19 @@
 name: Android release
 
+# Tag pushes build, sign and publish the release APK.
+# Pushes to main that touch the Android build run the same build without signing or publishing,
+# only to fill the Gradle cache: GitHub lets a tag run read caches from the default branch, but a
+# cache saved by one tag run is not visible to the next tag.
 on:
   push:
     tags: ['v*']
+    branches: [main]
+    paths:
+      - 'apps/client/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/android-release.yml'
 
 permissions:
   contents: write
@@ -39,7 +50,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+        with:
+          # Written only on main (the action's default); tag builds read it.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
       - name: Tag matches the app version
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           version="$(node --input-type=module -e "const c = (await import('./apps/client/app.config.ts')).default; console.log(c.version)")"
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
@@ -57,7 +74,13 @@ jobs:
 
       - run: pnpm --filter @kodakiko/client prebuild:android
 
+      - name: Warm the Gradle cache (main, unsigned, not published)
+        if: github.ref == 'refs/heads/main'
+        working-directory: apps/client/android
+        run: ./gradlew assembleRelease --build-cache -PreactNativeArchitectures="$ABI"
+
       - name: Build signed release APK
+        if: startsWith(github.ref, 'refs/tags/')
         working-directory: apps/client/android
         shell: bash
         env:
@@ -71,7 +94,7 @@ jobs:
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$keystore"
           log="$RUNNER_TEMP/gradle.log"
           set +e
-          ./gradlew assembleRelease \
+          ./gradlew assembleRelease --build-cache \
             -PreactNativeArchitectures="$ABI" \
             -Pandroid.injected.signing.store.file="$keystore" \
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
@@ -90,6 +113,7 @@ jobs:
           fi
 
       - name: Check the signature is not the debug key
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           apk=apps/client/android/app/build/outputs/apk/release/app-release.apk
           signer="$("$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" verify --print-certs "$apk" | grep 'certificate DN')"
@@ -100,6 +124,7 @@ jobs:
           fi
 
       - name: Publish the GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
