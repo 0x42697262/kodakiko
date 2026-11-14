@@ -805,6 +805,7 @@ export const EN = {
   'calendar.previous': 'Previous month',
   'calendar.next': 'Next month',
   'calendar.previousGlyph': '‹',
+  'calendar.jumpEmpty': 'No entries in that month yet.',
   'calendar.nextGlyph': '›',
   'calendar.today': 'Today',
   'calendar.jump': 'Jump to…',

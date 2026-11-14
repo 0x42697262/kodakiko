@@ -1,4 +1,4 @@
-import type { GalleryFilter, GalleryIndex, WeekStart } from '@kodakiko/core';
+import { addMonths, type GalleryFilter, type GalleryIndex, type WeekStart } from '@kodakiko/core';
 import {
   CALENDAR_LOCALE,
   CALENDAR_TIME_ZONE,
@@ -102,4 +102,21 @@ export function monthDayInfo(
     info.set(section.localDate, { count: section.entryIds.length, coverEntryId });
   }
   return info;
+}
+
+export function canShowMonth(yearMonth: string, currentYearMonth: string, monthsWithEntries: ReadonlySet<string>): boolean {
+  return yearMonth <= currentYearMonth || monthsWithEntries.has(yearMonth);
+}
+
+export function monthTarget(
+  from: string,
+  delta: number,
+  currentYearMonth: string,
+  monthsWithEntries: ReadonlySet<string>,
+): string | null {
+  const candidate = addMonths(from, delta);
+  if (canShowMonth(candidate, currentYearMonth, monthsWithEntries)) return candidate;
+  if (delta < 0) return candidate;
+  const later = [...monthsWithEntries].filter((month) => month > candidate).sort();
+  return later[0] ?? null;
 }

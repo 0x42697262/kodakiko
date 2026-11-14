@@ -1,5 +1,4 @@
 import {
-  addMonths,
   isValidYearMonth,
   monthGrid,
   yearMonthOf,
@@ -51,10 +50,14 @@ import {
   monthDayInfo,
   weekdayNames,
   type DayInfo,
+  canShowMonth,
+  monthTarget,
 } from './calendar-model';
+import { EMPTY_GALLERY_FILTER } from '../gallery/filter-model';
 import { useMonthKeys } from './use-month-keys';
 
 const HOME_SCOPE = Object.freeze({ kind: 'home' as const });
+const YEAR_MONTH_CHARS = 7;
 const NO_DAYS: ReadonlyMap<string, DayInfo> = new Map();
 
 type CellProps = {
@@ -125,10 +128,17 @@ export function CalendarScreen() {
   }, [services.index, version, yearMonth]);
   const grid = useMemo(() => monthGrid(yearMonth, today, WEEK_STARTS_ON), [yearMonth, today]);
   const weekdays = useMemo(() => weekdayNames(WEEK_STARTS_ON), []);
+  const currentMonth = today.slice(0, YEAR_MONTH_CHARS);
+  const monthsWithEntries = useMemo(() => {
+    const index = services.index.index();
+    const sections = index?.query({ ...EMPTY_GALLERY_FILTER, scope: HOME_SCOPE }) ?? [];
+    return new Set(sections.map((section) => section.localDate.slice(0, YEAR_MONTH_CHARS)));
+  }, [services.index, version]);
   const move = useCallback(
-    (delta: number) => setYearMonth((current) => addMonths(current, delta)),
-    [],
+    (delta: number) => setYearMonth((current) => monthTarget(current, delta, currentMonth, monthsWithEntries) ?? current),
+    [currentMonth, monthsWithEntries],
   );
+  const canGoNext = monthTarget(yearMonth, NEXT_MONTH, currentMonth, monthsWithEntries) !== null;
   useMonthKeys(move);
 
   const swipe = useMemo(
@@ -162,6 +172,10 @@ export function CalendarScreen() {
       setJumpError(EN['calendar.jumpInvalid']);
       return;
     }
+    if (!canShowMonth(value, currentMonth, monthsWithEntries)) {
+      setJumpError(EN['calendar.jumpEmpty']);
+      return;
+    }
     setYearMonth(value);
     setJumping(false);
     setJumpError(null);
@@ -190,7 +204,7 @@ export function CalendarScreen() {
           onPress={() => move(NEXT_MONTH)}
           icon="next"
           tonal={false}
-        />
+         disabled={!canGoNext} />
       </View>
       <View style={styles.actions}>
         <Button

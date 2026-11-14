@@ -5,8 +5,7 @@ import {
   formatMonthTitle,
   isValidLocalDate,
   monthDayInfo,
-  weekdayNames,
-} from '../src/features/calendar/calendar-model';
+  weekdayNames, canShowMonth, monthTarget } from '../src/features/calendar/calendar-model';
 
 const HOME = 'H'.repeat(22);
 
@@ -75,5 +74,32 @@ describe('isValidLocalDate', () => {
     for (const bad of ['2026-02-29', '2026-13-01', '2026-11-31', '2026-1-1', 'today', '']) {
       expect(isValidLocalDate(bad)).toBe(false);
     }
+  });
+});
+
+describe('monthTarget (v0.2.1 fix B1)', () => {
+  const withEntries = new Set(['2026-08', '2026-12', '2025-01']);
+
+  it('moves freely into past months and up to the current month', () => {
+    expect(monthTarget('2026-03', -1, '2026-06', withEntries)).toBe('2026-02');
+    expect(monthTarget('2026-05', 1, '2026-06', withEntries)).toBe('2026-06');
+    expect(monthTarget('2025-01', 1, '2026-06', withEntries)).toBe('2025-02');
+  });
+
+  it('beyond the current month, jumps over empty months to the next month with entries', () => {
+    expect(monthTarget('2026-06', 1, '2026-06', withEntries)).toBe('2026-08');
+    expect(monthTarget('2026-08', 1, '2026-06', withEntries)).toBe('2026-12');
+  });
+
+  it('refuses to move past the last future month with entries', () => {
+    expect(monthTarget('2026-12', 1, '2026-06', withEntries)).toBeNull();
+    expect(monthTarget('2026-06', 1, '2026-06', new Set())).toBeNull();
+  });
+
+  it('allows jumping to a month when it is not in the future or has entries', () => {
+    expect(canShowMonth('2020-01', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-06', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-08', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-07', '2026-06', withEntries)).toBe(false);
   });
 });
