@@ -1,6 +1,6 @@
 # 24 — Native feel pass (v0.2.2)
 
-Status: draft 1 (2026-11-14, Opus). Source plan: `docs/planning/v0.2.2-native-feel.md` (D-102,
+Status: implemented (2026-11-14, Opus); Android items UNVERIFIED until the v0.2.2 APK. Source plan: `docs/planning/v0.2.2-native-feel.md` (D-102,
 D-103). Base: `main` at `d47e550` (v0.2.1). Branch `feat/v0.2.2-native-feel`, one commit per phase.
 
 Goal: on Android every tap, scroll, transition, sheet and message behaves like a Material 3 app
@@ -94,6 +94,9 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
   (Android 12+), default off. Not done: re-reading the palette after a wallpaper change while the
   app runs (restart the app). Font scale: no code turned it off; the phase 2 lint rule keeps it
   so. UNVERIFIED on a device.
+
+- **Phase 7:** screenshots regenerated; version 0.2.2. Tag `v0.2.2` after the PR is merged into
+  `main` (programmer).
 
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
