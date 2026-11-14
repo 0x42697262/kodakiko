@@ -2,12 +2,158 @@
   "format": 1,
   "generator": "packages/core/scripts/generate-goldens.ts",
   "files": [
-    { "path": "crypto/sealed-json.json", "caseFields": ["name", "schema", "context", "bindingId", "key", "randomSeed", "json", "blob"], "minCases": 6 },
-    { "path": "crypto/stream-objects.json", "caseFields": ["name", "key", "plaintextSeed", "plaintextSize", "randomSeed", "file", "objectSha256"], "minCases": 3 },
-    { "path": "account/signup.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 2 },
-    { "path": "account/recovery.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 2 },
-    { "path": "account/password-change.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 1 },
-    { "path": "account/local-account.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 1 },
-    { "path": "contract/dto-samples.json", "caseFields": ["schema", "valid", "invalid"], "minCases": 70 }
+    {
+      "path": "crypto/sealed-json.json",
+      "caseFields": ["name", "schema", "context", "bindingId", "key", "randomSeed", "json", "blob"],
+      "minCases": 6
+    },
+    {
+      "path": "crypto/stream-objects.json",
+      "caseFields": [
+        "name",
+        "key",
+        "plaintextSeed",
+        "plaintextSize",
+        "randomSeed",
+        "file",
+        "objectSha256"
+      ],
+      "minCases": 3
+    },
+    {
+      "path": "account/signup.json",
+      "caseFields": ["name", "inputs", "outputs"],
+      "minCases": 2
+    },
+    {
+      "path": "account/recovery.json",
+      "caseFields": ["name", "inputs", "outputs"],
+      "minCases": 2
+    },
+    {
+      "path": "account/password-change.json",
+      "caseFields": ["name", "inputs", "outputs"],
+      "minCases": 1
+    },
+    {
+      "path": "account/local-account.json",
+      "caseFields": ["name", "inputs", "outputs"],
+      "minCases": 1
+    },
+    {
+      "path": "contract/dto-samples.json",
+      "caseFields": ["schema", "valid", "invalid"],
+      "minCases": 70
+    },
+    {
+      "path": "domain/entry-time.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    {
+      "path": "domain/calendar.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 30
+    },
+    {
+      "path": "domain/tags.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 20
+    },
+    {
+      "path": "domain/entry-edit.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 25
+    },
+    {
+      "path": "media/sniff.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    {
+      "path": "media/exif.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 25
+    },
+    {
+      "path": "media/isobmff.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 25
+    },
+    {
+      "path": "media/capture-time.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 12
+    },
+    {
+      "path": "media/geometry.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 4
+    },
+    {
+      "path": "media/strip.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 7
+    },
+    {
+      "path": "index/tokenize.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 10
+    },
+    {
+      "path": "index/gallery-query.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 20
+    },
+    {
+      "path": "index/on-this-day.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 5
+    },
+    {
+      "path": "sync/failures.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    {
+      "path": "sync/push-plan.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 10
+    },
+    {
+      "path": "sync/pulled-entry.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 6
+    },
+    {
+      "path": "sync/collections-plan.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 10
+    },
+    {
+      "path": "sync/merge.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    {
+      "path": "export/layout.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 10
+    },
+    {
+      "path": "export/parse-entry.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 6
+    },
+    {
+      "path": "export/kdkx.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 3
+    },
+    {
+      "path": "export/zip.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 3
+    }
   ]
 }
