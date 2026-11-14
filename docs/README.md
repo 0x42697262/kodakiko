@@ -46,6 +46,4 @@ How the app was planned and built, in order.
 | [features/README.md](features/README.md) | The build order and its rules; one spec per feature (01 … 25), each ending with implementation notes on what changed during the build |
 | [features/07c-ui-test-harness.md](features/07c-ui-test-harness.md) | UI test harness and the flow catalog (U-01 …) |
 | [features/behaviors.md](features/behaviors.md) | Behavior catalog: Given / When / Then rows mapped to specs and tests |
-| [planning/context.md](planning/context.md) | Interview log and every decision (D-NN) |
-| `planning/` | Reviews of the plan, bug lists and plans for later versions |
 | [adr/](adr/) | Architecture decision records 0001 … 0010 |

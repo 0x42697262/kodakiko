@@ -11,7 +11,7 @@ coverage/
 !.env.ui
 sbom*.json
 tmp/
-docs/planning/review-*.md
+docs/planning/
 scripts/local/
 apps/client/android/
 apps/client/ios/

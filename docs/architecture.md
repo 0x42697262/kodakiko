@@ -1,7 +1,7 @@
 # Architecture
 
-How the code is organized and how data moves through it. Decision numbers (D-NN) point to
-`docs/planning/context.md`, facts (F-XXX-NN) to `docs/facts.md`.
+How the code is organized and how data moves through it. Decision numbers (D-NN) are ids from the
+planning log, which is kept outside the repository; facts (F-XXX-NN) are in `docs/facts.md`.
 
 ## 1. System map
 

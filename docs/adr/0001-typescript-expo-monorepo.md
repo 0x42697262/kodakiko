@@ -4,7 +4,7 @@ Date: 2026-11-11. Status: accepted. Decision: D-07.
 
 ## Context
 Android app and web app from one team of one; Sonnet writes the code. With E2EE the server is thin,
-so code sharing between the two clients matters most (planning/context.md, stack discussion).
+so code sharing between the two clients matters most (planning interview, stack discussion).
 
 ## Decision
 pnpm monorepo: Expo (React Native + React Native Web, Expo Router) for both clients, Fastify +

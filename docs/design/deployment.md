@@ -147,7 +147,7 @@ Config and ingress only; no code change:
    resolve publicly; keep DNS-01 certificates.
 2. Review `security.md` §4 limits; lower them if abuse appears.
 3. Keep `SIGNUP_MODE=invite` until deliberately switched to `open`; before switching, read the
-   moderation note in `planning/context.md` ("Public deployment readiness").
+   moderation note in the planning log ("Public deployment readiness").
 4. Public links for viewers outside the VPN (D-36) need a public path to the viewer page and the
    viewer API only, plus `PUBLIC_LINK_PROXY=true` so photo ciphertext is streamed through the API
    (`/api/v1/public-links/*/objects/*/content`) instead of presigned URLs to the private `s3.` host
