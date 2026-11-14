@@ -448,6 +448,11 @@ Write this analysis into the feature doc ("why the page cannot do it directly") 
 - Cover: success, refused credentials, read-only refusal, unreadable resource, invalid input caught
   before any request (assert the fake saw no request), remote error markup, usage errors, stored file
   permissions.
+- **Test first:** write the tests for a change, run them and see them fail for the expected reason,
+  then implement until they pass.
+- **Existing tests are never deleted, skipped or loosened** to make code pass. When the programmer
+  changes a behavior, the test changes with it and the feature doc records the change.
+- Anything that was not run, or can only be checked on a device, is reported as **UNVERIFIED**.
 - **A bug fix starts with a failing test that reproduces it** [P]. If the bug cannot be reproduced,
   say so with the scenarios tried and the untested hypotheses, ask for exact steps, and do not ship a
   speculative fix [C].
