@@ -6,7 +6,7 @@ const SECTIONS: readonly { readonly section: string; readonly route: string; rea
   {
     section: EN['prefs.appearance'],
     route: '/settings/appearance',
-    titles: [EN['prefs.theme'], EN['prefs.dateFormat'], EN['prefs.relativeDates'], EN['prefs.startScreen']],
+    titles: [EN['prefs.theme'], EN['prefs.dateFormat'], EN['prefs.relativeDates'], EN['prefs.startScreen'], EN['prefs.fullScreen'], EN['prefs.hideBarsOnScroll'], EN['prefs.technicalDetails']],
   },
   {
     section: EN['prefs.gallery'],
@@ -27,7 +27,7 @@ const SECTIONS: readonly { readonly section: string; readonly route: string; rea
   {
     section: EN['prefs.capture'],
     route: '/settings/capture',
-    titles: [EN['settings.location'], EN['prefs.startCamera'], EN['prefs.keepScreenOn']],
+    titles: [EN['settings.location'], EN['prefs.startCamera'], EN['prefs.keepScreenOn'], EN['prefs.cameraApp'], EN['prefs.holdToRecord'], EN['prefs.holdMax']],
   },
   {
     section: EN['prefs.security'],

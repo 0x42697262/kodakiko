@@ -1,6 +1,6 @@
 import { deviceOffsetMinutes, type IndexedEntry } from '@kodakiko/core';
 import type { EntryMetadataV1 } from '@kodakiko/contract';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
@@ -334,6 +334,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 onPress={() => router.push(`${entryRoute(entryId)}/edit`)}
               />
             ) : null}
+            <IconAction testID="viewer.details" icon="info" label={EN['details.title']} tonal={false} onPress={() => router.push(`${entryRoute(entryId)}/details` as Href)} />
             <IconAction testID={testId('viewer.more')} icon="overflow" label={EN['viewer.more']} tonal={false} onPress={() => setOverlay('more')} />
           </View>
         ) : null}

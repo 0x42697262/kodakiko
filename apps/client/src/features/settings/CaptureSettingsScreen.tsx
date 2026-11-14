@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Platform } from 'react-native';
+import { HOLD_TO_RECORD_SECONDS } from '../../constants/ui-settings-constants';
+import type { PreferenceItem } from '../../ui/preferences/preference-types';
 import { useAppContext } from '../../composition/app-context';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
@@ -46,6 +49,34 @@ export function CaptureSettingsScreen() {
               { value: 'front', label: EN['prefs.cameraFront'] },
             ],
             onChange: (value) => update({ captureStartCamera: value as typeof settings.captureStartCamera }),
+          },
+          ...(Platform.OS === 'android'
+            ? ([
+                {
+                  kind: 'choice',
+                  key: 'cameraApp',
+                  testID: 'settings.cameraApp',
+                  icon: 'camera',
+                  title: EN['prefs.cameraApp'],
+                  summary: settings.cameraApp === 'system' ? `${EN['prefs.cameraSystem']} — ${EN['prefs.cameraSystemWarning']}` : EN['prefs.cameraKodakiko'],
+                  value: settings.cameraApp,
+                  options: [
+                    { value: 'kodakiko', label: EN['prefs.cameraKodakiko'] },
+                    { value: 'system', label: EN['prefs.cameraSystem'] },
+                  ],
+                  onChange: (value: string | number) => update({ cameraApp: value as typeof settings.cameraApp }),
+                },
+              ] satisfies PreferenceItem[])
+            : []),
+          { kind: 'switch', key: 'holdToRecord', testID: 'settings.holdToRecord', title: EN['prefs.holdToRecord'], summary: EN['prefs.holdToRecordSummary'], value: settings.holdToRecord, onChange: (holdToRecord) => update({ holdToRecord }) },
+          {
+            kind: 'choice',
+            key: 'holdMax',
+            testID: 'settings.holdMax',
+            title: EN['prefs.holdMax'],
+            value: settings.holdToRecordMaxSeconds,
+            options: HOLD_TO_RECORD_SECONDS.map((seconds) => ({ value: seconds, label: EN['prefs.seconds'](seconds) })),
+            onChange: (value) => update({ holdToRecordMaxSeconds: Number(value) }),
           },
           { kind: 'switch', key: 'keepScreenOn', testID: 'settings.keepScreenOn', title: EN['prefs.keepScreenOn'], value: settings.captureKeepScreenOn, onChange: (captureKeepScreenOn) => update({ captureKeepScreenOn }) },
           { kind: 'info', key: 'noPhoneGallery', text: EN['prefs.noPhoneGallery'] },

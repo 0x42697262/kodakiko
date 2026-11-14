@@ -8,7 +8,9 @@ import {
 } from '../../constants/device-settings-constants';
 import {
   APP_THEMES,
+  CAMERA_APPS,
   CAMERA_SIDES,
+  HOLD_TO_RECORD_SECONDS,
   DATE_FORMATS,
   GALLERY_COLUMNS_AUTO,
   GALLERY_COLUMNS_MAX,
@@ -63,6 +65,12 @@ export const deviceSettingsSchema = z.object({
   captureKeepScreenOn: z.boolean(),
   hideNotePreviews: z.boolean(),
   secureScreen: z.boolean(),
+  fullScreen: z.boolean(),
+  hideBarsOnScroll: z.boolean(),
+  showTechnicalDetails: z.boolean(),
+  holdToRecord: z.boolean(),
+  holdToRecordMaxSeconds: z.number().refine((value) => (HOLD_TO_RECORD_SECONDS as readonly number[]).includes(value)),
+  cameraApp: z.enum(CAMERA_APPS),
 });
 
 export type DeviceSettingsValue = Omit<z.infer<typeof deviceSettingsSchema>, 'schemaVersion'>;

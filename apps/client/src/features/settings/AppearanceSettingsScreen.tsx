@@ -1,4 +1,6 @@
+import { Platform } from 'react-native';
 import { EN } from '../../text/en';
+import type { PreferenceItem } from '../../ui/preferences/preference-types';
 import { PreferenceList } from '../../ui/preferences/PreferenceList';
 import { SettingsPage } from './settings-ui';
 import { useDeviceSettings } from './use-device-settings';
@@ -9,6 +11,10 @@ export function AppearanceSettingsScreen() {
     <SettingsPage testID="settings.appearanceScreen" title={EN['prefs.appearance']} padded={false}>
       <PreferenceList
         items={[
+          ...(Platform.OS === 'android'
+            ? ([{ kind: 'switch', key: 'fullScreen', testID: 'settings.fullScreen', title: EN['prefs.fullScreen'], summary: EN['prefs.fullScreenSummary'], value: settings.fullScreen, onChange: (fullScreen: boolean) => update({ fullScreen }) }] satisfies PreferenceItem[])
+            : []),
+          { kind: 'switch', key: 'hideBars', testID: 'settings.hideBarsOnScroll', title: EN['prefs.hideBarsOnScroll'], summary: EN['prefs.hideBarsOnScrollSummary'], value: settings.hideBarsOnScroll, onChange: (hideBarsOnScroll) => update({ hideBarsOnScroll }) },
           {
             kind: 'choice',
             key: 'theme',
@@ -60,6 +66,8 @@ export function AppearanceSettingsScreen() {
             ],
             onChange: (value) => update({ startScreen: value as typeof settings.startScreen }),
           },
+          { kind: 'header', key: 'advanced', title: EN['prefs.advanced'] },
+          { kind: 'switch', key: 'technical', testID: 'settings.technicalDetails', title: EN['prefs.technicalDetails'], summary: EN['prefs.technicalDetailsSummary'], value: settings.showTechnicalDetails, onChange: (showTechnicalDetails) => update({ showTechnicalDetails }) },
         ]}
       />
     </SettingsPage>

@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react';
 import { BottomNavigation } from 'react-native-paper';
 import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
+import { useBarsHidden } from '../../ui/bars-store';
 import { Icon, type IconKey } from '../../ui/icons';
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -17,7 +18,9 @@ const TABS: Readonly<Record<string, { readonly icon: IconKey; readonly title: st
 };
 
 export function MaterialTabBar({ state, navigateToTab, insets, hidden }: TabBarProps & { readonly hidden: ReadonlySet<string> }) {
+  const barsHidden = useBarsHidden();
   const routes = state.routes.filter((route) => !hidden.has(route.name));
+  if (barsHidden) return null;
   const active = state.routes[state.index];
   const index = Math.max(0, routes.findIndex((route) => route.key === active?.key));
   return (

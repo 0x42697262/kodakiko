@@ -1,5 +1,6 @@
 import { useRouter, type Href } from 'expo-router';
-import { useState } from 'react';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { CaptureSurface } from '../../adapters/capture/capture-surface';
 import { useAppContext } from '../../composition/app-context';
@@ -22,10 +23,25 @@ import { useCaptureImport } from './use-capture-import';
 
 export type CaptureScreenProps = { readonly addToEntry?: { readonly entryId: string; readonly currentCount: number } };
 
+function useKeepScreenOn(): void {
+  const { services } = useAppContext();
+  const keep = services.deviceSettings.get().captureKeepScreenOn;
+  useEffect(() => {
+    if (!keep) return undefined;
+    activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(() => undefined);
+    return () => {
+      deactivateKeepAwake(KEEP_AWAKE_TAG).catch(() => undefined);
+    };
+  }, [keep]);
+}
+
+const KEEP_AWAKE_TAG = 'kodakiko.capture';
+
 export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   const router = useRouter();
   const { services } = useAppContext();
   const { colors } = useTheme();
+  useKeepScreenOn();
   const configLimit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
   const limitOverride = addToEntry === undefined ? null : Math.max(0, configLimit - addToEntry.currentCount);
   const { items, pending, messages, maxMediaPerEntry, addInputs, remove } = useCaptureImport(limitOverride);

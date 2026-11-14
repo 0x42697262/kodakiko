@@ -36,6 +36,12 @@ const SPEC_22_DEFAULTS = {
   captureKeepScreenOn: true,
   hideNotePreviews: false,
   secureScreen: true,
+  fullScreen: true,
+  hideBarsOnScroll: true,
+  showTechnicalDetails: false,
+  holdToRecord: false,
+  holdToRecordMaxSeconds: 15,
+  cameraApp: 'kodakiko',
 } as const;
 
 let rowStore: RowStore;
@@ -104,6 +110,8 @@ describe('spec 22 settings', () => {
     expect(deviceSettingsSchema.safeParse({ ...valid, galleryColumnsPortrait: 10 }).success).toBe(true);
     expect(deviceSettingsSchema.safeParse({ ...valid, galleryFilters: { ...valid.galleryFilters, video: 'maybe' } }).success).toBe(false);
     expect(deviceSettingsSchema.safeParse({ ...valid, gallerySort: { key: 'random', descending: false } }).success).toBe(true);
+    expect(deviceSettingsSchema.safeParse({ ...valid, holdToRecordMaxSeconds: 7 }).success).toBe(false);
+    expect(deviceSettingsSchema.safeParse({ ...valid, cameraApp: 'system' }).success).toBe(true);
   });
 });
 

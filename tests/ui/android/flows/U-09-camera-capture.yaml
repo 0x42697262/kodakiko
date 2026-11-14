@@ -17,7 +17,13 @@ appId: com.x42697262.kodakiko
     visible:
       id: capture.trayItem.0
     timeout: 30000
-- longPressOn:
+- tapOn:
+    id: capture.mode.video
+- tapOn:
+    id: capture.shutter
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
     id: capture.shutter
 - extendedWaitUntil:
     visible:

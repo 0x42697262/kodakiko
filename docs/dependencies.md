@@ -105,6 +105,9 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `expo-screen-capture` | 58.0.6 | Secure screen setting, Android `FLAG_SECURE` (spec 22, OQ-2) |
 | `@expo/vector-icons` | 15.1.1 | MaterialIcons for every icon (spec 22, D-84); MIT; released 2026-02-23 |
 | `react-native-paper` | 5.15.4 | Material 3 components (spec 22, D-84); MIT; released 2026-11-02 |
+| `expo-status-bar` | 58.0.4 | Full screen setting (spec 22 §11.1) |
+| `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (spec 22 §11.1) |
+| `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (spec 22 §11.3) |
 | `expo-local-authentication` | 58.0.2 | biometrics (F-LIB-13) |
 | `expo-image` | 58.0.18 | display, cache, dimensions (F-LIB-09) |
 | `expo-image-picker` | 58.0.10 | Android Photo Picker import (F-LIB-12) |

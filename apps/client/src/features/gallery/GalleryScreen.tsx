@@ -8,6 +8,7 @@ import { APP_ROUTES, entryRoute } from '../../keys/routes';
 import { TEST_IDS, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { AppBar } from '../../ui/AppBar';
+import { setBarsHidden, useBarsHidden } from '../../ui/bars-store';
 import { Button } from '../../ui/Button';
 import { ICONS } from '../../ui/icons';
 import { Screen } from '../../ui/Screen';
@@ -72,6 +73,7 @@ export function GalleryScreen() {
   const attributes = galleryAttributes(settings.galleryFilters, false);
   const active = isFilterActive(filter) || Object.values(attributes).some((state) => state !== 'off');
   const sections = useArrangedSections(filter);
+  const barsHidden = useBarsHidden();
   const order = useMemo(() => displayOrder(sections), [sections]);
 
   function openRandom(): void {
@@ -83,6 +85,7 @@ export function GalleryScreen() {
 
   useFocusEffect(
     useCallback(() => () => {
+      setBarsHidden(false);
       selection.clear();
       setOverlay('none');
     }, [selection.clear]),
@@ -115,7 +118,7 @@ export function GalleryScreen() {
 
   return (
     <Screen testID={GALLERY_IDS.screen}>
-      {selection.selecting ? (
+      {barsHidden && !selection.selecting ? null : selection.selecting ? (
         <SelectionHeader selection={selection} order={order} onActions={() => setOverlay('actions')} />
       ) : (
         <AppBar
@@ -152,7 +155,7 @@ export function GalleryScreen() {
           ]}
         />
       )}
-      <TagTabs />
+      {barsHidden ? null : <TagTabs />}
       {searching && !selection.selecting ? (
         <TextField
           testID={testId('gallery.searchField')}

@@ -280,6 +280,22 @@ functions, unit-tested in `packages/core`). Pinned/kept-offline filtering stays 
   - Compose and Edit keep their labeled Cancel/Save buttons (a labeled primary action on a form
     is standard Material).
 
+- **Phase 5b (2026-11-14):**
+  - The §11 settings are added (defaults as in §11), plus `expo-status-bar`, `expo-navigation-bar`
+    and `expo-keep-awake`.
+  - Full screen hides the status bar (StatusBar component) and the navigation bar (re-applied on
+    resume). Hide-on-scroll is a module store (`ui/bars-store.ts`); the gallery header, tag tabs
+    and bottom bar hide while scrolling down.
+  - Entry details (`/entry/[id]/details`, `viewer.details`) with `entry-details-model.ts`, and
+    Statistics (`/statistics`, More › Statistics) with `statistics-model.ts`; both unit-tested.
+    The statistics model and its test were written in the same step (no red run).
+  - Camera: `shutter-action.ts` (unit-tested red first) and `use-capture-mode.tsx` with a
+    Photo/Video switch for the native and web cameras. Hold-to-record is capped by
+    `holdToRecordMaxSeconds`. The "Phone's camera app" option uses
+    `ImagePicker.launchCameraAsync`. U-09 now switches to Video mode instead of long-pressing.
+  - Not done: copy buttons for ids (needs `expo-clipboard`; the values are selectable text
+    instead), and the FAB shrinking on scroll.
+
 ## 9. Answered questions (programmer, 2026-11-14)
 
 | ID | Question | Answer |

@@ -1,6 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { useRouter, type Href } from 'expo-router';
-import { useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { scrollDirectionHides, setBarsHidden } from '../../ui/bars-store';
 import { StyleSheet, Text, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';
 import type { GalleryFilter } from '@kodakiko/core';
 import { useAppContext } from '../../composition/app-context';
@@ -38,6 +39,7 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
   const window = useWindowDimensions();
   const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
   const [width, setWidth] = useState(0);
+  const lastY = useRef(0);
   const sections = useArrangedSections(filter);
   const list = settings.galleryDisplayMode === 'list';
   const columns = list ? 1 : columnsFor(width, window.height, settings.galleryColumnsPortrait, settings.galleryColumnsLandscape);
@@ -108,12 +110,23 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
           keyExtractor={itemKey}
           getItemType={(item) => item.type}
           extraData={{ selection, tileSize, display }}
+          onScroll={(event) => {
+            const y = event.nativeEvent.contentOffset.y;
+            const hides = scrollDirectionHides(lastY.current, y);
+            if (hides !== null) {
+              lastY.current = y;
+              if (settings.hideBarsOnScroll) setBarsHidden(hides);
+            }
+          }}
+          scrollEventThrottle={SCROLL_THROTTLE_MS}
           ListFooterComponent={sections.length === 0 ? <>{empty}</> : null}
         />
       )}
     </View>
   );
 }
+
+const SCROLL_THROTTLE_MS = 16;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },

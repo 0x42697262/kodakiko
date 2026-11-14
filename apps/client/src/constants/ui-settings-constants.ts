@@ -5,6 +5,8 @@ export const GALLERY_DISPLAY_MODES = ['comfortableGrid', 'compactGrid', 'photoGr
 export const GALLERY_SORT_KEYS = ['takenAt', 'noteLength', 'mediaCount', 'random'] as const;
 export const TRI_STATES = ['off', 'include', 'exclude'] as const;
 export const CAMERA_SIDES = ['back', 'front'] as const;
+export const CAMERA_APPS = ['kodakiko', 'system'] as const;
+export const HOLD_TO_RECORD_SECONDS = [5, 10, 15, 30, 60, 120] as const;
 export const GALLERY_COLUMNS_MAX = 10;
 export const GALLERY_COLUMNS_AUTO = 0;
 
@@ -36,4 +38,10 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   captureKeepScreenOn: true,
   hideNotePreviews: false,
   secureScreen: true,
+  fullScreen: true,
+  hideBarsOnScroll: true,
+  showTechnicalDetails: false,
+  holdToRecord: false,
+  holdToRecordMaxSeconds: 15,
+  cameraApp: 'kodakiko',
 } as const);

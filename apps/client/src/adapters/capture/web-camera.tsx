@@ -9,6 +9,7 @@ import {
 } from '../../constants/capture-constants';
 import { formatDuration } from '../../features/capture/format-duration';
 import { ShutterButton } from '../../features/capture/ShutterButton';
+import { ModeSwitch, useCaptureMode } from '../../features/capture/use-capture-mode';
 import { CAPTURE_IDS } from '../../keys/capture-keys';
 import { CANVAS_CONTEXT_2D, CANVAS_ELEMENT } from '../../keys/media-keys';
 import { testId } from '../../keys/test-ids';
@@ -112,6 +113,8 @@ export function WebCamera({ onInputs }: WebCameraProps) {
     recorderRef.current?.stop();
   }, []);
 
+  const capture = useCaptureMode({ takePhoto, startRecording, stopRecording, recording: recordingMs !== null });
+
   if (!available) {
     return (
       <View style={styles.unavailable}>
@@ -130,12 +133,15 @@ export function WebCamera({ onInputs }: WebCameraProps) {
           {formatDuration(recordingMs)}
         </Text>
       )}
+      <View style={styles.modes}>
+        <ModeSwitch mode={capture.mode} onChange={capture.setMode} disabled={recordingMs !== null} />
+      </View>
       <View style={styles.controls}>
         <ShutterButton
           recording={recordingMs !== null}
-          onTap={takePhoto}
-          onHoldStart={startRecording}
-          onHoldEnd={stopRecording}
+          onTap={capture.onTap}
+          onHoldStart={capture.onHoldStart}
+          onHoldEnd={capture.onHoldEnd}
         />
         <IconAction
           testID={testId('capture.flip')}
@@ -152,6 +158,7 @@ export function WebCamera({ onInputs }: WebCameraProps) {
 const VIDEO_STYLE = { width: '100%', flex: 1, minHeight: 0, objectFit: 'cover' } as const;
 
 const styles = StyleSheet.create({
+  modes: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm },
   camera: { flex: 1, gap: SPACING.md },
   unavailable: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   controls: { alignItems: 'center', gap: SPACING.md },

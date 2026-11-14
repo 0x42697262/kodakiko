@@ -22,6 +22,7 @@ export function MoreScreen() {
   ];
   const rest: readonly Row[] = [
     { key: 'trash', icon: 'trash', title: EN['more.trash'], onPress: go(APP_ROUTES.trash) },
+    { key: 'statistics', icon: 'statistics', title: EN['more.statistics'], onPress: go('/statistics') },
     { key: 'dataStorage', icon: 'storage', title: EN['more.dataStorage'], onPress: go('/settings/storage') },
     { key: 'settings', icon: 'settings', title: EN['more.settings'], onPress: go('/settings') },
     { key: 'about', icon: 'info', title: EN['more.about'], onPress: go('/settings/about') },

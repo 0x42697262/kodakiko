@@ -21,6 +21,7 @@ import {
 } from '../../constants/capture-constants';
 import { formatDuration } from '../../features/capture/format-duration';
 import { ShutterButton } from '../../features/capture/ShutterButton';
+import { ModeSwitch, useCaptureMode } from '../../features/capture/use-capture-mode';
 import { CAPTURE_IDS } from '../../keys/capture-keys';
 import { testId } from '../../keys/test-ids';
 import { maxPlaintextBytes } from '../../services/media/max-recording-bytes';
@@ -136,6 +137,8 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
     void recorderRef.current?.stopRecording();
   }, []);
 
+  const capture = useCaptureMode({ takePhoto, startRecording, stopRecording, recording: recordingMs !== null });
+
   const pickFromGallery = useCallback(() => {
     const pick = async (): Promise<void> => {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -175,6 +178,9 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
           {formatDuration(recordingMs)}
         </Text>
       )}
+      <View style={styles.modes}>
+        <ModeSwitch mode={capture.mode} onChange={capture.setMode} disabled={recordingMs !== null} />
+      </View>
       <View style={styles.controls}>
         <IconAction
           testID={testId('capture.pickFromGallery')}
@@ -185,9 +191,9 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
         />
         <ShutterButton
           recording={recordingMs !== null}
-          onTap={takePhoto}
-          onHoldStart={startRecording}
-          onHoldEnd={stopRecording}
+          onTap={capture.onTap}
+          onHoldStart={capture.onHoldStart}
+          onHoldEnd={capture.onHoldEnd}
         />
         <IconAction
           testID={testId('capture.flip')}
@@ -205,7 +211,38 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
   );
 }
 
+function SystemCameraSurface({ onInputs, remainingSlots }: CaptureSurfaceProps) {
+  const launch = (kind: 'images' | 'videos') => {
+    const run = async (): Promise<void> => {
+      if (remainingSlots <= 0) return;
+      const result = await ImagePicker.launchCameraAsync({ mediaTypes: [kind], exif: true, quality: PICKER_QUALITY });
+      if (result.canceled) return;
+      onInputs(
+        result.assets.map((asset): MediaInput => ({
+          origin: 'picker',
+          handle: { uri: asset.uri },
+          fileName: asset.fileName ?? null,
+          pickerExif: asset.exif ?? null,
+        })),
+      );
+    };
+    run().catch(() => undefined);
+  };
+  return (
+    <View testID={CAPTURE_IDS.camera} style={styles.gate}>
+      <Button testID="capture.systemPhoto" label={EN['capture.systemPhoto']} onPress={() => launch('images')} />
+      <Button testID="capture.systemVideo" label={EN['capture.systemVideo']} variant="secondary" onPress={() => launch('videos')} />
+    </View>
+  );
+}
+
 export function CaptureSurface(props: CaptureSurfaceProps) {
+  const { services } = useAppContext();
+  if (services.deviceSettings.get().cameraApp === 'system') return <SystemCameraSurface {...props} />;
+  return <BuiltInCameraSurface {...props} />;
+}
+
+function BuiltInCameraSurface(props: CaptureSurfaceProps) {
   const permission = useCameraPermission();
   if (!permission.hasPermission) {
     return (
@@ -219,6 +256,7 @@ export function CaptureSurface(props: CaptureSurfaceProps) {
 }
 
 const styles = StyleSheet.create({
+  modes: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm },
   gate: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: SPACING.md },
   camera: { flex: 1, justifyContent: 'flex-end' },
   controls: {
