@@ -1,8 +1,9 @@
 # Deployment
 
-Status: draft 1 (2026-11-11). Normative for `infra/compose/`. Covers the two profiles (D-41), the
-compose stack, HTTPS via DNS-01 (D-40), VPN access (D-36), backups (D-28/D-34), and the
-going-public checklist.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `infra/compose/`. Covers the two profiles (D-41), the compose stack, HTTPS via DNS-01 (D-40), VPN access (D-36), backups (D-28/D-34), and the going-public checklist.
 
 ## 1. Profiles
 

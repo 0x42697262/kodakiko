@@ -1,15 +1,14 @@
 # Dependency allowlist (D-11)
 
-Status: draft 2 (2026-11-11, after review 1). **Sonnet may not add, replace or bump any dependency
-not listed here.** Adding one is an Opus/programmer decision recorded in this file with a review
-date.
+Every package the repository uses, with its version and the reason it is here. A package that is
+not listed may not be added, replaced or bumped; adding one is recorded here first (ADR 0010).
 
 ## Version rule
 
 Every version below is the **newest release published at least 7 days before 2026-11-11**
 (cutoff 2026-11-04), so it satisfies `minimumReleaseAge` (7 days) on the day it was chosen. Pin
-exactly these versions. If an install happens much later, Sonnet does **not** pick newer versions;
-it reports "allowlist is N days old" and Opus refreshes this file by the same rule.
+exactly these versions. If an install happens much later, do **not** pick newer versions;
+it reports "allowlist is N days old" and this file is refreshed by the same rule.
 
 Expo-family packages follow Expo SDK 58's `bundledNativeModules.json` (F-TOOL-12). Where the SDK
 asks for a patch newer than the age cutoff (`expo-router ~58.0.31`, `expo-sqlite ~58.0.16`,
@@ -31,7 +30,7 @@ catalogMode: strict
 
 - `minimumReleaseAge` is in minutes: 10,080 = 7 days.
 - `allowBuilds` starts with only `esbuild` (it downloads its native binary in a postinstall
-  script). When `pnpm install` stops with `ERR_PNPM_IGNORED_BUILDS` for another package, Sonnet
+  script). When `pnpm install` stops with `ERR_PNPM_IGNORED_BUILDS` for another package, the implementer
   adds it **only if that package is on this allowlist**, with `true` if its build is needed for the
   app to run (native binary download) and `false` otherwise, and records the line here. Anything
   else stops the work. Recorded so far: `react-native-libsodium: true` (2026-11-12, spec 07a; its

@@ -1,8 +1,9 @@
 # Client design
 
-Status: draft 1 (2026-11-11). Normative for `apps/client/`. Covers navigation, screens, state,
-the composition root, and platform adapters in enough detail that each screen is a bounded build
-task for Sonnet.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `apps/client/`. Covers navigation, screens, state, the composition root, and platform adapters in enough detail that each screen is a bounded build task for Sonnet.
 
 One codebase, Android and web, through Expo Router (D-07). Platform differences live in
 `*.native.ts` / `*.web.ts` files behind the ports in `architecture.md` §4.2; screens and features

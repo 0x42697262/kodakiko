@@ -1,7 +1,9 @@
 # Crypto specification
 
-Status: draft 1 (2026-11-11). Normative: code in `packages/core/src/crypto/` must follow this file
-byte for byte. Any change needs a new format version and a migration on read (guidelines 4.4).
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative: code in `packages/core/src/crypto/` must follow this file byte for byte. Any change needs a new format version and a migration on read (guidelines 4.4).
 
 Reference designs: Ente's audited key hierarchy (F-ENTE-01..12), age's STREAM payload
 (F-CRY-02), 1Password's share links (F-1P-01..05). Differences from Ente are listed in section 11.

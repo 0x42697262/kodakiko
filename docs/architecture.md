@@ -1,7 +1,7 @@
 # Architecture
 
-Status: draft 1 (2026-11-11). Decisions referenced as D-NN live in `docs/planning/context.md`;
-facts as F-XXX-NN in `docs/facts.md`.
+How the code is organized and how data moves through it. Decision numbers (D-NN) point to
+`docs/planning/context.md`, facts (F-XXX-NN) to `docs/facts.md`.
 
 ## 1. System map
 
@@ -51,8 +51,14 @@ NetBird, Headscale). The apps only know an HTTPS base URL for the API and one fo
                                    error codes. Imported by server and client
         native-upload/             Expo native module (Kotlin): Android foreground upload service (D-33)
       infra/
-        compose/                   docker-compose.yml, Caddyfile, garage.toml, .env.example
-      docs/                        design record (see docs/README.md)
+        compose/                   production, dev, test and UI-test Compose stacks
+        docker/                    api.Dockerfile, caddy.Dockerfile
+        caddy/, garage/            Caddyfile and entrypoint, garage.toml
+        scripts/, systemd/         backup.sh, Garage bootstrap, CSP hashes; backup timer
+      tests/
+        e2e/                       two-device client scenarios against a real server
+        ui/                        Playwright (web) and Maestro (Android) UI flows, screenshots
+      docs/                        guide, operations, design reference, build history
 
 Dependency direction (enforced by lint import rules, spec 01 §1.2; string placement in catalogs is
 a review item, not a lint rule):
@@ -101,11 +107,13 @@ inside linked workspace packages, and one bundled file starts faster and ships f
 | `app/` | Entry (Expo Router routes) | Thin screens: read view-model hooks, render feature components |
 | `src/composition/` | Composition root | `createAppContext()` (async): builds the platform's adapters (Metro picks `*.native.ts` / `*.web.ts`), services, the sync engine; provided through one React context (spec 07a §5) |
 | `src/config/` | Config | client constants and the server base URL resolution (web: same origin; Android: chosen at first run, `client.md` §7.1); server-provided `PublicConfigDto` validated with Zod |
-| `src/features/<feature>/` | UI | components, hooks and view-model per feature (gallery, calendar, capture, entry, tags, search, sharing, settings, auth, lock, trash, export) |
-| `src/services/` | Use cases | sign up, sign in, unlock/lock, create/edit/delete entry, import media, sync now, share, create public link, export |
+| `src/features/<feature>/` | UI | components, hooks and view-model per feature: `gallery`, `calendar`, `capture`, `entries` (edit page, note editor, crop, media menu), `viewer`, `video`, `voice`, `markdown`, `tags`, `sharing`, `links`, `link-viewer`, `settings`, `more`, `auth`, `lock`, `admin`, `sync`, `diagnostics` |
+| `src/services/` | Use cases | auth, entries, media import, index, sync, originals and thumbnails caches, video, sharing, public links, export and journal import, settings, lock, admin |
+| `src/navigation/` | Navigation | `useRouter` wrapper that drops a repeated push to the same page within 600 ms |
+| `src/ui/` | Shared UI | `Screen`, `AppBar`, `Touchable` (ripple), Paper-based `Button`, preference list, snackbar host, haptics, theme and dynamic color, system insets |
 | `src/adapters/` | Adapters | one interface per port, two files per port: `*.native.ts` and `*.web.ts` (Metro and the web bundler pick by suffix) |
 | `src/text/`, `src/keys/`, `src/constants/` | Catalogs | UI strings, ids/keys, tuning |
-| `web/sw/` | Web only | service worker for video range decryption (D-32), bundled separately with esbuild |
+| `web/sw/`, `web/workers/` | Web only | service worker for video range decryption (D-32) and the Argon2 worker, bundled with esbuild into `public/` |
 
 Client ports and their implementations:
 
@@ -121,6 +129,11 @@ Client ports and their implementations:
 | `VideoSource` | decrypt to temp file in app cache (D-32) | service worker URL (D-32) |
 | `ThumbnailCache` | plain files in app-private storage by default, encrypted on opt-in (D-12) | encrypted in OPFS, decrypted to object URLs in memory |
 | `Http` | `fetch` with timeout and retry policy from `core` | same |
+| `ShareFiles` (share to apps, save to device) | `react-native-share` | `navigator.share({ files })`, download link |
+| `ClipboardImage` | `expo-clipboard` | DOM `paste` events |
+| `VoiceRecorder` | `expo-audio` (AAC) | `MediaRecorder` (Opus) |
+| `ImageCrop` | `expo-image-manipulator` | canvas |
+| `NetworkInfo` | Wi-Fi state | always Wi-Fi |
 
 ## 5. Data flow of the main use cases
 
@@ -134,7 +147,10 @@ Client ports and their implementations:
 4. Encrypt the entry metadata (note, tags, time, timezone, location, media order) with the entry
    key; write the ciphertext row and an outbox item to `RowStore` in one transaction.
 5. Update the in-memory index; the gallery shows the entry immediately.
-6. The sync engine drains the outbox when online: create entry row on the server, upload objects
+6. The edit page then writes every change (note after a 600 ms pause, everything else at once)
+   as a new revision of the metadata, each with its own outbox item. Voice notes, crops and
+   pasted pictures go through the same import path as camera items.
+7. The sync engine drains the outbox when online: create entry row on the server, upload objects
    through presigned URLs (multipart for large files), confirm upload. Every step is idempotent by
    client-generated ids.
 
@@ -164,22 +180,17 @@ Client ports and their implementations:
 | Retries | Only idempotent calls (GET, PUT of an immutable object, idempotent creates keyed by client id); exponential backoff with jitter and a cap; never retry 401/403/404/409/422 |
 | Bounds | Every list endpoint paginates with a hard max page size; every upload has a size cap from server config (D-19) |
 | Logging | Server JSON logs (pino via Fastify) with request id, user id, event name; tokens, keys, auth headers and bodies redacted |
-| Flags | `sharing` (D-04), `public_links` (D-10), `signupMode` (D-27): server config, off/`invite` by default, owner and removal date in `docs/flags.md` |
+| Flags | `sharing` (D-04), `public_links` (D-10), `signupMode` (D-27): server config, off/`invite` by default; registry in `docs/design/deployment.md` |
 | Versioning | Every encrypted blob and every stored JSON carries `schemaVersion`; readers migrate old versions on read |
 
-## 7. Document map
+## 7. Testing
 
-| Doc | Content | State |
+| Layer | Where | Runs |
 |---|---|---|
-| `docs/design/crypto.md` | Key hierarchy, primitives, byte formats, parameters, known-answer tests | Draft 1 |
-| `docs/design/data-model.md` | Postgres schema, client RowStore schema, encrypted payload schemas, sequence numbers, background jobs | Draft 1 |
-| `docs/design/api.md` | Every endpoint with contract schema, errors, rate limits | Draft 1 |
-| `docs/design/sync.md` | Outbox, cursors, conflict rules, retries | Draft 1 |
-| `docs/design/storage.md` | Object key layout, upload/download, multipart, caches, GC | Draft 1 |
-| `docs/design/media.md` | Capture, thumbnails, EXIF, video playback, link stripping | Draft 1 |
-| `docs/design/client.md` | Navigation map, screens, state, platform adapters in detail | Draft 1 |
-| `docs/design/security.md` | Threat model, app lock, CSP and headers, rate limits | Draft 1 |
-| `docs/design/deployment.md` | Profiles `private`/`public` (D-41), Compose stack, VPN access, HTTPS via DNS-01 (D-40), backups, flags registry | Draft 1 |
-| `docs/adr/0001..0010` | One ADR per major decision | Draft 1 |
-| `docs/dependencies.md` | Allowlist with versions, policy settings, CI gates (D-11) | Draft 1 |
-| `docs/features/NN-*.md` | Build specs for Sonnet, one per feature | Not started |
+| Unit | `*/test/*.test.ts` in each package | `pnpm verify` (with lint and typecheck) |
+| Server integration | `apps/server/test/integration` | Postgres and Garage from the test stack |
+| Client scenarios | `tests/e2e` | Two simulated devices against a real server |
+| UI flows | `tests/ui/web/specs/U-NN-*.spec.ts`, `tests/ui/android/flows` | Playwright on desktop and phone viewports; Maestro on the emulator |
+
+The flow catalog (U-01 …) is in `docs/features/07c-ui-test-harness.md`; behaviors in
+`docs/features/behaviors.md`. More in [testing.md](testing.md).

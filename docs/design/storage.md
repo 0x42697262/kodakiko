@@ -1,7 +1,9 @@
 # Storage
 
-Status: draft 1 (2026-11-11). Normative for `apps/server/src/adapters/storage/`, the client
-`FileStore` adapters, and the upload paths in `apps/client/src/services/`.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `apps/server/src/adapters/storage/`, the client `FileStore` adapters, and the upload paths in `apps/client/src/services/`.
 
 Covers: the bucket adapter and object keys, upload and download flows, multipart sizing, client
 caches and eviction, and how the server never touches plaintext.

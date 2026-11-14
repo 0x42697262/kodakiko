@@ -1,8 +1,9 @@
 # Sync
 
-Status: draft 1 (2026-11-11). Normative for `packages/core/src/sync/` (pure state machine),
-`apps/client/src/services/sync/` (driver), and the server's sync endpoints in
-`docs/design/api.md`.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `packages/core/src/sync/` (pure state machine), `apps/client/src/services/sync/` (driver), and the server's sync endpoints in `docs/design/api.md`.
 
 ## 1. Model
 
