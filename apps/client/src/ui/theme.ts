@@ -7,6 +7,7 @@ export type ThemeChoice = 'system' | 'light' | 'dark';
 
 let choice: ThemeChoice = 'system';
 let pureBlack = false;
+let dynamic: { readonly light: ColorTokens; readonly dark: ColorTokens } | null = null;
 let stamp = 0;
 const listeners = new Set<() => void>();
 
@@ -20,8 +21,16 @@ export function setThemeChoice(next: ThemeChoice, black = pureBlack): void {
 
 const PURE_BLACK = Object.freeze({ background: '#000000', surface: '#121212' });
 
+export function setDynamicColors(next: { readonly light: ColorTokens; readonly dark: ColorTokens } | null): void {
+  if (next === dynamic) return;
+  dynamic = next;
+  stamp += 1;
+  for (const listener of listeners) listener();
+}
+
 export function colorsFor(scheme: 'light' | 'dark', black: boolean): ColorTokens {
-  return scheme === 'dark' && black ? { ...COLORS.dark, ...PURE_BLACK } : COLORS[scheme];
+  const base = dynamic === null ? COLORS[scheme] : dynamic[scheme];
+  return scheme === 'dark' && black ? { ...base, ...PURE_BLACK } : base;
 }
 
 function subscribe(listener: () => void): () => void {

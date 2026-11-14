@@ -87,6 +87,14 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
   while sync is paused. Long-press selection already existed in the Day list (it uses the shared
   grid). Device settings gain `hapticFeedback` (default on) and `dynamicColor` (phase 6).
 
+- **Phase 6:** `ui/dynamic-color.ts` maps a Material 3 scheme to Kodakiko's colors (unit test red
+  first); `theme.ts` `setDynamicColors` (pure black still applies on top);
+  `ui/system-dynamic-colors.ts` reads the system palette once through
+  `@pchmn/expo-material3-theme`. Appearance › **Dynamic color** shows only where supported
+  (Android 12+), default off. Not done: re-reading the palette after a wallpaper change while the
+  app runs (restart the app). Font scale: no code turned it off; the phase 2 lint rule keeps it
+  so. UNVERIFIED on a device.
+
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
 | Screen | Action | Feels native? | Note |
