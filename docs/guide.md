@@ -36,7 +36,7 @@ on the web you can also paste or drop files. **Camera app** can hand capture to 
 camera instead.
 
 Taken items collect in a tray at the bottom. **Next** creates the entry and opens the edit page.
-Time and place come from the photos' EXIF data (or the device location, if **Location for new
+Time and place come from the photos' EXIF data (or the device location, if **Add location to new
 photos** is on).
 
 ## Edit page
@@ -91,7 +91,7 @@ rename, reorder, delete), Statistics, Trash, Data and storage, Settings, About a
 | Appearance | Theme, pure black, dynamic color (Android 12+), date and time format, relative dates, start screen, full screen, hide bars on scroll, haptic feedback |
 | Gallery | Display mode, items per row, grouping, badges, tag tabs and counts, On This Day, confirm before trash, hide shared |
 | Tags | The tag list: add, rename (renames it on every entry), reorder, delete |
-| Capture | Location for new photos, start in the camera, keep the screen on, camera app, hold to record and its length |
+| Capture | Add location to new photos, start with the back or front camera, keep the screen on, camera app, hold to record and its length |
 | Sync | Sync now, retry failed uploads |
 | Data and storage | Original cache size, clear cached originals, large uploads on Wi-Fi only, autoplay videos, autoplay on mobile data, export (backup) and import (restore) |
 | Security | Auto-lock time, biometric unlock, keep me unlocked (web), encrypt thumbnails, secure screen, hide note previews |
