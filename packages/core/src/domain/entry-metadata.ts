@@ -31,6 +31,7 @@ export type EntryEdit = {
   readonly addMedia?: readonly Descriptor[];
   readonly removeMediaId?: string;
   readonly favorite?: boolean;
+  readonly captions?: Readonly<Record<string, string>>;
 };
 
 function cleanTags(tags: readonly string[]): readonly string[] {
@@ -110,11 +111,22 @@ function withoutMedia(media: readonly Descriptor[], mediaId: string): Descriptor
   return media.filter((item) => item.mediaId !== mediaId);
 }
 
+function withCaptions(media: readonly Descriptor[], captions: Readonly<Record<string, string>>): Descriptor[] {
+  return media.map((item) => {
+    const next = captions[item.mediaId];
+    if (next === undefined) return item;
+    const { caption: _previous, ...rest } = item;
+    const trimmed = next.trim();
+    return trimmed === '' ? rest : { ...rest, caption: trimmed };
+  });
+}
+
 export function applyEntryEdit(current: Metadata, edit: EntryEdit, nowUtc: string): Metadata {
   let media: Descriptor[] = [...current.media];
   if (edit.mediaOrder !== undefined) media = reordered(media, edit.mediaOrder);
   if (edit.removeMediaId !== undefined) media = withoutMedia(media, edit.removeMediaId);
   if (edit.addMedia !== undefined) media = [...media, ...edit.addMedia];
+  if (edit.captions !== undefined) media = withCaptions(media, edit.captions);
   if (media.length === 0) throw new InvalidEditError(DOMAIN_TEXT.removeLastMedia);
   const { favorite: wasFavorite, ...rest } = current;
   const favorite = edit.favorite ?? wasFavorite === true;

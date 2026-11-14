@@ -23,7 +23,10 @@ import { useTheme } from '../../ui/theme';
 import { TrayStrip } from './TrayStrip';
 import { useCaptureImport } from './use-capture-import';
 
-export type CaptureScreenProps = { readonly addToEntry?: { readonly entryId: string; readonly currentCount: number } };
+export type CaptureScreenProps = {
+  readonly addToEntry?: { readonly entryId: string; readonly currentCount: number };
+  readonly initialMode?: 'photo' | 'video';
+};
 
 function useKeepScreenOn(): void {
   const { services } = useAppContext();
@@ -39,7 +42,7 @@ function useKeepScreenOn(): void {
 
 const KEEP_AWAKE_TAG = 'kodakiko.capture';
 
-export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
+export function CaptureScreen({ addToEntry, initialMode = 'photo' }: CaptureScreenProps = {}) {
   const router = useRouter();
   const { services } = useAppContext();
   const { colors } = useTheme();
@@ -115,6 +118,7 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
           remainingSlots={Math.max(0, maxMediaPerEntry - items.length - pending)}
           maxUploadBytes={maxUploadBytes}
           onRecordingChange={setRecording}
+          initialMode={initialMode}
         />
         <View style={styles.topBar}>
           <IconAction testID={testId('capture.close')} icon="close" label={EN['capture.close']} onPress={close} />

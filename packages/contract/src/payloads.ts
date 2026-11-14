@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { idSchema } from './ids.ts';
 import {
+  CAPTION_MAX_CHARS,
   COLLECTION_NAME_MAX_CHARS,
   FILE_NAME_MAX_CHARS,
   LATITUDE_MAX,
@@ -21,7 +22,7 @@ export const TagName = z.string().min(1).max(TAG_MAX_CHARS);
 
 export const MediaDescriptorV1 = z.object({
   mediaId: idSchema,
-  kind: z.enum(['photo', 'video']),
+  kind: z.enum(['photo', 'video', 'audio']),
   mimeType: z.string().max(MIME_TYPE_MAX_CHARS),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
@@ -35,6 +36,7 @@ export const MediaDescriptorV1 = z.object({
   }),
   capturedAtUtc: z.iso.datetime().nullable(),
   originalFileName: z.string().max(FILE_NAME_MAX_CHARS).nullable(),
+  caption: z.string().min(1).max(CAPTION_MAX_CHARS).optional(),
 });
 
 export const EntryMetadataV1 = z.object({

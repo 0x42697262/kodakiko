@@ -53,7 +53,9 @@ export function TimeEditor({ value, original, onDone }: TimeEditorProps) {
         onChangeText={setTime}
         onSubmit={finish}
       />
-      {invalid ? <Hint testID={testId('timeEditor.invalid')} text={EN['timeEditor.invalid']} /> : null}
+      {invalid ? (
+        <Hint testID={testId('timeEditor.invalid')} text={EN['timeEditor.invalid']} />
+      ) : null}
       <View style={styles.row}>
         <Button
           testID={testId('timeEditor.reset')}

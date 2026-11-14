@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CollectionMetadataV1,
   EntryMetadataV1,
+  CAPTION_MAX_CHARS,
   MEDIA_PER_ENTRY_HARD_MAX,
   NOTE_MAX_CHARS,
   TAGS_PER_ENTRY_MAX,
@@ -95,6 +96,26 @@ describe('EntryMetadataV1', () => {
 
   it('rejects a schema version other than 1', () => {
     expect(EntryMetadataV1.safeParse(entryMetadata({ schemaVersion: 2 })).success).toBe(false);
+  });
+});
+
+describe('MediaDescriptorV1 additions (spec 25)', () => {
+  it('accepts an optional caption up to the limit and keeps old blobs valid', () => {
+    const withCaption = entryMetadata({ media: [{ ...mediaDescriptor(), caption: 'x'.repeat(CAPTION_MAX_CHARS) }] });
+    expect(EntryMetadataV1.safeParse(withCaption).success).toBe(true);
+    expect(EntryMetadataV1.safeParse(entryMetadata()).success).toBe(true);
+  });
+
+  it('rejects an empty caption and one that is too long', () => {
+    expect(EntryMetadataV1.safeParse(entryMetadata({ media: [{ ...mediaDescriptor(), caption: '' }] })).success).toBe(false);
+    expect(
+      EntryMetadataV1.safeParse(entryMetadata({ media: [{ ...mediaDescriptor(), caption: 'x'.repeat(CAPTION_MAX_CHARS + 1) }] })).success,
+    ).toBe(false);
+  });
+
+  it('accepts an audio item with a duration', () => {
+    const audio = { ...mediaDescriptor(), kind: 'audio', mimeType: 'audio/mp4', durationMs: 4200 };
+    expect(EntryMetadataV1.safeParse(entryMetadata({ media: [audio] })).success).toBe(true);
   });
 });
 

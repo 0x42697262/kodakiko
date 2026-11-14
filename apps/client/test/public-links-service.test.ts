@@ -271,12 +271,14 @@ describe('public links service', () => {
     expect(requestOf('POST', ROUTES.publicLinks())).toHaveLength(0);
   });
 
-  it('refuses unsynced entries and media that do not belong to the entries', async () => {
+  it('creates a link for an entry that is still uploading, from the local copies (D-100)', async () => {
     const pending = await harness.createEntry([fakeJpeg(2000, 7)]);
     const mediaId = (await harness.service.readMetadata(pending)).media[0]?.mediaId ?? '';
-    await expect(
-      service.create({ entryIds: [pending], mediaIds: new Set([mediaId]), title: 'x', expiry: '7d', includeNotes: false }, () => undefined, new AbortController().signal),
-    ).rejects.toThrow();
+    const created = await service.create({ entryIds: [pending], mediaIds: new Set([mediaId]), title: 'x', expiry: '7d', includeNotes: false }, () => undefined, new AbortController().signal);
+    expect(created.url).toContain('#');
+  });
+
+  it('refuses media that do not belong to the entries', async () => {
     const synced = await syncedEntry([fakeJpeg(2000, 8)]);
     await expect(
       service.create({ entryIds: [synced], mediaIds: new Set(['X'.repeat(22)]), title: 'x', expiry: '7d', includeNotes: false }, () => undefined, new AbortController().signal),

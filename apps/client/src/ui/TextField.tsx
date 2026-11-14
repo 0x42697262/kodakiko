@@ -20,6 +20,9 @@ type TextFieldProps = {
   readonly onKeyPress?: (key: string) => void;
   readonly editable?: boolean;
   readonly keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'url';
+  readonly selection?: { readonly start: number; readonly end: number } | undefined;
+  readonly onSelectionChange?: (selection: { readonly start: number; readonly end: number }) => void;
+  readonly autoFocus?: boolean;
 };
 
 export function TextField({
@@ -40,6 +43,9 @@ export function TextField({
   onKeyPress,
   editable = true,
   keyboardType = 'default',
+  selection,
+  onSelectionChange,
+  autoFocus = false,
 }: TextFieldProps) {
   const { colors } = useTheme();
   return (
@@ -61,6 +67,9 @@ export function TextField({
         maxLength={maxLength}
         editable={editable}
         keyboardType={keyboardType}
+        autoFocus={autoFocus}
+        {...(selection === undefined ? {} : { selection })}
+        onSelectionChange={onSelectionChange === undefined ? undefined : (event) => onSelectionChange(event.nativeEvent.selection)}
         onKeyPress={onKeyPress === undefined ? undefined : (event) => onKeyPress(event.nativeEvent.key)}
         submitBehavior={multiline ? 'newline' : 'submit'}
         textAlignVertical={multiline ? 'top' : 'center'}

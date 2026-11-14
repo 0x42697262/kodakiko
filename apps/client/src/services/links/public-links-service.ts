@@ -188,7 +188,7 @@ export function createPublicLinksService(deps: PublicLinksServiceDeps): PublicLi
     const allMedia = new Set<string>();
     for (const entryId of input.entryIds) {
       const row = await rowStore.transaction((tx) => tx.entries.get(entryId));
-      if (row === null || row.trashedAt !== null || (row.baseRevision ?? 0) < 1) throw new LinkInputError('entry');
+      if (row === null || row.trashedAt !== null) throw new LinkInputError('entry');
       const meta = await deps.readMetadata(entryId);
       for (const media of meta.media) allMedia.add(media.mediaId);
       metadata.set(entryId, meta);

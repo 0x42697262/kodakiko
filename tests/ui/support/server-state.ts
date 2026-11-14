@@ -37,6 +37,17 @@ async function getJson<Body>(account: SeededAccount, path: string): Promise<Body
   return (await response.json()) as Body;
 }
 
+async function readHomeDiff(account: SeededAccount): Promise<DiffBody> {
+  const state = await getJson<SyncStateBody>(account, SYNC_STATE_PATH);
+  const home = state.collections.find((collection) => collection.kind === HOME_KIND);
+  if (home === undefined) throw new Error(STACK_TEXT.homeCollectionMissing);
+  return getJson<DiffBody>(account, `${COLLECTIONS_PATH}/${home.id}${DIFF_PATH_SUFFIX}?since=0&limit=${DIFF_PAGE_LIMIT}`);
+}
+
+export async function readServerMediaIds(account: SeededAccount): Promise<readonly string[]> {
+  return (await readHomeDiff(account)).media.map((item) => item.id);
+}
+
 export async function readServerJournal(account: SeededAccount): Promise<ServerJournal> {
   const state = await getJson<SyncStateBody>(account, SYNC_STATE_PATH);
   const home = state.collections.find((collection) => collection.kind === HOME_KIND);

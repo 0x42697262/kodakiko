@@ -238,3 +238,19 @@ describe('applyEntryEdit', () => {
     ).not.toThrow();
   });
 });
+
+describe('applyEntryEdit captions (spec 25)', () => {
+  it('sets, trims and clears captions per media item', () => {
+    const base = existing();
+    const first = base.media[0]?.mediaId ?? '';
+    const captioned = applyEntryEdit(base, { captions: { [first]: '  Sunset  ' } }, LATER);
+    expect(captioned.media[0]?.caption).toBe('Sunset');
+    const cleared = applyEntryEdit(captioned, { captions: { [first]: '' } }, LATER);
+    expect(cleared.media[0]?.caption).toBeUndefined();
+  });
+
+  it('ignores captions for media that are not in the entry', () => {
+    const base = existing();
+    expect(applyEntryEdit(base, { captions: { unknown: 'x' } }, LATER).media).toEqual(base.media);
+  });
+});

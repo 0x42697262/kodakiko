@@ -13,6 +13,7 @@ const CAPTURE_ROUTE = '/capture';
 const SERVER_WAIT_MS = 60_000;
 const INVALID_DATE = '2026-02-30';
 const VALID_DATE = '2026-03-02';
+const LATER_DATE = '2026-03-05';
 
 let account: SeededAccount;
 
@@ -33,8 +34,8 @@ test('compose: note, tags, time and location, then Save shows Saved. and the ent
 
   await page.getByTestId('capture.next').click();
   await expect(page.getByTestId('compose.screen')).toBeVisible();
-  await expect(page.getByTestId('compose.item.0')).toBeVisible();
-  await expect(page.getByTestId('compose.item.1')).toBeVisible();
+  await expect(page.getByTestId('edit.page.0')).toBeVisible();
+  await expect(page.getByTestId('edit.page.1')).toBeAttached();
   await expect(page.getByTestId('location.coordinates')).toContainText('48.85840, 2.29450');
   await expect(page.getByTestId('location.source')).toHaveText('from photo');
 
@@ -49,6 +50,7 @@ test('compose: note, tags, time and location, then Save shows Saved. and the ent
   await expect(page.getByTestId('timeEditor.invalid')).toBeHidden();
   await expect(page.getByTestId('compose.whenValue')).toContainText('Mar 2');
 
+  await page.getByTestId('edit.addNote').click();
   await page.getByTestId('compose.note').fill('Picnic');
   await page.getByTestId('tags.choose').click();
   await page.getByTestId('tags.editTags').click();
@@ -77,7 +79,7 @@ test('compose: note, tags, time and location, then Save shows Saved. and the ent
     .toEqual({ entryCount: 1, trashedCount: 0, mediaCount: 2, objectCount: 4 });
 });
 
-test('compose: Use original time resets, a tray change drops the edited time, and Remove Location hides the row', async ({
+test('compose: Use original time resets, an edited time is kept after leaving (autosave, D-89), and Remove Location hides the row', async ({
   page,
 }) => {
   await signInThroughUi(page, account);
@@ -99,20 +101,25 @@ test('compose: Use original time resets, a tray change drops the edited time, an
   await expect(page.getByTestId('timeEditor.date')).toBeHidden();
 
   await page.getByTestId('compose.change').click();
-  await page.getByTestId('timeEditor.date').fill(VALID_DATE);
+  await page.getByTestId('timeEditor.date').fill(LATER_DATE);
   await page.getByTestId('timeEditor.done').click();
   await expect(when).not.toHaveText(computed);
-  await page.getByTestId('compose.item.1').click();
-  await page.getByTestId('compose.removeItem').click();
-  await expect(page.getByTestId('compose.item.1')).toBeHidden();
-  await expect(when).toHaveText(computed);
+  const edited = await when.innerText();
 
   await expect(page.getByTestId('location.coordinates')).toBeVisible();
   await page.getByTestId('location.remove').click();
   await expect(page.getByTestId('location.coordinates')).toBeHidden();
+
+  await page.getByTestId('compose.back').click();
+  await expect(page.getByTestId('gallery.tile.0')).toBeVisible();
+  await page.getByTestId('gallery.tile.0').click();
+  await page.getByTestId('viewer.edit').click();
+  const reopened = page.getByTestId('edit.screen');
+  await expect(reopened.getByTestId('compose.whenValue')).toHaveText(edited);
+  await expect(reopened.getByTestId('location.coordinates')).toHaveCount(0);
 });
 
-test('compose: Back returns to the capture screen with the tray intact', async ({ page }) => {
+test('compose: Back on a new entry keeps it (autosave, D-86/D-89) and returns to the gallery', async ({ page }) => {
   await signInThroughUi(page, account);
   await expect(page.getByTestId('home.signedInAs')).toBeVisible();
   await openRouteInApp(page, CAPTURE_ROUTE);
@@ -123,6 +130,6 @@ test('compose: Back returns to the capture screen with the tray intact', async (
   await expect(page.getByTestId('compose.screen')).toBeVisible();
   await page.getByTestId('compose.back').click();
 
-  await expect(page.getByTestId('capture.screen')).toBeVisible();
-  await expect(page.getByTestId('capture.trayItem.0')).toBeVisible();
+  await expect(page.getByTestId('capture.screen')).toHaveCount(0);
+  await expect(page.getByTestId('gallery.tile.0')).toBeVisible();
 });

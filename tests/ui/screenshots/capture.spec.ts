@@ -19,7 +19,10 @@ const OFFSET = '+01:00';
 const TILES = /^gallery\.tile\.\d+$/;
 const PENDING = /^gallery\.tilePending\.\d+$/;
 const VISIBLE_CAPTURE = '[data-testid="gallery.capture"]:visible';
-const DESKTOP: BrowserContextOptions = { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } };
+const DESKTOP: BrowserContextOptions = {
+  ...devices['Desktop Chrome'],
+  viewport: { width: 1280, height: 800 },
+};
 const MOBILE: BrowserContextOptions = { ...devices['Pixel 7'] };
 const RIDGE = { latitude: 46.5586, longitude: 7.8355 };
 
@@ -42,11 +45,25 @@ type DemoPhoto = {
   readonly location?: { readonly latitude: number; readonly longitude: number };
 };
 
-type DemoEntry = { readonly files: readonly string[]; readonly note: string; readonly tags: readonly string[] };
+type DemoEntry = {
+  readonly files: readonly string[];
+  readonly note: string;
+  readonly tags: readonly string[];
+};
 
 const PHOTOS: readonly DemoPhoto[] = [
-  { source: 'sunset.jpg', target: 'ridge-sunset.jpg', takenAt: '2026:11:12 17:40:00', location: RIDGE },
-  { source: 'mountains.jpg', target: 'ridge-peaks.jpg', takenAt: '2026:11:12 17:52:00', location: RIDGE },
+  {
+    source: 'sunset.jpg',
+    target: 'ridge-sunset.jpg',
+    takenAt: '2026:11:12 17:40:00',
+    location: RIDGE,
+  },
+  {
+    source: 'mountains.jpg',
+    target: 'ridge-peaks.jpg',
+    takenAt: '2026:11:12 17:52:00',
+    location: RIDGE,
+  },
   { source: 'sea.jpg', target: 'ferry.jpg', takenAt: '2026:11:12 08:15:00' },
   { source: 'forest.jpg', target: 'woods.jpg', takenAt: '2026:11:09 14:05:00' },
   { source: 'flowers.jpg', target: 'meadow.jpg', takenAt: '2026:11:09 14:20:00' },
@@ -60,12 +77,22 @@ const ADA_ENTRIES: readonly DemoEntry[] = [
   { files: ['last-flowers.jpg'], note: 'Last flowers of the season.', tags: ['garden'] },
   { files: ['first-snow.jpg'], note: 'First snow on the peaks.', tags: ['hiking'] },
   { files: ['moon.jpg'], note: 'Clear sky and a full moon.', tags: ['night'] },
-  { files: ['woods.jpg', 'meadow.jpg'], note: 'Sunday walk in the woods with the kids.', tags: ['walk', 'family'] },
-  { files: ['ferry.jpg', 'fractal.mp4'], note: 'Ferry across the bay. Calm water all the way.', tags: ['travel', 'sea'] },
+  {
+    files: ['woods.jpg', 'meadow.jpg'],
+    note: 'Sunday walk in the woods with the kids.',
+    tags: ['walk', 'family'],
+  },
+  {
+    files: ['ferry.jpg', 'fractal.mp4'],
+    note: 'Ferry across the bay. Calm water all the way.',
+    tags: ['travel', 'sea'],
+  },
   { files: ['ridge-sunset.jpg', 'ridge-peaks.jpg'], note: RIDGE_NOTE, tags: ['hiking', 'sunset'] },
 ];
 
-const BEN_ENTRIES: readonly DemoEntry[] = [{ files: ['tulips.jpg'], note: 'Tulip bulbs are in.', tags: ['garden'] }];
+const BEN_ENTRIES: readonly DemoEntry[] = [
+  { files: ['tulips.jpg'], note: 'Tulip bulbs are in.', tags: ['garden'] },
+];
 
 let ada: SeededAccount;
 
@@ -98,9 +125,14 @@ async function createTags(page: Page, tags: readonly string[]): Promise<void> {
 
 async function createThroughUi(page: Page, entry: DemoEntry): Promise<void> {
   await page.locator(VISIBLE_CAPTURE).click();
-  await page.getByTestId('capture.fileInput').setInputFiles(entry.files.map((file) => join(DATED_DIRECTORY, file)));
-  await expect(page.getByTestId(`capture.trayItem.${entry.files.length - 1}`)).toBeVisible({ timeout: SYNC_WAIT_MS });
+  await page
+    .getByTestId('capture.fileInput')
+    .setInputFiles(entry.files.map((file) => join(DATED_DIRECTORY, file)));
+  await expect(page.getByTestId(`capture.trayItem.${entry.files.length - 1}`)).toBeVisible({
+    timeout: SYNC_WAIT_MS,
+  });
   await page.getByTestId('capture.next').click();
+  await page.getByTestId('edit.addNote').click();
   await page.getByTestId('compose.note').fill(entry.note);
   if (entry.tags.length > 0) {
     await page.getByTestId('tags.choose').click();
@@ -112,7 +144,11 @@ async function createThroughUi(page: Page, entry: DemoEntry): Promise<void> {
   await expect(page.locator(VISIBLE_CAPTURE)).toHaveCount(1, { timeout: SYNC_WAIT_MS });
 }
 
-async function author(browser: Browser, account: SeededAccount, entries: readonly DemoEntry[]): Promise<void> {
+async function author(
+  browser: Browser,
+  account: SeededAccount,
+  entries: readonly DemoEntry[],
+): Promise<void> {
   const context = await browser.newContext(DESKTOP);
   const page = await context.newPage();
   await signInThroughUi(page, account);
@@ -157,7 +193,11 @@ async function shot(page: Page, name: string): Promise<void> {
   await page.screenshot({ path: join(OUTPUT_DIRECTORY, `${name}.png`) });
 }
 
-async function captureSet(browser: Browser, options: BrowserContextOptions, prefix: string): Promise<void> {
+async function captureSet(
+  browser: Browser,
+  options: BrowserContextOptions,
+  prefix: string,
+): Promise<void> {
   const context = await browser.newContext(options);
   const page = await context.newPage();
   await signInThroughUi(page, ada);
@@ -184,17 +224,21 @@ async function captureSet(browser: Browser, options: BrowserContextOptions, pref
     await page.getByTestId('gallery.capture').click();
     await page
       .getByTestId('capture.fileInput')
-      .setInputFiles([join(DATED_DIRECTORY, 'ferry.jpg'), join(DATED_DIRECTORY, 'ridge-sunset.jpg')]);
+      .setInputFiles([
+        join(DATED_DIRECTORY, 'ferry.jpg'),
+        join(DATED_DIRECTORY, 'ridge-sunset.jpg'),
+      ]);
     await expect(page.getByTestId('capture.trayItem.1')).toBeVisible({ timeout: SYNC_WAIT_MS });
     await page.getByTestId('capture.next').click();
+    await page.getByTestId('edit.addNote').click();
     await page.getByTestId('compose.note').fill('Back at the harbor. Fish and chips by the water.');
     await page.getByTestId('tags.choose').click();
     await page.getByTestId('tags.option.travel').click();
     await page.getByTestId('tags.done').click();
     await shot(page, `${prefix}-compose`);
-    await page.goBack();
-    await page.getByTestId('capture.close').click();
-    await page.getByTestId('capture.discard').click();
+    await page.getByTestId('edit.more').click();
+    await page.getByTestId('edit.trash').click();
+    await expect(page.getByTestId('gallery.noticeTrashed')).toBeVisible({ timeout: SYNC_WAIT_MS });
 
     await page.getByTestId('gallery.more').click();
     await page.getByTestId('lock.lockNow').click();

@@ -10,6 +10,7 @@ export type EditDraft = {
   readonly tags: readonly string[];
   readonly time: { readonly takenAtUtc: string; readonly utcOffsetMinutes: number };
   readonly location: Metadata['location'];
+  readonly captions: Readonly<Record<string, string>>;
 };
 
 export type DraftDiff = { readonly removedMediaIds: readonly string[]; readonly edit: MetadataEdit };
@@ -21,6 +22,7 @@ export function draftFromMetadata(current: Metadata): EditDraft {
     tags: current.tags,
     time: { takenAtUtc: current.takenAtUtc, utcOffsetMinutes: current.utcOffsetMinutes },
     location: current.location,
+    captions: Object.fromEntries(current.media.flatMap((item) => (item.caption === undefined ? [] : [[item.mediaId, item.caption]]))),
   };
 }
 
@@ -53,6 +55,7 @@ export function diffDraft(current: Metadata, draft: EditDraft): DraftDiff {
     time?: EditDraft['time'];
     location?: Metadata['location'];
     mediaOrder?: readonly string[];
+    captions?: Readonly<Record<string, string>>;
   } = {};
   if (draft.note !== current.note) edit.note = draft.note;
   if (!sameTags(draft.tags, current.tags)) edit.tags = draft.tags;
@@ -64,6 +67,13 @@ export function diffDraft(current: Metadata, draft: EditDraft): DraftDiff {
   }
   if (!sameLocation(draft.location, current.location)) edit.location = draft.location;
   if (!sameList(draft.mediaIds, remaining)) edit.mediaOrder = draft.mediaIds;
+  const captions: Record<string, string> = {};
+  for (const item of current.media) {
+    if (!kept.has(item.mediaId)) continue;
+    const wanted = draft.captions[item.mediaId] ?? '';
+    if (wanted !== (item.caption ?? '')) captions[item.mediaId] = wanted;
+  }
+  if (Object.keys(captions).length > 0) edit.captions = captions;
   return { removedMediaIds, edit };
 }
 

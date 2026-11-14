@@ -777,3 +777,20 @@ describe('importOne: responsiveness', () => {
     expect(firedBeforeLastChunk).toBe(true);
   });
 });
+
+describe('importVoiceNote (spec 25, D-95)', () => {
+  it('stores an audio item with its duration and the bundled waveform thumbnail', async () => {
+    const { service, calls } = await createHarness({ bytes: Uint8Array.of(1, 2, 3, 4) });
+    const media = expectOk(await service.importVoiceNote(pickerInput({ origin: 'camera', fileName: null }), { durationMs: 4200, mimeType: 'audio/webm' }, { used: 0, limit: 20 }));
+    expect(media.descriptor).toMatchObject({ kind: 'audio', mimeType: 'audio/webm', durationMs: 4200, width: 256, height: 256, originalPlaintextBytes: 4 });
+    expect(media.descriptor.thumbnail.mimeType).toBe('image/webp');
+    expect(calls.makeThumbnail).toBe(0);
+    expect(calls.probe).toBe(0);
+  });
+
+  it('refuses when the entry is full', async () => {
+    const { service } = await createHarness({ bytes: Uint8Array.of(1) });
+    const outcome = await service.importVoiceNote(pickerInput(), { durationMs: 1000, mimeType: 'audio/webm' }, { used: 20, limit: 20 });
+    expect(outcome).toMatchObject({ ok: false, reason: 'trayFull' });
+  });
+});

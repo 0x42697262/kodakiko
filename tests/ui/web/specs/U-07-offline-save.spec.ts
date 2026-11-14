@@ -20,6 +20,7 @@ test('U-07 an entry saved offline shows as pending, syncs when online and reache
   await addFiles(page, ['photo-gps.jpg', 'video-20s.mp4']);
   await expect(page.getByTestId('capture.trayItem.1')).toBeVisible({ timeout: 60_000 });
   await page.getByTestId('capture.next').click();
+  await page.getByTestId('edit.addNote').click();
   await page.getByTestId('compose.note').fill('Picnic');
   await context.setOffline(true);
   await page.getByTestId('compose.save').click();

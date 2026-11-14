@@ -49,6 +49,8 @@ const SPEC_22_DEFAULTS = {
   timeFormat: '24h',
   hapticFeedback: true,
   dynamicColor: false,
+  autoplayVideos: true,
+  autoplayOnMobileData: false,
 } as const;
 
 let rowStore: RowStore;

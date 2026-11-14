@@ -85,7 +85,7 @@ function PermissionGate({
   );
 }
 
-function CameraSurface({ onInputs, remainingSlots, maxUploadBytes, onRecordingChange }: CaptureSurfaceProps) {
+function CameraSurface({ onInputs, remainingSlots, maxUploadBytes, onRecordingChange, initialMode = 'photo' }: CaptureSurfaceProps) {
   const { colors } = useTheme();
   const active = useCameraActive();
   const microphone = useMicrophonePermission();
@@ -141,7 +141,7 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes, onRecordingCh
     void recorderRef.current?.stopRecording();
   }, []);
 
-  const capture = useCaptureMode({ takePhoto, startRecording, stopRecording, recording: recordingMs !== null });
+  const capture = useCaptureMode({ takePhoto, startRecording, stopRecording, recording: recordingMs !== null }, initialMode);
 
   const pickFromGallery = useCallback(() => {
     const pick = async (): Promise<void> => {

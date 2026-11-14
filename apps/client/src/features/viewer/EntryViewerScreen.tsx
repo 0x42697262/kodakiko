@@ -45,7 +45,9 @@ import {
   VIEWER_IDS,
 } from './constants';
 import { useViewerKeys } from './use-viewer-keys';
-import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
+import { ShareSheet } from '../sharing/ShareSheet';
+import { InlineVideo } from '../video/inline-video';
+import { VoiceNotes } from '../voice/voice-notes';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 type Descriptor = Metadata['media'][number];
@@ -155,7 +157,8 @@ function MediaPage({
             onZoomChange={() => undefined}
           />
         )}
-        <View style={styles.playOverlay}>
+        <InlineVideo entryId={entryId} mediaId={media.mediaId} active={active} testID={`viewer.inlineVideo.${position}`} />
+        <View pointerEvents="box-none" style={styles.playOverlay}>
           <Button
             testID={testId('viewer.play')}
             label={EN['viewer.play']}
@@ -316,7 +319,8 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     }
   }, [status, summary, services.galleryNotice, router]);
 
-  const total = metadata?.media.length ?? 0;
+  const visual = (metadata?.media ?? []).filter((item) => item.kind !== 'audio');
+  const total = visual.length;
   const goTo = useCallback(
     (next: number) => {
       if (zoomed || next < 0 || next >= total) return;
@@ -434,8 +438,9 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
           <View onLayout={onLayout}>
             {width === 0 ? null : (
               <MediaPager
+                key={visual.map((item) => item.mediaId).join()}
                 handle={pager}
-                items={metadata.media}
+                items={visual}
                 keyOf={(item) => item.mediaId}
                 width={width}
                 height={pageHeight}
@@ -443,7 +448,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 onPageChange={setPage}
                 onZoomChange={setZoomed}
                 onItemTap={(index) => {
-                  const tapped = metadata.media[index];
+                  const tapped = visual[index];
                   if (tapped?.kind === 'video' && services.videoLauncher.canPlay())
                     services.videoLauncher.open(entryId, tapped.mediaId);
                 }}
@@ -462,6 +467,11 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               />
             )}
           </View>
+          {visual[page]?.caption === undefined ? null : (
+            <Text testID="viewer.caption" numberOfLines={1} style={[styles.indicator, { color: colors.text }]}>
+              {visual[page]?.caption}
+            </Text>
+          )}
           <Text
             testID={TEST_IDS.viewerPageIndicator}
             style={[styles.indicator, { color: colors.textMuted }]}
@@ -528,7 +538,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 testID: 'viewer.detailsAction',
                 onPress: () => router.push(`${entryRoute(entryId)}/details` as Href),
               },
-              ...(owner && sharingAvailable && !local && !summary.trashed
+              ...(!summary.trashed
                 ? [
                     {
                       key: 'share',
@@ -541,6 +551,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 : []),
             ]}
           />
+          <VoiceNotes entryId={entryId} media={metadata.media} onRemove={null} />
           {metadata.tags.length === 0 ? null : (
             <ScrollView
               horizontal
@@ -615,7 +626,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
       ) : null}
       {overlay === 'share' ? (
         <Sheet testID={VIEWER_IDS.moreSheet} onClose={() => setOverlay('none')}>
-          <ShareEntriesSheet entryIds={[entryId]} />
+          <ShareSheet entryIds={[entryId]} inKodakiko={owner && sharingAvailable} />
         </Sheet>
       ) : null}
       {overlay === 'confirmDelete' ? (

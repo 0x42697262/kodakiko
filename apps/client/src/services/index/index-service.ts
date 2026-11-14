@@ -28,6 +28,7 @@ import { STORAGE_KEYS } from '../../keys/storage-keys';
 import { openEntryMetadata } from '../entries/entries-service';
 import { AccountLockedError, type EntryKeys } from '../keys/entry-keys';
 import type { TagSuggestionSource } from '../tags/tag-suggestions';
+import { searchTextOf } from './search-text';
 
 export type IndexBuildReport = {
   readonly entries: number;
@@ -179,7 +180,7 @@ export async function indexEntryRows(
       unreadable += 1;
       accept(placeholderEntry(row, collectionIds, isOwn, pending), '');
     } else {
-      accept(readableEntry(row, metadata, collectionIds, isOwn, pending), metadata.note);
+      accept(readableEntry(row, metadata, collectionIds, isOwn, pending), searchTextOf(metadata));
     }
   }
   return { entries: rows.entries.length, unreadable };

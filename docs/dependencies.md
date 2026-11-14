@@ -109,6 +109,9 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (spec 22 §11.1) |
 | `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (spec 22 §11.3) |
 | `expo-haptics` | 58.0.7 | Haptic ticks (spec 24, D-103 Q1); SDK 58 bundled `~58.0.7`; released 2026-10-16 |
+| `expo-audio` | 58.0.11 | Voice notes: recording and playback (spec 25, D-95); SDK 58 bundled `~58.0.11`; released 2026-10-31 |
+| `expo-clipboard` | 58.0.4 | Android image paste on the edit page (spec 25, D-96; re-added after review 1 removed it); SDK 58 bundled `~58.0.4`; released 2026-10-21 |
+| `react-native-share` | 12.3.1 | Share several decrypted files to other apps (`ACTION_SEND_MULTIPLE`; spec 25, D-93); MIT; released 2026-05-04; `expo-sharing` shares one file only |
 | `@pchmn/expo-material3-theme` | 1.4.0 | Material You dynamic color setting (spec 24, D-103 Q2); MIT; released 2026-02-02; deps `@material/material-color-utilities`, `color` |
 | `react-native-zoom-toolkit` | 5.1.1 | Android photo viewer `Gallery` (spec 23 phase 1); MIT; released 2026-08-30 |
 | `expo-local-authentication` | 58.0.2 | biometrics (F-LIB-13) |
