@@ -79,6 +79,8 @@ export const deviceSettingsSchema = z.object({
   syncPaused: z.boolean(),
   tagOrder: z.array(z.string()).readonly(),
   pureBlack: z.boolean(),
+  hapticFeedback: z.boolean(),
+  dynamicColor: z.boolean(),
   timeFormat: z.enum(TIME_FORMATS),
 });
 

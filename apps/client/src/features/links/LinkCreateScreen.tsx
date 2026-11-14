@@ -1,13 +1,22 @@
-import { COLLECTION_NAME_MAX_CHARS, LINK_EXPIRIES, type EntryMetadataV1, type LinkExpiry } from '@kodakiko/contract';
+import {
+  COLLECTION_NAME_MAX_CHARS,
+  LINK_EXPIRIES,
+  type EntryMetadataV1,
+  type LinkExpiry,
+} from '@kodakiko/contract';
 import { Image } from 'expo-image';
 import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import type { z } from 'zod';
 import { NetworkError } from '../../adapters/http/http';
 import { useAppContext } from '../../composition/app-context';
 import { listTestId } from '../../keys/test-ids';
-import type { CreateLinkProgress, CreateLinkResult } from '../../services/links/public-links-service';
+import type {
+  CreateLinkProgress,
+  CreateLinkResult,
+} from '../../services/links/public-links-service';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
@@ -39,7 +48,13 @@ const EXPIRY_LABELS: Readonly<Record<LinkExpiry, string>> = {
   one_view: EN['links.expiryOneView'],
 };
 
-function MediaToggle({ entryId, mediaId, position, selected, onToggle }: {
+function MediaToggle({
+  entryId,
+  mediaId,
+  position,
+  selected,
+  onToggle,
+}: {
   readonly entryId: string;
   readonly mediaId: string;
   readonly position: number;
@@ -49,24 +64,37 @@ function MediaToggle({ entryId, mediaId, position, selected, onToggle }: {
   const { colors } = useTheme();
   const uri = useThumbnail(entryId, mediaId);
   return (
-    <Pressable
+    <Touchable
       testID={listTestId(LINK_IDS.mediaToggle, position)}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: selected }}
       onPress={onToggle}
-      style={[styles.tile, { borderColor: selected ? colors.primary : colors.border, opacity: selected ? 1 : UNSELECTED_OPACITY }]}
+      style={[
+        styles.tile,
+        {
+          borderColor: selected ? colors.primary : colors.border,
+          opacity: selected ? 1 : UNSELECTED_OPACITY,
+        },
+      ]}
     >
       {uri === null ? null : <Image source={{ uri }} style={styles.image} />}
-      <Text style={[styles.check, { backgroundColor: selected ? colors.primary : colors.surface, color: colors.onPrimary }]}>
+      <Text
+        style={[
+          styles.check,
+          { backgroundColor: selected ? colors.primary : colors.surface, color: colors.onPrimary },
+        ]}
+      >
         {selected ? '\u2713' : ''}
       </Text>
-    </Pressable>
+    </Touchable>
   );
 }
 
 function progressText(progress: CreateLinkProgress): string {
-  if (progress.step === 'preparing') return EN['links.preparing'](progress.done + 1, progress.total);
-  if (progress.step === 'uploading') return EN['links.uploading'](formatSize(progress.bytesDone), formatSize(progress.bytesTotal));
+  if (progress.step === 'preparing')
+    return EN['links.preparing'](progress.done + 1, progress.total);
+  if (progress.step === 'uploading')
+    return EN['links.uploading'](formatSize(progress.bytesDone), formatSize(progress.bytesTotal));
   return EN['links.registering'];
 }
 
@@ -89,10 +117,13 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
     let cancelled = false;
     (async () => {
       const loaded: Loaded[] = [];
-      for (const entryId of entryIds) loaded.push({ entryId, metadata: await services.entries.readMetadata(entryId) });
+      for (const entryId of entryIds)
+        loaded.push({ entryId, metadata: await services.entries.readMetadata(entryId) });
       if (cancelled) return;
       setEntries(loaded);
-      setSelected(new Set(loaded.flatMap((entry) => entry.metadata.media.map((media) => media.mediaId))));
+      setSelected(
+        new Set(loaded.flatMap((entry) => entry.metadata.media.map((media) => media.mediaId))),
+      );
     })().catch(() => undefined);
     return () => {
       cancelled = true;
@@ -105,7 +136,10 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
       entries
         .flatMap((entry) => entry.metadata.media)
         .filter((media) => selected.has(media.mediaId))
-        .reduce((sum, media) => sum + media.originalPlaintextBytes + media.thumbnail.plaintextBytes, 0),
+        .reduce(
+          (sum, media) => sum + media.originalPlaintextBytes + media.thumbnail.plaintextBytes,
+          0,
+        ),
     [entries, selected],
   );
 
@@ -126,7 +160,13 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
     try {
       setResult(
         await services.links.create(
-          { entryIds: entries.map((entry) => entry.entryId), mediaIds: selected, title, expiry, includeNotes },
+          {
+            entryIds: entries.map((entry) => entry.entryId),
+            mediaIds: selected,
+            title,
+            expiry,
+            includeNotes,
+          },
           setProgress,
           controller.signal,
         ),
@@ -141,13 +181,21 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
   if (result !== null) {
     const skipped = [
       result.skippedEntries > 0 ? EN['links.skippedEntries'](result.skippedEntries) : null,
-      result.skippedUndecodable > 0 ? EN['links.skippedUndecodable'](result.skippedUndecodable) : null,
-      result.skippedUnsupportedVideo > 0 ? EN['links.skippedVideo'](result.skippedUnsupportedVideo) : null,
+      result.skippedUndecodable > 0
+        ? EN['links.skippedUndecodable'](result.skippedUndecodable)
+        : null,
+      result.skippedUnsupportedVideo > 0
+        ? EN['links.skippedVideo'](result.skippedUnsupportedVideo)
+        : null,
     ].filter((line): line is string => line !== null);
     return (
       <Screen testID={LINK_IDS.createScreen} scroll>
         <Title text={EN['links.ready']} />
-        <Text testID={LINK_IDS.url} selectable style={[styles.url, { color: colors.text, borderColor: colors.border }]}>
+        <Text
+          testID={LINK_IDS.url}
+          selectable
+          style={[styles.url, { color: colors.text, borderColor: colors.border }]}
+        >
           {result.url}
         </Text>
         {skipped.map((line) => (
@@ -166,9 +214,18 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
               }}
             />
           ) : (
-            <Button testID={LINK_IDS.share} label={EN['links.share']} onPress={() => shareText(result.url).catch(() => undefined)} />
+            <Button
+              testID={LINK_IDS.share}
+              label={EN['links.share']}
+              onPress={() => shareText(result.url).catch(() => undefined)}
+            />
           )}
-          <Button testID={LINK_IDS.done} label={EN['links.done']} variant="secondary" onPress={() => router.back()} />
+          <Button
+            testID={LINK_IDS.done}
+            label={EN['links.done']}
+            variant="secondary"
+            onPress={() => router.back()}
+          />
         </View>
       </Screen>
     );
@@ -178,10 +235,31 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
   return (
     <Screen testID={LINK_IDS.createScreen} scroll>
       <Title text={EN['links.newTitle']} />
-      <TextField testID={LINK_IDS.title} label={EN['links.titleField']} value={title} onChangeText={setTitle} maxLength={COLLECTION_NAME_MAX_CHARS} />
+      <TextField
+        testID={LINK_IDS.title}
+        label={EN['links.titleField']}
+        value={title}
+        onChangeText={setTitle}
+        maxLength={COLLECTION_NAME_MAX_CHARS}
+      />
       <View style={styles.row}>
-        <Button testID={LINK_IDS.selectAll} label={EN['links.selectAll']} variant="secondary" onPress={() => setMany(entries.flatMap((entry) => entry.metadata.media.map((media) => media.mediaId)), true)} />
-        <Button testID={LINK_IDS.selectNone} label={EN['links.selectNone']} variant="secondary" onPress={() => setSelected(new Set())} />
+        <Button
+          testID={LINK_IDS.selectAll}
+          label={EN['links.selectAll']}
+          variant="secondary"
+          onPress={() =>
+            setMany(
+              entries.flatMap((entry) => entry.metadata.media.map((media) => media.mediaId)),
+              true,
+            )
+          }
+        />
+        <Button
+          testID={LINK_IDS.selectNone}
+          label={EN['links.selectNone']}
+          variant="secondary"
+          onPress={() => setSelected(new Set())}
+        />
       </View>
       {entries.map((entry, entryPosition) => (
         <View key={entry.entryId} style={styles.section}>
@@ -189,8 +267,28 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
             {entry.metadata.takenAtUtc.slice(0, DATE_CHARS)} {entry.metadata.note.split('\n')[0]}
           </Text>
           <View style={styles.row}>
-            <Button testID={listTestId(LINK_IDS.entryAll, entryPosition)} label={EN['links.selectAll']} variant="secondary" onPress={() => setMany(entry.metadata.media.map((media) => media.mediaId), true)} />
-            <Button testID={listTestId(LINK_IDS.entryNone, entryPosition)} label={EN['links.selectNone']} variant="secondary" onPress={() => setMany(entry.metadata.media.map((media) => media.mediaId), false)} />
+            <Button
+              testID={listTestId(LINK_IDS.entryAll, entryPosition)}
+              label={EN['links.selectAll']}
+              variant="secondary"
+              onPress={() =>
+                setMany(
+                  entry.metadata.media.map((media) => media.mediaId),
+                  true,
+                )
+              }
+            />
+            <Button
+              testID={listTestId(LINK_IDS.entryNone, entryPosition)}
+              label={EN['links.selectNone']}
+              variant="secondary"
+              onPress={() =>
+                setMany(
+                  entry.metadata.media.map((media) => media.mediaId),
+                  false,
+                )
+              }
+            />
           </View>
           <View style={styles.grid}>
             {entry.metadata.media.map((media) => {
@@ -210,7 +308,7 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
           </View>
         </View>
       ))}
-      <Pressable
+      <Touchable
         testID={LINK_IDS.includeNotes}
         accessibilityRole="switch"
         accessibilityState={{ checked: includeNotes }}
@@ -218,10 +316,18 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
         style={styles.switchRow}
       >
         <Text style={{ color: colors.text }}>{EN['links.includeNotes']}</Text>
-        <Text style={[styles.switch, { backgroundColor: includeNotes ? colors.primary : colors.border, color: colors.onPrimary }]}>
+        <Text
+          style={[
+            styles.switch,
+            {
+              backgroundColor: includeNotes ? colors.primary : colors.border,
+              color: colors.onPrimary,
+            },
+          ]}
+        >
           {includeNotes ? '\u25CF' : '\u25CB'}
         </Text>
-      </Pressable>
+      </Touchable>
       <Text style={{ color: colors.textMuted }}>{EN['links.expiry']}</Text>
       <View style={styles.row}>
         {LINK_EXPIRIES.map((value) => (
@@ -239,7 +345,12 @@ export function LinkCreateScreen({ entryIds }: { readonly entryIds: readonly str
       {error === null ? null : <Banner testID={LINK_IDS.error} kind="error" message={error} />}
       {progress === null ? null : <Body testID={LINK_IDS.progress} text={progressText(progress)} />}
       <View style={styles.row}>
-        <Button testID="links.cancel" label={EN['links.cancel']} variant="secondary" onPress={() => router.back()} />
+        <Button
+          testID="links.cancel"
+          label={EN['links.cancel']}
+          variant="secondary"
+          onPress={() => router.back()}
+        />
         <Button
           testID={LINK_IDS.create}
           label={EN['links.create']}
@@ -257,10 +368,35 @@ const styles = StyleSheet.create({
   section: { gap: SPACING.sm },
   heading: { fontSize: FONT_SIZE.body, fontWeight: '600' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
-  tile: { width: MEDIA_TILE, height: MEDIA_TILE, borderWidth: TILE_BORDER, borderRadius: RADIUS.sm, overflow: 'hidden' },
+  tile: {
+    width: MEDIA_TILE,
+    height: MEDIA_TILE,
+    borderWidth: TILE_BORDER,
+    borderRadius: RADIUS.sm,
+    overflow: 'hidden',
+  },
   image: { width: '100%', height: '100%' },
-  check: { position: 'absolute', top: SPACING.xs, right: SPACING.xs, width: SPACING.lg, height: SPACING.lg, borderRadius: RADIUS.sm, textAlign: 'center', fontSize: FONT_SIZE.caption },
-  switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: SPACING.sm },
+  check: {
+    position: 'absolute',
+    top: SPACING.xs,
+    right: SPACING.xs,
+    width: SPACING.lg,
+    height: SPACING.lg,
+    borderRadius: RADIUS.sm,
+    textAlign: 'center',
+    fontSize: FONT_SIZE.caption,
+  },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: SPACING.sm,
+  },
   switch: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs, borderRadius: RADIUS.md },
-  url: { padding: SPACING.md, borderWidth: BORDER_WIDTH, borderRadius: RADIUS.sm, fontSize: FONT_SIZE.body },
+  url: {
+    padding: SPACING.md,
+    borderWidth: BORDER_WIDTH,
+    borderRadius: RADIUS.sm,
+    fontSize: FONT_SIZE.body,
+  },
 });

@@ -5,7 +5,7 @@ const LOCATION_PERMISSION_TEXT =
 
 const ICON_BACKGROUND_COLOR = '#1e1d2b';
 
-const APP_VERSION = '0.2.1';
+const APP_VERSION = '0.2.2';
 const VERSION_PART_RANGE = 100;
 
 function versionCodeOf(version: string): number {
@@ -28,6 +28,7 @@ const config: ExpoConfig = {
       backgroundColor: ICON_BACKGROUND_COLOR,
     },
     allowBackup: false,
+    predictiveBackGestureEnabled: true,
     permissions: ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO'],
     blockedPermissions: [
       'android.permission.READ_EXTERNAL_STORAGE',

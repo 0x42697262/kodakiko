@@ -1,11 +1,12 @@
 import type { ComponentProps, ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Chip, List, Switch } from 'react-native-paper';
 import { useSystemInsets } from '../../ui/system-insets';
-import { SWITCH_DISABLED_OPACITY, SWITCH_TRACK_PADDING } from '../../constants/settings-constants';
-import { Button } from '../../ui/Button';
+import { SWITCH_DISABLED_OPACITY } from '../../constants/settings-constants';
 import { AppBar } from '../../ui/AppBar';
-import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
+import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
+import { haptics } from '../../ui/haptics';
 
 export function SettingsPage({
   testID,
@@ -23,26 +24,68 @@ export function SettingsPage({
   const { colors } = useTheme();
   const insets = useSystemInsets();
   return (
-    <View testID={testID} style={[styles.page, { backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }]}>
-      <AppBar title={title} backTestID="settings.back" {...(actions === undefined ? {} : { actions })} />
-      <ScrollView contentContainerStyle={padded ? styles.body : styles.flush} keyboardShouldPersistTaps="handled">
+    <View
+      testID={testID}
+      style={[
+        styles.page,
+        {
+          backgroundColor: colors.background,
+          paddingTop: insets.top,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+      ]}
+    >
+      <AppBar
+        title={title}
+        backTestID="settings.back"
+        {...(actions === undefined ? {} : { actions })}
+      />
+      <ScrollView
+        contentContainerStyle={padded ? styles.body : styles.flush}
+        keyboardShouldPersistTaps="handled"
+      >
         {children}
       </ScrollView>
     </View>
   );
 }
 
-export function SettingsRow({ testID, label, detail, onPress }: { readonly testID: string; readonly label: string; readonly detail?: string; readonly onPress: () => void }) {
+export function SettingsRow({
+  testID,
+  label,
+  detail,
+  onPress,
+}: {
+  readonly testID: string;
+  readonly label: string;
+  readonly detail?: string;
+  readonly onPress: () => void;
+}) {
   const { colors } = useTheme();
   return (
-    <Pressable testID={testID} accessibilityRole="button" onPress={onPress} style={[styles.row, { borderColor: colors.border }]}>
-      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-      {detail === undefined ? null : <Text style={{ color: colors.textMuted }}>{detail}</Text>}
-    </Pressable>
+    <List.Item
+      testID={testID}
+      accessibilityRole="button"
+      title={label}
+      description={detail}
+      onPress={onPress}
+      titleStyle={{ color: colors.text }}
+      descriptionStyle={{ color: colors.textMuted }}
+      style={styles.item}
+      contentStyle={styles.itemContent}
+    />
   );
 }
 
-export function SwitchRow({ testID, label, value, disabled = false, hint, onChange }: {
+export function SwitchRow({
+  testID,
+  label,
+  value,
+  disabled = false,
+  hint,
+  onChange,
+}: {
   readonly testID: string;
   readonly label: string;
   readonly value: boolean;
@@ -52,28 +95,47 @@ export function SwitchRow({ testID, label, value, disabled = false, hint, onChan
 }) {
   const { colors } = useTheme();
   return (
-    <View style={styles.group}>
-      <Pressable
-        testID={testID}
-        role="switch"
-        aria-label={label}
-        aria-checked={value}
-        aria-disabled={disabled}
-        disabled={disabled}
-        onPress={() => onChange(!value)}
-        style={[styles.row, styles.switchRow, { borderColor: colors.border, opacity: disabled ? SWITCH_DISABLED_OPACITY : 1 }]}
-      >
-        <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-        <View style={[styles.track, { backgroundColor: value ? colors.primary : colors.border }]}>
-          <View style={[styles.knob, { backgroundColor: colors.background, alignSelf: value ? 'flex-end' : 'flex-start' }]} />
-        </View>
-      </Pressable>
-      {hint === undefined ? null : <Text style={{ color: colors.textMuted }}>{hint}</Text>}
-    </View>
+    <List.Item
+      testID={testID}
+      role="switch"
+      aria-label={label}
+      aria-checked={value}
+      aria-disabled={disabled}
+      disabled={disabled}
+      title={label}
+      description={hint}
+      onPress={() => {
+        haptics.tick('toggle');
+        onChange(!value);
+      }}
+      titleStyle={{ color: colors.text }}
+      descriptionStyle={{ color: colors.textMuted }}
+      descriptionNumberOfLines={HINT_LINES}
+      contentStyle={styles.itemContent}
+      style={[styles.item, disabled ? { opacity: SWITCH_DISABLED_OPACITY } : null]}
+      right={() => (
+        <Switch
+          value={value}
+          disabled={disabled}
+          onValueChange={(next) => {
+            haptics.tick('toggle');
+            onChange(next);
+          }}
+          pointerEvents={SWITCH_POINTER_EVENTS}
+        />
+      )}
+    />
   );
 }
 
-export function ChoiceRow<Value extends string | number>({ testID, label, choices, value, format, onChange }: {
+export function ChoiceRow<Value extends string | number>({
+  testID,
+  label,
+  choices,
+  value,
+  format,
+  onChange,
+}: {
   readonly testID: string;
   readonly label: string;
   readonly choices: readonly Value[];
@@ -87,20 +149,32 @@ export function ChoiceRow<Value extends string | number>({ testID, label, choice
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
       <View style={styles.choices}>
         {choices.map((choice) => (
-          <Button
+          <Chip
             key={String(choice)}
             testID={`${testID}.${String(choice)}`}
-            label={format(choice)}
-            variant={choice === value ? 'primary' : 'secondary'}
+            accessibilityRole="button"
+            selected={choice === value}
+            showSelectedCheck
+            mode="outlined"
             onPress={() => onChange(choice)}
-          />
+          >
+            {format(choice)}
+          </Chip>
         ))}
       </View>
     </View>
   );
 }
 
-export function LabeledValue({ testID, label, value }: { readonly testID?: string; readonly label: string; readonly value: string }) {
+export function LabeledValue({
+  testID,
+  label,
+  value,
+}: {
+  readonly testID?: string;
+  readonly label: string;
+  readonly value: string;
+}) {
   const { colors } = useTheme();
   return (
     <View style={styles.valueRow}>
@@ -112,19 +186,17 @@ export function LabeledValue({ testID, label, value }: { readonly testID?: strin
   );
 }
 
-const KNOB = 20;
-const TRACK_WIDTH = 44;
+const HINT_LINES = 4;
+const SWITCH_POINTER_EVENTS = Platform.OS === 'web' ? 'none' : 'auto';
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
   body: { gap: SPACING.md, padding: SPACING.lg },
   flush: { paddingBottom: SPACING.xl },
   group: { gap: SPACING.xs },
-  row: { minHeight: MIN_TOUCH_TARGET, padding: SPACING.md, borderWidth: BORDER_WIDTH, borderRadius: RADIUS.md, gap: SPACING.xs, justifyContent: 'center' },
-  switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  item: { paddingLeft: 0, paddingRight: 0 },
+  itemContent: { paddingLeft: 0 },
   label: { fontSize: FONT_SIZE.body },
-  track: { width: TRACK_WIDTH, padding: SWITCH_TRACK_PADDING, borderRadius: KNOB },
-  knob: { width: KNOB, height: KNOB, borderRadius: KNOB / SWITCH_TRACK_PADDING },
   choices: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   valueRow: { flexDirection: 'row', justifyContent: 'space-between', gap: SPACING.md },
 });

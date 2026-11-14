@@ -19,10 +19,8 @@ import { Body } from '../../ui/Typography';
 import { BORDER_WIDTH, FONT_SIZE, MIN_TOUCH_TARGET, RADIUS, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { BulkActionsSheet } from '../entries/bulk-actions-sheet';
-import { SavedBanner } from '../entries/SavedBanner';
 import { SyncStatusBanner } from '../sync/sync-status-banner';
 import { EntryGrid } from './entry-grid';
-import { GalleryNoticeBanner } from './gallery-notice';
 import { EMPTY_GALLERY_FILTER, isFilterActive } from './filter-model';
 import { FilterChips } from './filter-chips';
 import { FilterSheet } from './filter-sheet';
@@ -175,8 +173,6 @@ export function GalleryScreen() {
         />
       ) : null}
       <SyncStatusBanner />
-      <SavedBanner />
-      <GalleryNoticeBanner />
       <FilterChips onClearAll={() => setSearching(false)} />
       {status === 'ready' ? (
         <EntryGrid

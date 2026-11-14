@@ -4,7 +4,6 @@ import { type Href } from 'expo-router';
 import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import {
   useWindowDimensions,
   type LayoutChangeEvent,
 } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import type { z } from 'zod';
 import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { APP_ROUTES, entryRoute } from '../../keys/routes';
@@ -312,7 +312,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   useEffect(() => {
     if (status === 'ready' && summary === null) {
       services.galleryNotice.set({ kind: 'gone' });
-      router.replace(APP_ROUTES.root);
+      leaveToGallery();
     }
   }, [status, summary, services.galleryNotice, router]);
 
@@ -338,23 +338,27 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     setWidth(event.nativeEvent.layout.width);
   }
 
+  function leaveToGallery(): void {
+    if (router.canGoBack()) router.back();
+    else router.replace(APP_ROUTES.root);
+  }
 
   async function trash(): Promise<void> {
     setOverlay('none');
     await services.entries.trash([entryId]);
     services.galleryNotice.set({ kind: 'trashed', entryId });
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   async function deletePermanently(): Promise<void> {
     setOverlay('none');
     await services.entries.deletePermanently([entryId]);
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   function showTag(tag: string): void {
     services.galleryFilter.set({ ...EMPTY_GALLERY_FILTER, tags: [tag] });
-    router.replace(APP_ROUTES.root);
+    leaveToGallery();
   }
 
   const now = new Date(clock.now());
@@ -440,7 +444,8 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 onZoomChange={setZoomed}
                 onItemTap={(index) => {
                   const tapped = metadata.media[index];
-                  if (tapped?.kind === 'video' && services.videoLauncher.canPlay()) services.videoLauncher.open(entryId, tapped.mediaId);
+                  if (tapped?.kind === 'video' && services.videoLauncher.canPlay())
+                    services.videoLauncher.open(entryId, tapped.mediaId);
                 }}
                 renderPage={(item, index) => (
                   <MediaPage
@@ -501,11 +506,17 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 ? [
                     {
                       key: 'favorite',
-                      icon: (metadata.favorite === true ? 'favorite' : 'favoriteOff') as 'favorite' | 'favoriteOff',
-                      label: metadata.favorite === true ? EN['viewer.actionFavorited'] : EN['viewer.actionFavorite'],
+                      icon: (metadata.favorite === true ? 'favorite' : 'favoriteOff') as
+                        'favorite' | 'favoriteOff',
+                      label:
+                        metadata.favorite === true
+                          ? EN['viewer.actionFavorited']
+                          : EN['viewer.actionFavorite'],
                       testID: 'viewer.favorite',
                       onPress: () => {
-                        services.entries.setFavorite([entryId], metadata.favorite !== true).catch(() => undefined);
+                        services.entries
+                          .setFavorite([entryId], metadata.favorite !== true)
+                          .catch(() => undefined);
                       },
                     },
                   ]
@@ -537,7 +548,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               contentContainerStyle={styles.tags}
             >
               {metadata.tags.map((tag, position) => (
-                <Pressable
+                <Touchable
                   key={tag}
                   testID={listTestId(VIEWER_IDS.tagChip, position)}
                   accessibilityRole="button"
@@ -548,7 +559,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                   ]}
                 >
                   <Text style={{ color: colors.text }}>{tag}</Text>
-                </Pressable>
+                </Touchable>
               ))}
             </ScrollView>
           )}

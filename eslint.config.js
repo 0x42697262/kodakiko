@@ -74,6 +74,25 @@ export default tseslint.config(
   },
   {
     files: ['apps/client/**/*.{ts,tsx,js}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@kodakiko/server'],
+          paths: [{ name: 'react-native', importNames: ['Pressable'], message: 'Use Touchable from src/ui (spec 24).' }],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "JSXAttribute[name.name='allowFontScaling'][value.expression.value=false]",
+          message: 'Respect the system font scale (spec 24).',
+        },
+      ],
+    },
+  },
+  {
+    files: ['apps/client/src/ui/**/*.{ts,tsx}'],
     rules: forbid('@kodakiko/server'),
   },
   {

@@ -1,15 +1,8 @@
 import { isValidYearMonth, monthGrid, yearMonthOf, type CalendarCell } from '@kodakiko/core';
 import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type LayoutChangeEvent,
-} from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { useAppContext } from '../../composition/app-context';
 import {
   CALENDAR_CELL_GAP,
@@ -49,6 +42,7 @@ import {
 } from './calendar-model';
 import { EMPTY_GALLERY_FILTER } from '../gallery/filter-model';
 import { useMonthKeys } from './use-month-keys';
+import { usePullToSync } from '../sync/use-pull-to-sync';
 
 const HOME_SCOPE = Object.freeze({ kind: 'home' as const });
 const YEAR_MONTH_CHARS = 7;
@@ -122,7 +116,7 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
   );
   const tappable = cell.inMonth && info !== undefined;
   return (
-    <Pressable
+    <Touchable
       testID={cell.inMonth ? calendarDayTestId(cell.localDate) : undefined}
       accessibilityRole="button"
       accessibilityLabel={cellLabel(cell.localDate, count)}
@@ -152,11 +146,12 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
       >
         {day}
       </Text>
-    </Pressable>
+    </Touchable>
   );
 }
 
 export function CalendarScreen() {
+  const pullToSync = usePullToSync();
   const router = useRouter();
   const { services, clock } = useAppContext();
   const { colors } = useTheme();
@@ -244,7 +239,7 @@ export function CalendarScreen() {
   }
 
   return (
-    <Screen testID={CALENDAR_IDS.screen}>
+    <Screen testID={CALENDAR_IDS.screen} scroll refreshControl={pullToSync}>
       <View style={styles.header}>
         <IconAction
           testID={testId('calendar.previous')}

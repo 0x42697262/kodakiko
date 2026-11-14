@@ -1,6 +1,7 @@
 import { useRouter } from '../navigation/use-router';
 import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { Touchable } from './Touchable';
 import { Appbar, Portal, Surface, useTheme } from 'react-native-paper';
 import { useSystemInsets } from './system-insets';
 import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from './theme-constants';
@@ -60,7 +61,11 @@ export function AppBar({
           onPress={onBack ?? (() => router.back())}
         />
       )}
-      <Appbar.Content title={titleNode ?? title} accessibilityLabel={title} {...(subtitle === undefined ? {} : { subtitle })} />
+      <Appbar.Content
+        title={titleNode ?? title}
+        accessibilityLabel={title}
+        {...(subtitle === undefined ? {} : { subtitle })}
+      />
       {actions.map((action) => (
         <Appbar.Action
           key={action.key}
@@ -81,21 +86,36 @@ export function AppBar({
       )}
       {menuOpen ? (
         <Portal>
-          <Pressable style={StyleSheet.absoluteFill} accessibilityLabel={EN['settings.cancel']} onPress={() => setMenuOpen(false)} />
-          <Surface style={[styles.menu, { top: insets.top + MENU_TOP, backgroundColor: theme.colors.elevation.level2 }]} elevation={MENU_ELEVATION}>
+          <Touchable
+            style={StyleSheet.absoluteFill}
+            accessibilityLabel={EN['settings.cancel']}
+            onPress={() => setMenuOpen(false)}
+          />
+          <Surface
+            style={[
+              styles.menu,
+              { top: insets.top + MENU_TOP, backgroundColor: theme.colors.elevation.level2 },
+            ]}
+            elevation={MENU_ELEVATION}
+          >
             {menu.map((item) => (
-              <Pressable
+              <Touchable
                 key={item.key}
                 testID={item.testID}
                 role="menuitem"
-                style={({ pressed }) => [styles.menuItem, pressed ? { backgroundColor: theme.colors.surfaceVariant } : null]}
+                style={({ pressed }) => [
+                  styles.menuItem,
+                  pressed ? { backgroundColor: theme.colors.surfaceVariant } : null,
+                ]}
                 onPress={() => {
                   setMenuOpen(false);
                   item.onPress();
                 }}
               >
-                <Text style={[styles.menuText, { color: theme.colors.onSurface }]}>{item.label}</Text>
-              </Pressable>
+                <Text style={[styles.menuText, { color: theme.colors.onSurface }]}>
+                  {item.label}
+                </Text>
+              </Touchable>
             ))}
           </Surface>
         </Portal>
@@ -109,7 +129,17 @@ const MENU_ELEVATION = 3;
 const MENU_MIN_WIDTH = 200;
 
 const styles = StyleSheet.create({
-  menu: { position: 'absolute', right: SPACING.sm, minWidth: MENU_MIN_WIDTH, borderRadius: SPACING.xs, paddingVertical: SPACING.xs },
-  menuItem: { minHeight: MIN_TOUCH_TARGET, justifyContent: 'center', paddingHorizontal: SPACING.lg },
+  menu: {
+    position: 'absolute',
+    right: SPACING.sm,
+    minWidth: MENU_MIN_WIDTH,
+    borderRadius: SPACING.xs,
+    paddingVertical: SPACING.xs,
+  },
+  menuItem: {
+    minHeight: MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    paddingHorizontal: SPACING.lg,
+  },
   menuText: { fontSize: FONT_SIZE.body },
 });

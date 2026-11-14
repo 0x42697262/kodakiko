@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { snackbar } from '../../ui/snackbar-store';
 import { useTagChoices } from '../tags/tag-picker';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
@@ -41,7 +42,9 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
   async function run(action: () => Promise<BulkResult>): Promise<void> {
     setBusy(true);
     try {
-      setMessage(resultMessage(await action()));
+      const text = resultMessage(await action());
+      setMessage(null);
+      snackbar.show({ text, testID: ENTRY_IDS.bulkResult });
       setPanel('menu');
       setTag('');
       onDone?.();
@@ -53,7 +56,9 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
   }
 
   const resultBanner =
-    message === null ? null : <Banner testID={ENTRY_IDS.bulkResult} kind="info" message={message} />;
+    message === null ? null : (
+      <Banner testID={ENTRY_IDS.bulkResult} kind="info" message={message} />
+    );
 
   if (mode === 'collectionOwner') {
     return (
@@ -71,7 +76,10 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             services.sharing
               .removeEntries(collectionId, ids)
               .then(() => {
-                setMessage(EN['bulk.updated'](ids.length));
+                snackbar.show({
+                  text: EN['bulk.updated'](ids.length),
+                  testID: ENTRY_IDS.bulkResult,
+                });
                 onDone?.();
               })
               .catch((caught: unknown) => setMessage(sharingErrorText(caught)))
@@ -126,7 +134,9 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             />
           ))}
         </View>
-        {choices.length === 0 ? <Text style={{ color: colors.textMuted }}>{EN['tags.noneToPick']}</Text> : null}
+        {choices.length === 0 ? (
+          <Text style={{ color: colors.textMuted }}>{EN['tags.noneToPick']}</Text>
+        ) : null}
         <View style={styles.row}>
           <Button
             testID={testId(adding ? 'bulk.confirmAdd' : 'bulk.confirmRemove')}
@@ -169,8 +179,20 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             variant="secondary"
             onPress={() => setPanel('removeTag')}
           />
-          <Button testID="bulk.favorite" label={EN['bulk.favorite']} variant="secondary" busy={busy} onPress={() => void run(() => services.entries.setFavorite(ids, true))} />
-          <Button testID="bulk.unfavorite" label={EN['bulk.unfavorite']} variant="secondary" busy={busy} onPress={() => void run(() => services.entries.setFavorite(ids, false))} />
+          <Button
+            testID="bulk.favorite"
+            label={EN['bulk.favorite']}
+            variant="secondary"
+            busy={busy}
+            onPress={() => void run(() => services.entries.setFavorite(ids, true))}
+          />
+          <Button
+            testID="bulk.unfavorite"
+            label={EN['bulk.unfavorite']}
+            variant="secondary"
+            busy={busy}
+            onPress={() => void run(() => services.entries.setFavorite(ids, false))}
+          />
           <Button
             testID={testId('bulk.trash')}
             label={EN['bulk.trash']}
@@ -178,8 +200,14 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             busy={busy}
             onPress={() => void run(() => services.entries.trash(ids))}
           />
-          {services.config.get()?.sharingEnabled === true || services.config.get()?.publicLinksEnabled === true ? (
-            <Button testID={testId('bulk.share')} label={EN['bulk.share']} variant="secondary" onPress={() => setPanel('share')} />
+          {services.config.get()?.sharingEnabled === true ||
+          services.config.get()?.publicLinksEnabled === true ? (
+            <Button
+              testID={testId('bulk.share')}
+              label={EN['bulk.share']}
+              variant="secondary"
+              onPress={() => setPanel('share')}
+            />
           ) : null}
         </>
       ) : (

@@ -3,7 +3,8 @@ import { type EntryMetadataV1 } from '@kodakiko/contract';
 import { Image } from 'expo-image';
 import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import type { z } from 'zod';
 import { useAppContext } from '../../composition/app-context';
 import { EDIT_STRIP_TILE, EDIT_TILE_BORDER, MOVE_LEFT } from '../../constants/entry-constants';
@@ -28,9 +29,19 @@ import { TimeEditor } from './time-editor';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 
-const EDIT_IDS = Object.freeze({ screen: 'edit.screen', item: 'edit.item', discardSheet: 'edit.discardSheet' });
+const EDIT_IDS = Object.freeze({
+  screen: 'edit.screen',
+  item: 'edit.item',
+  discardSheet: 'edit.discardSheet',
+});
 
-function StripTile({ entryId, mediaId, position, selected, onPress }: {
+function StripTile({
+  entryId,
+  mediaId,
+  position,
+  selected,
+  onPress,
+}: {
   readonly entryId: string;
   readonly mediaId: string;
   readonly position: number;
@@ -40,14 +51,17 @@ function StripTile({ entryId, mediaId, position, selected, onPress }: {
   const { colors } = useTheme();
   const uri = useThumbnail(entryId, mediaId);
   return (
-    <Pressable
+    <Touchable
       testID={listTestId(EDIT_IDS.item, position)}
       accessibilityRole="button"
       onPress={onPress}
-      style={[styles.tile, { borderColor: selected ? colors.primary : colors.border, backgroundColor: colors.surface }]}
+      style={[
+        styles.tile,
+        { borderColor: selected ? colors.primary : colors.border, backgroundColor: colors.surface },
+      ]}
     >
       {uri === null ? null : <Image source={{ uri }} style={styles.image} />}
-    </Pressable>
+    </Touchable>
   );
 }
 
@@ -84,7 +98,8 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
     [metadata, draft],
   );
 
-  if (metadata === null || draft === null || diff === null) return <Screen testID={EDIT_IDS.screen}>{null}</Screen>;
+  if (metadata === null || draft === null || diff === null)
+    return <Screen testID={EDIT_IDS.screen}>{null}</Screen>;
 
   const position = Math.min(selected, draft.mediaIds.length - 1);
   const update = (patch: Partial<EditDraft>) => setDraft({ ...draft, ...patch });
@@ -122,7 +137,8 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
     setSaving(true);
     setFailed(false);
     try {
-      for (const mediaId of diff.removedMediaIds) await services.entries.removeMedia(entryId, mediaId);
+      for (const mediaId of diff.removedMediaIds)
+        await services.entries.removeMedia(entryId, mediaId);
       if (Object.keys(diff.edit).length > 0) await services.entries.edit(entryId, diff.edit);
       router.back();
     } catch {
@@ -134,7 +150,11 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
   return (
     <Screen testID={EDIT_IDS.screen} scroll>
       <Title text={EN['edit.title']} />
-      <ScrollView horizontal contentContainerStyle={styles.strip} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        contentContainerStyle={styles.strip}
+        showsHorizontalScrollIndicator={false}
+      >
         {draft.mediaIds.map((mediaId, index) => (
           <StripTile
             key={mediaId}
@@ -147,16 +167,41 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
         ))}
       </ScrollView>
       <View style={styles.row}>
-        <Button testID={testId('compose.moveLeft')} label={EN['compose.moveLeft']} variant="secondary" disabled={saving || position === 0} onPress={() => move(MOVE_LEFT)} />
-        <Button testID={testId('compose.moveRight')} label={EN['compose.moveRight']} variant="secondary" disabled={saving || position >= draft.mediaIds.length - 1} onPress={() => move(1)} />
-        <Button testID={testId('compose.removeItem')} label={EN['compose.removeItem']} variant="secondary" disabled={saving || draft.mediaIds.length <= 1} onPress={remove} />
+        <Button
+          testID={testId('compose.moveLeft')}
+          label={EN['compose.moveLeft']}
+          variant="secondary"
+          disabled={saving || position === 0}
+          onPress={() => move(MOVE_LEFT)}
+        />
+        <Button
+          testID={testId('compose.moveRight')}
+          label={EN['compose.moveRight']}
+          variant="secondary"
+          disabled={saving || position >= draft.mediaIds.length - 1}
+          onPress={() => move(1)}
+        />
+        <Button
+          testID={testId('compose.removeItem')}
+          label={EN['compose.removeItem']}
+          variant="secondary"
+          disabled={saving || draft.mediaIds.length <= 1}
+          onPress={remove}
+        />
       </View>
-      {draft.mediaIds.length <= 1 ? <Body testID={testId('edit.lastMediaHint')} text={EN['edit.lastMediaHint']} /> : null}
+      {draft.mediaIds.length <= 1 ? (
+        <Body testID={testId('edit.lastMediaHint')} text={EN['edit.lastMediaHint']} />
+      ) : null}
 
       <View style={styles.section}>
         <Text style={[styles.label, { color: colors.textMuted }]}>{EN['compose.when']}</Text>
         <Text testID={ENTRY_IDS.composeWhenValue} style={{ color: colors.text }}>
-          {formatEntryTime(draft.time.takenAtUtc, draft.time.utcOffsetMinutes, clock.nowIso(), deviceOffsetMinutes(new Date(clock.now())))}
+          {formatEntryTime(
+            draft.time.takenAtUtc,
+            draft.time.utcOffsetMinutes,
+            clock.nowIso(),
+            deviceOffsetMinutes(new Date(clock.now())),
+          )}
         </Text>
         {editingTime ? (
           <TimeEditor
@@ -168,7 +213,13 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
             }}
           />
         ) : (
-          <Button testID={testId('compose.change')} label={EN['compose.change']} variant="secondary" disabled={saving} onPress={() => setEditingTime(true)} />
+          <Button
+            testID={testId('compose.change')}
+            label={EN['compose.change']}
+            variant="secondary"
+            disabled={saving}
+            onPress={() => setEditingTime(true)}
+          />
         )}
       </View>
 
@@ -187,8 +238,18 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
       <TagPicker tags={draft.tags} onChange={(tags) => update({ tags })} />
 
       <View style={styles.row}>
-        <Button testID={testId('edit.write')} label={EN['edit.write']} variant={preview ? 'secondary' : 'primary'} onPress={() => setPreview(false)} />
-        <Button testID={testId('edit.preview')} label={EN['edit.preview']} variant={preview ? 'primary' : 'secondary'} onPress={() => setPreview(true)} />
+        <Button
+          testID={testId('edit.write')}
+          label={EN['edit.write']}
+          variant={preview ? 'secondary' : 'primary'}
+          onPress={() => setPreview(false)}
+        />
+        <Button
+          testID={testId('edit.preview')}
+          label={EN['edit.preview']}
+          variant={preview ? 'primary' : 'secondary'}
+          onPress={() => setPreview(true)}
+        />
       </View>
       {preview ? (
         <MarkdownView source={draft.note} />
@@ -205,17 +266,40 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
         />
       )}
 
-      {failed ? <Banner testID={testId('edit.failed')} kind="error" message={EN['edit.failed']} /> : null}
+      {failed ? (
+        <Banner testID={testId('edit.failed')} kind="error" message={EN['edit.failed']} />
+      ) : null}
       <View style={styles.row}>
-        <Button testID={testId('edit.cancel')} label={EN['edit.cancel']} variant="secondary" disabled={saving} onPress={leave} />
-        <Button testID={testId('edit.save')} label={EN['edit.save']} busy={saving} onPress={() => save().catch(() => undefined)} />
+        <Button
+          testID={testId('edit.cancel')}
+          label={EN['edit.cancel']}
+          variant="secondary"
+          disabled={saving}
+          onPress={leave}
+        />
+        <Button
+          testID={testId('edit.save')}
+          label={EN['edit.save']}
+          busy={saving}
+          onPress={() => save().catch(() => undefined)}
+        />
       </View>
 
       {discarding ? (
         <Sheet testID={EDIT_IDS.discardSheet} onClose={() => setDiscarding(false)}>
           <Text style={{ color: colors.text }}>{EN['edit.discardTitle']}</Text>
-          <Button testID={testId('edit.discard')} label={EN['edit.discard']} variant="danger" onPress={() => router.back()} />
-          <Button testID={testId('edit.keepEditing')} label={EN['edit.keepEditing']} variant="secondary" onPress={() => setDiscarding(false)} />
+          <Button
+            testID={testId('edit.discard')}
+            label={EN['edit.discard']}
+            variant="danger"
+            onPress={() => router.back()}
+          />
+          <Button
+            testID={testId('edit.keepEditing')}
+            label={EN['edit.keepEditing']}
+            variant="secondary"
+            onPress={() => setDiscarding(false)}
+          />
         </Sheet>
       ) : null}
     </Screen>
@@ -224,7 +308,13 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
 
 const styles = StyleSheet.create({
   strip: { gap: SPACING.sm, paddingVertical: SPACING.xs },
-  tile: { width: EDIT_STRIP_TILE, height: EDIT_STRIP_TILE, borderRadius: RADIUS.sm, borderWidth: EDIT_TILE_BORDER, overflow: 'hidden' },
+  tile: {
+    width: EDIT_STRIP_TILE,
+    height: EDIT_STRIP_TILE,
+    borderRadius: RADIUS.sm,
+    borderWidth: EDIT_TILE_BORDER,
+    overflow: 'hidden',
+  },
   image: { width: '100%', height: '100%' },
   row: { flexDirection: 'row', gap: SPACING.sm, flexWrap: 'wrap' },
   section: { gap: SPACING.xs },

@@ -64,3 +64,9 @@ describe('capture packages', () => {
     }
   });
 });
+
+describe('native feel app config (spec 24 phase 4)', () => {
+  it('turns on the Android predictive back gesture', () => {
+    expect(config.android?.predictiveBackGestureEnabled).toBe(true);
+  });
+});

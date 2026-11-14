@@ -1,7 +1,8 @@
 import { type Href } from 'expo-router';
 import { useRouter } from '../../navigation/use-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { useAccountMode, useAppContext } from '../../composition/app-context';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
@@ -17,8 +18,14 @@ import { COLLECTION_NAME_MAX_CHARS as COLLECTION_NAME_MAX } from '@kodakiko/cont
 import { sharingErrorText } from './sharing-errors';
 import { SHARING_IDS } from './sharing-ids';
 import { useSharedCollections, type SharedCollection } from './use-shared-collections';
+import { usePullToSync } from '../sync/use-pull-to-sync';
 
-function Row({ testID, collection, detail, onPress }: {
+function Row({
+  testID,
+  collection,
+  detail,
+  onPress,
+}: {
   readonly testID: string;
   readonly collection: SharedCollection;
   readonly detail: string;
@@ -26,7 +33,7 @@ function Row({ testID, collection, detail, onPress }: {
 }) {
   const { colors } = useTheme();
   return (
-    <Pressable
+    <Touchable
       testID={testID}
       accessibilityRole="button"
       onPress={onPress}
@@ -34,11 +41,12 @@ function Row({ testID, collection, detail, onPress }: {
     >
       <Text style={[styles.name, { color: colors.text }]}>{collection.name}</Text>
       <Text style={[styles.detail, { color: colors.textMuted }]}>{detail}</Text>
-    </Pressable>
+    </Touchable>
   );
 }
 
 export function SharedScreen() {
+  const pullToSync = usePullToSync();
   const router = useRouter();
   const { services } = useAppContext();
   const { colors } = useTheme();
@@ -54,7 +62,10 @@ export function SharedScreen() {
     return (
       <Screen testID={SHARING_IDS.screen}>
         <Title text={EN['shared.tab']} />
-        <Body testID={SHARING_IDS.flagOff} text={local ? EN['shared.localOnly'] : EN['shared.flagOff']} />
+        <Body
+          testID={SHARING_IDS.flagOff}
+          text={local ? EN['shared.localOnly'] : EN['shared.flagOff']}
+        />
       </Screen>
     );
   }
@@ -79,11 +90,13 @@ export function SharedScreen() {
   }
 
   return (
-    <Screen testID={SHARING_IDS.screen} scroll>
+    <Screen testID={SHARING_IDS.screen} scroll refreshControl={pullToSync}>
       <Title text={EN['shared.tab']} />
       <View style={styles.section}>
         <Text style={[styles.heading, { color: colors.text }]}>{EN['shared.mine']}</Text>
-        {collections !== null && mine.length === 0 ? <Body testID={SHARING_IDS.emptyMine} text={EN['shared.emptyMine']} /> : null}
+        {collections !== null && mine.length === 0 ? (
+          <Body testID={SHARING_IDS.emptyMine} text={EN['shared.emptyMine']} />
+        ) : null}
         {mine.map((collection, position) => (
           <Row
             key={collection.id}
@@ -93,7 +106,12 @@ export function SharedScreen() {
             onPress={() => open(collection.id)}
           />
         ))}
-        <Button testID={testId('shared.new')} label={EN['shared.new']} variant="secondary" onPress={() => setCreating(true)} />
+        <Button
+          testID={testId('shared.new')}
+          label={EN['shared.new']}
+          variant="secondary"
+          onPress={() => setCreating(true)}
+        />
       </View>
       <View style={styles.section}>
         <Text style={[styles.heading, { color: colors.text }]}>{EN['shared.withMe']}</Text>
@@ -112,8 +130,16 @@ export function SharedScreen() {
       </View>
       {creating ? (
         <Sheet testID={SHARING_IDS.newSheet} onClose={() => setCreating(false)}>
-          <TextField testID={testId('shared.nameField')} label={EN['shared.nameField']} value={name} onChangeText={setName} maxLength={COLLECTION_NAME_MAX} />
-          {error === null ? null : <Banner testID={SHARING_IDS.error} kind="error" message={error} />}
+          <TextField
+            testID={testId('shared.nameField')}
+            label={EN['shared.nameField']}
+            value={name}
+            onChangeText={setName}
+            maxLength={COLLECTION_NAME_MAX}
+          />
+          {error === null ? null : (
+            <Banner testID={SHARING_IDS.error} kind="error" message={error} />
+          )}
           <Button
             testID={testId('shared.create')}
             label={EN['shared.create']}
@@ -121,7 +147,12 @@ export function SharedScreen() {
             disabled={name.trim().length === 0}
             onPress={() => create().catch(() => undefined)}
           />
-          <Button testID={testId('shared.cancel')} label={EN['shared.cancel']} variant="secondary" onPress={() => setCreating(false)} />
+          <Button
+            testID={testId('shared.cancel')}
+            label={EN['shared.cancel']}
+            variant="secondary"
+            onPress={() => setCreating(false)}
+          />
         </Sheet>
       ) : null}
     </Screen>

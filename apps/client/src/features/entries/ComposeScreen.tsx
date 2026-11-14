@@ -1,7 +1,8 @@
 import { useNavigation, type Href } from 'expo-router';
 import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { NOTE_MAX_CHARS } from '@kodakiko/contract';
 import { buildNewEntryMetadata, deviceOffsetMinutes, earliestTime } from '@kodakiko/core';
 import { useAppContext } from '../../composition/app-context';
@@ -138,7 +139,7 @@ export function ComposeScreen() {
         showsHorizontalScrollIndicator={false}
       >
         {items.map((item, index) => (
-          <Pressable
+          <Touchable
             key={item.mediaId}
             testID={listTestId(ENTRY_IDS.composeItem, index)}
             accessibilityRole="button"
@@ -156,7 +157,7 @@ export function ComposeScreen() {
             ]}
           >
             <Image source={{ uri: thumbnailUris[index] }} style={styles.image} />
-          </Pressable>
+          </Touchable>
         ))}
       </ScrollView>
       <View style={styles.row}>

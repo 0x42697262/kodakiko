@@ -1,7 +1,8 @@
 import type { AdminStatsResponse, AdminUserDto, InviteDto } from '@kodakiko/contract';
 import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Touchable } from '../../ui/Touchable';
 import { ApiError } from '../../adapters/http/http';
 import { useAccountState, useAppContext } from '../../composition/app-context';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';
@@ -115,7 +116,7 @@ function People() {
       {users.map((user, position) => {
         const limit = user.quotaBytes ?? defaultQuota;
         return (
-          <Pressable
+          <Touchable
             key={user.id}
             testID={listTestId(ADMIN_IDS.userRow, position)}
             accessibilityRole="button"
@@ -152,13 +153,13 @@ function People() {
                 </Text>
               ) : null}
             </View>
-          </Pressable>
+          </Touchable>
         );
       })}
       {editing === null ? null : (
         <Sheet testID={ADMIN_IDS.userSheet} onClose={() => setEditing(null)}>
           <Text style={[styles.name, { color: colors.text }]}>{editing.username}</Text>
-          <Pressable
+          <Touchable
             testID={ADMIN_IDS.useDefault}
             accessibilityRole="switch"
             accessibilityState={{ checked: useDefault }}
@@ -168,7 +169,7 @@ function People() {
               {useDefault ? '\u2611' : '\u2610'} {EN['admin.useDefault']} (
               {formatBytes(defaultQuota)})
             </Text>
-          </Pressable>
+          </Touchable>
           {useDefault ? null : (
             <TextField
               testID={ADMIN_IDS.quota}

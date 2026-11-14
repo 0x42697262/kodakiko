@@ -47,6 +47,8 @@ const SPEC_22_DEFAULTS = {
   tagOrder: [],
   pureBlack: false,
   timeFormat: '24h',
+  hapticFeedback: true,
+  dynamicColor: false,
 } as const;
 
 let rowStore: RowStore;

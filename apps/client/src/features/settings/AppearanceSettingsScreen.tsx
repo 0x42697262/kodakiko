@@ -4,6 +4,7 @@ import type { PreferenceItem } from '../../ui/preferences/preference-types';
 import { PreferenceList } from '../../ui/preferences/PreferenceList';
 import { SettingsPage } from './settings-ui';
 import { useDeviceSettings } from './use-device-settings';
+import { dynamicColorSupported } from '../../ui/system-dynamic-colors';
 
 export function AppearanceSettingsScreen() {
   const [settings, update] = useDeviceSettings();
@@ -12,9 +13,27 @@ export function AppearanceSettingsScreen() {
       <PreferenceList
         items={[
           ...(Platform.OS === 'android'
-            ? ([{ kind: 'switch', key: 'fullScreen', testID: 'settings.fullScreen', title: EN['prefs.fullScreen'], summary: EN['prefs.fullScreenSummary'], value: settings.fullScreen, onChange: (fullScreen: boolean) => update({ fullScreen }) }] satisfies PreferenceItem[])
+            ? ([
+                {
+                  kind: 'switch',
+                  key: 'fullScreen',
+                  testID: 'settings.fullScreen',
+                  title: EN['prefs.fullScreen'],
+                  summary: EN['prefs.fullScreenSummary'],
+                  value: settings.fullScreen,
+                  onChange: (fullScreen: boolean) => update({ fullScreen }),
+                },
+              ] satisfies PreferenceItem[])
             : []),
-          { kind: 'switch', key: 'hideBars', testID: 'settings.hideBarsOnScroll', title: EN['prefs.hideBarsOnScroll'], summary: EN['prefs.hideBarsOnScrollSummary'], value: settings.hideBarsOnScroll, onChange: (hideBarsOnScroll) => update({ hideBarsOnScroll }) },
+          {
+            kind: 'switch',
+            key: 'hideBars',
+            testID: 'settings.hideBarsOnScroll',
+            title: EN['prefs.hideBarsOnScroll'],
+            summary: EN['prefs.hideBarsOnScrollSummary'],
+            value: settings.hideBarsOnScroll,
+            onChange: (hideBarsOnScroll) => update({ hideBarsOnScroll }),
+          },
           {
             kind: 'choice',
             key: 'theme',
@@ -29,7 +48,37 @@ export function AppearanceSettingsScreen() {
             ],
             onChange: (value) => update({ appTheme: value as typeof settings.appTheme }),
           },
-          { kind: 'switch', key: 'pureBlack', testID: 'settings.pureBlack', title: EN['prefs.pureBlack'], summary: EN['prefs.pureBlackSummary'], value: settings.pureBlack, onChange: (pureBlack) => update({ pureBlack }) },
+          {
+            kind: 'switch',
+            key: 'hapticFeedback',
+            testID: 'settings.haptics',
+            title: EN['prefs.haptics'],
+            summary: EN['prefs.hapticsSummary'],
+            value: settings.hapticFeedback,
+            onChange: (hapticFeedback) => update({ hapticFeedback }),
+          },
+          ...(dynamicColorSupported
+            ? [
+                {
+                  kind: 'switch' as const,
+                  key: 'dynamicColor',
+                  testID: 'settings.dynamicColor',
+                  title: EN['prefs.dynamicColor'],
+                  summary: EN['prefs.dynamicColorSummary'],
+                  value: settings.dynamicColor,
+                  onChange: (dynamicColor: boolean) => update({ dynamicColor }),
+                },
+              ]
+            : []),
+          {
+            kind: 'switch',
+            key: 'pureBlack',
+            testID: 'settings.pureBlack',
+            title: EN['prefs.pureBlack'],
+            summary: EN['prefs.pureBlackSummary'],
+            value: settings.pureBlack,
+            onChange: (pureBlack) => update({ pureBlack }),
+          },
           {
             kind: 'choice',
             key: 'timeFormat',
