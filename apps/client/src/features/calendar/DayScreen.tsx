@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';

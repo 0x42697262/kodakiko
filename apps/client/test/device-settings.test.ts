@@ -40,7 +40,7 @@ const SPEC_22_DEFAULTS = {
   fullScreen: true,
   hideBarsOnScroll: true,
   showTechnicalDetails: false,
-  holdToRecord: false,
+  holdToRecordOn: true,
   holdToRecordMaxSeconds: 15,
   cameraApp: 'kodakiko',
   syncPaused: false,
@@ -130,6 +130,7 @@ describe('spec 22 settings', () => {
     expect(deviceSettingsSchema.safeParse({ ...valid, gallerySort: { key: 'random', descending: false } }).success).toBe(true);
     expect(deviceSettingsSchema.safeParse({ ...valid, holdToRecordMaxSeconds: 7 }).success).toBe(false);
     expect(deviceSettingsSchema.safeParse({ ...valid, cameraApp: 'system' }).success).toBe(true);
+    expect('holdToRecord' in NATIVE_DEFAULTS).toBe(false);
   });
 });
 

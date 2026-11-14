@@ -85,7 +85,7 @@ function PermissionGate({
   );
 }
 
-function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurfaceProps) {
+function CameraSurface({ onInputs, remainingSlots, maxUploadBytes, onRecordingChange }: CaptureSurfaceProps) {
   const { colors } = useTheme();
   const active = useCameraActive();
   const microphone = useMicrophonePermission();
@@ -96,6 +96,10 @@ function CameraSurface({ onInputs, remainingSlots, maxUploadBytes }: CaptureSurf
   const videoOutput = useVideoOutput({ enableAudio: true, fileType: 'mp4' });
   const recorderRef = useRef<StoppableRecorder | null>(null);
   const [recordingMs, setRecordingMs] = useState<number | null>(null);
+  const isRecording = recordingMs !== null;
+  useEffect(() => {
+    onRecordingChange?.(isRecording);
+  }, [isRecording, onRecordingChange]);
 
   const takePhoto = useCallback(() => {
     photoOutput

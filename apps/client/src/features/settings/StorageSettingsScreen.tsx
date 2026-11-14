@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { z } from 'zod';
 import { useAccountMode, useAppContext } from '../../composition/app-context';

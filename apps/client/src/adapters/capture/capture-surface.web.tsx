@@ -35,7 +35,7 @@ const ZONE_STYLE: CSSProperties = {
   gap: SPACING.md,
 };
 
-export function CaptureSurface({ onInputs }: CaptureSurfaceProps) {
+export function CaptureSurface({ onInputs, onRecordingChange }: CaptureSurfaceProps) {
   const { colors } = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -85,7 +85,7 @@ export function CaptureSurface({ onInputs }: CaptureSurfaceProps) {
         opacity: dragging ? DROP_HIGHLIGHT_OPACITY : 1,
       }}
     >
-      <WebCamera onInputs={onInputs} />
+      <WebCamera onInputs={onInputs} onRecordingChange={onRecordingChange} />
       <input
         ref={inputRef}
         type="file"

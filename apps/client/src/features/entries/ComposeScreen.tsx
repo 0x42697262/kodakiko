@@ -1,4 +1,5 @@
-import { useNavigation, useRouter, type Href } from 'expo-router';
+import { useNavigation, type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NOTE_MAX_CHARS } from '@kodakiko/contract';

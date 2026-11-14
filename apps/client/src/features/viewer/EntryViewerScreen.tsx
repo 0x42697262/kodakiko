@@ -1,6 +1,7 @@
 import { deviceOffsetMinutes, type IndexedEntry } from '@kodakiko/core';
 import type { EntryMetadataV1 } from '@kodakiko/contract';
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Pressable,
@@ -379,13 +380,6 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               />
             ) : null}
             <IconAction
-              testID="viewer.details"
-              icon="info"
-              label={EN['details.title']}
-              tonal={false}
-              onPress={() => router.push(`${entryRoute(entryId)}/details` as Href)}
-            />
-            <IconAction
               testID={testId('viewer.more')}
               icon="overflow"
               label={EN['viewer.more']}
@@ -444,6 +438,10 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 zoomed={zoomed}
                 onPageChange={setPage}
                 onZoomChange={setZoomed}
+                onItemTap={(index) => {
+                  const tapped = metadata.media[index];
+                  if (tapped?.kind === 'video' && services.videoLauncher.canPlay()) services.videoLauncher.open(entryId, tapped.mediaId);
+                }}
                 renderPage={(item, index) => (
                   <MediaPage
                     entryId={entryId}

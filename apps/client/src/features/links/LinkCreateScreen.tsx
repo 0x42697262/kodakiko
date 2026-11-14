@@ -1,6 +1,6 @@
 import { COLLECTION_NAME_MAX_CHARS, LINK_EXPIRIES, type EntryMetadataV1, type LinkExpiry } from '@kodakiko/contract';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { z } from 'zod';

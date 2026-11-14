@@ -1,4 +1,5 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,9 +12,10 @@ import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { FAB } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSystemInsets } from '../../ui/system-insets';
 import { Button } from '../../ui/Button';
 import { IconAction } from '../../ui/IconAction';
+import { captureActionsEnabled } from './capture-actions';
 import { ICONS } from '../../ui/icons';
 import { Screen } from '../../ui/Screen';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
@@ -42,6 +44,8 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   const { services } = useAppContext();
   const { colors } = useTheme();
   useKeepScreenOn();
+  const insets = useSystemInsets();
+  const [recording, setRecording] = useState(false);
   const configLimit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
   const limitOverride = addToEntry === undefined ? null : Math.max(0, configLimit - addToEntry.currentCount);
   const { items, pending, messages, maxMediaPerEntry, addInputs, remove } = useCaptureImport(limitOverride);
@@ -50,6 +54,7 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   const [adding, setAdding] = useState(false);
   const maxUploadBytes = (services.config.get() ?? CONFIG_FALLBACK).maxUploadBytes;
   const empty = items.length === 0 && pending === 0;
+  const enabled = captureActionsEnabled({ items: items.length, pending, recording });
 
   function leave(): void {
     if (router.canGoBack()) router.back();
@@ -103,12 +108,13 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   }
 
   return (
-    <SafeAreaView testID={CAPTURE_IDS.screen} edges={CAPTURE_EDGES} style={styles.root}>
+    <View testID={CAPTURE_IDS.screen} style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
       <View style={styles.surface}>
         <CaptureSurface
           onInputs={addInputs}
           remainingSlots={Math.max(0, maxMediaPerEntry - items.length - pending)}
           maxUploadBytes={maxUploadBytes}
+          onRecordingChange={setRecording}
         />
         <View style={styles.topBar}>
           <IconAction testID={testId('capture.close')} icon="close" label={EN['capture.close']} onPress={close} />
@@ -147,7 +153,7 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
             testID={testId('capture.next')}
             icon={ICONS.forward}
             label={EN['capture.next']}
-            disabled={items.length === 0}
+            disabled={!enabled.next}
             onPress={() => router.push(APP_ROUTES.entryNew as Href)}
           />
         ) : (
@@ -155,17 +161,15 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
             testID={testId('capture.addToEntry')}
             icon={ICONS.save}
             label={EN['capture.addToEntry']}
-            disabled={items.length === 0 || pending > 0}
+            disabled={!enabled.addToEntry}
             loading={adding}
             onPress={() => addToExisting().catch(() => undefined)}
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
-
-const CAPTURE_EDGES = ['top', 'bottom', 'left', 'right'] as const;
 const CAPTURE_BACKGROUND = '#000000';
 
 const styles = StyleSheet.create({

@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import LOGO from '../../../assets/icon-192.png';
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 import { useAccountMode, useAppContext } from '../../composition/app-context';
@@ -10,6 +11,7 @@ import { PreferenceList } from '../../ui/preferences/PreferenceList';
 import type { PreferenceItem } from '../../ui/preferences/preference-types';
 import { useTheme } from '../../ui/theme';
 import { SPACING } from '../../ui/theme-constants';
+import { useSystemInsets } from '../../ui/system-insets';
 import { useDeviceSettings } from '../settings/use-device-settings';
 
 const LOGO_SIZE = 72;
@@ -20,6 +22,7 @@ export function MoreScreen() {
   const { colors } = useTheme();
   const [settings, update] = useDeviceSettings();
   const local = useAccountMode() === 'local';
+  const insets = useSystemInsets();
   const go = (path: string) => () => router.push(path as Href);
   const toggles: PreferenceItem[] = [
     { kind: 'switch', key: 'hideShared', testID: 'more.hideShared', icon: 'shared', title: EN['more.hideShared'], summary: EN['more.hideSharedSummary'], value: settings.hideShared, onChange: (hideShared) => update({ hideShared }) },
@@ -52,7 +55,7 @@ export function MoreScreen() {
     { kind: 'text', key: 'help', testID: 'more.help', icon: 'help', title: EN['more.help'], onPress: () => Linking.openURL(EN['more.helpUrl']).catch(() => undefined) },
   ];
   return (
-    <ScrollView testID="more.screen" style={{ backgroundColor: colors.background }} contentContainerStyle={styles.content}>
+    <ScrollView testID="more.screen" style={{ backgroundColor: colors.background }} contentContainerStyle={[styles.content, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Image source={LOGO} style={styles.logo} accessibilityLabel={EN['more.appName']} />
       </View>

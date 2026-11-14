@@ -1,4 +1,5 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ON_THIS_DAY_MAX_TILES, ON_THIS_DAY_TILE_PX } from '../../constants/gallery-constants';
 import { GALLERY_IDS } from '../../keys/gallery-ids';

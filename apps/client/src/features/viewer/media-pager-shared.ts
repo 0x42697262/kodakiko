@@ -11,6 +11,7 @@ export type MediaPagerProps<Item> = {
   readonly onPageChange: (index: number) => void;
   readonly onZoomChange: (zoomed: boolean) => void;
   readonly renderPage: (item: Item, index: number) => ReactElement;
+  readonly onItemTap?: (index: number) => void;
   readonly handle: RefObject<PagerHandle | null>;
 };
 

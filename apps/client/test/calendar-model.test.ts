@@ -5,8 +5,7 @@ import {
   formatMonthTitle,
   isValidLocalDate,
   monthDayInfo,
-  weekdayNames,
-} from '../src/features/calendar/calendar-model';
+  weekdayNames, canShowMonth, monthTarget, pagerMonths } from '../src/features/calendar/calendar-model';
 
 const HOME = 'H'.repeat(22);
 
@@ -75,5 +74,47 @@ describe('isValidLocalDate', () => {
     for (const bad of ['2026-02-29', '2026-13-01', '2026-11-31', '2026-1-1', 'today', '']) {
       expect(isValidLocalDate(bad)).toBe(false);
     }
+  });
+});
+
+describe('monthTarget (v0.2.1 fix B1)', () => {
+  const withEntries = new Set(['2026-08', '2026-12', '2025-01']);
+
+  it('moves freely into past months and up to the current month', () => {
+    expect(monthTarget('2026-03', -1, '2026-06', withEntries)).toBe('2026-02');
+    expect(monthTarget('2026-05', 1, '2026-06', withEntries)).toBe('2026-06');
+    expect(monthTarget('2025-01', 1, '2026-06', withEntries)).toBe('2025-02');
+  });
+
+  it('beyond the current month, jumps over empty months to the next month with entries', () => {
+    expect(monthTarget('2026-06', 1, '2026-06', withEntries)).toBe('2026-08');
+    expect(monthTarget('2026-08', 1, '2026-06', withEntries)).toBe('2026-12');
+  });
+
+  it('refuses to move past the last future month with entries', () => {
+    expect(monthTarget('2026-12', 1, '2026-06', withEntries)).toBeNull();
+    expect(monthTarget('2026-06', 1, '2026-06', new Set())).toBeNull();
+  });
+
+  it('allows jumping to a month when it is not in the future or has entries', () => {
+    expect(canShowMonth('2020-01', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-06', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-08', '2026-06', withEntries)).toBe(true);
+    expect(canShowMonth('2026-07', '2026-06', withEntries)).toBe(false);
+  });
+});
+
+describe('pagerMonths (v0.2.1 fix B6)', () => {
+  it('lists every month from a year before the earliest entry to now, then only future months with entries', () => {
+    const months = pagerMonths('2026-06', new Set(['2026-02', '2026-08', '2026-12']), '2026-06');
+    expect(months[0]).toBe('2025-02');
+    expect(months).toContain('2026-01');
+    expect(months).not.toContain('2026-07');
+    expect(months.slice(-3)).toEqual(['2026-06', '2026-08', '2026-12']);
+  });
+
+  it('starts a year before the shown month when that is earlier, and works without entries', () => {
+    expect(pagerMonths('2026-06', new Set(), '2020-05')[0]).toBe('2019-05');
+    expect(pagerMonths('2026-06', new Set(), '2026-06')).toHaveLength(13);
   });
 });

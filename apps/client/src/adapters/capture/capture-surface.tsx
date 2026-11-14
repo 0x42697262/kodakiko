@@ -5,6 +5,7 @@ export type CaptureSurfaceProps = {
   readonly onInputs: (inputs: readonly MediaInput[]) => void;
   readonly remainingSlots: number;
   readonly maxUploadBytes: number;
+  readonly onRecordingChange?: (recording: boolean) => void;
 };
 
 export declare function CaptureSurface(props: CaptureSurfaceProps): ReactElement;

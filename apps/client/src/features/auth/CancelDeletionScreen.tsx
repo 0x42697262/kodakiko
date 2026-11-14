@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { DELETION_DATE_LOCALE, DELETION_DATE_OPTIONS } from '../../constants/auth-constants';
 import { useAppContext } from '../../composition/app-context';
 import { APP_ROUTES } from '../../keys/routes';

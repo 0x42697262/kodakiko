@@ -19,7 +19,7 @@ import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import type { MediaInput } from '../media/media-toolkit';
 
-type WebCameraProps = { readonly onInputs: (inputs: readonly MediaInput[]) => void };
+type WebCameraProps = { readonly onInputs: (inputs: readonly MediaInput[]) => void; readonly onRecordingChange?: ((recording: boolean) => void) | undefined };
 type Facing = keyof typeof WEB_CAMERA_FACING;
 
 function cameraInput(blob: Blob): MediaInput {
@@ -35,7 +35,7 @@ async function openStream(facing: Facing): Promise<MediaStream> {
   }
 }
 
-export function WebCamera({ onInputs }: WebCameraProps) {
+export function WebCamera({ onInputs, onRecordingChange }: WebCameraProps) {
   const { colors } = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -43,6 +43,10 @@ export function WebCamera({ onInputs }: WebCameraProps) {
   const [facing, setFacing] = useState<Facing>('back');
   const [available, setAvailable] = useState(true);
   const [recordingMs, setRecordingMs] = useState<number | null>(null);
+  const isRecording = recordingMs !== null;
+  useEffect(() => {
+    onRecordingChange?.(isRecording);
+  }, [isRecording, onRecordingChange]);
 
   useEffect(() => {
     if (navigator.mediaDevices?.getUserMedia === undefined) {

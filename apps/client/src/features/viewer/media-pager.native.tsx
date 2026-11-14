@@ -8,7 +8,7 @@ const MAX_ZOOM = 6;
 const UNZOOMED = 1;
 const ZOOM_EPSILON = 0.01;
 
-export function MediaPager<Item>({ items, keyOf, width, height, zoomed, onPageChange, onZoomChange, renderPage, handle }: MediaPagerProps<Item>) {
+export function MediaPager<Item>({ items, keyOf, width, height, zoomed, onPageChange, onZoomChange, renderPage, handle, onItemTap }: MediaPagerProps<Item>) {
   const gallery = useRef<GalleryRefType>(null);
   const lastZoomed = useSharedValue(false);
   useImperativeHandle(handle, () => ({ goTo: (index: number) => gallery.current?.setIndex(index) }));
@@ -33,6 +33,7 @@ export function MediaPager<Item>({ items, keyOf, width, height, zoomed, onPageCh
             runOnJS(onZoomChange)(next);
           }}
           renderItem={(item, index) => renderPage(item, index)}
+          onTap={(_event, index) => onItemTap?.(index)}
         />
       </View>
     </ExternalZoomContext.Provider>

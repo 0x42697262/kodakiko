@@ -7,6 +7,7 @@ vi.mock('react-native', () => ({
   StyleSheet: { create: <T>(styles: T): T => styles },
 }));
 vi.mock('react-native-safe-area-context', () => ({ SafeAreaView: 'SafeAreaView' }));
+vi.mock('../src/ui/system-insets', () => ({ useSystemInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }) }));
 vi.mock('../src/ui/theme', () => ({
   useTheme: () => ({ colors: { background: '#fff' } }),
 }));

@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useState } from 'react';
 import { platformTraits } from '../../adapters/platform-traits/platform-traits';
 import { useAppContext } from '../../composition/app-context';

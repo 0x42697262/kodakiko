@@ -1,4 +1,5 @@
-import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { Platform, StyleSheet, Text } from 'react-native';
 import { useAccountMode, useAccountState, useAppContext } from '../../composition/app-context';

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSystemInsets } from './system-insets';
 import { SPACING } from './theme-constants';
 import { useTheme } from './theme';
 
@@ -12,10 +12,14 @@ type ScreenProps = {
 
 export function Screen({ testID, children, scroll = false }: ScreenProps) {
   const theme = useTheme();
+  const insets = useSystemInsets();
   return (
-    <SafeAreaView
+    <View
       testID={testID}
-      style={[styles.root, { backgroundColor: theme.colors.background }]}
+      style={[
+        styles.root,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right },
+      ]}
     >
       {scroll ? (
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -24,7 +28,7 @@ export function Screen({ testID, children, scroll = false }: ScreenProps) {
       ) : (
         <View style={[styles.content, styles.fill]}>{children}</View>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

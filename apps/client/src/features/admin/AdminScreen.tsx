@@ -1,5 +1,5 @@
 import type { AdminStatsResponse, AdminUserDto, InviteDto } from '@kodakiko/contract';
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ApiError } from '../../adapters/http/http';

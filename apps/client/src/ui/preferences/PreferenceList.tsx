@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Dialog, Portal, RadioButton, Switch } from 'react-native-paper';
 import { Icon, type IconKey } from '../icons';
 import { useTheme } from '../theme';
@@ -9,6 +9,7 @@ import { choiceSummary, type PreferenceItem } from './preference-types';
 const ICON_SIZE = 24;
 const ICON_COLUMN = 56;
 const DISABLED_OPACITY = 0.5;
+const SWITCH_POINTER_EVENTS = Platform.OS === 'web' ? 'none' : 'auto';
 
 function Row({
   testID,
@@ -120,7 +121,15 @@ export function PreferenceList({ items }: { readonly items: readonly PreferenceI
                 checked={item.value}
                 disabled={item.disabled ?? false}
                 onPress={() => item.onChange(!item.value)}
-                right={<Switch value={item.value} pointerEvents="none" />}
+                right={
+                  <Switch
+                    testID={`${item.testID}.switch`}
+                    value={item.value}
+                    disabled={item.disabled ?? false}
+                    onValueChange={item.onChange}
+                    pointerEvents={SWITCH_POINTER_EVENTS}
+                  />
+                }
               />
             );
           case 'choice':

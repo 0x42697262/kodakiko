@@ -1,14 +1,9 @@
+import { isValidYearMonth, monthGrid, yearMonthOf, type CalendarCell } from '@kodakiko/core';
+import { useRouter } from '../../navigation/use-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  addMonths,
-  isValidYearMonth,
-  monthGrid,
-  yearMonthOf,
-  type CalendarCell,
-} from '@kodakiko/core';
-import { useRouter } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
-import {
-  PanResponder,
+  FlatList,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -23,9 +18,6 @@ import {
   DAY_NUMBER_SHADOW_RADIUS,
   NEXT_MONTH,
   PREVIOUS_MONTH,
-  SWIPE_CLAIM_DISTANCE,
-  SWIPE_DIRECTION_RATIO,
-  SWIPE_MIN_DISTANCE,
   TODAY_RING_WIDTH,
   WEEK_STARTS_ON,
   DATE_DAY_START,
@@ -51,10 +43,20 @@ import {
   monthDayInfo,
   weekdayNames,
   type DayInfo,
+  canShowMonth,
+  monthTarget,
+  pagerMonths,
 } from './calendar-model';
+import { EMPTY_GALLERY_FILTER } from '../gallery/filter-model';
 import { useMonthKeys } from './use-month-keys';
 
 const HOME_SCOPE = Object.freeze({ kind: 'home' as const });
+const YEAR_MONTH_CHARS = 7;
+const MAX_WEEKS = 6;
+const NOT_SHOWN = -1;
+const PAGER_WINDOW = 3;
+const PAGER_SETTLE_MS = 120;
+const PAGER_SCROLL_THROTTLE_MS = 32;
 const NO_DAYS: ReadonlyMap<string, DayInfo> = new Map();
 
 type CellProps = {
@@ -65,6 +67,53 @@ type CellProps = {
   readonly onOpen: (localDate: string) => void;
 };
 
+function MonthPage({
+  yearMonth,
+  today,
+  width,
+  cellSize,
+  onOpen,
+}: {
+  readonly yearMonth: string;
+  readonly today: string;
+  readonly width: number;
+  readonly cellSize: number;
+  readonly onOpen: (localDate: string) => void;
+}) {
+  const { services } = useAppContext();
+  const version = useIndexVersion();
+  const days = useMemo(() => {
+    const index = services.index.index();
+    return index === null ? NO_DAYS : monthDayInfo(index, yearMonth, HOME_SCOPE);
+  }, [services.index, version, yearMonth]);
+  const grid = useMemo(() => monthGrid(yearMonth, today, WEEK_STARTS_ON), [yearMonth, today]);
+  return (
+    <View style={{ width }}>
+      {grid.map((week) => (
+        <View key={week[0]?.localDate} style={styles.row}>
+          {week.map((cell) => {
+            const info = cell.inMonth ? days.get(cell.localDate) : undefined;
+            const coverMediaId =
+              info === undefined
+                ? null
+                : (services.index.index()?.get(info.coverEntryId)?.coverMediaId ?? null);
+            return (
+              <DayCell
+                key={cell.localDate}
+                cell={cell}
+                size={cellSize}
+                info={info}
+                coverMediaId={coverMediaId}
+                onOpen={onOpen}
+              />
+            );
+          })}
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
   const { colors } = useTheme();
   const count = info?.count ?? 0;
@@ -74,7 +123,7 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
   const tappable = cell.inMonth && info !== undefined;
   return (
     <Pressable
-      testID={calendarDayTestId(cell.localDate)}
+      testID={cell.inMonth ? calendarDayTestId(cell.localDate) : undefined}
       accessibilityRole="button"
       accessibilityLabel={cellLabel(cell.localDate, count)}
       accessibilityState={{ disabled: !tappable }}
@@ -93,7 +142,7 @@ function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
         </View>
       ) : null}
       <Text
-        testID={CALENDAR_IDS.dayNumber}
+        testID={cell.inMonth ? CALENDAR_IDS.dayNumber : undefined}
         style={[
           styles.dayNumber,
           info !== undefined && cell.inMonth
@@ -119,31 +168,54 @@ export function CalendarScreen() {
   const [jumpText, setJumpText] = useState('');
   const [jumpError, setJumpError] = useState<string | null>(null);
 
-  const days = useMemo(() => {
-    const index = services.index.index();
-    return index === null ? NO_DAYS : monthDayInfo(index, yearMonth, HOME_SCOPE);
-  }, [services.index, version, yearMonth]);
-  const grid = useMemo(() => monthGrid(yearMonth, today, WEEK_STARTS_ON), [yearMonth, today]);
   const weekdays = useMemo(() => weekdayNames(WEEK_STARTS_ON), []);
+  const currentMonth = today.slice(0, YEAR_MONTH_CHARS);
+  const monthsWithEntries = useMemo(() => {
+    const index = services.index.index();
+    const sections = index?.query({ ...EMPTY_GALLERY_FILTER, scope: HOME_SCOPE }) ?? [];
+    return new Set(sections.map((section) => section.localDate.slice(0, YEAR_MONTH_CHARS)));
+  }, [services.index, version]);
   const move = useCallback(
-    (delta: number) => setYearMonth((current) => addMonths(current, delta)),
-    [],
+    (delta: number) =>
+      setYearMonth(
+        (current) => monthTarget(current, delta, currentMonth, monthsWithEntries) ?? current,
+      ),
+    [currentMonth, monthsWithEntries],
   );
+  const canGoNext = monthTarget(yearMonth, NEXT_MONTH, currentMonth, monthsWithEntries) !== null;
+  const months = useMemo(
+    () => pagerMonths(currentMonth, monthsWithEntries, yearMonth),
+    [currentMonth, monthsWithEntries, yearMonth],
+  );
+  const pager = useRef<FlatList<string>>(null);
+  const shownIndex = useRef(NOT_SHOWN);
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const settle = useCallback(
+    (offset: number) => {
+      if (width === 0) return;
+      const index = Math.round(offset / width);
+      const month = months[index];
+      if (month === undefined) return;
+      shownIndex.current = index;
+      setYearMonth(month);
+    },
+    [months, width],
+  );
+  const settleSoon = useCallback(
+    (offset: number) => {
+      if (settleTimer.current !== null) clearTimeout(settleTimer.current);
+      settleTimer.current = setTimeout(() => settle(offset), PAGER_SETTLE_MS);
+    },
+    [settle],
+  );
+  useEffect(() => {
+    const index = months.indexOf(yearMonth);
+    if (index < 0 || width === 0 || index === shownIndex.current) return;
+    const animated = shownIndex.current >= 0;
+    shownIndex.current = index;
+    pager.current?.scrollToOffset({ offset: index * width, animated });
+  }, [months, yearMonth, width]);
   useMonthKeys(move);
-
-  const swipe = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_event, gesture) =>
-          Math.abs(gesture.dx) > SWIPE_CLAIM_DISTANCE &&
-          Math.abs(gesture.dx) > Math.abs(gesture.dy) * SWIPE_DIRECTION_RATIO,
-        onPanResponderRelease: (_event, gesture) => {
-          if (gesture.dx >= SWIPE_MIN_DISTANCE) move(PREVIOUS_MONTH);
-          else if (gesture.dx <= -SWIPE_MIN_DISTANCE) move(NEXT_MONTH);
-        },
-      }),
-    [move],
-  );
 
   const cellSize =
     width === 0 ? 0 : Math.floor((width - CALENDAR_CELL_GAP * (DAYS_PER_WEEK - 1)) / DAYS_PER_WEEK);
@@ -160,6 +232,10 @@ export function CalendarScreen() {
     const value = jumpText.trim();
     if (!isValidYearMonth(value)) {
       setJumpError(EN['calendar.jumpInvalid']);
+      return;
+    }
+    if (!canShowMonth(value, currentMonth, monthsWithEntries)) {
+      setJumpError(EN['calendar.jumpEmpty']);
       return;
     }
     setYearMonth(value);
@@ -190,6 +266,7 @@ export function CalendarScreen() {
           onPress={() => move(NEXT_MONTH)}
           icon="next"
           tonal={false}
+          disabled={!canGoNext}
         />
       </View>
       <View style={styles.actions}>
@@ -210,7 +287,7 @@ export function CalendarScreen() {
           }}
         />
       </View>
-      <View onLayout={onLayout} {...swipe.panHandlers}>
+      <View onLayout={onLayout}>
         <View style={styles.row}>
           {weekdays.map((name, position) => (
             <Text
@@ -222,27 +299,39 @@ export function CalendarScreen() {
             </Text>
           ))}
         </View>
-        {grid.map((week) => (
-          <View key={week[0]?.localDate} style={styles.row}>
-            {week.map((cell) => {
-              const info = cell.inMonth ? days.get(cell.localDate) : undefined;
-              const coverMediaId =
-                info === undefined
-                  ? null
-                  : (services.index.index()?.get(info.coverEntryId)?.coverMediaId ?? null);
-              return (
-                <DayCell
-                  key={cell.localDate}
-                  cell={cell}
-                  size={cellSize}
-                  info={info}
-                  coverMediaId={coverMediaId}
-                  onOpen={openDay}
-                />
-              );
-            })}
-          </View>
-        ))}
+        {cellSize === 0 ? null : (
+          <FlatList
+            ref={pager}
+            testID="calendar.pager"
+            data={months}
+            keyExtractor={(month) => month}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            initialScrollIndex={Math.max(0, months.indexOf(yearMonth))}
+            getItemLayout={(_data, index) => ({ length: width, offset: width * index, index })}
+            windowSize={PAGER_WINDOW}
+            initialNumToRender={1}
+            maxToRenderPerBatch={PAGER_WINDOW}
+            style={{ height: (cellSize + CALENDAR_CELL_GAP) * MAX_WEEKS }}
+            onMomentumScrollEnd={(event) => settle(event.nativeEvent.contentOffset.x)}
+            onScroll={
+              Platform.OS === 'web'
+                ? (event) => settleSoon(event.nativeEvent.contentOffset.x)
+                : undefined
+            }
+            scrollEventThrottle={PAGER_SCROLL_THROTTLE_MS}
+            renderItem={({ item }) => (
+              <MonthPage
+                yearMonth={item}
+                today={today}
+                width={width}
+                cellSize={cellSize}
+                onOpen={openDay}
+              />
+            )}
+          />
+        )}
       </View>
       {jumping ? (
         <Sheet testID={CALENDAR_IDS.jumpSheet} onClose={() => setJumping(false)}>

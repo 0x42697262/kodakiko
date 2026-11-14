@@ -1,4 +1,4 @@
-import type { GalleryFilter, GalleryIndex, WeekStart } from '@kodakiko/core';
+import { addMonths, type GalleryFilter, type GalleryIndex, type WeekStart } from '@kodakiko/core';
 import {
   CALENDAR_LOCALE,
   CALENDAR_TIME_ZONE,
@@ -102,4 +102,31 @@ export function monthDayInfo(
     info.set(section.localDate, { count: section.entryIds.length, coverEntryId });
   }
   return info;
+}
+
+export function canShowMonth(yearMonth: string, currentYearMonth: string, monthsWithEntries: ReadonlySet<string>): boolean {
+  return yearMonth <= currentYearMonth || monthsWithEntries.has(yearMonth);
+}
+
+export function monthTarget(
+  from: string,
+  delta: number,
+  currentYearMonth: string,
+  monthsWithEntries: ReadonlySet<string>,
+): string | null {
+  const candidate = addMonths(from, delta);
+  if (canShowMonth(candidate, currentYearMonth, monthsWithEntries)) return candidate;
+  if (delta < 0) return candidate;
+  const later = [...monthsWithEntries].filter((month) => month > candidate).sort();
+  return later[0] ?? null;
+}
+
+export const PAGER_LEAD_MONTHS = 12;
+
+export function pagerMonths(currentYearMonth: string, monthsWithEntries: ReadonlySet<string>, shownYearMonth: string): readonly string[] {
+  const earliest = [...monthsWithEntries, shownYearMonth, currentYearMonth].sort()[0] ?? currentYearMonth;
+  const months: string[] = [];
+  for (let month = addMonths(earliest, -PAGER_LEAD_MONTHS); month <= currentYearMonth; month = addMonths(month, 1)) months.push(month);
+  const future = [...monthsWithEntries].filter((month) => month > currentYearMonth).sort();
+  return [...months, ...future];
 }
