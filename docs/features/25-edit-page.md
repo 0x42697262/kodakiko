@@ -122,4 +122,10 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   Viewer: audio items leave the pager (page indicator counts photos and videos) and show as a
   list. **U-40** (Chromium fake microphone; written with the code). Android recording and AAC
   playback UNVERIFIED.
+- **Phase 7 (D-100):** a public link uploads its own re-encrypted copies (spec 18), so it never
+  depends on the entry's upload. The only blocker was spec 18 §create step 1 "synced
+  (`baseRevision ≥ 1`)"; it is dropped, and the spec 18 test "refuses unsynced entries" became
+  "creates a link for an entry that is still uploading" (programmer decision supersedes; red
+  first). No "not ready yet" state is needed: the link exists only after its copies are uploaded.
+  Account sharing (spec 17) still reports entries that are not synced yet.
 
