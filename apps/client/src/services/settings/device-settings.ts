@@ -81,6 +81,8 @@ export const deviceSettingsSchema = z.object({
   pureBlack: z.boolean(),
   hapticFeedback: z.boolean(),
   dynamicColor: z.boolean(),
+  autoplayVideos: z.boolean(),
+  autoplayOnMobileData: z.boolean(),
   timeFormat: z.enum(TIME_FORMATS),
 });
 

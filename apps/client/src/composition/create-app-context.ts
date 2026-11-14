@@ -18,7 +18,7 @@ import { createDownloadingOriginalSource, type OriginalsService } from '../servi
 import { createDownloader, type Downloader } from '../services/downloads/downloader';
 import { createWifiUploadPolicy } from '../services/downloads/upload-policy';
 import { createCachingThumbnailSource, type ThumbnailCacheService } from '../services/thumbnails/thumbnail-cache';
-import { createNetworkInfo } from '../adapters/network/network';
+import { createNetworkInfo, type NetworkInfo } from '../adapters/network/network';
 import type { VideoLauncher } from '../services/video/video-launcher';
 import type { VideoSource } from '../services/video/video-source';
 import { createVideoSource } from '../adapters/video-source/video-source';
@@ -120,6 +120,7 @@ export type Services = {
   readonly exporter: ExportService;
   readonly journalImport: JournalImport;
   readonly videoSource: VideoSource;
+  readonly network: NetworkInfo;
 };
 
 export type LockControl = {
@@ -588,6 +589,7 @@ export async function createAppContext(): Promise<AppContext> {
       exporter,
       journalImport,
       videoSource,
+      network,
       savedNotice: createObservable<number | null>(null),
       index,
       lastIndexBuild,

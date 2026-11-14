@@ -18,7 +18,10 @@ import {
 import { PreferenceList } from '../../ui/preferences/PreferenceList';
 import type { PreferenceItem } from '../../ui/preferences/preference-types';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
-import { readDeviceStorage, type DeviceStorage } from '../../adapters/device-storage/device-storage';
+import {
+  readDeviceStorage,
+  type DeviceStorage,
+} from '../../adapters/device-storage/device-storage';
 import { LabeledValue, SettingsPage } from './settings-ui';
 
 const NO_LIMIT = 0;
@@ -39,7 +42,9 @@ export function StorageSettingsScreen() {
 
   const [device, setDevice] = useState<DeviceStorage | null>(null);
   const reload = useCallback(() => {
-    readDeviceStorage().then(setDevice).catch(() => setDevice(null));
+    readDeviceStorage()
+      .then(setDevice)
+      .catch(() => setDevice(null));
     services.originals
       .usage()
       .then(setUsage)
@@ -53,12 +58,44 @@ export function StorageSettingsScreen() {
   useEffect(reload, [reload]);
 
   const items: PreferenceItem[] = [
-    { kind: 'info', key: 'location', testID: 'storage.location', text: `${EN['storage.location']}: ${android ? EN['storage.locationAndroid'] : EN['storage.locationWeb']}` },
+    {
+      kind: 'info',
+      key: 'location',
+      testID: 'storage.location',
+      text: `${EN['storage.location']}: ${android ? EN['storage.locationAndroid'] : EN['storage.locationWeb']}`,
+    },
     { kind: 'header', key: 'backup', title: EN['storage.backup'] },
-    { kind: 'text', key: 'export', testID: 'settings.row.export', icon: 'storage', title: EN['storage.createBackup'], summary: EN['prefs.exportSummary'], onPress: () => router.push('/settings/export' as Href) },
-    { kind: 'text', key: 'import', testID: 'settings.row.import', icon: 'restore', title: EN['storage.restoreBackup'], summary: EN['storage.restoreSummary'], onPress: () => router.push('/settings/import' as Href) },
+    {
+      kind: 'text',
+      key: 'export',
+      testID: 'settings.row.export',
+      icon: 'storage',
+      title: EN['storage.createBackup'],
+      summary: EN['prefs.exportSummary'],
+      onPress: () => router.push('/settings/export' as Href),
+    },
+    {
+      kind: 'text',
+      key: 'import',
+      testID: 'settings.row.import',
+      icon: 'restore',
+      title: EN['storage.restoreBackup'],
+      summary: EN['storage.restoreSummary'],
+      onPress: () => router.push('/settings/import' as Href),
+    },
     { kind: 'header', key: 'cache', title: EN['storage.cache'] },
   ];
+  items.push({
+    kind: 'switch',
+    key: 'autoplay',
+    testID: 'settings.autoplay',
+    icon: 'play',
+    title: EN['prefs.autoplay'],
+    summary: EN['prefs.autoplaySummary'],
+    value: settings.autoplayVideos,
+    onChange: (autoplayVideos) =>
+      services.deviceSettings.update({ autoplayVideos }).catch(() => undefined),
+  });
   if (!local) {
     items.push(
       {
@@ -68,7 +105,10 @@ export function StorageSettingsScreen() {
         icon: 'pin',
         title: EN['settings.cacheCap'],
         value: settings.originalCacheCapBytes,
-        options: ORIGINAL_CACHE_CAP_CHOICES.map((value) => ({ value, label: value === NO_LIMIT ? EN['settings.noLimit'] : formatBytes(value) })),
+        options: ORIGINAL_CACHE_CAP_CHOICES.map((value) => ({
+          value,
+          label: value === NO_LIMIT ? EN['settings.noLimit'] : formatBytes(value),
+        })),
         onChange: (value) => {
           services.deviceSettings
             .update({ originalCacheCapBytes: Number(value) })
@@ -77,19 +117,56 @@ export function StorageSettingsScreen() {
             .catch(() => undefined);
         },
       },
-      { kind: 'text', key: 'clear', testID: 'settings.clearOriginals', icon: 'trash', title: EN['settings.clearOriginals'], ...(usage === null ? {} : { summary: EN['storage.used'](formatBytes(usage.originalsBytes)) }), onPress: () => setClearing(true) },
+      {
+        kind: 'text',
+        key: 'clear',
+        testID: 'settings.clearOriginals',
+        icon: 'trash',
+        title: EN['settings.clearOriginals'],
+        ...(usage === null
+          ? {}
+          : { summary: EN['storage.used'](formatBytes(usage.originalsBytes)) }),
+        onPress: () => setClearing(true),
+      },
     );
     if (android) {
       items.push(
-        { kind: 'switch', key: 'wifi', testID: 'settings.wifiOnly', icon: 'upload', title: EN['settings.wifiOnly'], value: settings.largeUploadsOnWifiOnly, onChange: (largeUploadsOnWifiOnly) => services.deviceSettings.update({ largeUploadsOnWifiOnly }).catch(() => undefined) },
+        {
+          kind: 'switch',
+          key: 'wifi',
+          testID: 'settings.wifiOnly',
+          icon: 'upload',
+          title: EN['settings.wifiOnly'],
+          value: settings.largeUploadsOnWifiOnly,
+          onChange: (largeUploadsOnWifiOnly) =>
+            services.deviceSettings.update({ largeUploadsOnWifiOnly }).catch(() => undefined),
+        },
+        {
+          kind: 'switch',
+          key: 'autoplayMobile',
+          testID: 'settings.autoplayMobile',
+          icon: 'video',
+          title: EN['prefs.autoplayMobile'],
+          summary: EN['prefs.autoplayMobileSummary'],
+          value: settings.autoplayOnMobileData,
+          disabled: !settings.autoplayVideos,
+          onChange: (autoplayOnMobileData) =>
+            services.deviceSettings.update({ autoplayOnMobileData }).catch(() => undefined),
+        },
         {
           kind: 'choice',
           key: 'threshold',
           testID: 'settings.largeThreshold',
           title: EN['settings.largeMeans'],
           value: settings.largeUploadThresholdBytes,
-          options: LARGE_UPLOAD_THRESHOLD_CHOICES.map((value) => ({ value, label: formatBytes(value) })),
-          onChange: (value) => services.deviceSettings.update({ largeUploadThresholdBytes: Number(value) }).catch(() => undefined),
+          options: LARGE_UPLOAD_THRESHOLD_CHOICES.map((value) => ({
+            value,
+            label: formatBytes(value),
+          })),
+          onChange: (value) =>
+            services.deviceSettings
+              .update({ largeUploadThresholdBytes: Number(value) })
+              .catch(() => undefined),
         },
       );
     }
@@ -102,7 +179,15 @@ export function StorageSettingsScreen() {
         {device === null ? null : (
           <>
             <View style={[styles.track, { backgroundColor: colors.border }]}>
-              <View style={[styles.fill, { width: `${((device.total - device.free) / Math.max(1, device.total)) * PERCENT}%`, backgroundColor: colors.primary }]} />
+              <View
+                style={[
+                  styles.fill,
+                  {
+                    width: `${((device.total - device.free) / Math.max(1, device.total)) * PERCENT}%`,
+                    backgroundColor: colors.primary,
+                  },
+                ]}
+              />
             </View>
             <Text testID="storage.device" style={{ color: colors.textMuted }}>
               {EN['storage.available'](formatBytes(device.free), formatBytes(device.total))}
@@ -111,10 +196,26 @@ export function StorageSettingsScreen() {
         )}
         {usage === null ? null : (
           <>
-            <LabeledValue testID="settings.usageOriginals" label={EN['settings.usageOriginals']} value={formatBytes(usage.originalsBytes)} />
-            <LabeledValue testID="settings.usageThumbnails" label={EN['settings.usageThumbnails']} value={formatBytes(usage.thumbnailsBytes)} />
-            <LabeledValue testID="settings.usagePinned" label={EN['settings.usagePinned']} value={formatBytes(usage.pinnedBytes)} />
-            <LabeledValue testID="settings.usagePending" label={EN['settings.usagePending']} value={formatBytes(usage.pendingUploadBytes)} />
+            <LabeledValue
+              testID="settings.usageOriginals"
+              label={EN['settings.usageOriginals']}
+              value={formatBytes(usage.originalsBytes)}
+            />
+            <LabeledValue
+              testID="settings.usageThumbnails"
+              label={EN['settings.usageThumbnails']}
+              value={formatBytes(usage.thumbnailsBytes)}
+            />
+            <LabeledValue
+              testID="settings.usagePinned"
+              label={EN['settings.usagePinned']}
+              value={formatBytes(usage.pinnedBytes)}
+            />
+            <LabeledValue
+              testID="settings.usagePending"
+              label={EN['settings.usagePending']}
+              value={formatBytes(usage.pendingUploadBytes)}
+            />
           </>
         )}
       </View>
@@ -132,7 +233,9 @@ export function StorageSettingsScreen() {
               onPress={() => {
                 navigator.storage
                   .persist()
-                  .then((granted) => rowStore.kvSetJson(STORAGE_KEYS.deviceStoragePersisted, granted))
+                  .then((granted) =>
+                    rowStore.kvSetJson(STORAGE_KEYS.deviceStoragePersisted, granted),
+                  )
                   .then(reload)
                   .catch(() => undefined);
               }}

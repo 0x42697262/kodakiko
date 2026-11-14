@@ -46,6 +46,7 @@ import {
 } from './constants';
 import { useViewerKeys } from './use-viewer-keys';
 import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
+import { InlineVideo } from '../video/inline-video';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 type Descriptor = Metadata['media'][number];
@@ -155,7 +156,8 @@ function MediaPage({
             onZoomChange={() => undefined}
           />
         )}
-        <View style={styles.playOverlay}>
+        <InlineVideo entryId={entryId} mediaId={media.mediaId} active={active} testID={`viewer.inlineVideo.${position}`} />
+        <View pointerEvents="box-none" style={styles.playOverlay}>
           <Button
             testID={testId('viewer.play')}
             label={EN['viewer.play']}

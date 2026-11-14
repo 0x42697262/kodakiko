@@ -53,5 +53,7 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   pureBlack: false,
   hapticFeedback: true,
   dynamicColor: false,
+  autoplayVideos: true,
+  autoplayOnMobileData: false,
   timeFormat: '24h',
 } as const);

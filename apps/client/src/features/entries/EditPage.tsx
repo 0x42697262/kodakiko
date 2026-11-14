@@ -29,6 +29,8 @@ import { NoteSection } from './note-section';
 import { PageDots } from './page-dots';
 import { TimeEditor } from './time-editor';
 import { CaptionOverlay } from './caption-overlay';
+import { InlineVideo } from '../video/inline-video';
+import { Touchable } from '../../ui/Touchable';
 import { MediaMenus, type MediaMenuState } from './media-menus';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
@@ -49,6 +51,8 @@ function MediaPage({
   position,
   caption,
   onMenu,
+  active,
+  onPlay,
 }: {
   readonly entryId: string;
   readonly media: Descriptor;
@@ -56,6 +60,8 @@ function MediaPage({
   readonly position: number;
   readonly caption: string | undefined;
   readonly onMenu: () => void;
+  readonly active: boolean;
+  readonly onPlay: () => void;
 }) {
   const { colors } = useTheme();
   const uri = useThumbnail(entryId, media.mediaId);
@@ -65,6 +71,11 @@ function MediaPage({
       style={[styles.page, { width, height: width * PAGE_ASPECT, backgroundColor: colors.surface }]}
     >
       {uri === null ? null : <Image source={{ uri }} style={styles.image} contentFit="contain" />}
+      {media.kind === 'video' ? (
+        <Touchable testID={`edit.play.${position}`} accessibilityRole="button" accessibilityLabel={EN['viewer.play']} onPress={onPlay} style={StyleSheet.absoluteFill}>
+          <InlineVideo entryId={entryId} mediaId={media.mediaId} active={active} testID={`edit.inlineVideo.${position}`} />
+        </Touchable>
+      ) : null}
       {caption === undefined ? null : <CaptionOverlay testID={`edit.captionText.${position}`} caption={caption} />}
       <View style={styles.pageMenu}>
         <IconAction testID={`edit.mediaMenu.${position}`} icon="overflow" label={EN['edit.mediaOptions']} onPress={onMenu} />
@@ -254,6 +265,10 @@ export function EditPage({
                 position={index}
                 caption={draft.captions[item.mediaId]}
                 onMenu={() => setMenu({ kind: 'menu', mediaId: item.mediaId })}
+                active={index === current}
+                onPlay={() => {
+                  if (services.videoLauncher.canPlay()) services.videoLauncher.open(entryId, item.mediaId);
+                }}
               />
             )}
           />

@@ -44,7 +44,7 @@ Capture stays its own full-screen page (v0.1.3 flow). Only the edit page changes
 - Web UI flows: existing flows adapted only where D-86/D-89 remove the Compose/Edit split (noted
   per flow); new **U-34** autosave (type a note, leave without Save, reopen → note kept), **U-35**
   caption shows on the page and is found by search, **U-36** set as cover changes the gallery
-  tile, **U-37** crop replaces the photo on the server, **U-38** voice note recorded on web (fake microphone) plays back.
+  tile, **U-37** crop replaces the photo on the server, **U-38** inline autoplay and its setting, **U-39** voice note recorded on web (fake microphone) plays back.
 - Android (UNVERIFIED until an APK): paste, share to apps, crop, autoplay, recording.
 
 ## 3. Out of scope
@@ -87,4 +87,15 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   kept showing the old first photo (browser scroll anchoring); the pager now remounts when the
   media order changes. New flows **U-35** caption + search, **U-36** set as cover + remove
   confirm, **U-37** crop (written with the code).
+- **Phase 4:** `features/video/autoplay.ts` `shouldAutoplay` (red first); device settings
+  `autoplayVideos` (on) and `autoplayOnMobileData` (off) (red first); Data and storage shows
+  **Autoplay videos** on every platform and **Autoplay on mobile data** on Android (web has no
+  mobile-data signal). `inline-video.tsx` prepares the video only when autoplay is wanted (cached
+  = original object `present`; Wi-Fi from the new `services.network`) and plays muted + looped on
+  the current page only, with a mute toggle. Players: `inline-player.native.tsx` (`expo-video`)
+  and `inline-player.web.tsx` (a `<video>` element, because expo-video's web player leaves
+  `play()` rejections unhandled when a page is swiped away). Used in the edit page (tap opens the
+  Kodakiko player) and the viewer (its centered Play overlay passes touches through,
+  `pointerEvents="box-none"`). **U-38** (written with the code). U-13 (no full download) still
+  passes.
 

@@ -49,7 +49,7 @@ const SECTIONS: readonly { readonly section: string; readonly route: string; rea
   {
     section: EN['prefs.dataStorage'],
     route: '/settings/storage',
-    titles: [EN['settings.cacheCap'], EN['settings.clearOriginals'], EN['settings.wifiOnly'], EN['settings.largeMeans'], EN['prefs.exportJournal']],
+    titles: [EN['settings.cacheCap'], EN['settings.clearOriginals'], EN['settings.wifiOnly'], EN['settings.largeMeans'], EN['prefs.exportJournal'], EN['prefs.autoplay'], EN['prefs.autoplayMobile']],
   },
   {
     section: EN['settings.rowSync'],
