@@ -7,6 +7,7 @@ import { GALLERY_IDS } from '../../keys/gallery-ids';
 import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { Body } from '../../ui/Typography';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
@@ -40,7 +41,11 @@ export function DayScreen({ localDate }: DayScreenProps) {
             {EN['gallery.selected'](selection.selected.size)}
           </Text>
         ) : (
-          <Text testID={CALENDAR_IDS.dayTitle} accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
+          <Text
+            testID={CALENDAR_IDS.dayTitle}
+            accessibilityRole="header"
+            style={[styles.title, { color: colors.text }]}
+          >
             {formatDayHeader(localDate, todayLocalDate(clock.now()))}
           </Text>
         )}
@@ -61,7 +66,13 @@ export function DayScreen({ localDate }: DayScreenProps) {
               />
             </>
           ) : (
-            <Button testID={testId('day.back')} label={EN['day.back']} variant="secondary" onPress={() => router.back()} />
+            <IconAction
+              testID={testId('day.back')}
+              label={EN['day.back']}
+              onPress={() => router.back()}
+              icon="back"
+              tonal={false}
+            />
           )}
         </View>
       </View>
@@ -72,7 +83,13 @@ export function DayScreen({ localDate }: DayScreenProps) {
         empty={
           <View style={styles.empty}>
             <Body testID={testId('day.empty')} text={EN['day.empty']} />
-            <Button testID={testId('day.back')} label={EN['day.back']} variant="secondary" onPress={() => router.back()} />
+            <IconAction
+              testID={testId('day.back')}
+              label={EN['day.back']}
+              onPress={() => router.back()}
+              icon="back"
+              tonal={false}
+            />
           </View>
         }
       />
@@ -86,7 +103,13 @@ export function DayScreen({ localDate }: DayScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACING.sm, flexWrap: 'wrap' },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: SPACING.sm,
+    flexWrap: 'wrap',
+  },
   title: { fontSize: FONT_SIZE.title, fontWeight: '600' },
   actions: { flexDirection: 'row', gap: SPACING.sm },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: SPACING.md },

@@ -147,4 +147,8 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
   - Not done: automatic backup frequency (needs a persisted folder grant on Android). Import
     unzips whole parts in memory (fine for normal journals; the web download fallback caps parts
     at 1 GB).
+- **Phase 8 (2026-11-14):** every remaining text "Back" button (compose, trash, day, collection,
+  share, links, admin, placeholder) and the calendar's ‹ › buttons are icon actions
+  (`IconAction`, same test ids). Auth screens have no back navigation and keep labeled primary
+  buttons.
 

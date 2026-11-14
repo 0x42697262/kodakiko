@@ -7,6 +7,7 @@ import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { TextField } from '../../ui/TextField';
 import { Body } from '../../ui/Typography';
@@ -50,21 +51,26 @@ export function CollectionScreen({ collectionId }: { readonly collectionId: stri
   );
 
   useFocusEffect(
-    useCallback(() => () => {
-      ownerSelection.clear();
-      setOverlay('none');
-    }, [ownerSelection.clear]),
+    useCallback(
+      () => () => {
+        ownerSelection.clear();
+        setOverlay('none');
+      },
+      [ownerSelection.clear],
+    ),
   );
 
-  if (collection === undefined) return <Screen testID={SHARING_IDS.collectionScreen}>{null}</Screen>;
+  if (collection === undefined)
+    return <Screen testID={SHARING_IDS.collectionScreen}>{null}</Screen>;
   if (collection === null) {
     return (
       <Screen testID={SHARING_IDS.collectionScreen}>
-        <Button
+        <IconAction
           testID={testId('shared.back')}
           label={EN['shared.back']}
-          variant="secondary"
           onPress={() => (router.canGoBack() ? router.back() : router.replace('/shared' as Href))}
+          icon="back"
+          tonal={false}
         />
       </Screen>
     );
@@ -92,9 +98,19 @@ export function CollectionScreen({ collectionId }: { readonly collectionId: stri
   return (
     <Screen testID={SHARING_IDS.collectionScreen}>
       <View style={styles.header}>
-        <Button testID={testId('shared.back')} label={EN['shared.back']} variant="secondary" onPress={() => router.back()} />
+        <IconAction
+          testID={testId('shared.back')}
+          label={EN['shared.back']}
+          onPress={() => router.back()}
+          icon="back"
+          tonal={false}
+        />
         <View style={styles.titleBlock}>
-          <Text testID={SHARING_IDS.collectionTitle} accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
+          <Text
+            testID={SHARING_IDS.collectionTitle}
+            accessibilityRole="header"
+            style={[styles.title, { color: colors.text }]}
+          >
             {collection.name}
           </Text>
           {owner ? null : (
@@ -111,7 +127,12 @@ export function CollectionScreen({ collectionId }: { readonly collectionId: stri
             onPress={() => setOverlay('actions')}
           />
         ) : (
-          <Button testID={SHARING_IDS.collectionMore} label={EN['shared.more']} variant="secondary" onPress={() => setOverlay('more')} />
+          <Button
+            testID={SHARING_IDS.collectionMore}
+            label={EN['shared.more']}
+            variant="secondary"
+            onPress={() => setOverlay('more')}
+          />
         )}
       </View>
       <EntryGrid
@@ -142,49 +163,84 @@ export function CollectionScreen({ collectionId }: { readonly collectionId: stri
                   setOverlay('rename');
                 }}
               />
-              <Button testID={SHARING_IDS.delete} label={EN['shared.delete']} variant="danger" onPress={() => setOverlay('confirmDelete')} />
+              <Button
+                testID={SHARING_IDS.delete}
+                label={EN['shared.delete']}
+                variant="danger"
+                onPress={() => setOverlay('confirmDelete')}
+              />
             </>
           ) : (
-            <Button testID={SHARING_IDS.leave} label={EN['shared.leave']} variant="danger" onPress={() => setOverlay('confirmLeave')} />
+            <Button
+              testID={SHARING_IDS.leave}
+              label={EN['shared.leave']}
+              variant="danger"
+              onPress={() => setOverlay('confirmLeave')}
+            />
           )}
         </Sheet>
       ) : null}
       {overlay === 'rename' ? (
         <Sheet testID={SHARING_IDS.collectionSheet} onClose={() => setOverlay('none')}>
-          <TextField testID={testId('shared.nameField')} label={EN['shared.nameField']} value={name} onChangeText={setName} maxLength={COLLECTION_NAME_MAX_CHARS} />
-          {error === null ? null : <Banner testID={SHARING_IDS.error} kind="error" message={error} />}
+          <TextField
+            testID={testId('shared.nameField')}
+            label={EN['shared.nameField']}
+            value={name}
+            onChangeText={setName}
+            maxLength={COLLECTION_NAME_MAX_CHARS}
+          />
+          {error === null ? null : (
+            <Banner testID={SHARING_IDS.error} kind="error" message={error} />
+          )}
           <Button
             testID={testId('shared.save')}
             label={EN['shared.save']}
             busy={busy}
             disabled={name.trim().length === 0}
-            onPress={() => act(() => services.sharing.renameJournal(collectionId, name.trim()), () => services.collectionNames.clear()).catch(() => undefined)}
+            onPress={() =>
+              act(
+                () => services.sharing.renameJournal(collectionId, name.trim()),
+                () => services.collectionNames.clear(),
+              ).catch(() => undefined)
+            }
           />
         </Sheet>
       ) : null}
       {overlay === 'confirmDelete' ? (
         <Sheet testID={SHARING_IDS.collectionSheet} onClose={() => setOverlay('none')}>
           <Text style={{ color: colors.text }}>{EN['shared.deleteConfirm'](collection.name)}</Text>
-          {error === null ? null : <Banner testID={SHARING_IDS.error} kind="error" message={error} />}
+          {error === null ? null : (
+            <Banner testID={SHARING_IDS.error} kind="error" message={error} />
+          )}
           <Button
             testID={SHARING_IDS.deleteConfirm}
             label={EN['shared.deleteAction']}
             variant="danger"
             busy={busy}
-            onPress={() => act(() => services.sharing.deleteJournal(collectionId), backToShared).catch(() => undefined)}
+            onPress={() =>
+              act(() => services.sharing.deleteJournal(collectionId), backToShared).catch(
+                () => undefined,
+              )
+            }
           />
         </Sheet>
       ) : null}
       {overlay === 'confirmLeave' ? (
         <Sheet testID={SHARING_IDS.collectionSheet} onClose={() => setOverlay('none')}>
-          <Text style={{ color: colors.text }}>{EN['shared.leaveConfirm'](collection.name, collection.ownerUsername)}</Text>
-          {error === null ? null : <Banner testID={SHARING_IDS.error} kind="error" message={error} />}
+          <Text style={{ color: colors.text }}>
+            {EN['shared.leaveConfirm'](collection.name, collection.ownerUsername)}
+          </Text>
+          {error === null ? null : (
+            <Banner testID={SHARING_IDS.error} kind="error" message={error} />
+          )}
           <Button
             testID={SHARING_IDS.leaveConfirm}
             label={EN['shared.leaveAction']}
             variant="danger"
             busy={busy}
-            onPress={() => act(() => services.sharing.leave(collectionId), backToShared).catch(() => undefined)}
+            onPress={() =>
+              act(() => services.sharing.leave(collectionId), backToShared).catch(() => undefined)
+            }
           />
         </Sheet>
       ) : null}
@@ -196,7 +252,11 @@ export function CollectionScreen({ collectionId }: { readonly collectionId: stri
             ownerSelection.clear();
           }}
         >
-          <BulkActionsSheet ids={[...selection.selected]} mode="collectionOwner" collectionId={collectionId} />
+          <BulkActionsSheet
+            ids={[...selection.selected]}
+            mode="collectionOwner"
+            collectionId={collectionId}
+          />
         </Sheet>
       ) : null}
     </Screen>

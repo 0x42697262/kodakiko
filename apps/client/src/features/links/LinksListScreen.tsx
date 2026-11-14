@@ -7,6 +7,7 @@ import type { OwnerLink } from '../../services/links/public-links-service';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { Body, Title } from '../../ui/Typography';
 import { BORDER_WIDTH, FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
@@ -19,11 +20,15 @@ const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;
 
 function expiryText(link: OwnerLink, now: number): string {
-  if (link.maxViews !== null) return link.viewCount >= link.maxViews ? EN['links.opened'] : EN['links.oneViewUnopened'];
+  if (link.maxViews !== null)
+    return link.viewCount >= link.maxViews ? EN['links.opened'] : EN['links.oneViewUnopened'];
   if (link.expiresAt === null) return EN['links.neverExpires'];
   const remaining = Date.parse(link.expiresAt) - now;
   const days = Math.round(remaining / DAY_MS);
-  const when = days >= 1 ? `in ${days} ${days === 1 ? 'day' : 'days'}` : `in ${Math.max(1, Math.round(remaining / HOUR_MS))} h`;
+  const when =
+    days >= 1
+      ? `in ${days} ${days === 1 ? 'day' : 'days'}`
+      : `in ${Math.max(1, Math.round(remaining / HOUR_MS))} h`;
   return EN['links.expiresIn'](when);
 }
 
@@ -46,12 +51,24 @@ export function LinksListScreen() {
 
   return (
     <Screen testID={LINK_IDS.listScreen} scroll>
-      <Button testID="shared.back" label={EN['shared.back']} variant="secondary" onPress={() => router.back()} />
+      <IconAction
+        testID="shared.back"
+        label={EN['shared.back']}
+        onPress={() => router.back()}
+        icon="back"
+        tonal={false}
+      />
       <Title text={EN['links.listTitle']} />
       {error === null ? null : <Banner testID={LINK_IDS.error} kind="error" message={error} />}
-      {links !== null && links.length === 0 ? <Body testID="links.listEmpty" text={EN['links.listEmpty']} /> : null}
+      {links !== null && links.length === 0 ? (
+        <Body testID="links.listEmpty" text={EN['links.listEmpty']} />
+      ) : null}
       {(links ?? []).map((link, position) => (
-        <View key={link.linkId} testID={listTestId(LINK_IDS.row, position)} style={[styles.row, { borderColor: colors.border }]}>
+        <View
+          key={link.linkId}
+          testID={listTestId(LINK_IDS.row, position)}
+          style={[styles.row, { borderColor: colors.border }]}
+        >
           <Text style={[styles.title, { color: colors.text }]}>{link.title}</Text>
           <Text style={{ color: colors.textMuted }}>
             {expiryText(link, clock.now())} · {EN['links.views'](link.viewCount)}
@@ -61,9 +78,18 @@ export function LinksListScreen() {
               testID={listTestId(LINK_IDS.copyRow, position)}
               label={Platform.OS === 'web' ? EN['links.copyLink'] : EN['links.share']}
               variant="secondary"
-              onPress={() => (Platform.OS === 'web' ? copyText(link.url) : shareText(link.url)).catch(() => undefined)}
+              onPress={() =>
+                (Platform.OS === 'web' ? copyText(link.url) : shareText(link.url)).catch(
+                  () => undefined,
+                )
+              }
             />
-            <Button testID={listTestId(LINK_IDS.revokeRow, position)} label={EN['links.revoke']} variant="danger" onPress={() => setRevoking(link)} />
+            <Button
+              testID={listTestId(LINK_IDS.revokeRow, position)}
+              label={EN['links.revoke']}
+              variant="danger"
+              onPress={() => setRevoking(link)}
+            />
           </View>
         </View>
       ))}

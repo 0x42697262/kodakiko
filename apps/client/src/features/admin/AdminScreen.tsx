@@ -9,6 +9,7 @@ import { listTestId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { TextField } from '../../ui/TextField';
 import { Body, Title } from '../../ui/Typography';
@@ -53,7 +54,8 @@ function refusalText(error: unknown): string {
 
 function inviteState(invite: InviteDto, now: number): string {
   if (invite.revokedAt !== null) return EN['admin.inviteRevoked'];
-  if (invite.redeemedAt !== null) return EN['admin.inviteRedeemed'](invite.redeemedByUsername ?? '');
+  if (invite.redeemedAt !== null)
+    return EN['admin.inviteRedeemed'](invite.redeemedByUsername ?? '');
   if (Date.parse(invite.expiresAt) <= now) return EN['admin.inviteExpired'];
   return EN['admin.inviteOpen'];
 }
@@ -73,7 +75,8 @@ function People() {
     const all: AdminUserDto[] = [];
     let cursor: string | null = null;
     do {
-      const page: Awaited<ReturnType<typeof services.admin.listUsers>> = await services.admin.listUsers(cursor);
+      const page: Awaited<ReturnType<typeof services.admin.listUsers>> =
+        await services.admin.listUsers(cursor);
       all.push(...page.items);
       cursor = page.nextCursor;
     } while (cursor !== null);
@@ -106,7 +109,9 @@ function People() {
 
   return (
     <View style={styles.section}>
-      {error !== null && editing === null ? <Banner testID={ADMIN_IDS.error} kind="error" message={error} /> : null}
+      {error !== null && editing === null ? (
+        <Banner testID={ADMIN_IDS.error} kind="error" message={error} />
+      ) : null}
       {users.map((user, position) => {
         const limit = user.quotaBytes ?? defaultQuota;
         return (
@@ -123,12 +128,29 @@ function People() {
                 user.role,
                 formatBytes(user.usedBytes),
                 formatBytes(limit),
-                user.lastActiveAt === null ? EN['admin.never'] : user.lastActiveAt.slice(0, DATE_CHARS),
+                user.lastActiveAt === null
+                  ? EN['admin.never']
+                  : user.lastActiveAt.slice(0, DATE_CHARS),
               )}
             </Text>
             <View style={styles.tags}>
-              {user.usedBytes > limit ? <Text style={[styles.tag, { color: colors.onPrimary, backgroundColor: colors.danger }]}>{EN['admin.overQuota']}</Text> : null}
-              {user.status === 'pending_deletion' ? <Text style={[styles.tag, { color: colors.onPrimary, backgroundColor: colors.textMuted }]}>{EN['admin.pendingDeletion']}</Text> : null}
+              {user.usedBytes > limit ? (
+                <Text
+                  style={[styles.tag, { color: colors.onPrimary, backgroundColor: colors.danger }]}
+                >
+                  {EN['admin.overQuota']}
+                </Text>
+              ) : null}
+              {user.status === 'pending_deletion' ? (
+                <Text
+                  style={[
+                    styles.tag,
+                    { color: colors.onPrimary, backgroundColor: colors.textMuted },
+                  ]}
+                >
+                  {EN['admin.pendingDeletion']}
+                </Text>
+              ) : null}
             </View>
           </Pressable>
         );
@@ -136,20 +158,46 @@ function People() {
       {editing === null ? null : (
         <Sheet testID={ADMIN_IDS.userSheet} onClose={() => setEditing(null)}>
           <Text style={[styles.name, { color: colors.text }]}>{editing.username}</Text>
-          <Pressable testID={ADMIN_IDS.useDefault} accessibilityRole="switch" accessibilityState={{ checked: useDefault }} onPress={() => setUseDefault(!useDefault)}>
+          <Pressable
+            testID={ADMIN_IDS.useDefault}
+            accessibilityRole="switch"
+            accessibilityState={{ checked: useDefault }}
+            onPress={() => setUseDefault(!useDefault)}
+          >
             <Text style={{ color: colors.text }}>
-              {useDefault ? '\u2611' : '\u2610'} {EN['admin.useDefault']} ({formatBytes(defaultQuota)})
+              {useDefault ? '\u2611' : '\u2610'} {EN['admin.useDefault']} (
+              {formatBytes(defaultQuota)})
             </Text>
           </Pressable>
           {useDefault ? null : (
-            <TextField testID={ADMIN_IDS.quota} label={EN['admin.quotaField']} value={quota} onChangeText={setQuota} keyboardType="decimal-pad" />
+            <TextField
+              testID={ADMIN_IDS.quota}
+              label={EN['admin.quotaField']}
+              value={quota}
+              onChangeText={setQuota}
+              keyboardType="decimal-pad"
+            />
           )}
           <View style={styles.tags}>
-            <Button testID={`${ADMIN_IDS.role}.member`} label={EN['admin.roleMember']} variant={role === 'member' ? 'primary' : 'secondary'} onPress={() => setRole('member')} />
-            <Button testID={`${ADMIN_IDS.role}.admin`} label={EN['admin.roleAdmin']} variant={role === 'admin' ? 'primary' : 'secondary'} onPress={() => setRole('admin')} />
+            <Button
+              testID={`${ADMIN_IDS.role}.member`}
+              label={EN['admin.roleMember']}
+              variant={role === 'member' ? 'primary' : 'secondary'}
+              onPress={() => setRole('member')}
+            />
+            <Button
+              testID={`${ADMIN_IDS.role}.admin`}
+              label={EN['admin.roleAdmin']}
+              variant={role === 'admin' ? 'primary' : 'secondary'}
+              onPress={() => setRole('admin')}
+            />
           </View>
           {error === null ? null : <Banner testID={ADMIN_IDS.error} kind="error" message={error} />}
-          <Button testID={ADMIN_IDS.save} label={EN['admin.save']} onPress={() => save().catch(() => undefined)} />
+          <Button
+            testID={ADMIN_IDS.save}
+            label={EN['admin.save']}
+            onPress={() => save().catch(() => undefined)}
+          />
         </Sheet>
       )}
     </View>
@@ -187,12 +235,23 @@ function Invites() {
 
   return (
     <View style={styles.section}>
-      <Button testID={ADMIN_IDS.newInvite} label={EN['admin.newInvite']} onPress={() => { setCreating(true); setUrl(null); }} />
+      <Button
+        testID={ADMIN_IDS.newInvite}
+        label={EN['admin.newInvite']}
+        onPress={() => {
+          setCreating(true);
+          setUrl(null);
+        }}
+      />
       {error === null ? null : <Banner testID={ADMIN_IDS.error} kind="error" message={error} />}
       {invites.map((invite, position) => {
         const state = inviteState(invite, clock.now());
         return (
-          <View key={invite.id} testID={listTestId(ADMIN_IDS.inviteRow, position)} style={[styles.row, { borderColor: colors.border }]}>
+          <View
+            key={invite.id}
+            testID={listTestId(ADMIN_IDS.inviteRow, position)}
+            style={[styles.row, { borderColor: colors.border }]}
+          >
             <Text style={{ color: colors.text }}>
               {invite.role} · {state} · {invite.expiresAt.slice(0, DATE_CHARS)}
             </Text>
@@ -201,7 +260,12 @@ function Invites() {
                 testID={listTestId(ADMIN_IDS.revoke, position)}
                 label={EN['admin.revoke']}
                 variant="danger"
-                onPress={() => services.admin.revokeInvite(invite.id).then(reload).catch(() => setError(EN['admin.failed']))}
+                onPress={() =>
+                  services.admin
+                    .revokeInvite(invite.id)
+                    .then(reload)
+                    .catch(() => setError(EN['admin.failed']))
+                }
               />
             ) : null}
           </View>
@@ -212,11 +276,31 @@ function Invites() {
           {url === null ? (
             <>
               <View style={styles.tags}>
-                <Button testID={`${ADMIN_IDS.role}.member`} label={EN['admin.roleMember']} variant={role === 'member' ? 'primary' : 'secondary'} onPress={() => setRole('member')} />
-                <Button testID={`${ADMIN_IDS.role}.admin`} label={EN['admin.roleAdmin']} variant={role === 'admin' ? 'primary' : 'secondary'} onPress={() => setRole('admin')} />
+                <Button
+                  testID={`${ADMIN_IDS.role}.member`}
+                  label={EN['admin.roleMember']}
+                  variant={role === 'member' ? 'primary' : 'secondary'}
+                  onPress={() => setRole('member')}
+                />
+                <Button
+                  testID={`${ADMIN_IDS.role}.admin`}
+                  label={EN['admin.roleAdmin']}
+                  variant={role === 'admin' ? 'primary' : 'secondary'}
+                  onPress={() => setRole('admin')}
+                />
               </View>
-              <TextField testID={ADMIN_IDS.inviteDays} label={EN['admin.expiryDays']} value={days} onChangeText={setDays} keyboardType="number-pad" />
-              <Button testID={ADMIN_IDS.createInvite} label={EN['admin.create']} onPress={() => create().catch(() => undefined)} />
+              <TextField
+                testID={ADMIN_IDS.inviteDays}
+                label={EN['admin.expiryDays']}
+                value={days}
+                onChangeText={setDays}
+                keyboardType="number-pad"
+              />
+              <Button
+                testID={ADMIN_IDS.createInvite}
+                label={EN['admin.create']}
+                onPress={() => create().catch(() => undefined)}
+              />
             </>
           ) : (
             <>
@@ -227,7 +311,9 @@ function Invites() {
               <Button
                 testID="admin.copyInvite"
                 label={Platform.OS === 'web' ? EN['links.copy'] : EN['links.share']}
-                onPress={() => (Platform.OS === 'web' ? copyText(url) : shareText(url)).catch(() => undefined)}
+                onPress={() =>
+                  (Platform.OS === 'web' ? copyText(url) : shareText(url)).catch(() => undefined)
+                }
               />
             </>
           )}
@@ -243,7 +329,10 @@ function Server() {
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
   const config = services.config.get();
   useEffect(() => {
-    services.admin.stats().then(setStats).catch(() => undefined);
+    services.admin
+      .stats()
+      .then(setStats)
+      .catch(() => undefined);
   }, [services.admin]);
   const rows: readonly (readonly [string, string])[] =
     stats === null
@@ -256,10 +345,19 @@ function Server() {
           [EN['admin.statEntries'], String(stats.entries)],
           [EN['admin.statObjects'], String(stats.objects)],
           [EN['admin.statBytes'], formatBytes(stats.totalBytes)],
-          [EN['admin.statQuota'], stats.quotaBytesAllocated === null ? '\u2014' : formatBytes(stats.quotaBytesAllocated)],
+          [
+            EN['admin.statQuota'],
+            stats.quotaBytesAllocated === null ? '\u2014' : formatBytes(stats.quotaBytesAllocated),
+          ],
           [EN['admin.version'], config?.serverVersion ?? '\u2014'],
-          [EN['admin.flagSharing'], config?.sharingEnabled === true ? EN['admin.on'] : EN['admin.off']],
-          [EN['admin.flagLinks'], config?.publicLinksEnabled === true ? EN['admin.on'] : EN['admin.off']],
+          [
+            EN['admin.flagSharing'],
+            config?.sharingEnabled === true ? EN['admin.on'] : EN['admin.off'],
+          ],
+          [
+            EN['admin.flagLinks'],
+            config?.publicLinksEnabled === true ? EN['admin.on'] : EN['admin.off'],
+          ],
         ];
   return (
     <View style={styles.section}>
@@ -280,12 +378,21 @@ export function AdminScreen() {
   const [segment, setSegment] = useState<Segment>('people');
   const [admin, setAdmin] = useState<boolean | null>(null);
   useEffect(() => {
-    services.account.isAdmin().then(setAdmin).catch(() => setAdmin(false));
+    services.account
+      .isAdmin()
+      .then(setAdmin)
+      .catch(() => setAdmin(false));
   }, [services.account, state.kind]);
 
   return (
     <Screen testID={ADMIN_IDS.screen} scroll>
-      <Button testID="shared.back" label={EN['shared.back']} variant="secondary" onPress={() => router.back()} />
+      <IconAction
+        testID="shared.back"
+        label={EN['shared.back']}
+        onPress={() => router.back()}
+        icon="back"
+        tonal={false}
+      />
       <Title text={EN['admin.title']} />
       {admin === false ? <Body testID="admin.notAdmin" text={EN['admin.notAdmin']} /> : null}
       {admin === true ? (

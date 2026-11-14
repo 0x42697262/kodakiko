@@ -2,11 +2,7 @@ import { useNavigation, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NOTE_MAX_CHARS, TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
-import {
-  buildNewEntryMetadata,
-  deviceOffsetMinutes,
-  earliestTime,
-} from '@kodakiko/core';
+import { buildNewEntryMetadata, deviceOffsetMinutes, earliestTime } from '@kodakiko/core';
 import { useAppContext } from '../../composition/app-context';
 import {
   COMPOSE_FIRST_SELECTION,
@@ -21,6 +17,7 @@ import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { TextField } from '../../ui/TextField';
 import { Title } from '../../ui/Typography';
@@ -134,14 +131,20 @@ export function ComposeScreen() {
   return (
     <Screen testID={ENTRY_IDS.composeScreen} scroll>
       <Title text={EN['compose.title']} />
-      <ScrollView horizontal contentContainerStyle={styles.strip} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        contentContainerStyle={styles.strip}
+        showsHorizontalScrollIndicator={false}
+      >
         {items.map((item, index) => (
           <Pressable
             key={item.mediaId}
             testID={listTestId(ENTRY_IDS.composeItem, index)}
             accessibilityRole="button"
             accessibilityLabel={
-              index === position ? EN['compose.itemSelected'](index + 1) : EN['compose.itemLabel'](index + 1)
+              index === position
+                ? EN['compose.itemSelected'](index + 1)
+                : EN['compose.itemLabel'](index + 1)
             }
             disabled={saving}
             onPress={() => setSelected(index)}
@@ -235,7 +238,10 @@ export function ComposeScreen() {
           maxLength={NOTE_MAX_CHARS}
         />
         {counterVisible ? (
-          <Text testID={ENTRY_IDS.composeNoteCounter} style={[styles.label, { color: colors.textMuted }]}>
+          <Text
+            testID={ENTRY_IDS.composeNoteCounter}
+            style={[styles.label, { color: colors.textMuted }]}
+          >
             {EN['compose.noteCounter'](note.length, NOTE_MAX_CHARS)}
           </Text>
         ) : null}
@@ -256,12 +262,13 @@ export function ComposeScreen() {
         <Banner testID={ENTRY_IDS.composeFailure} kind="error" message={EN['errors.generic']} />
       ) : null}
       <View style={styles.row}>
-        <Button
+        <IconAction
           testID={testId('compose.back')}
           label={EN['compose.back']}
-          variant="secondary"
           disabled={saving}
           onPress={() => router.back()}
+          icon="back"
+          tonal={false}
         />
         <Button
           testID={testId('compose.save')}

@@ -8,10 +8,17 @@ import type { Recipient } from '../../services/sharing/sharing-service';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { TextField } from '../../ui/TextField';
 import { Body, Title } from '../../ui/Typography';
-import { BORDER_WIDTH, FONT_FAMILY_MONO, FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
+import {
+  BORDER_WIDTH,
+  FONT_FAMILY_MONO,
+  FONT_SIZE,
+  RADIUS,
+  SPACING,
+} from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { Sheet } from '../gallery/sheet';
 import { sharingErrorText } from './sharing-errors';
@@ -51,7 +58,13 @@ export function ShareScreen({ collectionId }: { readonly collectionId: string })
 
   return (
     <Screen testID={SHARING_IDS.shareScreen} scroll>
-      <Button testID="shared.back" label={EN['shared.back']} variant="secondary" onPress={() => router.back()} />
+      <IconAction
+        testID="shared.back"
+        label={EN['shared.back']}
+        onPress={() => router.back()}
+        icon="back"
+        tonal={false}
+      />
       <Title text={EN['shared.shareTitle']} />
       <TextField
         testID={SHARING_IDS.username}
@@ -69,13 +82,23 @@ export function ShareScreen({ collectionId }: { readonly collectionId: string })
         label={EN['shared.find']}
         busy={busy && found === null}
         disabled={username.trim().length === 0}
-        onPress={() => run(async () => setFound(await services.sharing.lookupRecipient(username))).catch(() => undefined)}
+        onPress={() =>
+          run(async () => setFound(await services.sharing.lookupRecipient(username))).catch(
+            () => undefined,
+          )
+        }
       />
       {error === null ? null : <Banner testID={SHARING_IDS.error} kind="error" message={error} />}
       {found === null ? null : (
-        <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.surface }]}>
+        <View
+          style={[styles.card, { borderColor: colors.border, backgroundColor: colors.surface }]}
+        >
           <Text style={[styles.name, { color: colors.text }]}>{found.username}</Text>
-          <Text testID={SHARING_IDS.securityCode} selectable style={[styles.code, { color: colors.text }]}>
+          <Text
+            testID={SHARING_IDS.securityCode}
+            selectable
+            style={[styles.code, { color: colors.text }]}
+          >
             {found.fingerprint}
           </Text>
           <Body text={EN['shared.securityCodeHelp'](found.username)} />
@@ -93,15 +116,26 @@ export function ShareScreen({ collectionId }: { readonly collectionId: string })
                 }, found.username).catch(() => undefined)
               }
             />
-            <Button testID={SHARING_IDS.cancelShare} label={EN['shared.cancel']} variant="secondary" onPress={() => setFound(null)} />
+            <Button
+              testID={SHARING_IDS.cancelShare}
+              label={EN['shared.cancel']}
+              variant="secondary"
+              onPress={() => setFound(null)}
+            />
           </View>
         </View>
       )}
       <View style={styles.section}>
         <Text style={[styles.name, { color: colors.text }]}>{EN['shared.recipients']}</Text>
         {recipients.map((recipient, position) => (
-          <View key={recipient.recipientUserId} testID={listTestId(SHARING_IDS.recipientRow, position)} style={styles.row}>
-            <Text style={[styles.recipient, { color: colors.text }]}>{recipient.recipientUsername}</Text>
+          <View
+            key={recipient.recipientUserId}
+            testID={listTestId(SHARING_IDS.recipientRow, position)}
+            style={styles.row}
+          >
+            <Text style={[styles.recipient, { color: colors.text }]}>
+              {recipient.recipientUsername}
+            </Text>
             <Button
               testID={listTestId(SHARING_IDS.removeRecipient, position)}
               label={EN['shared.remove']}
@@ -113,7 +147,9 @@ export function ShareScreen({ collectionId }: { readonly collectionId: string })
       </View>
       {stopping === null ? null : (
         <Sheet testID={SHARING_IDS.collectionSheet} onClose={() => setStopping(null)}>
-          <Text style={{ color: colors.text }}>{EN['shared.stopConfirm'](stopping.recipientUsername)}</Text>
+          <Text style={{ color: colors.text }}>
+            {EN['shared.stopConfirm'](stopping.recipientUsername)}
+          </Text>
           <Button
             testID={SHARING_IDS.stopConfirm}
             label={EN['shared.stopAction']}
@@ -134,7 +170,12 @@ export function ShareScreen({ collectionId }: { readonly collectionId: string })
 }
 
 const styles = StyleSheet.create({
-  card: { padding: SPACING.lg, gap: SPACING.md, borderRadius: RADIUS.md, borderWidth: BORDER_WIDTH },
+  card: {
+    padding: SPACING.lg,
+    gap: SPACING.md,
+    borderRadius: RADIUS.md,
+    borderWidth: BORDER_WIDTH,
+  },
   name: { fontSize: FONT_SIZE.headline, fontWeight: '600' },
   code: { fontFamily: FONT_FAMILY_MONO, fontSize: FONT_SIZE.title },
   row: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm, flexWrap: 'wrap' },

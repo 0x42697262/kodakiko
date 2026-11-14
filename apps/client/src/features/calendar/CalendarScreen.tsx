@@ -1,4 +1,10 @@
-import { addMonths, isValidYearMonth, monthGrid, yearMonthOf, type CalendarCell } from '@kodakiko/core';
+import {
+  addMonths,
+  isValidYearMonth,
+  monthGrid,
+  yearMonthOf,
+  type CalendarCell,
+} from '@kodakiko/core';
 import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import {
@@ -31,6 +37,7 @@ import { dayRoute } from '../../keys/routes';
 import { listTestId, testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { TextField } from '../../ui/TextField';
 import { FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
@@ -38,7 +45,13 @@ import { useTheme } from '../../ui/theme';
 import { todayLocalDate, useIndexVersion } from '../gallery/hooks';
 import { Sheet } from '../gallery/sheet';
 import { Thumbnail } from '../gallery/thumbnail';
-import { cellLabel, formatMonthTitle, monthDayInfo, weekdayNames, type DayInfo } from './calendar-model';
+import {
+  cellLabel,
+  formatMonthTitle,
+  monthDayInfo,
+  weekdayNames,
+  type DayInfo,
+} from './calendar-model';
 import { useMonthKeys } from './use-month-keys';
 
 const HOME_SCOPE = Object.freeze({ kind: 'home' as const });
@@ -55,7 +68,9 @@ type CellProps = {
 function DayCell({ cell, size, info, coverMediaId, onOpen }: CellProps) {
   const { colors } = useTheme();
   const count = info?.count ?? 0;
-  const day = String(Number.parseInt(cell.localDate.slice(DATE_DAY_START, DATE_DAY_END), DECIMAL_RADIX));
+  const day = String(
+    Number.parseInt(cell.localDate.slice(DATE_DAY_START, DATE_DAY_END), DECIMAL_RADIX),
+  );
   const tappable = cell.inMonth && info !== undefined;
   return (
     <Pressable
@@ -110,7 +125,10 @@ export function CalendarScreen() {
   }, [services.index, version, yearMonth]);
   const grid = useMemo(() => monthGrid(yearMonth, today, WEEK_STARTS_ON), [yearMonth, today]);
   const weekdays = useMemo(() => weekdayNames(WEEK_STARTS_ON), []);
-  const move = useCallback((delta: number) => setYearMonth((current) => addMonths(current, delta)), []);
+  const move = useCallback(
+    (delta: number) => setYearMonth((current) => addMonths(current, delta)),
+    [],
+  );
   useMonthKeys(move);
 
   const swipe = useMemo(
@@ -152,11 +170,12 @@ export function CalendarScreen() {
   return (
     <Screen testID={CALENDAR_IDS.screen}>
       <View style={styles.header}>
-        <Button
+        <IconAction
           testID={testId('calendar.previous')}
           label={EN['calendar.previousGlyph']}
-          variant="secondary"
           onPress={() => move(PREVIOUS_MONTH)}
+          icon="previous"
+          tonal={false}
         />
         <Text
           testID={CALENDAR_IDS.monthTitle}
@@ -165,11 +184,12 @@ export function CalendarScreen() {
         >
           {formatMonthTitle(yearMonth)}
         </Text>
-        <Button
+        <IconAction
           testID={testId('calendar.next')}
           label={EN['calendar.nextGlyph']}
-          variant="secondary"
           onPress={() => move(NEXT_MONTH)}
+          icon="next"
+          tonal={false}
         />
       </View>
       <View style={styles.actions}>
@@ -207,7 +227,9 @@ export function CalendarScreen() {
             {week.map((cell) => {
               const info = cell.inMonth ? days.get(cell.localDate) : undefined;
               const coverMediaId =
-                info === undefined ? null : (services.index.index()?.get(info.coverEntryId)?.coverMediaId ?? null);
+                info === undefined
+                  ? null
+                  : (services.index.index()?.get(info.coverEntryId)?.coverMediaId ?? null);
               return (
                 <DayCell
                   key={cell.localDate}
@@ -234,7 +256,11 @@ export function CalendarScreen() {
             errorTestID={CALENDAR_IDS.jumpError}
             selectOnFocus
           />
-          <Button testID={testId('calendar.jumpSubmit')} label={EN['calendar.jumpSubmit']} onPress={submitJump} />
+          <Button
+            testID={testId('calendar.jumpSubmit')}
+            label={EN['calendar.jumpSubmit']}
+            onPress={submitJump}
+          />
         </Sheet>
       ) : null}
     </Screen>
@@ -242,7 +268,12 @@ export function CalendarScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACING.sm },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: SPACING.sm,
+  },
   title: { fontSize: FONT_SIZE.title, fontWeight: '600', flexShrink: 1, textAlign: 'center' },
   actions: { flexDirection: 'row', gap: SPACING.sm, justifyContent: 'center' },
   row: { flexDirection: 'row', gap: CALENDAR_CELL_GAP, marginBottom: CALENDAR_CELL_GAP },

@@ -8,6 +8,7 @@ import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { IconAction } from '../../ui/IconAction';
 import { Screen } from '../../ui/Screen';
 import { Spinner } from '../../ui/Spinner';
 import { Body } from '../../ui/Typography';
@@ -33,10 +34,13 @@ export function TrashScreen() {
   const trashDays = (services.config.get() ?? CONFIG_FALLBACK).trashDays;
 
   useFocusEffect(
-    useCallback(() => () => {
-      selection.clear();
-      setActionsOpen(false);
-    }, [selection.clear]),
+    useCallback(
+      () => () => {
+        selection.clear();
+        setActionsOpen(false);
+      },
+      [selection.clear],
+    ),
   );
 
   function closeActions(): void {
@@ -53,7 +57,11 @@ export function TrashScreen() {
             {EN['gallery.selected'](selection.selected.size)}
           </Text>
         ) : (
-          <Text testID={testId('trash.title')} accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
+          <Text
+            testID={testId('trash.title')}
+            accessibilityRole="header"
+            style={[styles.title, { color: colors.text }]}
+          >
             {EN['trash.title']}
           </Text>
         )}
@@ -74,16 +82,21 @@ export function TrashScreen() {
               />
             </>
           ) : (
-            <Button
+            <IconAction
               testID={testId('trash.back')}
               label={EN['trash.back']}
-              variant="secondary"
               onPress={() => router.back()}
+              icon="back"
+              tonal={false}
             />
           )}
         </View>
       </View>
-      <Banner testID={testId('trash.retention')} kind="info" message={EN['trash.retention'](trashDays)} />
+      <Banner
+        testID={testId('trash.retention')}
+        kind="info"
+        message={EN['trash.retention'](trashDays)}
+      />
       {status === 'ready' ? (
         <EntryGrid
           filter={TRASH_FILTER}
@@ -103,7 +116,11 @@ export function TrashScreen() {
       )}
       {actionsOpen ? (
         <Sheet testID={GALLERY_IDS.actionsSheet} onClose={closeActions}>
-          <BulkActionsSheet ids={[...selection.selected]} mode="trash" onDone={() => setActed(true)} />
+          <BulkActionsSheet
+            ids={[...selection.selected]}
+            mode="trash"
+            onDone={() => setActed(true)}
+          />
         </Sheet>
       ) : null}
     </Screen>
@@ -111,7 +128,13 @@ export function TrashScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACING.sm, flexWrap: 'wrap' },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: SPACING.sm,
+    flexWrap: 'wrap',
+  },
   title: { fontSize: FONT_SIZE.title, fontWeight: '600' },
   actions: { flexDirection: 'row', gap: SPACING.sm },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: SPACING.md },
