@@ -66,14 +66,24 @@ function mergeTags(ancestor: Metadata, local: Metadata, server: Metadata): strin
   return [...merged].sort();
 }
 
+function withMergedCaption(server: Descriptor, ancestor: Descriptor | undefined, local: Descriptor): Descriptor {
+  const localChanged = local.caption !== ancestor?.caption;
+  if (!localChanged || local.caption === server.caption) return server;
+  const { caption: _dropped, ...rest } = server;
+  return local.caption === undefined ? rest : { ...rest, caption: local.caption };
+}
+
 function mergeMedia(ancestor: Metadata, local: Metadata, server: Metadata): Descriptor[] {
   const ancestorIds = new Set(ancestor.media.map((item) => item.mediaId));
   const localById = new Map(local.media.map((item) => [item.mediaId, item]));
   const serverById = new Map(server.media.map((item) => [item.mediaId, item]));
+  const ancestorById = new Map(ancestor.media.map((item) => [item.mediaId, item]));
   const merged: Descriptor[] = [];
   for (const item of local.media) {
     const removedOnServer = ancestorIds.has(item.mediaId) && !serverById.has(item.mediaId);
-    if (!removedOnServer) merged.push(serverById.get(item.mediaId) ?? item);
+    if (removedOnServer) continue;
+    const onServer = serverById.get(item.mediaId);
+    merged.push(onServer === undefined ? item : withMergedCaption(onServer, ancestorById.get(item.mediaId), item));
   }
   for (const item of server.media) {
     const knownLocally = localById.has(item.mediaId);

@@ -1,6 +1,7 @@
 export const NOTE_MAX_CHARS = 100_000;
 export const TAGS_PER_ENTRY_MAX = 50;
 export const TAG_MAX_CHARS = 64;
+export const CAPTION_MAX_CHARS = 64;
 export const MEDIA_PER_ENTRY_HARD_MAX = 100;
 export const UTC_OFFSET_MINUTES_MIN = -840;
 export const UTC_OFFSET_MINUTES_MAX = 840;

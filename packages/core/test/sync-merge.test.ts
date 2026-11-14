@@ -384,3 +384,42 @@ describe('metadataEquivalent', () => {
     expect(metadataEquivalent(left, right)).toBe(metadataEquivalent(right, left));
   });
 });
+
+describe('caption merge (spec 25)', () => {
+  const captioned = (caption: string | undefined): Descriptor =>
+    caption === undefined ? descriptor(ID_ONE) : { ...descriptor(ID_ONE), caption };
+
+  it('keeps a caption added locally when the server did not touch it', () => {
+    const result = mergeMetadata(
+      metadata({ media: [captioned(undefined)] }),
+      metadata({ media: [captioned('sunset')] }),
+      metadata({ media: [captioned(undefined)] }),
+      NOW,
+    );
+    expect(result.media[0]?.caption).toBe('sunset');
+  });
+
+  it('takes the server caption when only the server changed it', () => {
+    const result = mergeMetadata(
+      metadata({ media: [captioned('old')] }),
+      metadata({ media: [captioned('old')] }),
+      metadata({ media: [captioned('new')] }),
+      NOW,
+    );
+    expect(result.media[0]?.caption).toBe('new');
+  });
+
+  it('keeps a caption removed locally removed', () => {
+    const result = mergeMetadata(
+      metadata({ media: [captioned('old')] }),
+      metadata({ media: [captioned(undefined)] }),
+      metadata({ media: [captioned('old')] }),
+      NOW,
+    );
+    expect(result.media[0]?.caption).toBeUndefined();
+  });
+
+  it('treats a caption change as a difference', () => {
+    expect(metadataEquivalent(metadata({ media: [captioned('a')] }), metadata({ media: [captioned('b')] }))).toBe(false);
+  });
+});
