@@ -8,9 +8,10 @@ type SheetProps = {
   readonly testID: string;
   readonly onClose: () => void;
   readonly children: ReactNode;
+  readonly header?: ReactNode;
 };
 
-export function Sheet({ testID, onClose, children }: SheetProps) {
+export function Sheet({ testID, onClose, children, header }: SheetProps) {
   const { colors } = useTheme();
   return (
     <View style={styles.overlay}>
@@ -20,6 +21,7 @@ export function Sheet({ testID, onClose, children }: SheetProps) {
         onPress={onClose}
       />
       <View testID={testID} style={[styles.card, { backgroundColor: colors.background }]}>
+        {header}
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           {children}
         </ScrollView>

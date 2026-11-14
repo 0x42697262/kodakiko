@@ -1,7 +1,7 @@
 import { localDateOf, type IndexedEntry } from '@kodakiko/core';
 import { describe, expect, it } from 'vitest';
 import { UI_SETTINGS_DEFAULTS } from '../src/constants/ui-settings-constants';
-import { arrangeSections, columnsFor, galleryAttributes, UNGROUPED_DATE } from '../src/features/gallery/gallery-arrange';
+import { arrangeSections, columnsFor, galleryAttributes, groupSections, UNGROUPED_DATE, UNTAGGED_GROUP } from '../src/features/gallery/gallery-arrange';
 import { buildGalleryItems } from '../src/features/gallery/gallery-items';
 
 function entry(id: string, takenAtUtc: string, mediaCount = 1): IndexedEntry {
@@ -64,5 +64,41 @@ describe('columnsFor', () => {
     expect(columnsFor(400, 800, 3, 6)).toBe(3);
     expect(columnsFor(800, 400, 3, 6)).toBe(6);
     expect(columnsFor(400, 800, 0, 6)).toBeGreaterThan(0);
+  });
+});
+
+describe('grouping (spec 23)', () => {
+  const tagged = new Map([
+    ['a', { ...entry('a', '2026-11-02T10:00:00.000Z'), tags: ['beach'] }],
+    ['b', { ...entry('b', '2026-10-02T08:00:00.000Z'), tags: ['beach', 'city'] }],
+    ['c', { ...entry('c', '2025-11-01T09:00:00.000Z'), tags: [] }],
+  ]);
+  const lookup = (id: string) => tagged.get(id) ?? null;
+  const sections = [
+    { localDate: '2026-11-02', entryIds: ['a'] },
+    { localDate: '2026-10-02', entryIds: ['b'] },
+    { localDate: '2025-11-01', entryIds: ['c'] },
+  ];
+  const newest = { key: 'takenAt', descending: true } as const;
+
+  it('groups by month and by year, newest first', () => {
+    expect(groupSections(sections, lookup, newest, 'month', 0).map((section) => section.localDate)).toEqual(['m:2026-11', 'm:2026-10', 'm:2025-11']);
+    expect(groupSections(sections, lookup, newest, 'year', 0)).toEqual([
+      { localDate: 'y:2026', entryIds: ['a', 'b'] },
+      { localDate: 'y:2025', entryIds: ['c'] },
+    ]);
+  });
+
+  it('groups by tag alphabetically, lists an entry under each of its tags, and puts untagged entries last', () => {
+    expect(groupSections(sections, lookup, newest, 'tag', 0)).toEqual([
+      { localDate: 't:beach', entryIds: ['a', 'b'] },
+      { localDate: 't:city', entryIds: ['b'] },
+      { localDate: UNTAGGED_GROUP, entryIds: ['c'] },
+    ]);
+  });
+
+  it('keeps day sections for day grouping and one section for none', () => {
+    expect(groupSections(sections, lookup, newest, 'day', 0)).toEqual(sections);
+    expect(groupSections(sections, lookup, newest, 'none', 0)).toEqual([{ localDate: UNGROUPED_DATE, entryIds: ['a', 'b', 'c'] }]);
   });
 });

@@ -21,6 +21,7 @@ Rule: copy Mihon's patterns wherever they fit a photo journal; skip manga-only c
 | Header | Title with an item-count pill; tag tabs with count pills (Mihon "Show number of items"); count badge top-left on tiles |
 | More | Logo header; switches **Hide shared journals** and **Pause sync** (Mihon "Incognito mode" analog, device setting); rows: Tags, Statistics, Data and storage, Import, Settings, About, Help |
 | Tags editor | Mihon "Edit categories": reorderable list (drag handle; the order drives the tag tabs), rename and delete (applied to every own entry through the normal edit path, so it syncs), FAB **Add** (an empty tag stays in the order list until used) |
+| Tags only in Settings (D-87) | Like Mihon categories: tags are **created, renamed, reordered and deleted only in the Tags editor**, which lives at Settings › **Tags** (Mihon Settings › Library › Categories); the More › Tags row opens the same screen. Compose, Edit, bulk "Add tag" and the gallery filter lose free-text tag typing: they open a **pick-from-list dialog** (checkboxes, Mihon "Set categories") with an **Edit tags** button that opens the editor and returns. The list = every tag on the user's own entries (synced through entries, so no migration and nothing lost) plus the editor's empty tags and order (stored as a device setting). Tags on entries shared with the user show read-only and are never added to the list. Found as a v0.1.3 issue (programmer 2026-11-14; `docs/planning/bugfix-v0.1.3.md` on branch `fix/v0.1.3-bugs`) |
 | Statistics | Mihon cards: Overview, Media, Tags, Storage (device + server with a quota bar), Sync, Server, Account security |
 | Server and keys | Settings › Account › **Server and keys**: server URL, version, API version, sign-up mode, feature flags, limits; account id, public-key fingerprint (security code), key-derivation parameters, encryption formats (XChaCha20-Poly1305 STREAM chunk size, sealed boxes), recovery-key confirmed, this device's key storage (biometric or not) |
 | Data and storage | Mihon layout: storage location, **Backup and restore** (Create = export, spec 20; Restore = import, §7), automatic backup frequency (Off / Daily / Weekly; Android, runs when the app opens and is due), a storage usage bar (free / total), clear cache rows with "Used: …" |
@@ -33,7 +34,8 @@ Rule: copy Mihon's patterns wherever they fit a photo journal; skip manga-only c
 1. Viewer on `react-native-zoom-toolkit`.
 2. Favorites (contract, core index and filter, client UI).
 3. Library sheet rework, grouping, count pills, badges.
-4. More rework, Pause sync, Tags editor.
+4. More rework, Pause sync, Tags editor, tags only in Settings (tag picker replaces `TagInput` in
+   Compose, Edit, bulk actions and the filter sheet).
 5. Statistics cards, Server and keys.
 6. Data and storage (Mihon), Advanced, Appearance additions.
 7. Import and encrypted export (spec 20b).
@@ -45,7 +47,8 @@ Rule: copy Mihon's patterns wherever they fit a photo journal; skip manga-only c
 Unit tests for every pure model (grouping, favorites filter, tag rename/order, statistics cards,
 server facts, `.kdkx` format, import parser). Web UI flows: **U-26** favorites (heart → Favorites tab
 shows it → filter excludes it), **U-27** grouping (Month shows month headers), **U-28** tags editor
-(rename a tag → the tab shows the new name), **U-29** export encrypted + import into a new account
+(rename a tag → the tab shows the new name), **U-30** tag picker (Compose has no free-text tag
+field; a tag added in Settings › Tags shows in the picker; pick it → saved entry has it), **U-29** export encrypted + import into a new account
 → same entries. Existing flows keep their test ids.
 
 ## 3. Implementation notes
@@ -73,4 +76,16 @@ shows it → filter excludes it), **U-27** grouping (Month shows month headers),
     (`viewer.favorite`); Add to/Remove from Favorites bulk actions; a Favorites pseudo-tab after
     All (`gallery.tagTab.favorites`, it drives the `favorite` filter).
   - U-26 was written after the code (no red run).
+- **Phase 3 (2026-11-14):**
+  - Grouping (`groupSections`, unit-tested red first): Day, Month (`m:`), Year (`y:`), Tag (`t:`,
+    an entry appears under each of its tags, untagged entries last as `n:`), None. Setting
+    `galleryGroupBy` (`galleryGroupByDay=false` still means none). Group headers come from
+    `formatGroupHeader`.
+  - The sheet is in Mihon's layout (`sheet-tabs.tsx`): underlined Filter · Sort · Display · Group
+    tabs fixed above the scrolling content (`Sheet.header`); display modes as chips
+    (`settings.displayMode.<mode>`, U-24 updated); items-per-row dot slider (`sheet.columns.N`,
+    per orientation); badge and tab checkboxes; group list (`sheet.group.<key>`).
+  - Count pills next to the gallery title (`gallery.count`) and on tag tabs when "Show number of
+    items" is on.
+  - U-27 was written after the code (no red run).
 

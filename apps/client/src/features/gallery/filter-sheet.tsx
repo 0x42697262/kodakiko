@@ -1,7 +1,7 @@
 import { TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SegmentedButtons } from 'react-native-paper';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { DisplayTab, GroupTab, UnderlineTabs } from './sheet-tabs';
 import { useAppContext } from '../../composition/app-context';
 import { FILTER_DATE_FIELD_MIN_WIDTH } from '../../constants/gallery-constants';
 import { GALLERY_IDS } from '../../keys/gallery-ids';
@@ -12,8 +12,6 @@ import { TextField } from '../../ui/TextField';
 import { Hint } from '../../ui/Typography';
 import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from '../../ui/theme-constants';
 import { Icon } from '../../ui/icons';
-import { PreferenceList } from '../../ui/preferences/PreferenceList';
-import { galleryDisplayItems } from '../settings/GallerySettingsScreen';
 import { useDeviceSettings } from '../settings/use-device-settings';
 import { useTheme } from '../../ui/theme';
 import { TagInput } from '../tags/tag-input';
@@ -52,6 +50,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
 
   const [settings, update] = useDeviceSettings();
   const [tab, setTab] = useState<SheetTab>('filter');
+  const window = useWindowDimensions();
   const filters = settings.galleryFilters;
   const triRows: readonly { readonly key: keyof typeof filters; readonly label: string }[] = [
     { key: 'video', label: EN['sheet.hasVideo'] },
@@ -71,19 +70,22 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
     { key: 'random', label: EN['sort.random'] },
   ];
   return (
-    <Sheet testID={GALLERY_IDS.filterSheet} onClose={onClose}>
-      <Text testID={testId('filter.title')} style={[styles.title, { color: colors.text }]}>
-        {EN['filter.title']}
-      </Text>
-      <SegmentedButtons
-        value={tab}
-        onValueChange={(value) => setTab(value as SheetTab)}
-        buttons={[
-          { value: 'filter', label: EN['sheet.filter'], testID: 'sheet.tab.filter' },
-          { value: 'sort', label: EN['sheet.sort'], testID: 'sheet.tab.sort' },
-          { value: 'display', label: EN['sheet.display'], testID: 'sheet.tab.display' },
-        ]}
-      />
+    <Sheet
+      testID={GALLERY_IDS.filterSheet}
+      onClose={onClose}
+      header={
+        <UnderlineTabs
+          tabs={[
+            { key: 'filter', label: EN['sheet.filter'] },
+            { key: 'sort', label: EN['sheet.sort'] },
+            { key: 'display', label: EN['sheet.display'] },
+            { key: 'group', label: EN['sheet.group'] },
+          ]}
+          value={tab}
+          onChange={setTab}
+        />
+      }
+    >
       {tab === 'sort' ? (
         <View>
           {sortRows.map((row) => {
@@ -132,7 +134,10 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
           })}
         </View>
       ) : null}
-      {tab === 'display' ? <PreferenceList items={galleryDisplayItems(settings, update)} /> : null}
+      {tab === 'display' ? (
+        <DisplayTab settings={settings} update={update} landscape={window.width > window.height} />
+      ) : null}
+      {tab === 'group' ? <GroupTab settings={settings} update={update} /> : null}
       {tab !== 'filter' ? null : (
         <>
           {triRows.map((row) => {
@@ -216,7 +221,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
   );
 }
 
-type SheetTab = 'filter' | 'sort' | 'display';
+type SheetTab = 'filter' | 'sort' | 'display' | 'group';
 type TriState = 'off' | 'include' | 'exclude';
 const NEXT_TRI_STATE: Readonly<Record<TriState, TriState>> = {
   off: 'include',

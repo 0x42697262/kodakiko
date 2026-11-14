@@ -352,6 +352,7 @@ rows in `behaviors.md` point here.
 | U-24 | W-d | — | `seedEntries` a photo and a video → Filter sheet: `sheet.filter.video` include → Display tab: display mode List → 1 tile with the clip's note; lock and unlock → still 1 tile (settings persist) | 22 |
 | U-25 | W | — | `seedEntries` 3 entries tagged beach, city, city → tag tabs All, beach, city; `gallery.tagTab.1` → 2 tiles; All → 3 | 22 |
 | U-26 | W-d | — | 2 entries → open the second, `viewer.favorite` → Favorited; `gallery.tagTab.favorites` → 1 tile; All → 2; Filter sheet favorite include→exclude → 1 tile | 23 |
+| U-27 | W-d | — | 3 entries in June and July → 3 day headers; sheet Group › Month → 2 headers, "July 2026" then "June 2026" | 23 |
 
 Behaviors that stay `manual` (neither tool can drive them here; recorded in `behaviors.md`):
 fingerprint unlock (B-009 Android), the background upload notification and resume (B-060),

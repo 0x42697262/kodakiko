@@ -11,7 +11,7 @@ import { entryRoute } from '../../keys/routes';
 import { listTestId } from '../../keys/test-ids';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
-import { formatDayHeader } from './format-day-header';
+import { formatGroupHeader } from './format-day-header';
 import { columnsFor } from './gallery-arrange';
 import { buildGalleryItems, displayOrder, type GalleryItem } from './gallery-items';
 import { todayLocalDate, useArrangedSections } from './hooks';
@@ -72,7 +72,7 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
           accessibilityRole="header"
           style={[styles.header, { color: colors.text }]}
         >
-          {formatDayHeader(item.localDate, today)}
+          {formatGroupHeader(item.localDate, today)}
         </Text>
       );
     }

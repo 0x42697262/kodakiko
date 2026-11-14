@@ -22,7 +22,6 @@ test('U-24 the Filter/Sort/Display sheet filters to videos, switches to list mod
   await page.getByTestId('sheet.filter.video').click();
   await expect(page.getByTestId('sheet.filter.video')).toHaveAttribute('aria-checked', 'true');
   await page.getByTestId('sheet.tab.display').click();
-  await page.getByTestId('settings.displayMode').click();
   await page.getByTestId('settings.displayMode.list').click();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId(/^gallery\.tile\.\d+$/)).toHaveCount(1);

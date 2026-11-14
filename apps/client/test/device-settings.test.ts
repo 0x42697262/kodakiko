@@ -24,6 +24,7 @@ const SPEC_22_DEFAULTS = {
   galleryColumnsPortrait: 0,
   galleryColumnsLandscape: 0,
   galleryGroupByDay: true,
+  galleryGroupBy: 'day',
   galleryBadges: { video: true, photoCount: true, note: true, pending: true, keptOffline: false, favorite: true },
   galleryShowTagTabs: true,
   galleryShowCounts: false,

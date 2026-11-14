@@ -15,6 +15,7 @@ import {
   GALLERY_COLUMNS_AUTO,
   GALLERY_COLUMNS_MAX,
   GALLERY_DISPLAY_MODES,
+  GALLERY_GROUPS,
   GALLERY_SORT_KEYS,
   START_SCREENS,
   TRI_STATES,
@@ -40,6 +41,7 @@ export const deviceSettingsSchema = z.object({
   galleryColumnsPortrait: columns,
   galleryColumnsLandscape: columns,
   galleryGroupByDay: z.boolean(),
+  galleryGroupBy: z.enum(GALLERY_GROUPS),
   galleryBadges: z.object({
     video: z.boolean(),
     photoCount: z.boolean(),

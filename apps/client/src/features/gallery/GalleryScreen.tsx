@@ -125,9 +125,16 @@ export function GalleryScreen() {
           title={EN['gallery.title']}
           titleNode={
             <View>
-              <Text testID={testId('gallery.title')} accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
-                {EN['gallery.title']}
-              </Text>
+              <View style={styles.titleRow}>
+                <Text testID={testId('gallery.title')} accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
+                  {EN['gallery.title']}
+                </Text>
+                {settings.galleryShowCounts ? (
+                  <Text testID="gallery.count" style={[styles.countPill, { color: colors.text, backgroundColor: colors.surface }]}>
+                    {order.length}
+                  </Text>
+                ) : null}
+              </View>
               <Text testID="home.signedInAs" numberOfLines={1} style={[styles.account, { color: colors.textMuted }]}>
                 {EN['home.signedInAs'](username)}
               </Text>
@@ -204,6 +211,8 @@ export function GalleryScreen() {
 }
 
 const styles = StyleSheet.create({
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
+  countPill: { fontSize: FONT_SIZE.caption, paddingHorizontal: SPACING.sm, borderRadius: SPACING.md, overflow: 'hidden' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACING.sm, flexWrap: 'wrap' },
   title: { fontSize: FONT_SIZE.title, fontWeight: '600' },
   account: { fontSize: FONT_SIZE.caption, flexShrink: 1 },

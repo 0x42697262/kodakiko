@@ -33,3 +33,21 @@ export function formatDayHeader(localDate: string, today: string): string {
     localDate.slice(0, DAY_HEADER_YEAR_LENGTH) === today.slice(0, DAY_HEADER_YEAR_LENGTH);
   return (sameYear ? WEEKDAY_FORMAT : FULL_FORMAT).format(midnight(localDate));
 }
+
+const MONTH_FORMAT = new Intl.DateTimeFormat(ENTRY_TIME_LOCALE, { year: 'numeric', month: 'long', timeZone: ENTRY_TIME_ZONE });
+const MONTH_KEY = /^m:(\d{4}-\d{2})$/;
+const YEAR_KEY = /^y:(\d{4})$/;
+const TAG_KEY = /^t:(.+)$/;
+const UNTAGGED_KEY = 'n:';
+const FIRST_OF_MONTH = '-01';
+
+export function formatGroupHeader(key: string, today: string): string {
+  const month = MONTH_KEY.exec(key);
+  if (month !== null) return MONTH_FORMAT.format(midnight(`${month[1] ?? ''}${FIRST_OF_MONTH}`));
+  const year = YEAR_KEY.exec(key);
+  if (year !== null) return year[1] ?? key;
+  const tag = TAG_KEY.exec(key);
+  if (tag !== null) return `#${tag[1] ?? ''}`;
+  if (key === UNTAGGED_KEY) return EN['gallery.untagged'];
+  return formatDayHeader(key, today);
+}

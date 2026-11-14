@@ -49,9 +49,12 @@ export function TagTabs() {
               onPress={() => choose(tab.tag)}
               style={styles.tab}
             >
-              <Text style={[styles.label, { color: active ? colors.primary : colors.textMuted }]}>
-                {settings.galleryShowCounts ? EN['gallery.tabCount'](tab.label, tab.count) : tab.label}
-              </Text>
+              <View style={styles.labelRow}>
+                <Text style={[styles.label, { color: active ? colors.primary : colors.textMuted }]}>{tab.label}</Text>
+                {settings.galleryShowCounts ? (
+                  <Text style={[styles.pill, { color: colors.text, backgroundColor: colors.surface }]}>{tab.count}</Text>
+                ) : null}
+              </View>
               <View style={[styles.indicator, { backgroundColor: active ? colors.primary : 'transparent' }]} />
             </Pressable>
           );
@@ -66,5 +69,7 @@ const styles = StyleSheet.create({
   row: { paddingHorizontal: SPACING.sm },
   tab: { paddingHorizontal: SPACING.md, paddingTop: SPACING.md, alignItems: 'center', gap: SPACING.sm },
   label: { fontSize: FONT_SIZE.body, fontWeight: '600' },
+  labelRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.xs },
+  pill: { fontSize: FONT_SIZE.caption, paddingHorizontal: SPACING.sm, borderRadius: SPACING.md, overflow: 'hidden' },
   indicator: { height: INDICATOR_HEIGHT, alignSelf: 'stretch', borderTopLeftRadius: INDICATOR_HEIGHT, borderTopRightRadius: INDICATOR_HEIGHT },
 });
