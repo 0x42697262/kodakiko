@@ -1,11 +1,10 @@
 import { MD3DarkTheme, MD3LightTheme, type MD3Theme } from 'react-native-paper';
-import { COLORS } from './theme-constants';
+import { COLORS, type ColorTokens } from './theme-constants';
 
 export const SECONDARY_CONTAINER = Object.freeze({ light: '#DCE3F9', dark: '#2A3354' });
 
-export function paperTheme(scheme: 'light' | 'dark'): MD3Theme {
+export function paperTheme(scheme: 'light' | 'dark', colors: ColorTokens = COLORS[scheme]): MD3Theme {
   const base = scheme === 'dark' ? MD3DarkTheme : MD3LightTheme;
-  const colors = COLORS[scheme];
   return {
     ...base,
     colors: {

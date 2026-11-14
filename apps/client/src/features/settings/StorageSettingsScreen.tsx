@@ -16,7 +16,8 @@ import {
 } from '../../constants/settings-constants';
 import { PreferenceList } from '../../ui/preferences/PreferenceList';
 import type { PreferenceItem } from '../../ui/preferences/preference-types';
-import { SPACING } from '../../ui/theme-constants';
+import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
+import { readDeviceStorage, type DeviceStorage } from '../../adapters/device-storage/device-storage';
 import { LabeledValue, SettingsPage } from './settings-ui';
 
 const NO_LIMIT = 0;
@@ -35,7 +36,9 @@ export function StorageSettingsScreen() {
   const android = Platform.OS === 'android';
   const local = useAccountMode() === 'local';
 
+  const [device, setDevice] = useState<DeviceStorage | null>(null);
   const reload = useCallback(() => {
+    readDeviceStorage().then(setDevice).catch(() => setDevice(null));
     services.originals
       .usage()
       .then(setUsage)
@@ -49,7 +52,10 @@ export function StorageSettingsScreen() {
   useEffect(reload, [reload]);
 
   const items: PreferenceItem[] = [
-    { kind: 'text', key: 'export', testID: 'settings.row.export', icon: 'storage', title: EN['prefs.exportJournal'], summary: EN['prefs.exportSummary'], onPress: () => router.push('/settings/export' as Href) },
+    { kind: 'info', key: 'location', testID: 'storage.location', text: `${EN['storage.location']}: ${android ? EN['storage.locationAndroid'] : EN['storage.locationWeb']}` },
+    { kind: 'header', key: 'backup', title: EN['storage.backup'] },
+    { kind: 'text', key: 'export', testID: 'settings.row.export', icon: 'storage', title: EN['storage.createBackup'], summary: EN['prefs.exportSummary'], onPress: () => router.push('/settings/export' as Href) },
+    { kind: 'header', key: 'cache', title: EN['storage.cache'] },
   ];
   if (!local) {
     items.push(
@@ -69,7 +75,7 @@ export function StorageSettingsScreen() {
             .catch(() => undefined);
         },
       },
-      { kind: 'text', key: 'clear', testID: 'settings.clearOriginals', icon: 'trash', title: EN['settings.clearOriginals'], onPress: () => setClearing(true) },
+      { kind: 'text', key: 'clear', testID: 'settings.clearOriginals', icon: 'trash', title: EN['settings.clearOriginals'], ...(usage === null ? {} : { summary: EN['storage.used'](formatBytes(usage.originalsBytes)) }), onPress: () => setClearing(true) },
     );
     if (android) {
       items.push(
@@ -90,6 +96,17 @@ export function StorageSettingsScreen() {
   return (
     <SettingsPage testID="settings.storageScreen" title={EN['prefs.dataStorage']} padded={false}>
       <View style={styles.usage}>
+        <Text style={[styles.heading, { color: colors.primary }]}>{EN['storage.usage']}</Text>
+        {device === null ? null : (
+          <>
+            <View style={[styles.track, { backgroundColor: colors.border }]}>
+              <View style={[styles.fill, { width: `${((device.total - device.free) / Math.max(1, device.total)) * PERCENT}%`, backgroundColor: colors.primary }]} />
+            </View>
+            <Text testID="storage.device" style={{ color: colors.textMuted }}>
+              {EN['storage.available'](formatBytes(device.free), formatBytes(device.total))}
+            </Text>
+          </>
+        )}
         {usage === null ? null : (
           <>
             <LabeledValue testID="settings.usageOriginals" label={EN['settings.usageOriginals']} value={formatBytes(usage.originalsBytes)} />
@@ -142,4 +159,12 @@ export function StorageSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({ usage: { padding: SPACING.lg, gap: SPACING.sm } });
+const PERCENT = 100;
+const BAR_HEIGHT = 8;
+
+const styles = StyleSheet.create({
+  usage: { padding: SPACING.lg, gap: SPACING.sm },
+  heading: { fontSize: FONT_SIZE.caption, fontWeight: '600' },
+  track: { height: BAR_HEIGHT, borderRadius: BAR_HEIGHT, overflow: 'hidden' },
+  fill: { height: BAR_HEIGHT },
+});

@@ -45,6 +45,7 @@ export function SettingsScreen() {
   if (links) rows.push({ kind: 'text', key: 'links', testID: 'settings.row.links', icon: 'link', title: EN['settings.rowLinks'], summary: EN['prefs.linksSummary'], onPress: go('/settings/links') });
   if (admin && !local) rows.push({ kind: 'text', key: 'admin', testID: 'settings.row.admin', icon: 'admin', title: EN['settings.rowAdmin'], summary: EN['prefs.adminSummary'], onPress: go('/settings/admin') });
   rows.push(
+    { kind: 'text', key: 'advanced', testID: 'settings.row.advanced', icon: 'code', title: EN['advanced.title'], summary: EN['advanced.summary'], onPress: go('/settings/advanced') },
     { kind: 'text', key: 'about', testID: 'settings.row.about', icon: 'info', title: EN['settings.rowAbout'], summary: EN['prefs.aboutSummary'], onPress: go('/settings/about') },
     { kind: 'text', key: 'lockNow', testID: 'settings.row.lockNow', icon: 'lock', title: EN['settings.lockNow'], onPress: () => services.lock.lockNow().catch(() => undefined) },
   );

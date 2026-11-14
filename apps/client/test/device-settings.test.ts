@@ -45,6 +45,8 @@ const SPEC_22_DEFAULTS = {
   cameraApp: 'kodakiko',
   syncPaused: false,
   tagOrder: [],
+  pureBlack: false,
+  timeFormat: '24h',
 } as const;
 
 let rowStore: RowStore;

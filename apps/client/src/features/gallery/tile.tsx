@@ -15,6 +15,7 @@ import { localTimeOf, type IndexedEntry } from '@kodakiko/core';
 import { UI_SETTINGS_DEFAULTS } from '../../constants/ui-settings-constants';
 import type { DeviceSettingsValue } from '../../services/settings/device-settings';
 import { Icon } from '../../ui/icons';
+import { formatClock } from '../format/format-clock';
 import { useIndexedEntry } from './hooks';
 import { Thumbnail } from './thumbnail';
 
@@ -40,12 +41,14 @@ export type TileDisplay = {
   readonly mode: DeviceSettingsValue['galleryDisplayMode'];
   readonly badges: DeviceSettingsValue['galleryBadges'];
   readonly hideNotePreviews: boolean;
+  readonly timeFormat: DeviceSettingsValue['timeFormat'];
 };
 
 const DEFAULT_DISPLAY: TileDisplay = {
   mode: UI_SETTINGS_DEFAULTS.galleryDisplayMode,
   badges: UI_SETTINGS_DEFAULTS.galleryBadges,
   hideNotePreviews: UI_SETTINGS_DEFAULTS.hideNotePreviews,
+  timeFormat: UI_SETTINGS_DEFAULTS.timeFormat,
 };
 
 type TileProps = {
@@ -103,7 +106,7 @@ export function Tile({ entryId, position, size, selecting, selected, display = D
   const showCheckbox = selecting || hovered;
   const list = display.mode === 'list';
   const thumbSize = list ? LIST_THUMB_SIZE : size;
-  const time = localTimeOf(entry.takenAtUtc, entry.utcOffsetMinutes);
+  const time = formatClock(localTimeOf(entry.takenAtUtc, entry.utcOffsetMinutes), display.timeFormat);
   const note = display.hideNotePreviews ? '' : entry.notePreview.replace(MARKDOWN_LEAD, '');
   const checkbox = showCheckbox ? (
     <View

@@ -29,6 +29,19 @@ export function AppearanceSettingsScreen() {
             ],
             onChange: (value) => update({ appTheme: value as typeof settings.appTheme }),
           },
+          { kind: 'switch', key: 'pureBlack', testID: 'settings.pureBlack', title: EN['prefs.pureBlack'], summary: EN['prefs.pureBlackSummary'], value: settings.pureBlack, onChange: (pureBlack) => update({ pureBlack }) },
+          {
+            kind: 'choice',
+            key: 'timeFormat',
+            testID: 'settings.timeFormat',
+            title: EN['prefs.timeFormat'],
+            value: settings.timeFormat,
+            options: [
+              { value: '24h', label: EN['prefs.time24'] },
+              { value: '12h', label: EN['prefs.time12'] },
+            ],
+            onChange: (value) => update({ timeFormat: value as typeof settings.timeFormat }),
+          },
           {
             kind: 'choice',
             key: 'dateFormat',
@@ -66,8 +79,6 @@ export function AppearanceSettingsScreen() {
             ],
             onChange: (value) => update({ startScreen: value as typeof settings.startScreen }),
           },
-          { kind: 'header', key: 'advanced', title: EN['prefs.advanced'] },
-          { kind: 'switch', key: 'technical', testID: 'settings.technicalDetails', title: EN['prefs.technicalDetails'], summary: EN['prefs.technicalDetailsSummary'], value: settings.showTechnicalDetails, onChange: (showTechnicalDetails) => update({ showTechnicalDetails }) },
         ]}
       />
     </SettingsPage>

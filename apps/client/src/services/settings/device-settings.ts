@@ -18,6 +18,7 @@ import {
   GALLERY_GROUPS,
   GALLERY_SORT_KEYS,
   START_SCREENS,
+  TIME_FORMATS,
   TRI_STATES,
 } from '../../constants/ui-settings-constants';
 import { STORAGE_KEYS } from '../../keys/storage-keys';
@@ -77,6 +78,8 @@ export const deviceSettingsSchema = z.object({
   cameraApp: z.enum(CAMERA_APPS),
   syncPaused: z.boolean(),
   tagOrder: z.array(z.string()).readonly(),
+  pureBlack: z.boolean(),
+  timeFormat: z.enum(TIME_FORMATS),
 });
 
 export type DeviceSettingsValue = Omit<z.infer<typeof deviceSettingsSchema>, 'schemaVersion'>;

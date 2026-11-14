@@ -6,12 +6,22 @@ export type Theme = { readonly scheme: 'light' | 'dark'; readonly colors: ColorT
 export type ThemeChoice = 'system' | 'light' | 'dark';
 
 let choice: ThemeChoice = 'system';
+let pureBlack = false;
+let stamp = 0;
 const listeners = new Set<() => void>();
 
-export function setThemeChoice(next: ThemeChoice): void {
-  if (next === choice) return;
+export function setThemeChoice(next: ThemeChoice, black = pureBlack): void {
+  if (next === choice && black === pureBlack) return;
   choice = next;
+  pureBlack = black;
+  stamp += 1;
   for (const listener of listeners) listener();
+}
+
+const PURE_BLACK = Object.freeze({ background: '#000000', surface: '#121212' });
+
+export function colorsFor(scheme: 'light' | 'dark', black: boolean): ColorTokens {
+  return scheme === 'dark' && black ? { ...COLORS.dark, ...PURE_BLACK } : COLORS[scheme];
 }
 
 function subscribe(listener: () => void): () => void {
@@ -23,7 +33,7 @@ function subscribe(listener: () => void): () => void {
 
 export function useTheme(): Theme {
   const system = useColorScheme();
-  const current = useSyncExternalStore(subscribe, () => choice, () => choice);
-  const scheme = current === 'system' ? (system === 'dark' ? 'dark' : 'light') : current;
-  return { scheme, colors: COLORS[scheme] };
+  useSyncExternalStore(subscribe, () => stamp, () => stamp);
+  const scheme = choice === 'system' ? (system === 'dark' ? 'dark' : 'light') : choice;
+  return { scheme, colors: colorsFor(scheme, pureBlack) };
 }

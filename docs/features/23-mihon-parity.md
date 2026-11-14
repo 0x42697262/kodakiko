@@ -111,4 +111,16 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
     Argon2id parameters, recovery key state; key storage on this device and the encryption
     formats in use (`server-facts.ts`, unit-tested red first). Local mode shows only the account
     and device sections.
+- **Phase 6 (2026-11-14):**
+  - Appearance: `pureBlack` (dark background #000, surfaces #121212; the theme store and the Paper
+    theme take the resolved colors) and `timeFormat` 24h/12h (`format-clock.ts`, tested red first;
+    used in gallery captions).
+  - Data and storage in Mihon's order: storage location, Backup and restore (Create backup =
+    export; Restore comes in phase 7), storage usage bar from `adapters/device-storage` (Android
+    `Paths` disk space, web `navigator.storage.estimate()`), cache rows with "Used: …".
+  - Advanced (`/settings/advanced`): technical details (moved from Appearance), rebuild local
+    index (clear + build, shows the count and time), reset settings to defaults, debug info as
+    selectable JSON with no journal content. Searchable.
+  - Not done from §0: automatic backup frequency (it needs import and encrypted export first;
+    phase 7).
 

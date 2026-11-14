@@ -44,8 +44,8 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
   const list = settings.galleryDisplayMode === 'list';
   const columns = list ? 1 : columnsFor(width, window.height, settings.galleryColumnsPortrait, settings.galleryColumnsLandscape);
   const display = useMemo(
-    () => ({ mode: settings.galleryDisplayMode, badges: settings.galleryBadges, hideNotePreviews: settings.hideNotePreviews }),
-    [settings.galleryDisplayMode, settings.galleryBadges, settings.hideNotePreviews],
+    () => ({ mode: settings.galleryDisplayMode, badges: settings.galleryBadges, hideNotePreviews: settings.hideNotePreviews, timeFormat: settings.timeFormat }),
+    [settings.galleryDisplayMode, settings.galleryBadges, settings.hideNotePreviews, settings.timeFormat],
   );
   const items = useMemo(
     () => buildGalleryItems(sections, columns, showOnThisDay),

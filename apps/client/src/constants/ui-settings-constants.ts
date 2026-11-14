@@ -6,6 +6,7 @@ export const GALLERY_GROUPS = ['day', 'month', 'year', 'tag', 'none'] as const;
 export const GALLERY_SORT_KEYS = ['takenAt', 'noteLength', 'mediaCount', 'random'] as const;
 export const TRI_STATES = ['off', 'include', 'exclude'] as const;
 export const CAMERA_SIDES = ['back', 'front'] as const;
+export const TIME_FORMATS = ['24h', '12h'] as const;
 export const CAMERA_APPS = ['kodakiko', 'system'] as const;
 export const HOLD_TO_RECORD_SECONDS = [5, 10, 15, 30, 60, 120] as const;
 export const GALLERY_COLUMNS_MAX = 10;
@@ -49,4 +50,6 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   cameraApp: 'kodakiko',
   syncPaused: false,
   tagOrder: Object.freeze([]) as readonly string[],
+  pureBlack: false,
+  timeFormat: '24h',
 } as const);

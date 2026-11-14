@@ -32,11 +32,11 @@ const PAPER_SETTINGS = { icon: PaperIcon };
 
 export default function RootLayout() {
   const publicLink = usePathname().startsWith(PUBLIC_LINK_PREFIX);
-  const { scheme } = useTheme();
+  const { scheme, colors } = useTheme();
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <PaperProvider theme={paperTheme(scheme)} settings={PAPER_SETTINGS}>
+        <PaperProvider theme={paperTheme(scheme, colors)} settings={PAPER_SETTINGS}>
           {publicLink ? (
             <PublicViewerProvider>
               <ThemedStack />

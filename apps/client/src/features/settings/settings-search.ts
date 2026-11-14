@@ -6,7 +6,12 @@ const SECTIONS: readonly { readonly section: string; readonly route: string; rea
   {
     section: EN['prefs.appearance'],
     route: '/settings/appearance',
-    titles: [EN['prefs.theme'], EN['prefs.dateFormat'], EN['prefs.relativeDates'], EN['prefs.startScreen'], EN['prefs.fullScreen'], EN['prefs.hideBarsOnScroll'], EN['prefs.technicalDetails']],
+    titles: [EN['prefs.theme'], EN['prefs.dateFormat'], EN['prefs.relativeDates'], EN['prefs.startScreen'], EN['prefs.fullScreen'], EN['prefs.hideBarsOnScroll'], EN['prefs.pureBlack'], EN['prefs.timeFormat']],
+  },
+  {
+    section: EN['advanced.title'],
+    route: '/settings/advanced',
+    titles: [EN['prefs.technicalDetails'], EN['advanced.rebuild'], EN['advanced.reset'], EN['advanced.debug']],
   },
   {
     section: EN['prefs.gallery'],

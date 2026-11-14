@@ -29,7 +29,7 @@ export function SettingsBinders() {
     const apply = () => {
       const loaded = services.deviceSettings.loaded();
       const settings = services.deviceSettings.get();
-      if (loaded) setThemeChoice(settings.appTheme);
+      if (loaded) setThemeChoice(settings.appTheme, settings.pureBlack);
       const wanted = loaded ? settings.secureScreen : UI_SETTINGS_DEFAULTS.secureScreen;
       if (Platform.OS !== 'android' || secure === wanted) return;
       secure = wanted;
