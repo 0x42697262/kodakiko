@@ -19,8 +19,11 @@ object Catalog {
         val raw = mutableListOf<Pair<String, String>>()
         var current = ""
         for (line in text.lines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("#") }) {
-            section.find(line)?.let { current = it.groupValues[1]; return@let }
-            if (section.matches(line)) continue
+            val header = section.find(line)
+            if (header != null) {
+                current = header.groupValues[1]
+                continue
+            }
             val match = assignment.find(line) ?: continue
             val value = match.groupValues[2]
             when (current) {
