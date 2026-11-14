@@ -45,7 +45,7 @@ import {
   VIEWER_IDS,
 } from './constants';
 import { useViewerKeys } from './use-viewer-keys';
-import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
+import { ShareSheet } from '../sharing/ShareSheet';
 import { InlineVideo } from '../video/inline-video';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
@@ -536,7 +536,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 testID: 'viewer.detailsAction',
                 onPress: () => router.push(`${entryRoute(entryId)}/details` as Href),
               },
-              ...(owner && sharingAvailable && !local && !summary.trashed
+              ...(!summary.trashed
                 ? [
                     {
                       key: 'share',
@@ -623,7 +623,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
       ) : null}
       {overlay === 'share' ? (
         <Sheet testID={VIEWER_IDS.moreSheet} onClose={() => setOverlay('none')}>
-          <ShareEntriesSheet entryIds={[entryId]} />
+          <ShareSheet entryIds={[entryId]} inKodakiko={owner && sharingAvailable} />
         </Sheet>
       ) : null}
       {overlay === 'confirmDelete' ? (

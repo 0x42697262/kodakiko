@@ -29,6 +29,11 @@ import { NoteSection } from './note-section';
 import { PageDots } from './page-dots';
 import { TimeEditor } from './time-editor';
 import { CaptionOverlay } from './caption-overlay';
+import { clipboardButtonSupported, hasClipboardImage, readClipboardImage, subscribePastedFiles } from '../../adapters/clipboard-image/clipboard-image';
+import type { MediaInput } from '../../adapters/media/media-toolkit';
+import { CONFIG_FALLBACK } from '../../constants/auth-constants';
+import { Sheet } from '../gallery/sheet';
+import { ShareSheet } from '../sharing/ShareSheet';
 import { InlineVideo } from '../video/inline-video';
 import { Touchable } from '../../ui/Touchable';
 import { MediaMenus, type MediaMenuState } from './media-menus';
@@ -93,7 +98,7 @@ export function EditPage({
 }) {
   const router = useRouter();
   const navigation = useNavigation();
-  const { services, clock } = useAppContext();
+  const { services, clock, tempFiles } = useAppContext();
   const { colors } = useTheme();
   const indexVersion = useIndexVersion();
   const [metadata, setMetadata] = useState<Metadata | null>(null);
@@ -105,6 +110,10 @@ export function EditPage({
   const [failed, setFailed] = useState(false);
   const pager = useRef<FlatList<Descriptor>>(null);
   const [menu, setMenu] = useState<MediaMenuState>(null);
+  const [sharing, setSharing] = useState(false);
+  const [hasImage, setHasImage] = useState(false);
+  const config = services.config.get();
+  const sharingAvailable = config?.sharingEnabled === true || config?.publicLinksEnabled === true;
 
   const saver = useMemo(
     () =>
@@ -142,6 +151,37 @@ export function EditPage({
   }, [entryId, saver, services.entries, router]);
 
   useFocusEffect(reload);
+
+  const addInputs = useCallback(
+    async (inputs: readonly MediaInput[]) => {
+      await saver.flush();
+      for (const input of inputs) {
+        const current = await services.entries.readMetadata(entryId);
+        const limit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
+        const outcome = await services.mediaImport.importOne(input, { used: current.media.length, limit });
+        if (outcome.ok) await services.entries.addMedia(entryId, [outcome.media]);
+        else setFailed(true);
+      }
+      reload();
+    },
+    [entryId, reload, saver, services],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      hasClipboardImage()
+        .then(setHasImage)
+        .catch(() => setHasImage(false));
+      return subscribePastedFiles((inputs) => {
+        addInputs(inputs).catch(() => setFailed(true));
+      });
+    }, [addInputs]),
+  );
+
+  async function pasteFromClipboard(): Promise<void> {
+    const input = await readClipboardImage(tempFiles);
+    if (input !== null) await addInputs([input]);
+  }
 
   const mediaById = useMemo(
     () => new Map<string, Descriptor>((metadata?.media ?? []).map((item) => [item.mediaId, item])),
@@ -301,6 +341,10 @@ export function EditPage({
           label={favorite ? EN['edit.unfavorite'] : EN['edit.favorite']}
           onPress={() => toggleFavorite().catch(() => undefined)}
         />
+        {clipboardButtonSupported && hasImage ? (
+          <IconAction testID="edit.paste" icon="paste" label={EN['edit.paste']} onPress={() => pasteFromClipboard().catch(() => undefined)} />
+        ) : null}
+        <IconAction testID="edit.share" icon="share" label={EN['edit.share']} onPress={() => setSharing(true)} />
       </View>
 
       <View style={styles.section}>
@@ -358,6 +402,11 @@ export function EditPage({
 
       {failed ? (
         <Banner testID={testId('edit.failed')} kind="error" message={EN['edit.failed']} />
+      ) : null}
+      {sharing ? (
+        <Sheet testID="edit.shareSheet" onClose={() => setSharing(false)}>
+          <ShareSheet entryIds={[entryId]} inKodakiko={sharingAvailable} />
+        </Sheet>
       ) : null}
       <MediaMenus
         entryId={entryId}

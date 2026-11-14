@@ -4,7 +4,8 @@ import { Text } from 'react-native';
 import { List } from 'react-native-paper';
 import type { z } from 'zod';
 import { cropImage } from '../../adapters/image-crop/crop-image';
-import { saveToDevice } from '../../adapters/share-files/share-files';
+import { canShareFiles, saveToDevice } from '../../adapters/share-files/share-files';
+import { shareOriginals } from '../sharing/ShareSheet';
 import { useAppContext } from '../../composition/app-context';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';
 import { testId } from '../../keys/test-ids';
@@ -16,6 +17,7 @@ import { Sheet } from '../gallery/sheet';
 import type { CropRect } from './crop-math';
 import { CropSheet } from './crop-sheet';
 import { replaceMedia } from './replace-media';
+import { fileNameOf } from './media-file-name';
 
 type Descriptor = z.infer<typeof EntryMetadataV1>['media'][number];
 
@@ -32,13 +34,6 @@ export type MediaMenuState =
     };
 
 const SAVE_RELEASE_DELAY_MS = 30_000;
-const EXTENSIONS: Readonly<Record<string, string>> = Object.freeze({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'video/mp4': 'mp4', 'video/webm': 'webm', 'audio/mp4': 'm4a', 'audio/webm': 'weba' });
-const FALLBACK_EXTENSION = 'bin';
-
-export function fileNameOf(media: Descriptor, position: number): string {
-  return media.originalFileName ?? `kodakiko-${position + 1}.${EXTENSIONS[media.mimeType] ?? FALLBACK_EXTENSION}`;
-}
-
 function kindText(kind: Descriptor['kind']): string {
   return kind === 'photo' ? EN['edit.kindPhoto'] : kind === 'video' ? EN['edit.kindVideo'] : EN['edit.kindAudio'];
 }
@@ -205,6 +200,17 @@ export function MediaMenus({
           }}
         />
       )}
+      {canShareFiles() ? (
+        <List.Item
+          testID="edit.shareItem"
+          title={EN['edit.share']}
+          left={(props) => <List.Icon {...props} icon="share" />}
+          onPress={() => {
+            close();
+            shareOriginals(services.originals.open, [{ entryId, media: item, position, note: '' }], null).catch(() => undefined);
+          }}
+        />
+      ) : null}
       <List.Item
         testID="edit.saveToDevice"
         title={EN['edit.saveToDevice']}

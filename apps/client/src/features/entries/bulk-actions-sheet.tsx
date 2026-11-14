@@ -3,7 +3,7 @@ import { snackbar } from '../../ui/snackbar-store';
 import { useTagChoices } from '../tags/tag-picker';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
-import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
+import { ShareSheet } from '../sharing/ShareSheet';
 import { sharingErrorText } from '../sharing/sharing-errors';
 import { ENTRY_IDS } from '../../keys/entry-ids';
 import { testId } from '../../keys/test-ids';
@@ -36,6 +36,7 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
   const [panel, setPanel] = useState<Panel>('menu');
   const [tag, setTag] = useState('');
   const choices = useTagChoices();
+  const sharingAvailable = services.config.get()?.sharingEnabled === true || services.config.get()?.publicLinksEnabled === true;
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -91,7 +92,7 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
   }
 
   if (panel === 'share') {
-    return <ShareEntriesSheet entryIds={ids} />;
+    return <ShareSheet entryIds={ids} inKodakiko={sharingAvailable} />;
   }
 
   if (panel === 'confirmDelete') {
@@ -200,15 +201,12 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             busy={busy}
             onPress={() => void run(() => services.entries.trash(ids))}
           />
-          {services.config.get()?.sharingEnabled === true ||
-          services.config.get()?.publicLinksEnabled === true ? (
-            <Button
-              testID={testId('bulk.share')}
-              label={EN['bulk.share']}
-              variant="secondary"
-              onPress={() => setPanel('share')}
-            />
-          ) : null}
+          <Button
+            testID={testId('bulk.share')}
+            label={EN['bulk.share']}
+            variant="secondary"
+            onPress={() => setPanel('share')}
+          />
         </>
       ) : (
         <>

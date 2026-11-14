@@ -44,7 +44,7 @@ Capture stays its own full-screen page (v0.1.3 flow). Only the edit page changes
 - Web UI flows: existing flows adapted only where D-86/D-89 remove the Compose/Edit split (noted
   per flow); new **U-34** autosave (type a note, leave without Save, reopen → note kept), **U-35**
   caption shows on the page and is found by search, **U-36** set as cover changes the gallery
-  tile, **U-37** crop replaces the photo on the server, **U-38** inline autoplay and its setting, **U-39** voice note recorded on web (fake microphone) plays back.
+  tile, **U-37** crop replaces the photo on the server, **U-38** inline autoplay and its setting, **U-39** share picker + paste, **U-40** voice note recorded on web (fake microphone) plays back.
 - Android (UNVERIFIED until an APK): paste, share to apps, crop, autoplay, recording.
 
 ## 3. Out of scope
@@ -98,4 +98,17 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   Kodakiko player) and the viewer (its centered Play overlay passes touches through,
   `pointerEvents="box-none"`). **U-38** (written with the code). U-13 (no full download) still
   passes.
+- **Phase 5:** `features/sharing/share-picker-model.ts` (count, size, 500 MB warning, text option;
+  red first). `ShareSheet.tsx`: tabs "In Kodakiko" (spec 17/18 sheet, first when available so the
+  existing flows stay unchanged) and "To apps" (picker grid, all checked, text chips, size warning,
+  "files leave encryption" note, unsupported-browser warning); `shareOriginals` opens each
+  original and hands the files to `adapters/share-files` (Android `react-native-share`, web
+  `navigator.share({ files })`), releasing the decrypted copies after 60 s. Viewer action row Share
+  is now shown for every readable entry; bulk Share is always offered. Edit page: Share in the
+  action bar and per item. Paste: `adapters/clipboard-image` (Android `expo-clipboard` button when
+  the clipboard has an image, written to an import temp file; web listens for paste events while
+  the edit page is focused). Found while testing: the viewer's inline video kept streaming under
+  the full player and broke U-13; inline videos now stop when their screen loses focus and start
+  only after a page has been shown for 0.8 s (also saves data on quick swipes). **U-39** (written
+  with the code). `react-native-share`'s config plugin is not added (iOS-only entries).
 

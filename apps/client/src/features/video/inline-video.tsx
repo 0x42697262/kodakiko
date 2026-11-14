@@ -1,8 +1,11 @@
+import { useIsFocused } from 'expo-router';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useAppContext } from '../../composition/app-context';
 import type { PreparedVideo } from '../../services/video/video-source';
 import { shouldAutoplay } from './autoplay';
 import { InlinePlayer } from './inline-player';
+
+export const AUTOPLAY_SETTLE_MS = 800;
 
 function useCached(mediaId: string): boolean {
   const { services, rowStore } = useAppContext();
@@ -51,17 +54,24 @@ function useWifi(): boolean {
 }
 
 export function InlineVideo({ entryId, mediaId, active, testID }: { readonly entryId: string; readonly mediaId: string; readonly active: boolean; readonly testID: string }) {
+  const focused = useIsFocused();
   const { services } = useAppContext();
   const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
   const cached = useCached(mediaId);
   const wifi = useWifi();
-  const wanted = shouldAutoplay(settings, { active, cached, wifi });
+  const wanted = shouldAutoplay(settings, { active: active && focused, cached, wifi });
   const [prepared, setPrepared] = useState<PreparedVideo | null>(null);
   const [requested, setRequested] = useState(false);
 
   useEffect(() => {
-    if (wanted) setRequested(true);
-  }, [wanted]);
+    if (!focused) {
+      setRequested(false);
+      return undefined;
+    }
+    if (!wanted) return undefined;
+    const timer = setTimeout(() => setRequested(true), AUTOPLAY_SETTLE_MS);
+    return () => clearTimeout(timer);
+  }, [wanted, focused]);
 
   useEffect(() => {
     if (!requested) return undefined;
@@ -81,7 +91,11 @@ export function InlineVideo({ entryId, mediaId, active, testID }: { readonly ent
     };
   }, [requested, entryId, mediaId, services.videoSource]);
 
-  if (prepared === null) return null;
+  useEffect(() => {
+    if (!requested) setPrepared(null);
+  }, [requested]);
+
+  if (prepared === null || !requested) return null;
   return <InlinePlayer uri={prepared.uri} active={wanted} testID={testID} />;
 }
 
