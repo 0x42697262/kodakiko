@@ -143,6 +143,9 @@ function readableEntry(
     mediaCount: metadata.media.length,
     hasVideo: metadata.media.some((media) => media.kind === 'video'),
     favorite: metadata.favorite === true,
+    videoCount: metadata.media.filter((media) => media.kind === 'video').length,
+    videoMs: metadata.media.reduce((sum, media) => sum + (media.durationMs ?? 0), 0),
+    originalBytes: metadata.media.reduce((sum, media) => sum + media.originalPlaintextBytes, 0),
     notePreview: notePreviewOf(metadata.note),
     pending,
   };

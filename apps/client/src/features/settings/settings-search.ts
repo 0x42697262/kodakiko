@@ -54,7 +54,7 @@ const SECTIONS: readonly { readonly section: string; readonly route: string; rea
   {
     section: EN['settings.rowAccount'],
     route: '/settings/account',
-    titles: [EN['settings.changePassword'], EN['settings.showRecovery'], EN['settings.deleteAccount'], EN['settings.securityCode']],
+    titles: [EN['settings.changePassword'], EN['settings.showRecovery'], EN['settings.deleteAccount'], EN['settings.securityCode'], EN['server.title']],
   },
   {
     section: EN['settings.rowAbout'],

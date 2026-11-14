@@ -13,8 +13,8 @@ function entry(id: string, takenAtUtc: string, extra: Partial<IndexedEntry> = {}
 
 describe('journalStatistics', () => {
   const entries = [
-    entry('a', '2025-12-20T10:00:00.000Z', { mediaCount: 3, tags: ['beach', 'family'], notePreview: 'x' }),
-    entry('b', '2026-10-01T10:00:00.000Z', { hasVideo: true, tags: ['beach'] }),
+    entry('a', '2025-12-20T10:00:00.000Z', { mediaCount: 3, tags: ['beach', 'family'], notePreview: 'x', originalBytes: 3000, favorite: true }),
+    entry('b', '2026-10-01T10:00:00.000Z', { hasVideo: true, tags: ['beach'], videoCount: 1, videoMs: 65_000, originalBytes: 7000 }),
     entry('c', '2026-11-05T10:00:00.000Z', { tags: ['beach'], pending: true }),
   ];
   const stats = journalStatistics(entries, '2026-11-14');
@@ -25,6 +25,15 @@ describe('journalStatistics', () => {
     expect(stats.entriesWithVideo).toBe(1);
     expect(stats.entriesWithNote).toBe(1);
     expect(stats.waitingToUpload).toBe(1);
+  });
+
+  it('splits photos and videos, sums video length and journal size, counts favorites and tags', () => {
+    expect(stats.photos).toBe(4);
+    expect(stats.videos).toBe(1);
+    expect(stats.videoMs).toBe(65_000);
+    expect(stats.originalBytes).toBe(10_000);
+    expect(stats.favorites).toBe(1);
+    expect(stats.tagCount).toBe(2);
   });
 
   it('ranks tags by count and gives the first and last day', () => {

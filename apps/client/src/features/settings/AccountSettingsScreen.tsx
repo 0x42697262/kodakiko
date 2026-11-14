@@ -105,6 +105,7 @@ export function AccountSettingsScreen() {
           <Body text={EN['settings.securityCodeOthers']} />
         </>
       )}
+      <SettingsRow testID="settings.row.server" label={EN['server.title']} onPress={() => router.push('/settings/server' as Href)} />
       <SettingsRow testID="settings.row.password" label={EN['settings.changePassword']} onPress={() => router.push('/settings/password' as Href)} />
       <SettingsRow testID="settings.row.recovery" label={EN['settings.showRecovery']} onPress={() => setRevealing(true)} />
       <SettingsRow

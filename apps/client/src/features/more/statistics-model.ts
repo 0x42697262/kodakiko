@@ -6,6 +6,12 @@ export type JournalStatistics = {
   readonly entriesWithVideo: number;
   readonly entriesWithNote: number;
   readonly waitingToUpload: number;
+  readonly photos: number;
+  readonly videos: number;
+  readonly videoMs: number;
+  readonly originalBytes: number;
+  readonly favorites: number;
+  readonly tagCount: number;
   readonly topTags: readonly { readonly tag: string; readonly count: number }[];
   readonly firstDay: string | null;
   readonly lastDay: string | null;
@@ -57,6 +63,12 @@ export function journalStatistics(entries: readonly IndexedEntry[], todayLocalDa
     entriesWithVideo: entries.filter((entry) => entry.hasVideo).length,
     entriesWithNote: entries.filter((entry) => entry.notePreview !== '').length,
     waitingToUpload: entries.filter((entry) => entry.pending).length,
+    photos: entries.reduce((sum, entry) => sum + entry.mediaCount - (entry.videoCount ?? (entry.hasVideo ? 1 : 0)), 0),
+    videos: entries.reduce((sum, entry) => sum + (entry.videoCount ?? (entry.hasVideo ? 1 : 0)), 0),
+    videoMs: entries.reduce((sum, entry) => sum + (entry.videoMs ?? 0), 0),
+    originalBytes: entries.reduce((sum, entry) => sum + (entry.originalBytes ?? 0), 0),
+    favorites: entries.filter((entry) => entry.favorite === true).length,
+    tagCount: tags.size,
     topTags: [...tags.entries()]
       .sort(([leftTag, left], [rightTag, right]) => right - left || leftTag.localeCompare(rightTag))
       .slice(0, TOP_TAGS)

@@ -100,4 +100,15 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
     Up/down buttons instead of a drag handle (no drag-and-drop dependency).
   - U-28 was written after the code; its first run failed on my own wrong position expectation
     (a rename keeps the tag's place), which was corrected.
+- **Phase 5 (2026-11-14):**
+  - The index carries `videoCount`, `videoMs` and `originalBytes` (optional, from the metadata
+    the index already decrypts). The statistics model adds photos, videos, video length, journal
+    size, favorites and the tag count (tests red first).
+  - Statistics is now Mihon's card layout (Overview, Photos and videos, Journal, Storage, Server
+    usage with a quota bar, Sync), plus the monthly and yearly charts and the top tags.
+  - Server and keys (`/settings/server`, Settings › Account): server address, version and API,
+    sign-up mode, sharing and links, limits, storage used; account id, username, security code,
+    Argon2id parameters, recovery key state; key storage on this device and the encryption
+    formats in use (`server-facts.ts`, unit-tested red first). Local mode shows only the account
+    and device sections.
 

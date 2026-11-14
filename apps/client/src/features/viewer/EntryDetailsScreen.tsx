@@ -10,7 +10,6 @@ import { entryDetailSections, type DetailSection } from './entry-details-model';
 
 export function EntryDetailsScreen({ entryId }: { readonly entryId: string }) {
   const { services, rowStore } = useAppContext();
-  const { colors } = useTheme();
   const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
   const [sections, setSections] = useState<readonly DetailSection[] | null>(null);
 
@@ -34,7 +33,16 @@ export function EntryDetailsScreen({ entryId }: { readonly entryId: string }) {
 
   return (
     <SettingsPage testID="details.screen" title={EN['details.title']}>
-      {(sections ?? []).map((section) => (
+      <DetailSectionsView sections={sections ?? []} />
+    </SettingsPage>
+  );
+}
+
+export function DetailSectionsView({ sections }: { readonly sections: readonly DetailSection[] }) {
+  const { colors } = useTheme();
+  return (
+    <>
+      {sections.map((section) => (
         <View key={section.title} style={styles.section}>
           <Text style={[styles.header, { color: colors.primary }]}>{section.title}</Text>
           {section.rows.map((row) => (
@@ -47,7 +55,7 @@ export function EntryDetailsScreen({ entryId }: { readonly entryId: string }) {
           ))}
         </View>
       ))}
-    </SettingsPage>
+    </>
   );
 }
 

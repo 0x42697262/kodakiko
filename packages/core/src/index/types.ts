@@ -15,6 +15,9 @@ export type IndexedEntry = {
   readonly notePreview: string;
   readonly pending: boolean;
   readonly favorite?: boolean;
+  readonly videoCount?: number;
+  readonly videoMs?: number;
+  readonly originalBytes?: number;
 };
 
 export type GalleryFilter = {
