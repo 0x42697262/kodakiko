@@ -33,7 +33,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ androidSdk pkgs.jdk17 pkgs.scrcpy ];
+          packages = [ androidSdk pkgs.jdk17 pkgs.scrcpy pkgs.resvg ];
           shellHook = ''
             export ANDROID_HOME="${androidSdkRoot}"
             export ANDROID_SDK_ROOT="${androidSdkRoot}"

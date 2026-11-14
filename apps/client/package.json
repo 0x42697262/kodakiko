@@ -10,6 +10,7 @@
   "scripts": {
     "typecheck": "tsc -p .",
     "test": "vitest run --passWithNoTests",
+    "icons": "node scripts/generate-icons.ts",
     "build:workers": "node scripts/build-web-workers.ts",
     "start:web": "pnpm build:workers && expo start --web --port 8081",
     "build:web": "pnpm build:workers && expo export --platform web",
