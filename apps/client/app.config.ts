@@ -3,6 +3,8 @@ import type { ExpoConfig } from 'expo/config';
 const LOCATION_PERMISSION_TEXT =
   'Kodakiko adds your location to new photos only if you turn this on in Settings.';
 
+const ICON_BACKGROUND_COLOR = '#1e1d2b';
+
 const APP_VERSION = '0.1.3';
 const VERSION_PART_RANGE = 100;
 
@@ -16,10 +18,15 @@ const config: ExpoConfig = {
   scheme: 'kodakiko',
   version: APP_VERSION,
   orientation: 'portrait',
+  icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   android: {
     package: 'com.x42697262.kodakiko',
     versionCode: versionCodeOf(APP_VERSION),
+    adaptiveIcon: {
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: ICON_BACKGROUND_COLOR,
+    },
     allowBackup: false,
     permissions: ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO'],
     blockedPermissions: [
