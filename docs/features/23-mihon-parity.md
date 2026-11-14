@@ -123,4 +123,28 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
     selectable JSON with no journal content. Searchable.
   - Not done from §0: automatic backup frequency (it needs import and encrypted export first;
     phase 7).
+- **Phase 7 (2026-11-14), spec 20b scope:**
+  - Core `export/kdkx.ts`: the `.kdkx` file is magic `KDKX`, version, Argon2id cost (u32 BE ops and
+    memory), a 16-byte salt, a STREAM header, then 1 MiB XChaCha20-Poly1305 chunks. The writer
+    holds back one chunk, so the last one is marked final at close; no total size is needed up
+    front. The key is Argon2id(passphrase) with the account's start cost. Round-trip, wrong
+    passphrase, tampering and truncation tests were red first.
+  - Core `export/parse.ts`: a strict parser for our own `entry.md` (front-matter subset with flow
+    lists and maps, quoted strings); tested as a round trip with the writer. The exporter now
+    writes `favorite: true`.
+  - Client: `encryptedDestination` wraps any export destination (parts become `name.zip.kdkx`).
+    Export has an "Encrypt with a passphrase" switch (at least 12 characters, repeated).
+    `journal-import.ts` opens zip and `.kdkx` parts, recreates every entry (time with offset,
+    tags, place, note, media in order, favorite) through the normal import pipeline and a new
+    `entries.createFromMedia` (the tray write path, extracted into `insertEntry`). It skips
+    entries with the same time and number of items, and reports missing or refused files. File
+    picking: `adapters/import-picker` (Android `File.pickFileAsync` multiple, web file input).
+    Data and storage › Restore backup opens `/settings/import`.
+  - `pnpm --filter @kodakiko/core decrypt-export <parts…>` (passphrase from
+    `KODAKIKO_EXPORT_PASSPHRASE` or a prompt) writes the plain zips; checked end to end.
+  - U-29 (encrypted export on web → import into a second account → 2 tiles); written after the
+    code; its first run failed only on a missing second Back step in the test.
+  - Not done: automatic backup frequency (needs a persisted folder grant on Android). Import
+    unzips whole parts in memory (fine for normal journals; the web download fallback caps parts
+    at 1 GB).
 

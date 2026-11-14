@@ -2,11 +2,21 @@
   "name": "@kodakiko/core",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts", "./vectors": "./vectors/index.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./vectors": "./vectors/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "decrypt-export": "node scripts/decrypt-export.ts"
   },
-  "dependencies": { "@kodakiko/contract": "workspace:*", "zod": "catalog:" },
-  "devDependencies": { "@types/node": "catalog:", "libsodium-wrappers-sumo": "catalog:" }
+  "dependencies": {
+    "@kodakiko/contract": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "libsodium-wrappers-sumo": "catalog:"
+  }
 }

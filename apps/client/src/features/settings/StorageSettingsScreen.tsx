@@ -55,6 +55,7 @@ export function StorageSettingsScreen() {
     { kind: 'info', key: 'location', testID: 'storage.location', text: `${EN['storage.location']}: ${android ? EN['storage.locationAndroid'] : EN['storage.locationWeb']}` },
     { kind: 'header', key: 'backup', title: EN['storage.backup'] },
     { kind: 'text', key: 'export', testID: 'settings.row.export', icon: 'storage', title: EN['storage.createBackup'], summary: EN['prefs.exportSummary'], onPress: () => router.push('/settings/export' as Href) },
+    { kind: 'text', key: 'import', testID: 'settings.row.import', icon: 'restore', title: EN['storage.restoreBackup'], summary: EN['storage.restoreSummary'], onPress: () => router.push('/settings/import' as Href) },
     { kind: 'header', key: 'cache', title: EN['storage.cache'] },
   ];
   if (!local) {

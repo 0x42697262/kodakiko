@@ -38,7 +38,7 @@ import { createCaptureTrayStore, type CaptureTrayStore } from '../features/captu
 import { MEDIA_LOG_EVENTS } from '../keys/media-keys';
 import { APP_ROUTES, playRoute } from '../keys/routes';
 import { STORAGE_KEYS } from '../keys/storage-keys';
-import type { AccountMode } from '../constants/auth-constants';
+import { CONFIG_FALLBACK, type AccountMode } from '../constants/auth-constants';
 import { createAuthService, type AuthService } from '../services/auth-service';
 import { createConfigService, type ConfigService } from '../services/config/config-service';
 import type { EntryKeys } from '../services/keys/entry-keys';
@@ -76,6 +76,7 @@ import { createAccountService, type AccountService } from '../services/account/a
 import { createAdminClient, type AdminClient } from '../services/admin/admin-service';
 import { EMPTY_GALLERY_FILTER } from '../features/gallery/filter-model';
 import { createExportService, type ExportService } from '../services/export/export-service';
+import { createJournalImport, type JournalImport } from '../services/import/journal-import';
 import { createFflateArchiveWriter } from '../adapters/archive/fflate-archive-writer';
 import { createPublicLinksService, type PublicLinksService } from '../services/links/public-links-service';
 import { createLinkStripper } from '../services/links/link-stripper';
@@ -117,6 +118,7 @@ export type Services = {
   readonly account: AccountService;
   readonly admin: AdminClient;
   readonly exporter: ExportService;
+  readonly journalImport: JournalImport;
   readonly videoSource: VideoSource;
 };
 
@@ -401,6 +403,26 @@ export async function createAppContext(): Promise<AppContext> {
   lifecycle.subscribeActive((active) => {
     if (active && !localOnly() && accountState.get().kind === 'unlocked') account.refreshMe().catch(() => undefined);
   });
+  const journalImport = createJournalImport({
+    sodium,
+    importMedia: (file, position) =>
+      mediaImport.importOne(
+        { origin: 'picker', handle: { blob: new Blob([file.bytes.slice()]) }, fileName: file.fileName, pickerExif: null },
+        { used: position, limit: (config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry },
+      ),
+    createEntry: (input, items) => entries.createFromMedia(input, items),
+    setFavorite: (entryIds, favorite) => entries.setFavorite(entryIds, favorite),
+    existingEntries: () => {
+      const current = index.index();
+      if (current === null) return [];
+      return current
+        .query(EMPTY_GALLERY_FILTER)
+        .flatMap((section) => section.entryIds)
+        .map((entryId) => current.get(entryId))
+        .filter((entry) => entry !== null && entry.isOwn)
+        .map((entry) => ({ takenAtUtc: entry?.takenAtUtc ?? '', mediaCount: entry?.mediaCount ?? 0 }));
+    },
+  });
   const exporter = createExportService({
     entryIds: async () => {
       const current = index.index();
@@ -563,6 +585,7 @@ export async function createAppContext(): Promise<AppContext> {
       account,
       admin,
       exporter,
+      journalImport,
       videoSource,
       savedNotice: createObservable<number | null>(null),
       index,

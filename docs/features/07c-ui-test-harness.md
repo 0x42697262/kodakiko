@@ -354,6 +354,7 @@ rows in `behaviors.md` point here.
 | U-26 | W-d | — | 2 entries → open the second, `viewer.favorite` → Favorited; `gallery.tagTab.favorites` → 1 tile; All → 2; Filter sheet favorite include→exclude → 1 tile | 23 |
 | U-27 | W-d | — | 3 entries in June and July → 3 day headers; sheet Group › Month → 2 headers, "July 2026" then "June 2026" | 23 |
 | U-28 | W-d | — | tags beach (2 entries) and city → More › Tags: row 0 "beach, 2 entries"; rename to seaside → row 0 seaside; gallery tab 0 "seaside" shows 2 tiles | 23 |
+| U-29 | W-d | — | account A (2 entries) exports with a passphrase through the download fallback → only `.kdkx` files; account B: Data and storage › Restore backup, passphrase, choose the files → "Imported 2 entries" → 2 tiles | 23 |
 
 Behaviors that stay `manual` (neither tool can drive them here; recorded in `behaviors.md`):
 fingerprint unlock (B-009 Android), the background upload notification and resume (B-060),

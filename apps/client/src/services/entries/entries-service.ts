@@ -98,6 +98,7 @@ export type CreateFromTrayInput = {
 
 export type EntriesService = {
   readonly createFromTray: (input: CreateFromTrayInput) => Promise<string>;
+  readonly createFromMedia: (input: CreateFromTrayInput, items: readonly ImportedMedia[]) => Promise<string>;
   readonly edit: (entryId: string, edit: MetadataEdit) => Promise<void>;
   readonly addMedia: (entryId: string, items: readonly ImportedMedia[]) => Promise<void>;
   readonly removeMedia: (entryId: string, mediaId: string) => Promise<void>;
@@ -356,18 +357,17 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
     for (const item of items) await deps.captureTray.addImported(item, generation);
   }
 
-  async function createFromTray(input: CreateFromTrayInput): Promise<string> {
-    const userId = requireUserId();
-    const tray = deps.captureTray;
-    const generation = tray.generation;
-    const items = tray.items;
-    if (items.length === 0) throw new EmptyTrayError();
+  async function insertEntry(
+    userId: string,
+    input: CreateFromTrayInput,
+    items: readonly ImportedMedia[],
+    beforeWrite: () => void,
+  ): Promise<string> {
     const homeId = await homeCollectionId(userId);
     const collectionKey = await entryKeys.collectionKey(homeId);
-    if (tray.generation !== generation || tray.items !== items) throw new TrayChangedError();
+    beforeWrite();
     const entryId = deps.randomId();
     const entryKey = sodium.randomBytes(KEY_BYTES);
-    let taken: readonly ImportedMedia[] = [];
     try {
       const now = deps.clock.nowIso();
       const metadataBlob = sealMetadata(entryKey, entryId, newEntryMetadata(input, items, now));
@@ -379,7 +379,6 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
         `${homeId}/${entryId}`,
       );
       const rows = mediaRowsFor(entryId, entryKey, items, deps.clock.now());
-      taken = tray.take();
       await rowStore.transaction(async (tx) => {
         await tx.entries.put({
           id: entryId,
@@ -406,14 +405,40 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
         for (const row of rows.objects) await tx.objects.put(row);
         await enqueue(tx, 'createEntry', { entryId });
       });
-    } catch (error) {
-      await restoreToTray(taken, generation);
-      throw error;
     } finally {
       wipe(entryKey);
     }
+    return entryId;
+  }
+
+  async function createFromTray(input: CreateFromTrayInput): Promise<string> {
+    const userId = requireUserId();
+    const tray = deps.captureTray;
+    const generation = tray.generation;
+    const items = tray.items;
+    if (items.length === 0) throw new EmptyTrayError();
+    let taken: readonly ImportedMedia[] = [];
+    let entryId: string;
+    try {
+      entryId = await insertEntry(userId, input, items, () => {
+        if (tray.generation !== generation || tray.items !== items) throw new TrayChangedError();
+        taken = tray.take();
+      });
+    } catch (error) {
+      await restoreToTray(taken, generation);
+      throw error;
+    }
     await tray.clear(false);
     for (const item of taken) wipe(item.mediaKey);
+    afterWrite([entryId]);
+    return entryId;
+  }
+
+  async function createFromMedia(input: CreateFromTrayInput, items: readonly ImportedMedia[]): Promise<string> {
+    const userId = requireUserId();
+    if (items.length === 0) throw new EmptyTrayError();
+    const entryId = await insertEntry(userId, input, items, () => undefined);
+    for (const item of items) wipe(item.mediaKey);
     afterWrite([entryId]);
     return entryId;
   }
@@ -581,6 +606,7 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
 
   return {
     createFromTray,
+    createFromMedia,
     edit,
     addMedia,
     removeMedia,

@@ -65,6 +65,7 @@ export function frontMatter(entryId: string, metadata: Metadata): string {
     `date: ${local.slice(0, DATE_CHARS)}T${local.slice(TIME_START, TIME_END)}${offsetText(metadata.utcOffsetMinutes)}`,
     `tags: [${metadata.tags.map(yamlQuote).join(', ')}]`,
   ];
+  if (metadata.favorite === true) lines.push('favorite: true');
   if (metadata.location !== null) {
     const { latitude, longitude, source } = metadata.location;
     lines.push(
