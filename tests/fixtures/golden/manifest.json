@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "files": [
+    { "path": "crypto/sealed-json.json", "caseFields": ["name", "schema", "context", "bindingId", "key", "randomSeed", "json", "blob"], "minCases": 6 },
+    { "path": "crypto/stream-objects.json", "caseFields": ["name", "key", "plaintextSeed", "plaintextSize", "randomSeed", "file", "objectSha256"], "minCases": 3 },
+    { "path": "account/signup.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 2 },
+    { "path": "account/recovery.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 2 },
+    { "path": "account/password-change.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 1 },
+    { "path": "account/local-account.json", "caseFields": ["name", "inputs", "outputs"], "minCases": 1 },
+    { "path": "contract/dto-samples.json", "caseFields": ["schema", "valid", "invalid"], "minCases": 70 }
+  ]
+}

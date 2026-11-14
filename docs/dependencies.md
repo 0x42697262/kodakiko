@@ -210,6 +210,110 @@ the Gradle plugin portal metadata; release date = `Last-Modified` of the version
   unmodified use). EPL-2.0 is allowed for test-only artifacts (JUnit). JNA is dual
   Apache-2.0/LGPL-2.1; we use it under Apache-2.0.
 
+### Catalog coordinates (machine-checked)
+
+`CatalogAllowlistTest` (apps/android tooling tests) requires every library and plugin in
+`apps/android/gradle/libs.versions.toml` to appear below with the same version (`bom` = version
+from the Compose BOM, no version in the catalog). The tables after this block give dates, licenses
+and reasons. Added 2026-11-14 for M1 (same 7-day rule): `junit:junit` 4.13.2 (2021-02-13, EPL-1.0,
+test only: Robolectric and instrumented tests run on JUnit 4), `org.junit.platform:junit-platform-launcher`
+6.1.3 (JUnit family, needed on the JVM test runtime by Gradle 9), the Kotlin Compose compiler and
+Gradle plugin artifacts used by `build-logic` (Kotlin family), Compose UI artifacts (BOM).
+
+```
+plugin org.jetbrains.kotlin.multiplatform 2.4.21
+plugin org.jetbrains.kotlin.jvm 2.4.21
+plugin org.jetbrains.kotlin.plugin.compose 2.4.21
+plugin org.jetbrains.kotlin.plugin.serialization 2.4.21
+plugin com.android.application 9.5.1
+plugin com.android.library 9.5.1
+plugin com.android.kotlin.multiplatform.library 9.5.1
+plugin com.android.test 9.5.1
+plugin app.cash.sqldelight 2.4.1
+plugin dev.zacsweers.metro 1.5.2
+plugin com.diffplug.spotless 8.11.0
+plugin androidx.baselineprofile 1.5.0
+plugin com.mikepenz.aboutlibraries.plugin.android 15.3.0
+plugin io.github.takahirom.roborazzi 1.77.0
+lib org.jetbrains.kotlin:kotlin-gradle-plugin 2.4.21
+lib org.jetbrains.kotlin:compose-compiler-gradle-plugin 2.4.21
+lib org.jetbrains.kotlin:kotlin-serialization 2.4.21
+lib com.android.tools.build:gradle 9.5.1
+lib com.diffplug.spotless:spotless-plugin-gradle 8.11.0
+lib com.pinterest.ktlint:ktlint-cli 1.8.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-core 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-android 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-test 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-serialization-json 1.12.0
+lib org.jetbrains.kotlinx:kotlinx-datetime 0.8.0
+lib org.jetbrains.kotlinx:kotlinx-io-core 0.9.2
+lib com.squareup.okio:okio 3.18.2
+lib org.jetbrains:markdown 0.7.18
+lib com.goterl:lazysodium-android 5.2.0
+lib com.goterl:lazysodium-java 5.2.0
+lib net.java.dev.jna:jna 5.19.1
+lib androidx.compose:compose-bom 2026.09.00
+lib androidx.compose.ui:ui bom
+lib androidx.compose.ui:ui-tooling-preview bom
+lib androidx.compose.ui:ui-tooling bom
+lib androidx.compose.ui:ui-test-junit4 bom
+lib androidx.compose.ui:ui-test-manifest bom
+lib androidx.compose.foundation:foundation bom
+lib androidx.compose.material3:material3 bom
+lib androidx.compose.material3:material3-adaptive-navigation-suite bom
+lib androidx.activity:activity-compose 1.13.0
+lib androidx.lifecycle:lifecycle-viewmodel-compose 2.11.0
+lib androidx.lifecycle:lifecycle-runtime-compose 2.11.0
+lib androidx.lifecycle:lifecycle-process 2.11.0
+lib androidx.core:core-ktx 1.19.1
+lib androidx.core:core-splashscreen 1.2.0
+lib androidx.biometric:biometric 1.1.0
+lib androidx.documentfile:documentfile 1.1.0
+lib androidx.profileinstaller:profileinstaller 1.4.1
+lib androidx.media3:media3-exoplayer 1.11.1
+lib androidx.media3:media3-ui-compose 1.11.1
+lib androidx.media3:media3-ui 1.11.1
+lib androidx.camera:camera-core 1.6.2
+lib androidx.camera:camera-camera2 1.6.2
+lib androidx.camera:camera-lifecycle 1.6.2
+lib androidx.camera:camera-video 1.6.2
+lib androidx.camera:camera-compose 1.6.2
+lib cafe.adriel.voyager:voyager-navigator 2.2.21-1.10.3
+lib cafe.adriel.voyager:voyager-tab-navigator 2.2.21-1.10.3
+lib cafe.adriel.voyager:voyager-transitions 2.2.21-1.10.3
+lib dev.zacsweers.metro:runtime 1.5.2
+lib dev.zacsweers.metro:metrox-viewmodel-compose 1.5.2
+lib com.squareup.okhttp3:okhttp 5.5.1
+lib app.cash.sqldelight:android-driver 2.4.1
+lib app.cash.sqldelight:coroutines-extensions 2.4.1
+lib io.coil-kt.coil3:coil 3.6.3
+lib io.coil-kt.coil3:coil-compose 3.6.3
+lib me.saket.telephoto:zoomable-image-coil3 0.19.0
+lib sh.calvin.reorderable:reorderable 3.1.0
+lib com.mikepenz:aboutlibraries-core 15.3.0
+lib com.mikepenz:aboutlibraries-compose-m3 15.3.0
+lib org.jetbrains.kotlin:kotlin-test 2.4.21
+lib org.junit.jupiter:junit-jupiter 6.1.3
+lib org.junit.platform:junit-platform-launcher 6.1.3
+lib junit:junit 4.13.2
+lib io.kotest:kotest-assertions-core 6.2.6
+lib io.kotest:kotest-property 6.2.6
+lib app.cash.turbine:turbine 1.2.1
+lib com.squareup.okhttp3:mockwebserver3 5.5.1
+lib app.cash.sqldelight:sqlite-driver 2.4.1
+lib org.robolectric:robolectric 4.17
+lib io.github.takahirom.roborazzi:roborazzi 1.77.0
+lib io.github.takahirom.roborazzi:roborazzi-compose 1.77.0
+lib androidx.test:runner 1.7.0
+lib androidx.test.ext:junit 1.3.0
+lib androidx.test.espresso:espresso-core 3.7.0
+lib androidx.test.espresso:espresso-intents 3.7.0
+lib androidx.test.uiautomator:uiautomator 2.4.1
+lib androidx.benchmark:benchmark-macro-junit4 1.5.0
+lib com.lemonappdev:konsist 0.18.1
+lib com.squareup.leakcanary:leakcanary-android 2.14
+```
+
 ### Build and plugins
 
 | Artifact | Version | Released | License | Purpose |
@@ -221,7 +325,7 @@ the Gradle plugin portal metadata; release date = `Last-Modified` of the version
 | `dev.zacsweers.metro` gradle plugin | 1.5.2 | 2026-11-03 | Apache-2.0 | Compile-time DI (as Mihon) |
 | `com.diffplug.spotless` | 8.11.0 | 2026-11-02 | Apache-2.0 | Format check (as Mihon) |
 | `com.pinterest.ktlint:ktlint-cli` (via Spotless) | 1.8.0 | 2025-11-14 | MIT | Kotlin style (as Mihon) |
-| `io.gitlab.arturbosch.detekt` | 1.23.8 | 2025-02-21 | Apache-2.0 | MagicNumber + custom `NoComments` rule. **Conditional:** K011 first checks that it parses Kotlin 2.4 sources; if not, the rules are written as ktlint custom rules instead and detekt is removed (F-KT-10) |
+| ~~`io.gitlab.arturbosch.detekt`~~ | — | — | — | **Removed (D-111):** the no-comments and no-magic-number rules are tooling tests in `apps/android/tooling-tests` (own Kotlin lexer), so detekt's Kotlin 2.4 compatibility risk (F-KT-10) is avoided |
 | `androidx.baselineprofile` | 1.5.0 | 2026-09-09 | Apache-2.0 | Baseline profiles |
 | `com.mikepenz.aboutlibraries.plugin.android` | 15.3.0 | 2026-10-13 | Apache-2.0 | License list for About (Mihon attribution) |
 | `io.github.takahirom.roborazzi` | 1.77.0 | 2026-10-22 | Apache-2.0 | Screenshot tests (1.79.0 too new) |
@@ -306,6 +410,7 @@ Tool, not a dependency: Maestro (already used for Android flows).
 | `androidx.compose:compose-bom-beta` / material3 1.5.0-rc01 | Not stable; Mihon's `MaterialExpressiveTheme` is adapted to `MaterialTheme` until material3 1.5.0 stable is ≥ 7 days old (F-KT-03) |
 | `androidx.compose.material:material-icons-extended` | Frozen at 1.7.8 (2025-02-12) and large; the needed Material Symbols are copied as `ImageVector` source (Apache-2.0), as Mihon's icon modules do |
 | Navigation 3 | D-107 chose Voyager |
+| detekt | Source rules are tooling tests (D-111) |
 | `io.github.fornewid:material-motion-compose-core` (Mihon's `materialSharedAxisX`) | Not needed: the shared-axis screen transition is rebuilt with plain Compose slide + fade (spike K004) |
 | `com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings` | Rejected in spike K003 (F-KT-15) |
 | Hilt, Dagger, Koin | Metro (compile-time) |
