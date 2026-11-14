@@ -1,0 +1,3319 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "schema": "CollectionMetadataV1",
+      "valid": [
+        {
+          "schemaVersion": 1,
+          "name": "Journal",
+          "createdAtUtc": "2026-01-02T03:04:05.000Z"
+        },
+        {
+          "schemaVersion": 1,
+          "name": "Été 2026 — 夏休み 🌞",
+          "createdAtUtc": "2026-07-14T16:31:02.123Z"
+        }
+      ],
+      "invalid": [
+        {
+          "schemaVersion": 2,
+          "name": "Journal",
+          "createdAtUtc": "2026-01-02T03:04:05.000Z"
+        },
+        {
+          "schemaVersion": 1,
+          "name": "",
+          "createdAtUtc": "2026-01-02T03:04:05.000Z"
+        },
+        {
+          "schemaVersion": 1,
+          "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "createdAtUtc": "2026-01-02T03:04:05.000Z"
+        },
+        {
+          "schemaVersion": 1,
+          "name": "Journal"
+        },
+        {
+          "schemaVersion": 1,
+          "name": "Journal",
+          "createdAtUtc": "2026-01-02T03:04:05+01:00"
+        }
+      ]
+    },
+    {
+      "schema": "EntryMetadataV1",
+      "valid": [
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Amsterdam",
+          "note": "# Beach day\n\nSwam **twice**, then [ate](https://example.com/ice) ice cream.",
+          "tags": [
+            "beach",
+            "summer",
+            "travel"
+          ],
+          "location": {
+            "latitude": 52.370216,
+            "longitude": 4.895168,
+            "accuracyMeters": 5,
+            "source": "device"
+          },
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg",
+              "caption": "Sunset over the bay"
+            },
+            {
+              "mediaId": "BgcICQoLDA0ODxAREhMUFQ",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 1920,
+              "height": 1080,
+              "durationMs": 12480,
+              "originalPlaintextBytes": 31457280,
+              "thumbnail": {
+                "width": 512,
+                "height": 288,
+                "mimeType": "image/webp",
+                "plaintextBytes": 9876
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null,
+              "caption": "Waves at sunset"
+            },
+            {
+              "mediaId": "CwwNDg8QERITFBUWFxgZGg",
+              "kind": "audio",
+              "mimeType": "audio/webm",
+              "width": 256,
+              "height": 256,
+              "durationMs": 4321,
+              "originalPlaintextBytes": 51234,
+              "thumbnail": {
+                "width": 256,
+                "height": 256,
+                "mimeType": "image/webp",
+                "plaintextBytes": 1024
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null,
+              "caption": "Seagulls"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-15T08:00:00.000Z",
+          "favorite": true
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 540,
+          "timeZone": "Asia/Tokyo",
+          "note": "Café — 東京 🌸 naïve été Ελληνικά עברית\n\"quoted\" \\ back\tslash \u0001 /   end",
+          "tags": [
+            "日本",
+            "café",
+            "🌊",
+            "Ünïcødé"
+          ],
+          "location": {
+            "latitude": -33.8688,
+            "longitude": 151.2093,
+            "accuracyMeters": 12.5,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "фото 📷.jpg",
+              "caption": "Ünïcødé 🌸 «»"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-15T08:00:00.000Z",
+          "favorite": false
+        }
+      ],
+      "invalid": [
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 841,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [
+            ""
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14T16:30:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": {
+            "latitude": 91,
+            "longitude": 0,
+            "accuracyMeters": null,
+            "source": "device"
+          },
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-07-14 16:30:00",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 4032,
+              "height": 3024,
+              "durationMs": null,
+              "originalPlaintextBytes": 2481337,
+              "thumbnail": {
+                "width": 512,
+                "height": 384,
+                "mimeType": "image/webp",
+                "plaintextBytes": 18204
+              },
+              "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+              "originalFileName": "IMG_0042.jpg"
+            }
+          ],
+          "createdAtUtc": "2026-07-14T16:31:02.123Z",
+          "editedAtUtc": "2026-07-14T16:31:02.123Z"
+        }
+      ]
+    },
+    {
+      "schema": "MediaDescriptorV1",
+      "valid": [
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "photo",
+          "mimeType": "image/jpeg",
+          "width": 4032,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/webp",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg"
+        },
+        {
+          "mediaId": "BgcICQoLDA0ODxAREhMUFQ",
+          "kind": "video",
+          "mimeType": "video/mp4",
+          "width": 1920,
+          "height": 1080,
+          "durationMs": 12480,
+          "originalPlaintextBytes": 31457280,
+          "thumbnail": {
+            "width": 512,
+            "height": 288,
+            "mimeType": "image/webp",
+            "plaintextBytes": 9876
+          },
+          "capturedAtUtc": null,
+          "originalFileName": null,
+          "caption": "Waves at sunset"
+        },
+        {
+          "mediaId": "CwwNDg8QERITFBUWFxgZGg",
+          "kind": "audio",
+          "mimeType": "audio/webm",
+          "width": 256,
+          "height": 256,
+          "durationMs": 4321,
+          "originalPlaintextBytes": 51234,
+          "thumbnail": {
+            "width": 256,
+            "height": 256,
+            "mimeType": "image/webp",
+            "plaintextBytes": 1024
+          },
+          "capturedAtUtc": null,
+          "originalFileName": null
+        }
+      ],
+      "invalid": [
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "document",
+          "mimeType": "image/jpeg",
+          "width": 4032,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/webp",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg"
+        },
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "photo",
+          "mimeType": "image/jpeg",
+          "width": 0,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/webp",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg"
+        },
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "photo",
+          "mimeType": "image/jpeg",
+          "width": 4032,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/webp",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg",
+          "caption": ""
+        },
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "photo",
+          "mimeType": "image/jpeg",
+          "width": 4032,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/webp",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg",
+          "caption": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "kind": "photo",
+          "mimeType": "image/jpeg",
+          "width": 4032,
+          "height": 3024,
+          "durationMs": null,
+          "originalPlaintextBytes": 2481337,
+          "thumbnail": {
+            "width": 512,
+            "height": 384,
+            "mimeType": "image/jpeg",
+            "plaintextBytes": 18204
+          },
+          "capturedAtUtc": "2026-07-14T16:29:58.000Z",
+          "originalFileName": "IMG_0042.jpg"
+        }
+      ]
+    },
+    {
+      "schema": "TagName",
+      "valid": [
+        "beach",
+        "日本",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "invalid": [
+        "",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        5
+      ]
+    },
+    {
+      "schema": "adminIdParams",
+      "valid": [
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "not-an-id"
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "adminInviteCreateRequest",
+      "valid": [
+        {
+          "role": "member",
+          "expiresInDays": 7
+        },
+        {
+          "role": "admin",
+          "expiresInDays": 90
+        }
+      ],
+      "invalid": [
+        {
+          "role": "member",
+          "expiresInDays": 0
+        },
+        {
+          "role": "member",
+          "expiresInDays": 91
+        },
+        {
+          "role": "owner",
+          "expiresInDays": 7
+        },
+        {
+          "role": "member",
+          "expiresInDays": 1.5
+        }
+      ]
+    },
+    {
+      "schema": "adminInviteCreateResponse",
+      "valid": [
+        {
+          "inviteUrl": "https://kodakiko.example.com/invite#kdk_i_GxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "inviteUrl": "https://kodakiko.example.com/invite",
+          "expiresAt": "tomorrow"
+        },
+        {
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "adminStatsResponse",
+      "valid": [
+        {
+          "users": 3,
+          "activeUsers30d": 2,
+          "pendingDeletion": 0,
+          "collections": 5,
+          "entries": 120,
+          "objects": 480,
+          "totalBytes": 9876543210,
+          "quotaBytesAllocated": null
+        },
+        {
+          "users": 0,
+          "activeUsers30d": 0,
+          "pendingDeletion": 0,
+          "collections": 0,
+          "entries": 0,
+          "objects": 0,
+          "totalBytes": 0,
+          "quotaBytesAllocated": 0
+        }
+      ],
+      "invalid": [
+        {
+          "users": -1,
+          "activeUsers30d": 0,
+          "pendingDeletion": 0,
+          "collections": 0,
+          "entries": 0,
+          "objects": 0,
+          "totalBytes": 0,
+          "quotaBytesAllocated": null
+        },
+        {
+          "users": 1.5,
+          "activeUsers30d": 0,
+          "pendingDeletion": 0,
+          "collections": 0,
+          "entries": 0,
+          "objects": 0,
+          "totalBytes": 0,
+          "quotaBytesAllocated": null
+        }
+      ]
+    },
+    {
+      "schema": "adminUserDto",
+      "valid": [
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null,
+          "sessionCount": 2,
+          "lastActiveAt": "2026-07-15T08:00:00.000Z"
+        },
+        {
+          "id": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "username": "bob",
+          "role": "admin",
+          "status": "pending_deletion",
+          "quotaBytes": null,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": "2026-03-15T12:00:00Z",
+          "sessionCount": 0,
+          "lastActiveAt": null
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null
+        },
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null,
+          "sessionCount": -1,
+          "lastActiveAt": "2026-07-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "adminUserListQuery",
+      "valid": [
+        {},
+        {
+          "cursor": "abc",
+          "limit": "20"
+        },
+        {
+          "limit": 5
+        }
+      ],
+      "invalid": [
+        {
+          "limit": "0"
+        },
+        {
+          "cursor": ""
+        },
+        {
+          "limit": "many"
+        }
+      ]
+    },
+    {
+      "schema": "adminUserListResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "username": "alice",
+              "role": "member",
+              "status": "active",
+              "quotaBytes": 10737418240,
+              "usedBytes": 52428800,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "deletionDueAt": null,
+              "sessionCount": 2,
+              "lastActiveAt": "2026-07-15T08:00:00.000Z"
+            }
+          ],
+          "nextCursor": null
+        },
+        {
+          "items": [],
+          "nextCursor": "cursor-2"
+        }
+      ],
+      "invalid": [
+        {
+          "items": [
+            {
+              "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "username": "alice",
+              "role": "member",
+              "status": "active",
+              "quotaBytes": 10737418240,
+              "usedBytes": 52428800,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "deletionDueAt": null,
+              "sessionCount": 2,
+              "lastActiveAt": "2026-07-15T08:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "username": "alice",
+              "role": "member",
+              "status": "active",
+              "quotaBytes": 10737418240,
+              "usedBytes": 52428800,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "deletionDueAt": null
+            }
+          ],
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "schema": "adminUserPatchRequest",
+      "valid": [
+        {
+          "quotaBytes": 1073741824
+        },
+        {
+          "quotaBytes": null
+        },
+        {
+          "role": "admin"
+        },
+        {
+          "quotaBytes": 0,
+          "role": "member"
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "quotaBytes": -1
+        },
+        {
+          "role": "owner"
+        }
+      ]
+    },
+    {
+      "schema": "bytesSchema",
+      "valid": [
+        "AQID",
+        "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+        "AA"
+      ],
+      "invalid": [
+        "",
+        "A",
+        "AQ==",
+        "a+b/",
+        "AAAAA"
+      ]
+    },
+    {
+      "schema": "collectionCreateRequest",
+      "valid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "shared",
+          "keyByOwner": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "link",
+          "keyByOwner": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "home",
+          "keyByOwner": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        },
+        {
+          "id": "not-an-id",
+          "kind": "shared",
+          "keyByOwner": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        }
+      ]
+    },
+    {
+      "schema": "collectionDto",
+      "valid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "home",
+          "role": "owner",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "ownerUsername": "alice",
+          "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": 42,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+          "recipientCount": null
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "shared",
+          "role": "viewer",
+          "ownerId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "ownerUsername": "bob",
+          "keyMaterial": "GRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2g",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": 42,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z"
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "link",
+          "role": "owner",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "ownerUsername": "alice",
+          "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": 42,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+          "recipientCount": 3
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "home",
+          "role": "owner",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "ownerUsername": "alice",
+          "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": -1,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+          "recipientCount": null
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "album",
+          "role": "owner",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "ownerUsername": "alice",
+          "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": 42,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+          "recipientCount": null
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "kind": "home",
+          "role": "editor",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "ownerUsername": "alice",
+          "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "lastSeq": 42,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+          "recipientCount": null
+        }
+      ]
+    },
+    {
+      "schema": "collectionEntryAddRequest",
+      "valid": [
+        {
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+          "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ],
+      "invalid": [
+        {
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw"
+        },
+        {
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+          "entryKeyByCollection": "A"
+        }
+      ]
+    },
+    {
+      "schema": "collectionEntryParams",
+      "valid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg"
+        },
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "entryId": "not-an-id"
+        }
+      ]
+    },
+    {
+      "schema": "collectionIdParams",
+      "valid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "not-an-id"
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "collectionListQuery",
+      "valid": [
+        {},
+        {
+          "cursor": "abc",
+          "limit": "50"
+        }
+      ],
+      "invalid": [
+        {
+          "limit": "0"
+        },
+        {
+          "cursor": ""
+        }
+      ]
+    },
+    {
+      "schema": "collectionListResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "id": "AwQFBgcICQoLDA0ODxAREg",
+              "kind": "home",
+              "role": "owner",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "ownerUsername": "alice",
+              "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "lastSeq": 42,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+              "recipientCount": null
+            },
+            {
+              "id": "AwQFBgcICQoLDA0ODxAREg",
+              "kind": "shared",
+              "role": "viewer",
+              "ownerId": "AgMEBQYHCAkKCwwNDg8QEQ",
+              "ownerUsername": "bob",
+              "keyMaterial": "GRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2g",
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "lastSeq": 42,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+              "recipientCount": null
+            }
+          ],
+          "nextCursor": null
+        },
+        {
+          "items": [],
+          "nextCursor": "next"
+        }
+      ],
+      "invalid": [
+        {
+          "items": [
+            {
+              "id": "AwQFBgcICQoLDA0ODxAREg",
+              "kind": "home",
+              "role": "owner",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "ownerUsername": "alice",
+              "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "lastSeq": 42,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+              "recipientCount": null
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "id": "not-an-id",
+              "kind": "home",
+              "role": "owner",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "ownerUsername": "alice",
+              "keyMaterial": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "lastSeq": 42,
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z",
+              "recipientCount": null
+            }
+          ],
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "schema": "collectionPatchRequest",
+      "valid": [
+        {
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        }
+      ],
+      "invalid": [
+        {
+          "metadataBlob": ""
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "deletionRequestResponse",
+      "valid": [
+        {
+          "deletionDueAt": "2026-03-15T12:00:00Z"
+        }
+      ],
+      "invalid": [
+        {
+          "deletionDueAt": "2026-03-15"
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "diffPage",
+      "valid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "memberships": [
+            {
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "seq": 41,
+              "removed": false
+            },
+            {
+              "entryId": "BQYHCAkKCwwNDg8QERITFA",
+              "entryKeyByCollection": null,
+              "seq": 42,
+              "removed": true
+            }
+          ],
+          "entries": [
+            {
+              "id": "BAUGBwgJCgsMDQ4PEBESEw",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "purpose": "journal",
+              "revision": 3,
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "trashedAt": null,
+              "createdAt": "2026-07-14T16:31:02.123Z",
+              "updatedAt": "2026-07-15T08:00:00.000Z"
+            }
+          ],
+          "media": [
+            {
+              "id": "BQYHCAkKCwwNDg8QERITFA",
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ],
+          "objects": [
+            {
+              "id": "BwgJCgsMDQ4PEBESExQVFg",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "original",
+              "sizeBytes": 2481401,
+              "state": "uploaded"
+            },
+            {
+              "id": "CAkKCwwNDg8QERITFBUWFw",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "thumbnail",
+              "sizeBytes": 18244,
+              "state": "pending"
+            }
+          ],
+          "nextCursor": 42,
+          "hasMore": false,
+          "resyncRequired": false
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "memberships": [],
+          "entries": [],
+          "media": [],
+          "objects": [],
+          "nextCursor": 0,
+          "hasMore": true,
+          "resyncRequired": true
+        }
+      ],
+      "invalid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "memberships": [
+            {
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "seq": 41,
+              "removed": false
+            },
+            {
+              "entryId": "BQYHCAkKCwwNDg8QERITFA",
+              "entryKeyByCollection": null,
+              "seq": 42,
+              "removed": true
+            }
+          ],
+          "entries": [
+            {
+              "id": "BAUGBwgJCgsMDQ4PEBESEw",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "purpose": "journal",
+              "revision": 3,
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "trashedAt": null,
+              "createdAt": "2026-07-14T16:31:02.123Z",
+              "updatedAt": "2026-07-15T08:00:00.000Z"
+            }
+          ],
+          "media": [
+            {
+              "id": "BQYHCAkKCwwNDg8QERITFA",
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ],
+          "objects": [
+            {
+              "id": "BwgJCgsMDQ4PEBESExQVFg",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "original",
+              "sizeBytes": 2481401,
+              "state": "uploaded"
+            },
+            {
+              "id": "CAkKCwwNDg8QERITFBUWFw",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "thumbnail",
+              "sizeBytes": 18244,
+              "state": "pending"
+            }
+          ],
+          "nextCursor": -1,
+          "hasMore": false,
+          "resyncRequired": false
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "memberships": [
+            {
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "seq": 1,
+              "removed": false
+            }
+          ],
+          "entries": [
+            {
+              "id": "BAUGBwgJCgsMDQ4PEBESEw",
+              "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+              "purpose": "journal",
+              "revision": 3,
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+              "trashedAt": null,
+              "createdAt": "2026-07-14T16:31:02.123Z",
+              "updatedAt": "2026-07-15T08:00:00.000Z"
+            }
+          ],
+          "media": [
+            {
+              "id": "BQYHCAkKCwwNDg8QERITFA",
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ],
+          "objects": [
+            {
+              "id": "BwgJCgsMDQ4PEBESExQVFg",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "original",
+              "sizeBytes": 2481401,
+              "state": "uploaded"
+            },
+            {
+              "id": "CAkKCwwNDg8QERITFBUWFw",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "thumbnail",
+              "sizeBytes": 18244,
+              "state": "pending"
+            }
+          ],
+          "nextCursor": 42,
+          "hasMore": false,
+          "resyncRequired": false
+        }
+      ]
+    },
+    {
+      "schema": "diffQuery",
+      "valid": [
+        {
+          "since": "0"
+        },
+        {
+          "since": "42",
+          "limit": "100"
+        },
+        {
+          "since": 5
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "since": "-1"
+        },
+        {
+          "since": "1",
+          "limit": "0"
+        }
+      ]
+    },
+    {
+      "schema": "downloadResponse",
+      "valid": [
+        {
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "url": "not a url",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900"
+        }
+      ]
+    },
+    {
+      "schema": "entryCreateRequest",
+      "valid": [
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "purpose": "journal",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "memberships": [
+            {
+              "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ],
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            },
+            {
+              "mediaId": "BgcICQoLDA0ODxAREhMUFQ",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ]
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "purpose": "journal",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "memberships": [],
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ]
+        },
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "purpose": "journal",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "memberships": [
+            {
+              "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ],
+          "media": []
+        },
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "purpose": "diary",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "memberships": [
+            {
+              "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ],
+          "media": [
+            {
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema": "entryDto",
+      "valid": [
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "purpose": "journal",
+          "revision": 3,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "trashedAt": null,
+          "createdAt": "2026-07-14T16:31:02.123Z",
+          "updatedAt": "2026-07-15T08:00:00.000Z"
+        },
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "purpose": "link_copy",
+          "revision": 1,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "trashedAt": "2026-03-15T12:00:00Z",
+          "createdAt": "2026-07-14T16:31:02.123Z",
+          "updatedAt": "2026-07-15T08:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "purpose": "journal",
+          "revision": 0,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "trashedAt": null,
+          "createdAt": "2026-07-14T16:31:02.123Z",
+          "updatedAt": "2026-07-15T08:00:00.000Z"
+        },
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw",
+          "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "purpose": "diary",
+          "revision": 3,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "trashedAt": null,
+          "createdAt": "2026-07-14T16:31:02.123Z",
+          "updatedAt": "2026-07-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "entryIdParams",
+      "valid": [
+        {
+          "id": "BAUGBwgJCgsMDQ4PEBESEw"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "not-an-id"
+        }
+      ]
+    },
+    {
+      "schema": "entryPatchRequest",
+      "valid": [
+        {
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "baseRevision": 3
+        }
+      ],
+      "invalid": [
+        {
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "baseRevision": 0
+        },
+        {
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        }
+      ]
+    },
+    {
+      "schema": "errorResponseSchema",
+      "valid": [
+        {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Not found",
+            "requestId": "req-1",
+            "details": null
+          }
+        },
+        {
+          "error": {
+            "code": "REVISION_CONFLICT",
+            "message": "Revision conflict",
+            "requestId": "req-2",
+            "details": {
+              "revision": 4,
+              "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+            }
+          }
+        }
+      ],
+      "invalid": [
+        {
+          "error": {
+            "code": "TEAPOT",
+            "message": "x",
+            "requestId": "req-3",
+            "details": null
+          }
+        },
+        {
+          "code": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "schema": "idSchema",
+      "valid": [
+        "AQIDBAUGBwgJCgsMDQ4PEA",
+        "AAAAAAAAAAAAAAAAAAAAAA",
+        "zzzzzzzzzzzzzzzzzzzzz-"
+      ],
+      "invalid": [
+        "short",
+        "AAAAAAAAAAAAAAAAAAAAA",
+        "AAAAAAAAAAAAAAAAAAAAAAA",
+        "AAAAAAAAAAAAAAAAAAAAA+",
+        22
+      ]
+    },
+    {
+      "schema": "inviteDto",
+      "valid": [
+        {
+          "id": "CQoLDA0ODxAREhMUFRYXGA",
+          "role": "member",
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "redeemedAt": null,
+          "revokedAt": null,
+          "redeemedByUsername": null
+        },
+        {
+          "id": "CQoLDA0ODxAREhMUFRYXGA",
+          "role": "admin",
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "redeemedAt": "2026-07-15T08:00:00.000Z",
+          "revokedAt": null,
+          "redeemedByUsername": "carol"
+        },
+        {
+          "id": "CQoLDA0ODxAREhMUFRYXGA",
+          "role": "member",
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "redeemedAt": null,
+          "revokedAt": "2026-07-15T08:00:00.000Z",
+          "redeemedByUsername": null
+        }
+      ],
+      "invalid": [
+        {
+          "id": "CQoLDA0ODxAREhMUFRYXGA",
+          "role": "owner",
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "redeemedAt": null,
+          "revokedAt": null,
+          "redeemedByUsername": null
+        },
+        {
+          "id": "CQoLDA0ODxAREhMUFRYXGA",
+          "role": "member",
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "expiresAt": null,
+          "redeemedAt": null,
+          "revokedAt": null,
+          "redeemedByUsername": null
+        }
+      ]
+    },
+    {
+      "schema": "inviteListResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "id": "CQoLDA0ODxAREhMUFRYXGA",
+              "role": "member",
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "expiresAt": "2026-02-01T00:00:00.000Z",
+              "redeemedAt": null,
+              "revokedAt": null,
+              "redeemedByUsername": null
+            }
+          ]
+        },
+        {
+          "items": []
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "items": [
+            {
+              "id": "not-an-id",
+              "role": "member",
+              "createdAt": "2026-01-02T03:04:05.000Z",
+              "expiresAt": "2026-02-01T00:00:00.000Z",
+              "redeemedAt": null,
+              "revokedAt": null,
+              "redeemedByUsername": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema": "keyBundleDto",
+      "valid": [
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 16,
+          "memLimitBytes": 268435456,
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ],
+      "invalid": [
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 0,
+          "memLimitBytes": 268435456,
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2147483648,
+          "memLimitBytes": 268435456,
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "salt": "",
+          "opsLimit": 16,
+          "memLimitBytes": 268435456,
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ]
+    },
+    {
+      "schema": "linkDownload",
+      "valid": [
+        {
+          "kind": "presigned",
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "kind": "proxy",
+          "path": "/api/v1/public-links/x/objects/y/content"
+        }
+      ],
+      "invalid": [
+        {
+          "kind": "proxy",
+          "path": "relative/path"
+        },
+        {
+          "kind": "stream",
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900"
+        },
+        {
+          "kind": "presigned",
+          "url": "nope",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "linkEntriesQuery",
+      "valid": [
+        {},
+        {
+          "cursor": "abc",
+          "limit": "10"
+        }
+      ],
+      "invalid": [
+        {
+          "limit": "0"
+        },
+        {
+          "cursor": ""
+        }
+      ]
+    },
+    {
+      "schema": "linkEntriesResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "entry": {
+                "id": "BAUGBwgJCgsMDQ4PEBESEw",
+                "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+                "purpose": "journal",
+                "revision": 3,
+                "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+                "trashedAt": null,
+                "createdAt": "2026-07-14T16:31:02.123Z",
+                "updatedAt": "2026-07-15T08:00:00.000Z"
+              },
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "media": [
+                {
+                  "id": "BQYHCAkKCwwNDg8QERITFA",
+                  "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+                  "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+                  "createdAt": "2026-07-14T16:31:02.123Z"
+                }
+              ],
+              "objects": [
+                {
+                  "id": "BwgJCgsMDQ4PEBESExQVFg",
+                  "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+                  "variant": "original",
+                  "sizeBytes": 2481401,
+                  "state": "uploaded",
+                  "download": {
+                    "kind": "presigned",
+                    "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+                    "expiresAt": "2026-02-01T00:00:00.000Z"
+                  }
+                },
+                {
+                  "id": "CAkKCwwNDg8QERITFBUWFw",
+                  "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+                  "variant": "thumbnail",
+                  "sizeBytes": 18244,
+                  "state": "uploaded",
+                  "download": {
+                    "kind": "proxy",
+                    "path": "/api/v1/public-links/CgsMDQ4PEBESExQVFhcYGQ/objects/CAkKCwwNDg8QERITFBUWFw/content"
+                  }
+                }
+              ]
+            }
+          ],
+          "nextCursor": null
+        },
+        {
+          "items": [],
+          "nextCursor": "next"
+        }
+      ],
+      "invalid": [
+        {
+          "items": [
+            {
+              "entry": {
+                "id": "BAUGBwgJCgsMDQ4PEBESEw",
+                "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+                "purpose": "journal",
+                "revision": 3,
+                "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+                "trashedAt": null,
+                "createdAt": "2026-07-14T16:31:02.123Z",
+                "updatedAt": "2026-07-15T08:00:00.000Z"
+              },
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "media": [
+                {
+                  "id": "BQYHCAkKCwwNDg8QERITFA",
+                  "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+                  "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+                  "createdAt": "2026-07-14T16:31:02.123Z"
+                }
+              ],
+              "objects": [
+                {
+                  "id": "BwgJCgsMDQ4PEBESExQVFg",
+                  "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+                  "variant": "original",
+                  "sizeBytes": 2481401,
+                  "state": "uploaded",
+                  "download": {
+                    "kind": "presigned",
+                    "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+                    "expiresAt": "2026-02-01T00:00:00.000Z"
+                  }
+                },
+                {
+                  "id": "CAkKCwwNDg8QERITFBUWFw",
+                  "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+                  "variant": "thumbnail",
+                  "sizeBytes": 18244,
+                  "state": "uploaded",
+                  "download": {
+                    "kind": "proxy",
+                    "path": "/api/v1/public-links/CgsMDQ4PEBESExQVFhcYGQ/objects/CAkKCwwNDg8QERITFBUWFw/content"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "entry": {
+                "id": "BAUGBwgJCgsMDQ4PEBESEw",
+                "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+                "purpose": "journal",
+                "revision": 3,
+                "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+                "trashedAt": null,
+                "createdAt": "2026-07-14T16:31:02.123Z",
+                "updatedAt": "2026-07-15T08:00:00.000Z"
+              },
+              "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "media": [
+                {
+                  "id": "BQYHCAkKCwwNDg8QERITFA",
+                  "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+                  "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+                  "createdAt": "2026-07-14T16:31:02.123Z"
+                }
+              ],
+              "objects": [
+                {
+                  "id": "BwgJCgsMDQ4PEBESExQVFg",
+                  "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+                  "variant": "original",
+                  "sizeBytes": 2481401,
+                  "state": "uploaded"
+                }
+              ]
+            }
+          ],
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "schema": "linkEntryItem",
+      "valid": [
+        {
+          "entry": {
+            "id": "BAUGBwgJCgsMDQ4PEBESEw",
+            "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "purpose": "journal",
+            "revision": 3,
+            "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+            "trashedAt": null,
+            "createdAt": "2026-07-14T16:31:02.123Z",
+            "updatedAt": "2026-07-15T08:00:00.000Z"
+          },
+          "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "media": [
+            {
+              "id": "BQYHCAkKCwwNDg8QERITFA",
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ],
+          "objects": [
+            {
+              "id": "BwgJCgsMDQ4PEBESExQVFg",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "original",
+              "sizeBytes": 2481401,
+              "state": "uploaded",
+              "download": {
+                "kind": "presigned",
+                "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+                "expiresAt": "2026-02-01T00:00:00.000Z"
+              }
+            },
+            {
+              "id": "CAkKCwwNDg8QERITFBUWFw",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "thumbnail",
+              "sizeBytes": 18244,
+              "state": "uploaded",
+              "download": {
+                "kind": "proxy",
+                "path": "/api/v1/public-links/CgsMDQ4PEBESExQVFhcYGQ/objects/CAkKCwwNDg8QERITFBUWFw/content"
+              }
+            }
+          ]
+        },
+        {
+          "entry": {
+            "id": "BAUGBwgJCgsMDQ4PEBESEw",
+            "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "purpose": "journal",
+            "revision": 3,
+            "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+            "trashedAt": null,
+            "createdAt": "2026-07-14T16:31:02.123Z",
+            "updatedAt": "2026-07-15T08:00:00.000Z"
+          },
+          "entryKeyByCollection": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "media": [],
+          "objects": []
+        }
+      ],
+      "invalid": [
+        {
+          "entry": {
+            "id": "BAUGBwgJCgsMDQ4PEBESEw",
+            "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "purpose": "journal",
+            "revision": 3,
+            "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+            "trashedAt": null,
+            "createdAt": "2026-07-14T16:31:02.123Z",
+            "updatedAt": "2026-07-15T08:00:00.000Z"
+          },
+          "entryKeyByCollection": "",
+          "media": [
+            {
+              "id": "BQYHCAkKCwwNDg8QERITFA",
+              "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+              "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ],
+          "objects": [
+            {
+              "id": "BwgJCgsMDQ4PEBESExQVFg",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "original",
+              "sizeBytes": 2481401,
+              "state": "uploaded",
+              "download": {
+                "kind": "presigned",
+                "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+                "expiresAt": "2026-02-01T00:00:00.000Z"
+              }
+            },
+            {
+              "id": "CAkKCwwNDg8QERITFBUWFw",
+              "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+              "variant": "thumbnail",
+              "sizeBytes": 18244,
+              "state": "uploaded",
+              "download": {
+                "kind": "proxy",
+                "path": "/api/v1/public-links/CgsMDQ4PEBESExQVFhcYGQ/objects/CAkKCwwNDg8QERITFBUWFw/content"
+              }
+            }
+          ]
+        },
+        {
+          "entry": {
+            "id": "BAUGBwgJCgsMDQ4PEBESEw",
+            "ownerId": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "purpose": "journal",
+            "revision": 3,
+            "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+            "trashedAt": null,
+            "createdAt": "2026-07-14T16:31:02.123Z",
+            "updatedAt": "2026-07-15T08:00:00.000Z"
+          },
+          "media": [],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "schema": "linkExpirySchema",
+      "valid": [
+        "1h",
+        "1d",
+        "7d",
+        "14d",
+        "30d",
+        "never",
+        "one_view"
+      ],
+      "invalid": [
+        "2d",
+        "",
+        "NEVER"
+      ]
+    },
+    {
+      "schema": "linkObjectDto",
+      "valid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 2481401,
+          "state": "uploaded",
+          "download": {
+            "kind": "presigned",
+            "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+            "expiresAt": "2026-02-01T00:00:00.000Z"
+          }
+        },
+        {
+          "id": "CAkKCwwNDg8QERITFBUWFw",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "thumbnail",
+          "sizeBytes": 18244,
+          "state": "uploaded",
+          "download": {
+            "kind": "proxy",
+            "path": "/api/v1/public-links/CgsMDQ4PEBESExQVFhcYGQ/objects/CAkKCwwNDg8QERITFBUWFw/content"
+          }
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 2481401,
+          "state": "uploaded"
+        },
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 39,
+          "state": "uploaded",
+          "download": {
+            "kind": "presigned",
+            "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+            "expiresAt": "2026-02-01T00:00:00.000Z"
+          }
+        }
+      ]
+    },
+    {
+      "schema": "linkOpenResponse",
+      "valid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "maxViews": null,
+          "viewToken": "view-token-1"
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "expiresAt": null,
+          "maxViews": 1,
+          "viewToken": "v"
+        }
+      ],
+      "invalid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "expiresAt": null,
+          "maxViews": null,
+          "viewToken": ""
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_",
+          "expiresAt": null,
+          "maxViews": 0,
+          "viewToken": "v"
+        }
+      ]
+    },
+    {
+      "schema": "mediaCreateRequest",
+      "valid": [
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ],
+      "invalid": [
+        {
+          "mediaId": "not-an-id",
+          "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA"
+        }
+      ]
+    },
+    {
+      "schema": "mediaDto",
+      "valid": [
+        {
+          "id": "BQYHCAkKCwwNDg8QERITFA",
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+          "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BQYHCAkKCwwNDg8QERITFA",
+          "entryId": "BAUGBwgJCgsMDQ4PEBESEw",
+          "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "createdAt": "yesterday"
+        },
+        {
+          "id": "BQYHCAkKCwwNDg8QERITFA",
+          "entryId": "not-an-id",
+          "mediaKeyByEntry": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        }
+      ]
+    },
+    {
+      "schema": "mediaIdParams",
+      "valid": [
+        {
+          "id": "BQYHCAkKCwwNDg8QERITFA"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "not-an-id"
+        }
+      ]
+    },
+    {
+      "schema": "objectDto",
+      "valid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 2481401,
+          "state": "uploaded"
+        },
+        {
+          "id": "CAkKCwwNDg8QERITFBUWFw",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "thumbnail",
+          "sizeBytes": 18244,
+          "state": "pending"
+        },
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 40,
+          "state": "deleting"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 39,
+          "state": "uploaded"
+        },
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 2481401,
+          "state": "gone"
+        },
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "preview",
+          "sizeBytes": 2481401,
+          "state": "uploaded"
+        }
+      ]
+    },
+    {
+      "schema": "objectIdParams",
+      "valid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "not-an-id"
+        }
+      ]
+    },
+    {
+      "schema": "objectStateSchema",
+      "valid": [
+        "pending",
+        "uploaded",
+        "deleting"
+      ],
+      "invalid": [
+        "deleted",
+        ""
+      ]
+    },
+    {
+      "schema": "objectVariantSchema",
+      "valid": [
+        "original",
+        "thumbnail"
+      ],
+      "invalid": [
+        "preview",
+        "Original"
+      ]
+    },
+    {
+      "schema": "paramsRequest",
+      "valid": [
+        {
+          "username": "alice"
+        },
+        {
+          "username": "Alice With Spaces"
+        }
+      ],
+      "invalid": [
+        {
+          "username": ""
+        },
+        {
+          "username": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "paramsResponse",
+      "valid": [
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 16,
+          "memLimitBytes": 268435456
+        }
+      ],
+      "invalid": [
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 0,
+          "memLimitBytes": 268435456
+        },
+        {
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 16,
+          "memLimitBytes": 0
+        },
+        {
+          "salt": "A",
+          "opsLimit": 16,
+          "memLimitBytes": 268435456
+        }
+      ]
+    },
+    {
+      "schema": "partsResponse",
+      "valid": [
+        {
+          "partSizeBytes": 8388608,
+          "uploadedParts": [
+            {
+              "partNumber": 1,
+              "sizeBytes": 8388608
+            }
+          ],
+          "partUrls": [
+            {
+              "partNumber": 2,
+              "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900"
+            }
+          ],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "partSizeBytes": 8388608,
+          "uploadedParts": [],
+          "partUrls": [],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "partSizeBytes": 8388608,
+          "uploadedParts": [
+            {
+              "partNumber": 0,
+              "sizeBytes": 1
+            }
+          ],
+          "partUrls": [],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "partSizeBytes": 0,
+          "uploadedParts": [],
+          "partUrls": [],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "passwordChangeRequest",
+      "valid": [
+        {
+          "currentLoginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "salt": "vb6_wMHCw8TFxsfIycrLzA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "k7LbQYm3SE8Cwzjldxcd_TdTn0mnzQKFrjsLKFLh-bc",
+          "masterKeyByKek": "Ac3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5C0Mf1NXHMN_0R1Z6reg3krxXTg-fJtPbGhamOCaGPEijxcx7xZ-GogWEhG3PuZZFw"
+        }
+      ],
+      "invalid": [
+        {
+          "currentLoginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ"
+        },
+        {
+          "currentLoginKey": "",
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ]
+    },
+    {
+      "schema": "passwordChangeResponse",
+      "valid": [
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          }
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "session": {
+            "token": "kdk_s_short",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          }
+        }
+      ]
+    },
+    {
+      "schema": "presignRequest",
+      "valid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 2481401
+        },
+        {
+          "id": "CAkKCwwNDg8QERITFBUWFw",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "thumbnail",
+          "sizeBytes": 40
+        }
+      ],
+      "invalid": [
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "original",
+          "sizeBytes": 39
+        },
+        {
+          "id": "BwgJCgsMDQ4PEBESExQVFg",
+          "mediaId": "BQYHCAkKCwwNDg8QERITFA",
+          "variant": "preview",
+          "sizeBytes": 100
+        }
+      ]
+    },
+    {
+      "schema": "presignResponse",
+      "valid": [
+        {
+          "mode": "single",
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "mode": "multipart",
+          "partSizeBytes": 8388608,
+          "partUrls": [
+            {
+              "partNumber": 1,
+              "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900"
+            },
+            {
+              "partNumber": 2,
+              "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900"
+            }
+          ],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "mode": "stream",
+          "url": "https://s3.example.com/kodakiko/objects/abc?X-Amz-Signature=deadbeef&X-Amz-Expires=900",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "mode": "multipart",
+          "partSizeBytes": 0,
+          "partUrls": [],
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        },
+        {
+          "mode": "single",
+          "expiresAt": "2026-02-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "publicConfigSchema",
+      "valid": [
+        {
+          "apiVersion": 1,
+          "signupMode": "invite",
+          "sharingEnabled": true,
+          "publicLinksEnabled": true,
+          "maxMediaPerEntry": 20,
+          "maxUploadBytes": 4294967296,
+          "defaultQuotaBytes": 10737418240,
+          "trashDays": 30,
+          "accountDeletionGraceDays": 14,
+          "serverVersion": "0.4.0"
+        },
+        {
+          "apiVersion": 1,
+          "signupMode": "open",
+          "sharingEnabled": false,
+          "publicLinksEnabled": false,
+          "maxMediaPerEntry": 20,
+          "maxUploadBytes": 4294967296,
+          "defaultQuotaBytes": 0,
+          "trashDays": 30,
+          "accountDeletionGraceDays": 14,
+          "serverVersion": "0.4.0"
+        }
+      ],
+      "invalid": [
+        {
+          "apiVersion": 2,
+          "signupMode": "invite",
+          "sharingEnabled": true,
+          "publicLinksEnabled": true,
+          "maxMediaPerEntry": 20,
+          "maxUploadBytes": 4294967296,
+          "defaultQuotaBytes": 10737418240,
+          "trashDays": 30,
+          "accountDeletionGraceDays": 14,
+          "serverVersion": "0.4.0"
+        },
+        {
+          "apiVersion": 1,
+          "signupMode": "closed",
+          "sharingEnabled": true,
+          "publicLinksEnabled": true,
+          "maxMediaPerEntry": 20,
+          "maxUploadBytes": 4294967296,
+          "defaultQuotaBytes": 10737418240,
+          "trashDays": 30,
+          "accountDeletionGraceDays": 14,
+          "serverVersion": "0.4.0"
+        },
+        {
+          "apiVersion": 1,
+          "signupMode": "invite",
+          "sharingEnabled": true,
+          "publicLinksEnabled": true,
+          "maxMediaPerEntry": 20,
+          "maxUploadBytes": 4294967296,
+          "defaultQuotaBytes": 10737418240,
+          "trashDays": 0,
+          "accountDeletionGraceDays": 14,
+          "serverVersion": "0.4.0"
+        }
+      ]
+    },
+    {
+      "schema": "publicKeyResponse",
+      "valid": [
+        {
+          "userId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "username": "bob",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ"
+        }
+      ],
+      "invalid": [
+        {
+          "userId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "username": "bob"
+        },
+        {
+          "userId": "not-an-id",
+          "username": "bob",
+          "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ"
+        }
+      ]
+    },
+    {
+      "schema": "publicLinkCreateRequest",
+      "valid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "accessToken": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "expiry": "7d"
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "accessToken": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "expiry": "one_view"
+        }
+      ],
+      "invalid": [
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "accessToken": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "expiry": "2d"
+        },
+        {
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "accessToken": "",
+          "expiry": "7d"
+        }
+      ]
+    },
+    {
+      "schema": "publicLinkDto",
+      "valid": [
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "maxViews": null,
+          "viewCount": 0,
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "expiresAt": null,
+          "maxViews": 1,
+          "viewCount": 1,
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        }
+      ],
+      "invalid": [
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "maxViews": null,
+          "viewCount": -1,
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        },
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+          "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "maxViews": 0,
+          "viewCount": 0,
+          "createdAt": "2026-07-14T16:31:02.123Z"
+        }
+      ]
+    },
+    {
+      "schema": "publicLinkListResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+              "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+              "expiresAt": "2026-02-01T00:00:00.000Z",
+              "maxViews": null,
+              "viewCount": 0,
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ]
+        },
+        {
+          "items": []
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "items": [
+            {
+              "linkId": "not-an-id",
+              "collectionId": "AwQFBgcICQoLDA0ODxAREg",
+              "expiresAt": "2026-02-01T00:00:00.000Z",
+              "maxViews": null,
+              "viewCount": 0,
+              "createdAt": "2026-07-14T16:31:02.123Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema": "publicLinkObjectParams",
+      "valid": [
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ",
+          "objectId": "BwgJCgsMDQ4PEBESExQVFg"
+        }
+      ],
+      "invalid": [
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ"
+        },
+        {
+          "linkId": "not-an-id",
+          "objectId": "BwgJCgsMDQ4PEBESExQVFg"
+        }
+      ]
+    },
+    {
+      "schema": "publicLinkParams",
+      "valid": [
+        {
+          "linkId": "CgsMDQ4PEBESExQVFhcYGQ"
+        }
+      ],
+      "invalid": [
+        {
+          "linkId": "not-an-id"
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "recoveryCompleteRequest",
+      "valid": [
+        {
+          "username": "alice",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "deviceLabel": "Pixel 8",
+          "salt": "WVpbXF1eX2BhYmNkZWZnaA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "TaNn6htoPlZzf32DeyVQIEewAi1iaXjXC5bcOKfawRc",
+          "masterKeyByKek": "AWlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gAuWXn3SuI9JfRj2yedTsdJMAwLmjU--AUxuLCOVu5GqJSKLh2m3qScaRwNwSaB9Yg"
+        },
+        {
+          "username": "alice",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "deviceLabel": "Pixel 8",
+          "salt": "WltcXV5fYGFiY2RlZmdoaQ",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "0VTI7MXYttEfZmen7rPpweOQ-1HCHnlXS9TOJDYSCu8",
+          "masterKeyByKek": "AWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-Aga4JUdK0mfR0U4_Mv9OgGNzXAxuxEUa5EE01fiSVKTtOSFORT_rWD1WsdBYf0sjHGQ"
+        }
+      ],
+      "invalid": [
+        {
+          "username": "alice",
+          "recoveryLoginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": "",
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "username": "alice",
+          "recoveryLoginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "username": "alice",
+          "deviceLabel": "Pixel 8",
+          "salt": "GBkaGxwdHh8gISIjJCUmJw",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ]
+    },
+    {
+      "schema": "recoveryStartRequest",
+      "valid": [
+        {
+          "username": "alice"
+        }
+      ],
+      "invalid": [
+        {
+          "username": ""
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "recoveryStartResponse",
+      "valid": [
+        {
+          "userId": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "masterKeyByRecovery": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        }
+      ],
+      "invalid": [
+        {
+          "userId": "not-an-id",
+          "masterKeyByRecovery": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+        },
+        {
+          "userId": "AQIDBAUGBwgJCgsMDQ4PEA"
+        }
+      ]
+    },
+    {
+      "schema": "revisionConflictDetails",
+      "valid": [
+        {
+          "revision": 4,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        }
+      ],
+      "invalid": [
+        {
+          "revision": 0,
+          "metadataBlob": "FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp-goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1NXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7O3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_"
+        },
+        {
+          "revision": 4
+        }
+      ]
+    },
+    {
+      "schema": "sessionDto",
+      "valid": [
+        {
+          "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "deviceLabel": "Pixel 8"
+        }
+      ],
+      "invalid": [
+        {
+          "token": "kdk_x_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "deviceLabel": "Pixel 8"
+        },
+        {
+          "token": "kdk_s_short",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "deviceLabel": "Pixel 8"
+        },
+        {
+          "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+          "expiresAt": "2026-02-01T00:00:00.000Z",
+          "deviceLabel": ""
+        }
+      ]
+    },
+    {
+      "schema": "sessionResponse",
+      "valid": [
+        {
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          }
+        },
+        {
+          "user": {
+            "id": "AgMEBQYHCAkKCwwNDg8QEQ",
+            "username": "bob",
+            "role": "admin",
+            "status": "pending_deletion",
+            "quotaBytes": null,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": "2026-03-15T12:00:00Z"
+          }
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "owner",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          }
+        }
+      ]
+    },
+    {
+      "schema": "shareCreateRequest",
+      "valid": [
+        {
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "sealedCollectionKey": "GRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2g"
+        }
+      ],
+      "invalid": [
+        {
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ"
+        },
+        {
+          "recipientUserId": "not-an-id",
+          "sealedCollectionKey": "GRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2g"
+        }
+      ]
+    },
+    {
+      "schema": "shareDto",
+      "valid": [
+        {
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "recipientUsername": "bob",
+          "createdAt": "2026-07-15T08:00:00.000Z"
+        }
+      ],
+      "invalid": [
+        {
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "recipientUsername": "bob",
+          "createdAt": "now"
+        },
+        {
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "createdAt": "2026-07-15T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "schema": "shareListResponse",
+      "valid": [
+        {
+          "items": [
+            {
+              "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ",
+              "recipientUsername": "bob",
+              "createdAt": "2026-07-15T08:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "items": []
+        }
+      ],
+      "invalid": [
+        {},
+        {
+          "items": [
+            {
+              "recipientUserId": "not-an-id",
+              "recipientUsername": "bob",
+              "createdAt": "2026-07-15T08:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema": "shareParams",
+      "valid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg",
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AwQFBgcICQoLDA0ODxAREg"
+        },
+        {
+          "id": "not-an-id",
+          "recipientUserId": "AgMEBQYHCAkKCwwNDg8QEQ"
+        }
+      ]
+    },
+    {
+      "schema": "signInRequest",
+      "valid": [
+        {
+          "username": "alice",
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": "Pixel 8"
+        },
+        {
+          "username": "Alice",
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": "Firefox on Linux"
+        }
+      ],
+      "invalid": [
+        {
+          "username": "alice",
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": ""
+        },
+        {
+          "username": "alice",
+          "loginKey": "A",
+          "deviceLabel": "Pixel 8"
+        },
+        {
+          "username": "",
+          "loginKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+          "deviceLabel": "Pixel 8"
+        }
+      ]
+    },
+    {
+      "schema": "signInResponse",
+      "valid": [
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          },
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          },
+          "keyBundle": {
+            "salt": "GBkaGxwdHh8gISIjJCUmJw",
+            "opsLimit": 16,
+            "memLimitBytes": 268435456,
+            "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+            "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+            "publicKey": "FRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ",
+            "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+          }
+        }
+      ],
+      "invalid": [
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          },
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          }
+        },
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          },
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          },
+          "keyBundle": {
+            "salt": "GBkaGxwdHh8gISIjJCUmJw",
+            "opsLimit": 16,
+            "memLimitBytes": 268435456,
+            "masterKeyByKek": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+            "recoveryKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg",
+            "publicKey": "",
+            "privateKeyByMaster": "FhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4_QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXg"
+          }
+        }
+      ]
+    },
+    {
+      "schema": "signUpRequest",
+      "valid": [
+        {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        },
+        {
+          "userId": "hoeIiYqLjI2Oj5CRkpOUlQ",
+          "username": "juergen.k",
+          "inviteToken": "kdk_i_9_j5-vv8_f7_AAECAwQFBgcICQoLDA0ODxAREhMUFRY",
+          "deviceLabel": "Galaxy Tab S9 — Küche",
+          "salt": "9vf4-fr7_P3-_wABAgMEBQ",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "enzNk05sYc5UbJDCSxxwznfaEwbYzJfHK6YxV8JxStQ",
+          "recoveryLoginKey": "wTaVeSkIVpBivayVVx3HozJl8OviXqvpNlxYKWwqYNc",
+          "publicKey": "dyjPWSNIGb_9bZXlGSkLiKMAXCVdtIsUQgUHoK72dho",
+          "masterKeyByKek": "AaanqKmqq6ytrq-wsbKztLW2t7i5uru8vf9mf55JQqz1M42LOAm3-N_U6az1PKY46epZB8q7OHgplgU6RASYPj-IYIwA_1qfaw",
+          "masterKeyByRecovery": "Ab6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1Ym8HoWzScwtbbJUWwN0zHtT3SgqHSAtUSsC4vVT2FdbRcoVHV_a72_DmtzKeBwWnQ",
+          "recoveryKeyByMaster": "AdbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7UQx3BJQ_52zrAQ04RXJltsSoVooTQIYFzCSNcW_G_g9ngS7RKQigP07vwzAkYDJwg",
+          "privateKeyByMaster": "Ae7v8PHy8_T19vf4-fr7_P3-_wABAgMEBXencgWZpJCcdKWfhSH_xfGe358tdRe4my-gsJgRuPCzvpc9QaczaygwBYB3KNE7BQ",
+          "homeCollection": {
+            "id": "lpeYmZqbnJ2en6ChoqOkpQ",
+            "keyByOwner": "AQYHCAkKCwwNDg8QERITFBUWFxgZGhscHWo8OfV6PyQI7w-6AEzea4wuM11Qyh1RLYg3yakyNB8oMEWGnKQVlC2KPS0QDRFdqQ",
+            "metadataBlob": "AR4fICEiIyQlJicoKSorLC0uLzAxMjM0NZ66cY-xME_M6aL69dyDitkI7e4TtmlzbXPC-oCiyx3t5b6zOOuNIiiLREBibw2_0cI5lHY5pVt3pP2h2G6uizL05Vl05-TrunLFAas_COAkptuNZ_EWoR-q8fIekwagoEB2zix3G6K1_lPMf5Ae_nd0mx4mMfH03maPatLJhe0yJJ7rPCeY9EmyZn99Y4ZvG4IhlzNyKTmUOkyHjSbtAIh26zX1fk27a9QutBQ3KW7VnFC7pvAN53sekGIK2dKRzMxpB8vF90Sz4dsXJ6V7vi0qVH4e94ko37x4UfbZAgObJ6G5Q9qr6rdlv0IHCAGzr_rksR_bQ3kXMiWMvIyOa4VmmYLoCYBXyixj7m5bEMZV"
+          }
+        }
+      ],
+      "invalid": [
+        {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "Alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        },
+        {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "al",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        },
+        {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "alice",
+          "inviteToken": "kdk_i_short",
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        },
+        {
+          "userId": "not-an-id",
+          "username": "alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        },
+        {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "9fb3-Pn6-_z9_v8AAQIDBA",
+          "opsLimit": 0,
+          "memLimitBytes": 8388608,
+          "loginKey": "bJLtrdhhdYS9lrNleA3WVo3RNqZbEAP0wK_2sQP3Vno",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "AaWmp6ipqqusra6vsLGys7S1tre4ubq7vE30-e3fNgOWtrp8uFPsk-Ns-1QHJuisuoKHnRkqzMqIPP6drsq-zmTLrPSsnJZbFA",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        }
+      ]
+    },
+    {
+      "schema": "signUpResponse",
+      "valid": [
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          },
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": 52428800,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          }
+        }
+      ],
+      "invalid": [
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          }
+        },
+        {
+          "session": {
+            "token": "kdk_s_GhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk",
+            "expiresAt": "2026-02-01T00:00:00.000Z",
+            "deviceLabel": "Pixel 8"
+          },
+          "user": {
+            "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+            "username": "alice",
+            "role": "member",
+            "status": "active",
+            "quotaBytes": 10737418240,
+            "usedBytes": -1,
+            "createdAt": "2026-01-02T03:04:05.000Z",
+            "deletionDueAt": null
+          }
+        }
+      ]
+    },
+    {
+      "schema": "syncStateResponse",
+      "valid": [
+        {
+          "collections": [
+            {
+              "id": "AwQFBgcICQoLDA0ODxAREg",
+              "kind": "home",
+              "role": "owner",
+              "lastSeq": 42,
+              "tombstonesPrunedThroughSeq": 0,
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z"
+            },
+            {
+              "id": "AgMEBQYHCAkKCwwNDg8QEQ",
+              "kind": "shared",
+              "role": "viewer",
+              "lastSeq": 7,
+              "tombstonesPrunedThroughSeq": 3,
+              "metaUpdatedAt": "2026-07-14T16:31:02.123Z"
+            }
+          ]
+        },
+        {
+          "collections": []
+        }
+      ],
+      "invalid": [
+        {
+          "collections": [
+            {
+              "id": "AwQFBgcICQoLDA0ODxAREg",
+              "kind": "home",
+              "role": "owner",
+              "lastSeq": -1,
+              "tombstonesPrunedThroughSeq": 0,
+              "metaUpdatedAt": "2026-07-15T08:00:00.000Z"
+            }
+          ]
+        },
+        {}
+      ]
+    },
+    {
+      "schema": "userDto",
+      "valid": [
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null
+        },
+        {
+          "id": "AgMEBQYHCAkKCwwNDg8QEQ",
+          "username": "bob",
+          "role": "admin",
+          "status": "pending_deletion",
+          "quotaBytes": null,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": "2026-03-15T12:00:00Z"
+        }
+      ],
+      "invalid": [
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "banned",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null
+        },
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": 10737418240,
+          "usedBytes": 52428800,
+          "createdAt": "02/01/2026",
+          "deletionDueAt": null
+        },
+        {
+          "id": "AQIDBAUGBwgJCgsMDQ4PEA",
+          "username": "alice",
+          "role": "member",
+          "status": "active",
+          "quotaBytes": -5,
+          "usedBytes": 52428800,
+          "createdAt": "2026-01-02T03:04:05.000Z",
+          "deletionDueAt": null
+        }
+      ]
+    },
+    {
+      "schema": "userPublicKeyParams",
+      "valid": [
+        {
+          "username": "alice"
+        }
+      ],
+      "invalid": [
+        {
+          "username": ""
+        },
+        {}
+      ]
+    }
+  ]
+}
