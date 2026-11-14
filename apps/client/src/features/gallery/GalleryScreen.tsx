@@ -191,7 +191,6 @@ export function GalleryScreen() {
         <FAB
           testID={TEST_IDS.galleryFab}
           icon={ICONS.capture}
-          label={EN['gallery.new']}
           accessibilityLabel={EN['gallery.capture']}
           onPress={() => router.push(APP_ROUTES.capture as Href)}
           style={styles.fab}

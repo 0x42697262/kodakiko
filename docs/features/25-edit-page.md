@@ -56,4 +56,19 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   adds `'audio'` (contract tests red first). Core merge keeps a caption changed on one side
   (`withMergedCaption`; merge tests red first). Dependencies allowlisted and installed:
   `expo-audio`, `expo-clipboard`, `react-native-share`.
+- **Phase 2:** `EditPage.tsx` replaces `ComposeScreen` and `EntryEditScreen` (deleted).
+  `/entry/new` (`NewEntryScreen`) creates the entry from the tray at once and replaces itself with
+  `/entry/<id>/edit?new=1`. `autosaver.ts` (unit tests red first): immediate writes for
+  time/place/tags, 600 ms debounce for the note, `flush()` before leaving, opening capture,
+  favorite and trash; each write diffs against freshly read metadata (`diffDraft`).
+  Media pager (thumbnails for now) with `PageDots`; action bar: photo and video (open capture with
+  `entryId` and `mode`, which sets the camera's start mode), add from device (opens capture, whose
+  import button is one tap away), favorite. `note-section.tsx`: "Add a note" row, rendered note +
+  pencil, editor with the toolbar (`markdown/toolbar.ts`, unit tests red first). Gallery FAB is
+  icon only. `TextField` gains `selection`, `onSelectionChange`, `autoFocus`.
+  Tests adapted to D-86/D-89 (programmer decisions supersede spec 10's Compose/Edit steps):
+  entry-compose (pages instead of strip tiles; "a tray change drops the edited time" became "the
+  edited time is kept after leaving"; "Back returns to capture with the tray intact" became "Back
+  keeps the new entry and returns to the gallery"), U-06, U-07 and the screenshot script tap
+  "Add a note" first. New **U-34** (written with the code): note autosaved on Back, toolbar bold.
 

@@ -16,12 +16,21 @@ export type LocationRowProps = {
   readonly onRemove?: () => void;
 };
 
-export function LocationRow({ latitude, longitude, source, onRemove, showOpen = true }: LocationRowProps) {
+export function LocationRow({
+  latitude,
+  longitude,
+  source,
+  onRemove,
+  showOpen = true,
+}: LocationRowProps) {
   const { colors } = useTheme();
   const coordinates = `${latitude.toFixed(COORDINATE_DECIMALS)}, ${longitude.toFixed(COORDINATE_DECIMALS)}`;
   return (
     <View style={styles.container}>
-      <Text testID={ENTRY_IDS.locationCoordinates} style={[styles.coordinates, { color: colors.text }]}>
+      <Text
+        testID={ENTRY_IDS.locationCoordinates}
+        style={[styles.coordinates, { color: colors.text }]}
+      >
         {coordinates}
       </Text>
       <Text testID={ENTRY_IDS.locationSource} style={[styles.source, { color: colors.textMuted }]}>
@@ -39,7 +48,12 @@ export function LocationRow({ latitude, longitude, source, onRemove, showOpen = 
           />
         ) : null}
         {onRemove === undefined ? null : (
-          <IconAction testID={testId('location.remove')} icon="locationOff" label={EN['location.remove']} onPress={onRemove} />
+          <IconAction
+            testID={testId('location.remove')}
+            icon="locationOff"
+            label={EN['location.remove']}
+            onPress={onRemove}
+          />
         )}
       </View>
     </View>

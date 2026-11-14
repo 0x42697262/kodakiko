@@ -14,6 +14,7 @@ test('U-06 capture two files, save with a note and a tag, open the entry in the 
   await addFiles(page, ['photo-gps.jpg', 'video-20s.mp4']);
   await expect(page.getByTestId('capture.trayItem.1')).toBeVisible({ timeout: 60_000 });
   await page.getByTestId('capture.next').click();
+  await page.getByTestId('edit.addNote').click();
   await page.getByTestId('compose.note').fill('Picnic');
   await page.getByTestId('tags.choose').click();
   await page.getByTestId('tags.editTags').click();

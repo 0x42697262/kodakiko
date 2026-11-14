@@ -12,10 +12,10 @@ export function useCaptureMode(actions: {
   readonly startRecording: () => void;
   readonly stopRecording: () => void;
   readonly recording: boolean;
-}) {
+}, initialMode: CaptureMode = 'photo') {
   const { services } = useAppContext();
   const settings = useSyncExternalStore(services.deviceSettings.subscribe, services.deviceSettings.get);
-  const [mode, setMode] = useState<CaptureMode>('photo');
+  const [mode, setMode] = useState<CaptureMode>(initialMode);
   const capTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { takePhoto, startRecording, stopRecording, recording } = actions;
 

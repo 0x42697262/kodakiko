@@ -6,6 +6,7 @@ export type CaptureSurfaceProps = {
   readonly remainingSlots: number;
   readonly maxUploadBytes: number;
   readonly onRecordingChange?: (recording: boolean) => void;
+  readonly initialMode?: 'photo' | 'video';
 };
 
 export declare function CaptureSurface(props: CaptureSurfaceProps): ReactElement;
