@@ -1,0 +1,15 @@
+-rw------- 1 u0_a192 u0_a192_cache 356840 2026-11-14 20:11 ./cache/ExponentAsset-4e85bc9ebe07e0340c9c4fc2f6c38908.ttf
+-rw------- 1 u0_a192 u0_a192_cache 326 2026-11-14 20:11 ./cache/image_manager_disk_cache/journal
+-rw------- 1 u0_a192 u0_a192_cache 17493 2026-11-14 20:11 ./cache/image_manager_disk_cache/0ac24e88ac36341da320a19f372744dcffd8ddd3f5c0f15a91b357c512b3ffd0.0
+-rw------- 1 u0_a192 u0_a192_cache 9006 2026-11-14 20:11 ./cache/image_manager_disk_cache/e1a67cf6fa02d7de3f9176b4d1053ee7d8cee83caacb4665b64e7ae2568cadf4.0
+-rw-rw---- 1 u0_a192 u0_a192 1287 2026-11-14 20:10 ./shared_prefs/SecureStore.xml
+-rw------- 1 u0_a192 u0_a192 4096 2026-11-14 20:10 ./files/SQLite/kodakiko-b1abbb91a5439ec1.db
+-rw------- 1 u0_a192 u0_a192 276072 2026-11-14 20:11 ./files/SQLite/kodakiko-b1abbb91a5439ec1.db-wal
+-rw------- 1 u0_a192 u0_a192 32768 2026-11-14 20:11 ./files/SQLite/kodakiko-b1abbb91a5439ec1.db-shm
+-rw------- 1 u0_a192 u0_a192 24500 2026-11-14 20:11 ./files/kodakiko/b1abbb91a5439ec1/objects/VRuvDpuLOAPARqzaL_4eqw.kdks
+-rw------- 1 u0_a192 u0_a192 2532 2026-11-14 20:11 ./files/kodakiko/b1abbb91a5439ec1/objects/aiCCanDLFmrvG_Tf6iBlsA.kdks
+-rw------- 1 u0_a192 u0_a192 2492 2026-11-14 20:11 ./files/kodakiko/b1abbb91a5439ec1/thumbs-plain/bt7GB2t6ePYayR9Xf-UDzw.webp
+-rwx------ 1 u0_a192 u0_a192 37424 2026-11-14 20:09 ./app_webview/variations_seed_new
+-rw------- 1 u0_a192 u0_a192 24576 2026-11-14 20:09 ./app_webview/Default/Cookies
+-rw------- 1 u0_a192 u0_a192 0 2026-11-14 20:09 ./app_webview/Default/Cookies-journal
+-rw------- 1 u0_a192 u0_a192 0 2026-11-14 20:09 ./app_webview/variations_stamp

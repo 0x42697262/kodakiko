@@ -1,0 +1,57 @@
+{
+ "SERVER_INPUT": "http://10.0.2.2:9580",
+ "USERNAME": "k007server",
+ "PASSWORD": "correct horse battery staple",
+ "recoveryWords": [
+  "harvest",
+  "brother",
+  "rubber",
+  "mercy",
+  "enough",
+  "beef",
+  "can",
+  "clinic",
+  "rule",
+  "follow",
+  "pigeon",
+  "aim",
+  "digital",
+  "corn",
+  "cabbage",
+  "demand",
+  "three",
+  "vital",
+  "satoshi",
+  "invest",
+  "cruel",
+  "exact",
+  "gift",
+  "public"
+ ],
+ "entryIds": [
+  {
+   "entryId": "cqPjjUCDKYPn__dValDzgw"
+  },
+  {
+   "entryId": "rYnbxnkqoQDUwhF2rywyKA"
+  },
+  {
+   "entryId": "ZKM4YN624mDXnrUUVdXSfg"
+  },
+  {
+   "entryId": "Wrqisgz_546aMfcjbMDmnA"
+  },
+  {
+   "entryId": "8mma2117HHMDYuijshU9TA"
+  },
+  {
+   "entryId": "nk-Dd-iFiRH30heKrg8g-w"
+  },
+  {
+   "entryId": "M34hjxWAZvuGCNLVokq-3w"
+  },
+  {
+   "entryId": "3-g-Eq8Ryv8Uof6SoTqh_g"
+  }
+ ]
+}

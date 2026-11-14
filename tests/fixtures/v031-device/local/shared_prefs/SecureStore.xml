@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="key_v1-kodakiko.activeAccount">{&quot;ct&quot;:&quot;nAnIIBt98SQWGoQ+mY4Gz5f9vgswk24GTy\/XbvfeOglUxrRN\/tc7gJDW2pz+huh\/Gmk\/cSU3qccx7j+OvbQTv4Eu+5u6nc3CfyNSEVdLIOR6fiFuz9\/YgVJWTSQCIEwUz83BnnlRvo8\/SMN6nXtyTBeppPLV&quot;,&quot;iv&quot;:&quot;kghUgYY08ggv2e65&quot;,&quot;tlen&quot;:128,&quot;scheme&quot;:&quot;aes&quot;,&quot;usesKeystoreSuffix&quot;:true,&quot;keystoreAlias&quot;:&quot;key_v1&quot;,&quot;requireAuthentication&quot;:false}</string>
+    <string name="key_v1-kodakiko.mk.b1abbb91a5439ec1">{&quot;ct&quot;:&quot;oujWWQvjSaARYCRq9rYYVyo8fE7xE+VzvB3r55yht7SUKv4d9FRrz+uYqZlnUewGtc2Q8GIVG86M0X0=&quot;,&quot;iv&quot;:&quot;Lb4pv+rKhDD11FRV&quot;,&quot;tlen&quot;:128,&quot;scheme&quot;:&quot;aes&quot;,&quot;usesKeystoreSuffix&quot;:true,&quot;keystoreAlias&quot;:&quot;key_v1&quot;,&quot;requireAuthentication&quot;:false}</string>
+    <string name="key_v1-kodakiko.mkauth.b1abbb91a5439ec1">{&quot;ct&quot;:&quot;J0z7CDozbrekoajp1KeY5xw+OUCVnw==&quot;,&quot;iv&quot;:&quot;U9R3n9b3Zhi4DRp5&quot;,&quot;tlen&quot;:128,&quot;scheme&quot;:&quot;aes&quot;,&quot;usesKeystoreSuffix&quot;:true,&quot;keystoreAlias&quot;:&quot;key_v1&quot;,&quot;requireAuthentication&quot;:false}</string>
+</map>
