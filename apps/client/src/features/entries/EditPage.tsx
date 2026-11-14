@@ -28,6 +28,8 @@ import { LocationRow } from './location-row';
 import { NoteSection } from './note-section';
 import { PageDots } from './page-dots';
 import { TimeEditor } from './time-editor';
+import { CaptionOverlay } from './caption-overlay';
+import { MediaMenus, type MediaMenuState } from './media-menus';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 type Descriptor = Metadata['media'][number];
@@ -45,11 +47,15 @@ function MediaPage({
   media,
   width,
   position,
+  caption,
+  onMenu,
 }: {
   readonly entryId: string;
   readonly media: Descriptor;
   readonly width: number;
   readonly position: number;
+  readonly caption: string | undefined;
+  readonly onMenu: () => void;
 }) {
   const { colors } = useTheme();
   const uri = useThumbnail(entryId, media.mediaId);
@@ -59,6 +65,10 @@ function MediaPage({
       style={[styles.page, { width, height: width * PAGE_ASPECT, backgroundColor: colors.surface }]}
     >
       {uri === null ? null : <Image source={{ uri }} style={styles.image} contentFit="contain" />}
+      {caption === undefined ? null : <CaptionOverlay testID={`edit.captionText.${position}`} caption={caption} />}
+      <View style={styles.pageMenu}>
+        <IconAction testID={`edit.mediaMenu.${position}`} icon="overflow" label={EN['edit.mediaOptions']} onPress={onMenu} />
+      </View>
     </View>
   );
 }
@@ -83,6 +93,7 @@ export function EditPage({
   const [editingTime, setEditingTime] = useState(false);
   const [failed, setFailed] = useState(false);
   const pager = useRef<FlatList<Descriptor>>(null);
+  const [menu, setMenu] = useState<MediaMenuState>(null);
 
   const saver = useMemo(
     () =>
@@ -236,7 +247,14 @@ export function EditPage({
             onScroll={(event) => setPage(Math.round(event.nativeEvent.contentOffset.x / width))}
             scrollEventThrottle={PAGER_SCROLL_THROTTLE_MS}
             renderItem={({ item, index }) => (
-              <MediaPage entryId={entryId} media={item} width={width} position={index} />
+              <MediaPage
+                entryId={entryId}
+                media={item}
+                width={width}
+                position={index}
+                caption={draft.captions[item.mediaId]}
+                onMenu={() => setMenu({ kind: 'menu', mediaId: item.mediaId })}
+              />
             )}
           />
         )}
@@ -326,6 +344,27 @@ export function EditPage({
       {failed ? (
         <Banner testID={testId('edit.failed')} kind="error" message={EN['edit.failed']} />
       ) : null}
+      <MediaMenus
+        entryId={entryId}
+        state={menu}
+        setState={setMenu}
+        media={media}
+        captions={draft.captions}
+        flush={() => saver.flush()}
+        onCaption={(mediaId, caption) => {
+          const { [mediaId]: _previous, ...rest } = draft.captions;
+          change({ captions: caption === '' ? rest : { ...rest, [mediaId]: caption } });
+        }}
+        onCover={(mediaId) => {
+          change({ mediaIds: [mediaId, ...draft.mediaIds.filter((id) => id !== mediaId)] });
+          goTo(0);
+        }}
+        onRemove={(mediaId) => {
+          change({ mediaIds: draft.mediaIds.filter((id) => id !== mediaId) });
+          setPage(0);
+        }}
+        onReplaced={reload}
+      />
     </Screen>
   );
 }
@@ -338,6 +377,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: { width: '100%', height: '100%' },
+  pageMenu: { position: 'absolute', top: SPACING.sm, right: SPACING.sm },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-around',

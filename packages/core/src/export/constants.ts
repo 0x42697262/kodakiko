@@ -17,4 +17,7 @@ export const EXPORT_EXTENSIONS: Readonly<Record<string, string>> = Object.freeze
   'video/mp4': 'mp4',
   'video/quicktime': 'mov',
   'video/webm': 'webm',
+  'audio/mp4': 'm4a',
+  'audio/webm': 'weba',
+  'audio/ogg': 'ogg',
 });

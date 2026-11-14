@@ -1,3 +1,4 @@
+import { forgetBlob, registerBlob } from './blob-registry.web';
 import type { PlaintextSink, PlaintextSinkDeps } from './plaintext-sink';
 
 export function createPlaintextSink(_deps: PlaintextSinkDeps): PlaintextSink {
@@ -9,11 +10,16 @@ export function createPlaintextSink(_deps: PlaintextSinkDeps): PlaintextSink {
           parts.push(bytes);
         },
         finish: async () => {
-          const uri = URL.createObjectURL(new Blob(parts as BlobPart[], { type: mimeType }));
+          const blob = new Blob(parts as BlobPart[], { type: mimeType });
+          const uri = URL.createObjectURL(blob);
+          registerBlob(uri, blob);
           parts.length = 0;
           return {
             uri,
-            release: async () => URL.revokeObjectURL(uri),
+            release: async () => {
+              forgetBlob(uri);
+              URL.revokeObjectURL(uri);
+            },
           };
         },
         abort: async () => {

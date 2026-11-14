@@ -108,3 +108,26 @@ describe('edit draft diff', () => {
     expect(diffDraft(current, draft)).toEqual({ removedMediaIds: [], edit: {} });
   });
 });
+
+describe('edit draft captions (spec 25)', () => {
+  it('carries captions and diffs only the changed ones', () => {
+    const current = metadata();
+    const draft = draftFromMetadata(current);
+    const first = current.media[0]?.mediaId ?? '';
+    expect(draft.captions).toEqual({});
+    const diff = diffDraft(current, { ...draft, captions: { [first]: 'Sunset' } });
+    expect(diff.edit).toEqual({ captions: { [first]: 'Sunset' } });
+    const applied = applyEntryEdit(current, diff.edit, NOW);
+    expect(diffDraft(applied, draftFromMetadata(applied)).edit).toEqual({});
+  });
+
+  it('clears a caption with an empty string', () => {
+    const current = metadata();
+    const first = current.media[0]?.mediaId ?? '';
+    const withCaption = applyEntryEdit(current, { captions: { [first]: 'Old' } }, NOW);
+    const draft = draftFromMetadata(withCaption);
+    expect(draft.captions).toEqual({ [first]: 'Old' });
+    const { [first]: _removed, ...rest } = draft.captions;
+    expect(diffDraft(withCaption, { ...draft, captions: rest }).edit).toEqual({ captions: { [first]: '' } });
+  });
+});

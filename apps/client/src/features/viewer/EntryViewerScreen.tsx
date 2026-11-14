@@ -434,6 +434,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
           <View onLayout={onLayout}>
             {width === 0 ? null : (
               <MediaPager
+                key={metadata.media.map((item) => item.mediaId).join()}
                 handle={pager}
                 items={metadata.media}
                 keyOf={(item) => item.mediaId}
@@ -462,6 +463,11 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               />
             )}
           </View>
+          {metadata.media[page]?.caption === undefined ? null : (
+            <Text testID="viewer.caption" numberOfLines={1} style={[styles.indicator, { color: colors.text }]}>
+              {metadata.media[page]?.caption}
+            </Text>
+          )}
           <Text
             testID={TEST_IDS.viewerPageIndicator}
             style={[styles.indicator, { color: colors.textMuted }]}

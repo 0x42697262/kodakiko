@@ -412,6 +412,7 @@ export async function createAppContext(): Promise<AppContext> {
       ),
     createEntry: (input, items) => entries.createFromMedia(input, items),
     setFavorite: (entryIds, favorite) => entries.setFavorite(entryIds, favorite),
+    setCaptions: (entryId, captions) => entries.edit(entryId, { captions }),
     existingEntries: () => {
       const current = index.index();
       if (current === null) return [];

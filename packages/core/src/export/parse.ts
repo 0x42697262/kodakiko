@@ -15,7 +15,7 @@ export type ParsedEntryNote = {
   readonly tags: readonly string[];
   readonly favorite: boolean;
   readonly location: { readonly latitude: number; readonly longitude: number; readonly source: string } | null;
-  readonly media: readonly { readonly file: string; readonly originalName: string | null; readonly kind: 'photo' | 'video' }[];
+  readonly media: readonly { readonly file: string; readonly originalName: string | null; readonly kind: 'photo' | 'video' | 'audio'; readonly caption?: string }[];
   readonly note: string;
 };
 
@@ -125,8 +125,14 @@ export function parseEntryNote(source: string): ParsedEntryNote {
     media: media.map((item) => {
       if (typeof item !== 'object' || Array.isArray(item)) throw new InvalidEntryNoteError(INVALID);
       const kind = text(item['kind']);
-      if (kind !== 'photo' && kind !== 'video') throw new InvalidEntryNoteError(INVALID);
-      return { file: text(item['file']), originalName: item['original_name'] === undefined ? null : text(item['original_name']), kind };
+      if (kind !== 'photo' && kind !== 'video' && kind !== 'audio') throw new InvalidEntryNoteError(INVALID);
+      const caption = item['caption'] === undefined ? null : text(item['caption']);
+      return {
+        file: text(item['file']),
+        originalName: item['original_name'] === undefined ? null : text(item['original_name']),
+        kind,
+        ...(caption === null ? {} : { caption }),
+      };
     }),
     note,
   };

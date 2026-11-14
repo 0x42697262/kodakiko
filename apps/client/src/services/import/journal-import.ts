@@ -24,6 +24,7 @@ export type JournalImportDeps = {
   readonly importMedia: (file: { readonly bytes: Uint8Array; readonly fileName: string }, position: number) => Promise<ImportOutcome>;
   readonly createEntry: (input: CreateFromTrayInput, items: readonly ImportedMedia[]) => Promise<string>;
   readonly setFavorite: (entryIds: readonly string[], favorite: boolean) => Promise<unknown>;
+  readonly setCaptions: (entryId: string, captions: Readonly<Record<string, string>>) => Promise<unknown>;
   readonly existingEntries: () => readonly { readonly takenAtUtc: string; readonly mediaCount: number }[];
 };
 
@@ -70,6 +71,7 @@ export function createJournalImport(deps: JournalImportDeps) {
       }
       const folder = path.slice(0, path.length - EXPORT_NOTE_FILE.length);
       const items: ImportedMedia[] = [];
+      const captions: Record<string, string> = {};
       let problem: ImportFailure['reason'] | null = null;
       for (const [position, item] of parsed.media.entries()) {
         const bytes = contents.get(`${folder}${item.file}`);
@@ -78,7 +80,10 @@ export function createJournalImport(deps: JournalImportDeps) {
           continue;
         }
         const outcome = await deps.importMedia({ bytes, fileName: item.originalName ?? item.file }, position);
-        if (outcome.ok) items.push(outcome.media);
+        if (outcome.ok) {
+          items.push(outcome.media);
+          if (item.caption !== undefined) captions[outcome.media.mediaId] = item.caption;
+        }
         else problem = 'refused';
       }
       if (items.length === 0) {
@@ -98,6 +103,7 @@ export function createJournalImport(deps: JournalImportDeps) {
         items,
       );
       if (parsed.favorite) await deps.setFavorite([entryId], true);
+      if (Object.keys(captions).length > 0) await deps.setCaptions(entryId, captions);
       seen.add(`${parsed.takenAtUtc}#${parsed.media.length}`);
       entries += 1;
       media += items.length;

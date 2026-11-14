@@ -44,7 +44,7 @@ Capture stays its own full-screen page (v0.1.3 flow). Only the edit page changes
 - Web UI flows: existing flows adapted only where D-86/D-89 remove the Compose/Edit split (noted
   per flow); new **U-34** autosave (type a note, leave without Save, reopen → note kept), **U-35**
   caption shows on the page and is found by search, **U-36** set as cover changes the gallery
-  tile, **U-37** voice note recorded on web (fake microphone) plays back.
+  tile, **U-37** crop replaces the photo on the server, **U-38** voice note recorded on web (fake microphone) plays back.
 - Android (UNVERIFIED until an APK): paste, share to apps, crop, autoplay, recording.
 
 ## 3. Out of scope
@@ -71,4 +71,20 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   edited time is kept after leaving"; "Back returns to capture with the tray intact" became "Back
   keeps the new entry and returns to the gallery"), U-06, U-07 and the screenshot script tap
   "Add a note" first. New **U-34** (written with the code): note autosaved on Back, toolbar bold.
+- **Phase 3:** core `EntryEdit.captions` (trimmed; empty clears; unit tests red first); client
+  `EditDraft.captions` + `diffDraft` (red first); search text = note + captions
+  (`services/index/search-text.ts`, red first); export writes `caption:` per media and the import
+  parser and journal import restore captions and accept `kind: audio` (red first). Edit page: a ⋮ on
+  every page opens `media-menus.tsx` (Caption, Set as Cover, Save to Device, Crop for photos,
+  Remove with a confirm; the last item cannot be removed). Caption overlay on edit pages; the
+  viewer shows the caption as a line under the pager (overlays fight the zoom gestures).
+  Crop: `crop-math.ts` (red first), `crop-sheet.tsx` (corner handles and drag with PanResponder),
+  `adapters/image-crop` (Android `expo-image-manipulator`, web canvas), `replace-media.ts` (red
+  first: import, add, remove old, restore position and caption). Save to Device:
+  `adapters/share-files` (web download link; Android share sheet, where "Save to Files" lives).
+  Web: the CSP forbids `fetch(blob:)`, so `plaintext-sink.web` registers its blobs
+  (`blob-registry.web.ts`) for crop and share. Found while testing: after a reorder the web viewer
+  kept showing the old first photo (browser scroll anchoring); the pager now remounts when the
+  media order changes. New flows **U-35** caption + search, **U-36** set as cover + remove
+  confirm, **U-37** crop (written with the code).
 

@@ -76,6 +76,7 @@ export function frontMatter(entryId: string, metadata: Metadata): string {
     const parts = [`file: ${mediaFileName(position, item.mimeType)}`];
     if (item.originalFileName !== null) parts.push(`original_name: ${yamlQuote(item.originalFileName)}`);
     parts.push(`kind: ${item.kind}`);
+    if (item.caption !== undefined) parts.push(`caption: ${yamlQuote(item.caption)}`);
     return `{ ${parts.join(', ')} }`;
   });
   lines.push(`media: [${media.join(', ')}]`, '---', '');

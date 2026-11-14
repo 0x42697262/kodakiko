@@ -63,3 +63,22 @@ describe('parseEntryNote (spec 23 import)', () => {
     expect(() => parseEntryNote('just a note')).toThrow();
   });
 });
+
+describe('captions and audio in exports (spec 25)', () => {
+  it('writes captions and reads them back with audio items', () => {
+    const plan = planEntryExport(
+      'ENTRY3',
+      metadata({
+        media: [
+          { ...MEDIA, mediaId: 'mmmmmmmmmmmmmmmmmmmm01', originalFileName: null, caption: 'Sunset, "late"' },
+          { ...MEDIA, mediaId: 'mmmmmmmmmmmmmmmmmmmm03', kind: 'audio', mimeType: 'audio/mp4', durationMs: 4000, originalFileName: null },
+        ],
+      }),
+    );
+    expect(plan.noteText).toContain('caption: "Sunset, \\"late\\""');
+    expect(parseEntryNote(plan.noteText).media).toEqual([
+      { file: '001.jpg', originalName: null, kind: 'photo', caption: 'Sunset, "late"' },
+      { file: '002.m4a', originalName: null, kind: 'audio' },
+    ]);
+  });
+});

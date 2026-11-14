@@ -52,6 +52,7 @@ async function encrypt(bytes: Uint8Array, passphrase: string): Promise<Uint8Arra
 function fakes(existing: { takenAtUtc: string; mediaCount: number }[] = []) {
   const created: { input: unknown; files: string[] }[] = [];
   const favorites: string[] = [];
+  const captions: { entryId: string; captions: Readonly<Record<string, string>> }[] = [];
   let next = 0;
   const service = createJournalImport({
     sodium,
@@ -63,9 +64,12 @@ function fakes(existing: { takenAtUtc: string; mediaCount: number }[] = []) {
     setFavorite: async (ids) => {
       favorites.push(...ids);
     },
+    setCaptions: async (entryId, values) => {
+      captions.push({ entryId, captions: values });
+    },
     existingEntries: () => existing,
   });
-  return { service, created, favorites };
+  return { service, created, favorites, captions };
 }
 
 describe('journal import (spec 23 §7)', () => {
@@ -110,5 +114,12 @@ describe('journal import (spec 23 §7)', () => {
     expect(summary.entries).toBe(0);
     expect(summary.failed).toEqual([{ path: other.noteFile, reason: 'missingMedia' }]);
     expect(created).toHaveLength(0);
+  });
+
+  it('restores captions on the imported media (spec 25)', async () => {
+    const { service, captions } = fakes();
+    const captioned = noteFor('C', { media: [{ ...MEDIA, mediaId: 'mmmmmmmmmmmmmmmmmmmm01', originalFileName: 'beach.jpg', caption: 'Low tide' }] });
+    await service.run([{ name: 'c.zip', bytes: exportZip([captioned]) }], null, () => undefined);
+    expect(captions).toEqual([{ entryId: 'e1', captions: { m1: 'Low tide' } }]);
   });
 });
