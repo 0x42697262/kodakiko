@@ -151,4 +151,14 @@ field; a tag added in Settings › Tags shows in the picker; pick it → saved e
   share, links, admin, placeholder) and the calendar's ‹ › buttons are icon actions
   (`IconAction`, same test ids). Auth screens have no back navigation and keep labeled primary
   buttons.
+- **D-87 tags only in Settings (2026-11-14):**
+  - `features/tags/tag-picker.tsx`: chips (same `tags.chip.N`/`tags.remove.N` ids), a "Choose
+    tags" button, and a checkbox dialog (`tags.option.<tag>`, limit `TAGS_PER_ENTRY_MAX`) whose
+    "Edit tags" opens Settings › Tags. It replaces the free-text `TagInput` (deleted) in Compose,
+    Edit and the filter sheet. Bulk add/remove tag picks from the same list
+    (`bulk.tagOption.<tag>`). Settings › Tags row added; More › Tags opens the same screen.
+  - Tests adapted to D-87 (the programmer's decision supersedes spec 10's free-text steps):
+    entry-compose, U-06 and U-10 now create tags in the editor and pick them; the screenshot
+    script creates its tags first. Gone with the feature: the "Already added." duplicate hint
+    (duplicates can't be picked) and comma/Backspace typing; the chip and save assertions stay.
 

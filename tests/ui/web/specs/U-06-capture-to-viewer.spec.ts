@@ -15,8 +15,15 @@ test('U-06 capture two files, save with a note and a tag, open the entry in the 
   await expect(page.getByTestId('capture.trayItem.1')).toBeVisible({ timeout: 60_000 });
   await page.getByTestId('capture.next').click();
   await page.getByTestId('compose.note').fill('Picnic');
-  await page.getByTestId('tags.field').fill('family');
-  await page.getByTestId('tags.field').press('Enter');
+  await page.getByTestId('tags.choose').click();
+  await page.getByTestId('tags.editTags').click();
+  await page.getByTestId('tags.add').click();
+  await page.getByTestId('tags.nameField').fill('family');
+  await page.getByTestId('tags.save').click();
+  await page.locator('[data-testid="settings.back"]:visible').click();
+  await page.getByTestId('tags.choose').click();
+  await page.getByTestId('tags.option.family').click();
+  await page.getByTestId('tags.done').click();
   await page.getByTestId('compose.save').click();
 
   await expect(page.getByTestId('gallery.tile.0')).toBeVisible();

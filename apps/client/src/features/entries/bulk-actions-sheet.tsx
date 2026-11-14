@@ -1,17 +1,16 @@
 import { useState } from 'react';
+import { useTagChoices } from '../tags/tag-picker';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
 import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
 import { sharingErrorText } from '../sharing/sharing-errors';
 import { ENTRY_IDS } from '../../keys/entry-ids';
-import { listTestId, testId } from '../../keys/test-ids';
+import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
-import { TextField } from '../../ui/TextField';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
-import { TAG_SUGGESTIONS_MAX } from '../../constants/entry-constants';
 import type { BulkResult } from '../../services/entries/entries-service';
 
 export type BulkActionsMode = 'journal' | 'trash' | 'collectionOwner';
@@ -35,6 +34,7 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
   const { colors } = useTheme();
   const [panel, setPanel] = useState<Panel>('menu');
   const [tag, setTag] = useState('');
+  const choices = useTagChoices();
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -51,10 +51,6 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
       setBusy(false);
     }
   }
-
-  const suggestions = services.tagSuggestions
-    .suggest(tag)
-    .slice(0, TAG_SUGGESTIONS_MAX);
 
   const resultBanner =
     message === null ? null : <Banner testID={ENTRY_IDS.bulkResult} kind="info" message={message} />;
@@ -119,28 +115,24 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
     const adding = panel === 'addTag';
     return (
       <View testID={ENTRY_IDS.bulkTagPanel} style={styles.container}>
-        <TextField
-          testID={testId('bulk.tagField')}
-          label={EN['bulk.tagField']}
-          value={tag}
-          onChangeText={setTag}
-        />
         <View style={styles.row}>
-          {suggestions.map((name, position) => (
+          {choices.map((name) => (
             <Button
               key={name}
-              testID={listTestId(ENTRY_IDS.tagSuggestion, position)}
+              testID={`bulk.tagOption.${name}`}
               label={name}
-              variant="secondary"
+              variant={tag === name ? 'primary' : 'secondary'}
               onPress={() => setTag(name)}
             />
           ))}
         </View>
+        {choices.length === 0 ? <Text style={{ color: colors.textMuted }}>{EN['tags.noneToPick']}</Text> : null}
         <View style={styles.row}>
           <Button
             testID={testId(adding ? 'bulk.confirmAdd' : 'bulk.confirmRemove')}
             label={adding ? EN['bulk.confirmAdd'] : EN['bulk.confirmRemove']}
             busy={busy}
+            disabled={tag === ''}
             onPress={() =>
               void run(() =>
                 adding

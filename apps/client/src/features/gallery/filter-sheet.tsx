@@ -1,4 +1,3 @@
-import { TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { DisplayTab, GroupTab, UnderlineTabs } from './sheet-tabs';
@@ -14,7 +13,7 @@ import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from '../../ui/theme-constants';
 import { Icon } from '../../ui/icons';
 import { useDeviceSettings } from '../settings/use-device-settings';
 import { useTheme } from '../../ui/theme';
-import { TagInput } from '../tags/tag-input';
+import { TagPicker } from '../tags/tag-picker';
 import { validateDateRange, type DateRangeProblem } from './filter-model';
 import { reshuffleGallery, useGalleryFilter } from './hooks';
 import { Sheet } from './sheet';
@@ -179,12 +178,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
           <Text style={[styles.subtitle, { color: colors.textMuted }]}>
             {EN['sheet.tagsAndDates']}
           </Text>
-          <TagInput
-            tags={tags}
-            onChange={setTags}
-            suggestions={(prefix) => services.tagSuggestions.suggest(prefix)}
-            maxTags={TAGS_PER_ENTRY_MAX}
-          />
+          <TagPicker tags={tags} onChange={setTags} />
           <View style={styles.row}>
             <View style={styles.field}>
               <TextField

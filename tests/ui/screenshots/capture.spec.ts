@@ -84,15 +84,28 @@ async function prepareMedia(): Promise<void> {
   await copyFile(join(MEDIA_DIRECTORY, 'fractal.mp4'), join(DATED_DIRECTORY, 'fractal.mp4'));
 }
 
+async function createTags(page: Page, tags: readonly string[]): Promise<void> {
+  await page.getByTestId('tabs.more').click();
+  await page.getByTestId('more.tags').click();
+  for (const tag of tags) {
+    await page.getByTestId('tags.add').click();
+    await page.getByTestId('tags.nameField').fill(tag);
+    await page.getByTestId('tags.save').click();
+  }
+  await page.locator('[data-testid="settings.back"]:visible').click();
+  await page.getByTestId('tabs.gallery').click();
+}
+
 async function createThroughUi(page: Page, entry: DemoEntry): Promise<void> {
   await page.locator(VISIBLE_CAPTURE).click();
   await page.getByTestId('capture.fileInput').setInputFiles(entry.files.map((file) => join(DATED_DIRECTORY, file)));
   await expect(page.getByTestId(`capture.trayItem.${entry.files.length - 1}`)).toBeVisible({ timeout: SYNC_WAIT_MS });
   await page.getByTestId('capture.next').click();
   await page.getByTestId('compose.note').fill(entry.note);
-  for (const tag of entry.tags) {
-    await page.getByTestId('tags.field').fill(tag);
-    await page.getByTestId('tags.field').press('Enter');
+  if (entry.tags.length > 0) {
+    await page.getByTestId('tags.choose').click();
+    for (const tag of entry.tags) await page.getByTestId(`tags.option.${tag}`).click();
+    await page.getByTestId('tags.done').click();
   }
   await page.getByTestId('compose.save').click();
   await expect(page.getByTestId('compose.note')).toHaveCount(0, { timeout: SYNC_WAIT_MS });
@@ -104,6 +117,7 @@ async function author(browser: Browser, account: SeededAccount, entries: readonl
   const page = await context.newPage();
   await signInThroughUi(page, account);
   await expect(page.locator(VISIBLE_CAPTURE)).toHaveCount(1, { timeout: SYNC_WAIT_MS });
+  await createTags(page, [...new Set([...entries.flatMap((entry) => entry.tags), 'travel'])]);
   for (const entry of entries) await createThroughUi(page, entry);
   await expect(page.getByTestId(TILES)).toHaveCount(entries.length, { timeout: SYNC_WAIT_MS });
   await expect(page.getByTestId(PENDING)).toHaveCount(0, { timeout: SYNC_WAIT_MS });
@@ -174,8 +188,9 @@ async function captureSet(browser: Browser, options: BrowserContextOptions, pref
     await expect(page.getByTestId('capture.trayItem.1')).toBeVisible({ timeout: SYNC_WAIT_MS });
     await page.getByTestId('capture.next').click();
     await page.getByTestId('compose.note').fill('Back at the harbor. Fish and chips by the water.');
-    await page.getByTestId('tags.field').fill('travel');
-    await page.getByTestId('tags.field').press('Enter');
+    await page.getByTestId('tags.choose').click();
+    await page.getByTestId('tags.option.travel').click();
+    await page.getByTestId('tags.done').click();
     await shot(page, `${prefix}-compose`);
     await page.goBack();
     await page.getByTestId('capture.close').click();

@@ -50,15 +50,22 @@ test('compose: note, tags, time and location, then Save shows Saved. and the ent
   await expect(page.getByTestId('compose.whenValue')).toContainText('Mar 2');
 
   await page.getByTestId('compose.note').fill('Picnic');
-  await page.getByTestId('tags.field').fill('Family');
-  await page.getByTestId('tags.field').press('Enter');
-  await expect(page.getByTestId('tags.chip.0')).toHaveText('family');
-  await page.getByTestId('tags.field').fill('family');
+  await page.getByTestId('tags.choose').click();
+  await page.getByTestId('tags.editTags').click();
   await page.getByTestId('tags.add').click();
-  await expect(page.getByTestId('tags.duplicate')).toHaveText('Already added.');
-  await page.getByTestId('tags.field').fill('lake,');
+  await page.getByTestId('tags.nameField').fill('Family');
+  await page.getByTestId('tags.save').click();
+  await page.getByTestId('tags.add').click();
+  await page.getByTestId('tags.nameField').fill('lake');
+  await page.getByTestId('tags.save').click();
+  await page.locator('[data-testid="settings.back"]:visible').click();
+  await page.getByTestId('tags.choose').click();
+  await page.getByTestId('tags.option.family').click();
+  await page.getByTestId('tags.option.lake').click();
+  await page.getByTestId('tags.done').click();
+  await expect(page.getByTestId('tags.chip.0')).toHaveText('family');
   await expect(page.getByTestId('tags.chip.1')).toHaveText('lake');
-  await page.getByTestId('tags.field').press('Backspace');
+  await page.getByTestId('tags.remove.1').click();
   await expect(page.getByTestId('tags.chip.1')).toBeHidden();
 
   await page.getByTestId('compose.save').click();

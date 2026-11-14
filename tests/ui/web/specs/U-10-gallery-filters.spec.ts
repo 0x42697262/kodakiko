@@ -25,10 +25,10 @@ test('U-10 the gallery groups by day and narrows by tags (AND) and by note searc
   await expect(page.getByTestId(DAY_HEADERS)).toHaveCount(3);
 
   await page.getByTestId('gallery.filter').click();
-  await page.getByTestId('tags.field').fill('a');
-  await page.getByTestId('tags.field').press('Enter');
-  await page.getByTestId('tags.field').fill('b');
-  await page.getByTestId('tags.field').press('Enter');
+  await page.getByTestId('tags.choose').click();
+  await page.getByTestId('tags.option.a').click();
+  await page.getByTestId('tags.option.b').click();
+  await page.getByTestId('tags.done').click();
   await page.getByTestId('filter.apply').click();
   await expect(page.getByTestId('gallery.tile.0')).toBeVisible();
   await expect(page.getByTestId(TILES)).toHaveCount(1);

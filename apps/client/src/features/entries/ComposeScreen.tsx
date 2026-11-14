@@ -1,7 +1,7 @@
 import { useNavigation, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { NOTE_MAX_CHARS, TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
+import { NOTE_MAX_CHARS } from '@kodakiko/contract';
 import { buildNewEntryMetadata, deviceOffsetMinutes, earliestTime } from '@kodakiko/core';
 import { useAppContext } from '../../composition/app-context';
 import {
@@ -24,7 +24,7 @@ import { Title } from '../../ui/Typography';
 import { BORDER_WIDTH, FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
 import { thumbnailDataUri } from '../capture/thumbnail-uri';
-import { TagInput } from '../tags/tag-input';
+import { TagPicker } from '../tags/tag-picker';
 import { formatEntryTime } from './format-entry-time';
 import { LocationRow } from './location-row';
 import { TimeEditor, type EntryTime } from './time-editor';
@@ -249,13 +249,7 @@ export function ComposeScreen() {
 
       <View style={styles.section}>
         <Text style={[styles.label, { color: colors.textMuted }]}>{EN['compose.tags']}</Text>
-        <TagInput
-          tags={tags}
-          onChange={setTags}
-          suggestions={services.tagSuggestions.suggest}
-          maxTags={TAGS_PER_ENTRY_MAX}
-          disabled={saving}
-        />
+        <TagPicker tags={tags} onChange={setTags} />
       </View>
 
       {failed ? (

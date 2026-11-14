@@ -36,6 +36,7 @@ export function SettingsScreen() {
   const rows: PreferenceItem[] = [
     { kind: 'text', key: 'appearance', testID: 'settings.row.appearance', icon: 'appearance', title: EN['prefs.appearance'], summary: EN['prefs.appearanceSummary'], onPress: go('/settings/appearance') },
     { kind: 'text', key: 'gallery', testID: 'settings.row.gallery', icon: 'gallery', title: EN['prefs.gallery'], summary: EN['prefs.gallerySummary'], onPress: go('/settings/gallery') },
+    { kind: 'text', key: 'tags', testID: 'settings.row.tags', icon: 'tags', title: EN['more.tags'], summary: EN['tags.settingsSummary'], onPress: go('/tags') },
     { kind: 'text', key: 'capture', testID: 'settings.row.capture', icon: 'camera', title: EN['prefs.capture'], summary: EN['prefs.captureSummary'], onPress: go('/settings/capture') },
     { kind: 'text', key: 'sync', testID: 'settings.row.sync', icon: 'sync', title: EN['settings.rowSync'], summary: EN['prefs.syncSummary'], onPress: go('/settings/sync') },
     { kind: 'text', key: 'storage', testID: 'settings.row.storage', icon: 'storage', title: EN['prefs.dataStorage'], summary: EN['prefs.dataStorageSummary'], onPress: go('/settings/storage') },

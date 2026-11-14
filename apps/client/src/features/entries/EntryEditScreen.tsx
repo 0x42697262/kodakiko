@@ -1,5 +1,5 @@
 import { deviceOffsetMinutes } from '@kodakiko/core';
-import { TAGS_PER_ENTRY_MAX, type EntryMetadataV1 } from '@kodakiko/contract';
+import { type EntryMetadataV1 } from '@kodakiko/contract';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,7 @@ import { useTheme } from '../../ui/theme';
 import { useThumbnail } from '../gallery/thumbnail';
 import { Sheet } from '../gallery/sheet';
 import { MarkdownView } from '../markdown/markdown-view';
-import { TagInput } from '../tags/tag-input';
+import { TagPicker } from '../tags/tag-picker';
 import { diffDraft, draftChanged, draftFromMetadata, type EditDraft } from './edit-draft';
 import { formatEntryTime } from './format-entry-time';
 import { LocationRow } from './location-row';
@@ -184,13 +184,7 @@ export function EntryEditScreen({ entryId }: { readonly entryId: string }) {
         </View>
       )}
 
-      <TagInput
-        tags={draft.tags}
-        onChange={(tags) => update({ tags })}
-        suggestions={services.tagSuggestions.suggest}
-        maxTags={TAGS_PER_ENTRY_MAX}
-        disabled={saving}
-      />
+      <TagPicker tags={draft.tags} onChange={(tags) => update({ tags })} />
 
       <View style={styles.row}>
         <Button testID={testId('edit.write')} label={EN['edit.write']} variant={preview ? 'secondary' : 'primary'} onPress={() => setPreview(false)} />
