@@ -53,6 +53,9 @@ export const ICONS = Object.freeze({
   random: 'casino',
   signOut: 'logout',
   flip: 'flip-camera-android',
+  map: 'map',
+  place: 'place',
+  locationOff: 'location-off',
 } satisfies Record<string, MaterialIconName>);
 
 export type IconKey = keyof typeof ICONS;

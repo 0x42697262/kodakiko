@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -22,6 +23,8 @@ import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { IconAction } from '../../ui/IconAction';
+import { ActionRow } from '../../ui/ActionRow';
+import { openMap } from '../../adapters/maps/open-map';
 import { Screen } from '../../ui/Screen';
 import { Body } from '../../ui/Typography';
 import { FONT_SIZE, RADIUS, SPACING } from '../../ui/theme-constants';
@@ -34,7 +37,13 @@ import { Sheet } from '../gallery/sheet';
 import { useThumbnail } from '../gallery/thumbnail';
 import { MarkdownView } from '../markdown/markdown-view';
 import { ZoomablePhoto } from '../media/zoomable-photo';
-import { ORIGINAL_WINDOW, PAGE_ASPECT, PERCENT, PAGE_MAX_SCREEN_SHARE, VIEWER_IDS } from './constants';
+import {
+  ORIGINAL_WINDOW,
+  PAGE_ASPECT,
+  PERCENT,
+  PAGE_MAX_SCREEN_SHARE,
+  VIEWER_IDS,
+} from './constants';
 import { useViewerKeys } from './use-viewer-keys';
 import { ShareEntriesSheet } from '../sharing/ShareEntriesSheet';
 
@@ -53,9 +62,15 @@ type PageProps = {
   readonly onZoomChange: (zoomed: boolean) => void;
 };
 
-function useOriginalDownload(mediaId: string, enabled: boolean): { readonly received: number; readonly total: number } | null {
+function useOriginalDownload(
+  mediaId: string,
+  enabled: boolean,
+): { readonly received: number; readonly total: number } | null {
   const { services } = useAppContext();
-  const [progress, setProgress] = useState<{ readonly received: number; readonly total: number } | null>(null);
+  const [progress, setProgress] = useState<{
+    readonly received: number;
+    readonly total: number;
+  } | null>(null);
   useEffect(() => {
     if (!enabled) return undefined;
     let unsubscribe: (() => void) | null = null;
@@ -64,7 +79,9 @@ function useOriginalDownload(mediaId: string, enabled: boolean): { readonly rece
       .originalObjectId(mediaId)
       .then((objectId) => {
         if (cancelled || objectId === null) return;
-        unsubscribe = services.downloader.onProgress(objectId, (received, total) => setProgress({ received, total }));
+        unsubscribe = services.downloader.onProgress(objectId, (received, total) =>
+          setProgress({ received, total }),
+        );
       })
       .catch(() => undefined);
     return () => {
@@ -76,7 +93,16 @@ function useOriginalDownload(mediaId: string, enabled: boolean): { readonly rece
   return progress;
 }
 
-function MediaPage({ entryId, media, position, width, height, active, near, onZoomChange }: PageProps) {
+function MediaPage({
+  entryId,
+  media,
+  position,
+  width,
+  height,
+  active,
+  near,
+  onZoomChange,
+}: PageProps) {
   const { services } = useAppContext();
   const { colors } = useTheme();
   const thumbnail = useThumbnail(entryId, media.mediaId);
@@ -113,7 +139,10 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
   if (media.kind === 'video') {
     const playable = services.videoLauncher.canPlay();
     return (
-      <View testID={listTestId(TEST_IDS.viewerPage, position)} style={[styles.page, page, { backgroundColor: colors.surface }]}>
+      <View
+        testID={listTestId(TEST_IDS.viewerPage, position)}
+        style={[styles.page, page, { backgroundColor: colors.surface }]}
+      >
         {thumbnail === null ? null : (
           <ZoomablePhoto
             uri={thumbnail}
@@ -140,7 +169,10 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
   const loaded = original !== null && typeof original === 'object';
   const uri = loaded ? original.uri : thumbnail;
   return (
-    <View testID={listTestId(TEST_IDS.viewerPage, position)} style={[styles.page, page, { backgroundColor: colors.surface }]}>
+    <View
+      testID={listTestId(TEST_IDS.viewerPage, position)}
+      style={[styles.page, page, { backgroundColor: colors.surface }]}
+    >
       {uri === null ? null : (
         <ZoomablePhoto
           uri={uri}
@@ -154,20 +186,31 @@ function MediaPage({ entryId, media, position, width, height, active, near, onZo
         />
       )}
       {original === 'missing' ? (
-        <Text testID={VIEWER_IDS.previewLabel} style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+        <Text
+          testID={VIEWER_IDS.previewLabel}
+          style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}
+        >
           {EN['viewer.showingPreview']}
         </Text>
       ) : null}
       {original === null && progress !== null ? (
-        <Text testID={VIEWER_IDS.downloading} style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+        <Text
+          testID={VIEWER_IDS.downloading}
+          style={[styles.previewLabel, { color: colors.onPrimary, backgroundColor: colors.text }]}
+        >
           {progress.total > 0
-            ? EN['viewer.downloadProgress'](Math.floor((progress.received / progress.total) * PERCENT))
+            ? EN['viewer.downloadProgress'](
+                Math.floor((progress.received / progress.total) * PERCENT),
+              )
             : EN['viewer.downloading']}
         </Text>
       ) : null}
       {original === 'failed' ? (
         <View style={styles.failedRow}>
-          <Text testID={VIEWER_IDS.downloadFailed} style={[styles.failedText, { color: colors.onPrimary, backgroundColor: colors.text }]}>
+          <Text
+            testID={VIEWER_IDS.downloadFailed}
+            style={[styles.failedText, { color: colors.onPrimary, backgroundColor: colors.text }]}
+          >
             {EN['viewer.downloadFailed']}
           </Text>
           <Button
@@ -322,7 +365,13 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   return (
     <Screen testID={VIEWER_IDS.screen} scroll>
       <View style={styles.header}>
-        <IconAction testID={testId('viewer.back')} icon="back" label={EN['viewer.back']} tonal={false} onPress={onBack} />
+        <IconAction
+          testID={testId('viewer.back')}
+          icon="back"
+          label={EN['viewer.back']}
+          tonal={false}
+          onPress={onBack}
+        />
         {!summary.trashed && !summary.unreadable ? (
           <View style={styles.actions}>
             {owner ? (
@@ -334,8 +383,20 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 onPress={() => router.push(`${entryRoute(entryId)}/edit`)}
               />
             ) : null}
-            <IconAction testID="viewer.details" icon="info" label={EN['details.title']} tonal={false} onPress={() => router.push(`${entryRoute(entryId)}/details` as Href)} />
-            <IconAction testID={testId('viewer.more')} icon="overflow" label={EN['viewer.more']} tonal={false} onPress={() => setOverlay('more')} />
+            <IconAction
+              testID="viewer.details"
+              icon="info"
+              label={EN['details.title']}
+              tonal={false}
+              onPress={() => router.push(`${entryRoute(entryId)}/details` as Href)}
+            />
+            <IconAction
+              testID={testId('viewer.more')}
+              icon="overflow"
+              label={EN['viewer.more']}
+              tonal={false}
+              onPress={() => setOverlay('more')}
+            />
           </View>
         ) : null}
       </View>
@@ -405,33 +466,87 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               />
             )}
           </View>
-          <Text testID={TEST_IDS.viewerPageIndicator} style={[styles.indicator, { color: colors.textMuted }]}>
+          <Text
+            testID={TEST_IDS.viewerPageIndicator}
+            style={[styles.indicator, { color: colors.textMuted }]}
+          >
             {EN['viewer.pageIndicator'](page + 1, total)}
           </Text>
           <Text testID={VIEWER_IDS.time} style={[styles.time, { color: colors.text }]}>
-            {formatEntryTime(metadata.takenAtUtc, metadata.utcOffsetMinutes, now.toISOString(), deviceOffsetMinutes(now))}
+            {formatEntryTime(
+              metadata.takenAtUtc,
+              metadata.utcOffsetMinutes,
+              now.toISOString(),
+              deviceOffsetMinutes(now),
+            )}
           </Text>
           {metadata.location === null ? null : (
             <LocationRow
               latitude={metadata.location.latitude}
               longitude={metadata.location.longitude}
               source={metadata.location.source}
+              showOpen={false}
             />
           )}
+          <ActionRow
+            actions={[
+              ...(metadata.location === null
+                ? []
+                : [
+                    {
+                      key: 'map',
+                      icon: 'map' as const,
+                      label: EN['viewer.actionMap'],
+                      testID: testId('location.open'),
+                      onPress: () => {
+                        openMap(
+                          metadata.location?.latitude ?? 0,
+                          metadata.location?.longitude ?? 0,
+                        ).catch(() => undefined);
+                      },
+                    },
+                  ]),
+              {
+                key: 'details',
+                icon: 'info' as const,
+                label: EN['viewer.actionDetails'],
+                testID: 'viewer.detailsAction',
+                onPress: () => router.push(`${entryRoute(entryId)}/details` as Href),
+              },
+              ...(owner && sharingAvailable && !local && !summary.trashed
+                ? [
+                    {
+                      key: 'share',
+                      icon: 'share' as const,
+                      label: EN['viewer.actionShare'],
+                      testID: 'viewer.shareAction',
+                      onPress: () => setOverlay('share'),
+                    },
+                  ]
+                : []),
+            ]}
+          />
           {metadata.tags.length === 0 ? null : (
-            <View style={styles.tags}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tags}
+            >
               {metadata.tags.map((tag, position) => (
                 <Pressable
                   key={tag}
                   testID={listTestId(VIEWER_IDS.tagChip, position)}
                   accessibilityRole="button"
                   onPress={() => showTag(tag)}
-                  style={[styles.chip, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                  style={[
+                    styles.chip,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                  ]}
                 >
                   <Text style={{ color: colors.text }}>{tag}</Text>
                 </Pressable>
               ))}
-            </View>
+            </ScrollView>
           )}
           <MarkdownView source={metadata.note} />
         </View>
@@ -444,7 +559,9 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
             variant="secondary"
             onPress={() => {
               setOverlay('none');
-              const change = pinned ? services.originals.unpinEntry(entryId) : services.originals.pinEntry(entryId);
+              const change = pinned
+                ? services.originals.unpinEntry(entryId)
+                : services.originals.pinEntry(entryId);
               change.then(() => setPinned(!pinned)).catch(() => undefined);
             }}
           />
@@ -459,7 +576,12 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                   router.push({ pathname: APP_ROUTES.capture, params: { entryId } });
                 }}
               />
-              <Button testID={testId('viewer.trash')} label={EN['viewer.trash']} variant="secondary" onPress={() => trash().catch(() => undefined)} />
+              <Button
+                testID={testId('viewer.trash')}
+                label={EN['viewer.trash']}
+                variant="secondary"
+                onPress={() => trash().catch(() => undefined)}
+              />
             </>
           ) : null}
           {owner && !local ? (
@@ -471,7 +593,9 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               onPress={() => setOverlay('share')}
             />
           ) : null}
-          {sharingAvailable || !owner || local ? null : <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />}
+          {sharingAvailable || !owner || local ? null : (
+            <Body testID={testId('viewer.sharingOff')} text={EN['viewer.sharingOff']} />
+          )}
         </Sheet>
       ) : null}
       {overlay === 'share' ? (
@@ -481,14 +605,21 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
       ) : null}
       {overlay === 'confirmDelete' ? (
         <Sheet testID={VIEWER_IDS.confirmSheet} onClose={() => setOverlay('none')}>
-          <Text style={[styles.time, { color: colors.text }]}>{EN['bulk.confirmDeleteTitle'](1)}</Text>
+          <Text style={[styles.time, { color: colors.text }]}>
+            {EN['bulk.confirmDeleteTitle'](1)}
+          </Text>
           <Button
             testID={testId('bulk.confirmDelete')}
             label={EN['bulk.confirmDelete']}
             variant="danger"
             onPress={() => deletePermanently().catch(() => undefined)}
           />
-          <Button testID={testId('bulk.cancel')} label={EN['bulk.cancel']} variant="secondary" onPress={() => setOverlay('none')} />
+          <Button
+            testID={testId('bulk.cancel')}
+            label={EN['bulk.cancel']}
+            variant="secondary"
+            onPress={() => setOverlay('none')}
+          />
         </Sheet>
       ) : null}
     </Screen>
@@ -496,16 +627,53 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: SPACING.sm },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: SPACING.sm,
+  },
   actions: { flexDirection: 'row', gap: SPACING.sm, flexWrap: 'wrap' },
   block: { gap: SPACING.md },
   page: { overflow: 'hidden' },
-  playOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', gap: SPACING.sm },
-  failedRow: { position: 'absolute', left: SPACING.sm, right: SPACING.sm, bottom: SPACING.sm, gap: SPACING.xs, alignItems: 'flex-start' },
-  failedText: { paddingHorizontal: SPACING.sm, borderRadius: RADIUS.sm, fontSize: FONT_SIZE.caption },
-  previewLabel: { position: 'absolute', left: SPACING.sm, bottom: SPACING.sm, paddingHorizontal: SPACING.sm, borderRadius: RADIUS.sm, fontSize: FONT_SIZE.caption },
+  playOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.sm,
+  },
+  failedRow: {
+    position: 'absolute',
+    left: SPACING.sm,
+    right: SPACING.sm,
+    bottom: SPACING.sm,
+    gap: SPACING.xs,
+    alignItems: 'flex-start',
+  },
+  failedText: {
+    paddingHorizontal: SPACING.sm,
+    borderRadius: RADIUS.sm,
+    fontSize: FONT_SIZE.caption,
+  },
+  previewLabel: {
+    position: 'absolute',
+    left: SPACING.sm,
+    bottom: SPACING.sm,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: RADIUS.sm,
+    fontSize: FONT_SIZE.caption,
+  },
   indicator: { textAlign: 'center', fontSize: FONT_SIZE.caption },
   time: { fontSize: FONT_SIZE.headline, fontWeight: '600' },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
-  chip: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs, borderRadius: RADIUS.md, borderWidth: 1 },
+  tags: { flexDirection: 'row', gap: SPACING.sm },
+  chip: {
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+  },
 });
