@@ -66,6 +66,7 @@
     "react-native-vision-camera": "catalog:",
     "react-native-web": "catalog:",
     "react-native-worklets": "catalog:",
+    "react-native-zoom-toolkit": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

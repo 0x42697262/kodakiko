@@ -50,4 +50,13 @@ shows it → filter excludes it), **U-27** grouping (Month shows month headers),
 
 ## 3. Implementation notes
 
-(Filled in as the phases land.)
+- **Phase 1 (2026-11-14):**
+  - Android: `features/viewer/media-pager.native.tsx` uses `react-native-zoom-toolkit`'s `Gallery`
+    (`onUpdate` runs as a worklet and reports zoom with `runOnJS`). Photos render through
+    `features/media/photo-surface.native.tsx`, a plain image with the old test id and
+    zoomed/unzoomed label, because the Gallery does the zooming.
+  - Web keeps the FlatList pager and `ZoomablePhoto` (`media-pager.tsx`, `photo-surface.tsx`):
+    zoom-toolkit's web support is unverified, and the web flows (U-06, U-12, U-13) pass unchanged.
+  - **UNVERIFIED on a device:** an APK build needs disk space this machine doesn't have (3.9 GB
+    free, floor 4 GB). The CI release build compiles it; U-12 (Android) checks it in the batched
+    Android round.

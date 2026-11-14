@@ -3,7 +3,6 @@ import type { EntryMetadataV1 } from '@kodakiko/contract';
 import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,8 +10,6 @@ import {
   View,
   useWindowDimensions,
   type LayoutChangeEvent,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
 } from 'react-native';
 import type { z } from 'zod';
 import { useAccountMode, useAppContext } from '../../composition/app-context';
@@ -36,7 +33,9 @@ import { useIndexStatus, useIndexVersion, useIndexedEntry } from '../gallery/hoo
 import { Sheet } from '../gallery/sheet';
 import { useThumbnail } from '../gallery/thumbnail';
 import { MarkdownView } from '../markdown/markdown-view';
-import { ZoomablePhoto } from '../media/zoomable-photo';
+import { PhotoSurface } from '../media/photo-surface';
+import { MediaPager } from './media-pager';
+import type { PagerHandle } from './media-pager-shared';
 import {
   ORIGINAL_WINDOW,
   PAGE_ASPECT,
@@ -144,7 +143,7 @@ function MediaPage({
         style={[styles.page, page, { backgroundColor: colors.surface }]}
       >
         {thumbnail === null ? null : (
-          <ZoomablePhoto
+          <PhotoSurface
             uri={thumbnail}
             position={position}
             viewportWidth={width}
@@ -174,7 +173,7 @@ function MediaPage({
       style={[styles.page, page, { backgroundColor: colors.surface }]}
     >
       {uri === null ? null : (
-        <ZoomablePhoto
+        <PhotoSurface
           uri={uri}
           position={position}
           viewportWidth={width}
@@ -304,7 +303,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
       cancelled = true;
     };
   }, [entryId, services.originals]);
-  const list = useRef<FlatList<Descriptor>>(null);
+  const pager = useRef<PagerHandle | null>(null);
   const config = services.config.get();
   const local = useAccountMode() === 'local';
   const sharingAvailable = config?.sharingEnabled === true || config?.publicLinksEnabled === true;
@@ -320,7 +319,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
   const goTo = useCallback(
     (next: number) => {
       if (zoomed || next < 0 || next >= total) return;
-      list.current?.scrollToIndex({ index: next, animated: true });
+      pager.current?.goTo(next);
       setPage(next);
     },
     [zoomed, total],
@@ -338,10 +337,6 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     setWidth(event.nativeEvent.layout.width);
   }
 
-  function onScrollEnd(event: NativeSyntheticEvent<NativeScrollEvent>): void {
-    if (width === 0) return;
-    setPage(Math.round(event.nativeEvent.contentOffset.x / width));
-  }
 
   async function trash(): Promise<void> {
     setOverlay('none');
@@ -440,18 +435,16 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
         <View style={styles.block}>
           <View onLayout={onLayout}>
             {width === 0 ? null : (
-              <FlatList
-                ref={list}
-                data={metadata.media}
-                horizontal
-                pagingEnabled
-                scrollEnabled={!zoomed}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.mediaId}
-                onMomentumScrollEnd={onScrollEnd}
-                onScrollEndDrag={onScrollEnd}
-                getItemLayout={(_data, index) => ({ length: width, offset: width * index, index })}
-                renderItem={({ item, index }) => (
+              <MediaPager
+                handle={pager}
+                items={metadata.media}
+                keyOf={(item) => item.mediaId}
+                width={width}
+                height={pageHeight}
+                zoomed={zoomed}
+                onPageChange={setPage}
+                onZoomChange={setZoomed}
+                renderPage={(item, index) => (
                   <MediaPage
                     entryId={entryId}
                     media={item}
