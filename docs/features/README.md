@@ -76,3 +76,4 @@ point at private addresses.
 | 20a | `20a-local-only-mode.md` Android local-only mode: on-device account, no sync, eviction off, connect a server later (D-83) | 08, 14, 16, 20 |
 | 21 | `21-deployment.md` production images and compose, Caddy DNS-01 + CSP hashes, Garage setup + CORS, operations guide, CI and release workflows, release checklist | all |
 | 22 | `22-material-ui.md` Material 3 UI modeled on Mihon: app bars, icon bottom navigation, More tab, tag tabs, Filter/Sort/Display sheet, declarative settings (D-84) | all client specs |
+| 23 | `23-mihon-parity.md` v0.2.0: Mihon parity and power users: zoom-toolkit viewer, favorites, Filter/Sort/Display/Group sheet, More, tags editor, statistics, server and keys, data and storage, import and encrypted export | 22 |
