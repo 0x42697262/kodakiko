@@ -5,7 +5,7 @@ const LOCATION_PERMISSION_TEXT =
 
 const ICON_BACKGROUND_COLOR = '#1e1d2b';
 
-const APP_VERSION = '0.2.2';
+const APP_VERSION = '0.3.0';
 const VERSION_PART_RANGE = 100;
 
 function versionCodeOf(version: string): number {

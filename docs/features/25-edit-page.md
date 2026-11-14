@@ -1,6 +1,6 @@
 # 25 — Edit page, captions, voice notes, share to apps (v0.3.0)
 
-Status: draft 1 (2026-11-14, Opus, autopilot). Source: `docs/planning/v0.3.0-entry-composer.md`
+Status: implemented (2026-11-14, Opus, autopilot); Android items UNVERIFIED until the v0.3.0 APK. Source: `docs/planning/v0.3.0-entry-composer.md`
 (PicDiary research) and the programmer's answers D-86 … D-100. Base: v0.2.2
 (`feat/v0.2.2-native-feel`). Branch `feat/v0.3.0-composer`, one commit per phase.
 
@@ -128,4 +128,6 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   "creates a link for an entry that is still uploading" (programmer decision supersedes; red
   first). No "not ready yet" state is needed: the link exists only after its copies are uploaded.
   Account sharing (spec 17) still reports entries that are not synced yet.
+- Screenshots regenerated (the script trashes its compose-screenshot entry instead of discarding the
+  tray, since the edit page autosaves); version 0.3.0. Tag `v0.3.0` after the PR is merged.
 

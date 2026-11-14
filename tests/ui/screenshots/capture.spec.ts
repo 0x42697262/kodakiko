@@ -236,9 +236,9 @@ async function captureSet(
     await page.getByTestId('tags.option.travel').click();
     await page.getByTestId('tags.done').click();
     await shot(page, `${prefix}-compose`);
-    await page.goBack();
-    await page.getByTestId('capture.close').click();
-    await page.getByTestId('capture.discard').click();
+    await page.getByTestId('edit.more').click();
+    await page.getByTestId('edit.trash').click();
+    await expect(page.getByTestId('gallery.noticeTrashed')).toBeVisible({ timeout: SYNC_WAIT_MS });
 
     await page.getByTestId('gallery.more').click();
     await page.getByTestId('lock.lockNow').click();
