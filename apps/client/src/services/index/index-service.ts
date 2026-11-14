@@ -142,6 +142,7 @@ function readableEntry(
     coverMediaId: metadata.media[0]?.mediaId ?? null,
     mediaCount: metadata.media.length,
     hasVideo: metadata.media.some((media) => media.kind === 'video'),
+    favorite: metadata.favorite === true,
     notePreview: notePreviewOf(metadata.note),
     pending,
   };

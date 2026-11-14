@@ -53,7 +53,7 @@ describe('arrangeSections', () => {
 describe('galleryAttributes', () => {
   it('maps the tri-state settings and hides shared journals on request', () => {
     expect(galleryAttributes({ ...UI_SETTINGS_DEFAULTS.galleryFilters, video: 'include' }, false)).toEqual({
-      video: 'include', note: 'off', multiple: 'off', shared: 'off', pending: 'off',
+      video: 'include', note: 'off', multiple: 'off', shared: 'off', pending: 'off', favorite: 'off',
     });
     expect(galleryAttributes(UI_SETTINGS_DEFAULTS.galleryFilters, true).shared).toBe('exclude');
   });

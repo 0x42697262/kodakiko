@@ -28,6 +28,7 @@ export function galleryAttributes(filters: DeviceSettingsValue['galleryFilters']
     multiple: filters.multiple,
     shared: hideShared ? 'exclude' : filters.shared,
     pending: filters.pending,
+    favorite: filters.favorite,
   };
 }
 

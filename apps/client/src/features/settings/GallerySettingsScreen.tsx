@@ -64,6 +64,7 @@ export function galleryDisplayItems(
     badge('note', EN['prefs.badgeNote']),
     badge('pending', EN['prefs.badgePending']),
     badge('keptOffline', EN['prefs.badgeKeptOffline']),
+    badge('favorite', EN['prefs.badgeFavorite']),
     { kind: 'header', key: 'tabs', title: EN['prefs.tabs'] },
     { kind: 'switch', key: 'tagTabs', testID: 'settings.showTagTabs', title: EN['prefs.showTagTabs'], value: settings.galleryShowTagTabs, onChange: (galleryShowTagTabs) => update({ galleryShowTagTabs }) },
     { kind: 'switch', key: 'counts', testID: 'settings.showCounts', title: EN['prefs.showCounts'], value: settings.galleryShowCounts, onChange: (galleryShowCounts) => update({ galleryShowCounts }) },

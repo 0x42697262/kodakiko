@@ -30,6 +30,7 @@ export type EntryEdit = {
   readonly mediaOrder?: readonly string[];
   readonly addMedia?: readonly Descriptor[];
   readonly removeMediaId?: string;
+  readonly favorite?: boolean;
 };
 
 function cleanTags(tags: readonly string[]): readonly string[] {
@@ -115,8 +116,11 @@ export function applyEntryEdit(current: Metadata, edit: EntryEdit, nowUtc: strin
   if (edit.removeMediaId !== undefined) media = withoutMedia(media, edit.removeMediaId);
   if (edit.addMedia !== undefined) media = [...media, ...edit.addMedia];
   if (media.length === 0) throw new InvalidEditError(DOMAIN_TEXT.removeLastMedia);
+  const { favorite: wasFavorite, ...rest } = current;
+  const favorite = edit.favorite ?? wasFavorite === true;
   return EntryMetadataV1.parse({
-    ...current,
+    ...rest,
+    ...(favorite ? { favorite: true } : {}),
     note: edit.note ?? current.note,
     tags: edit.tags === undefined ? current.tags : cleanTags(edit.tags),
     takenAtUtc: edit.time?.takenAtUtc ?? current.takenAtUtc,

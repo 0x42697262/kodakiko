@@ -60,3 +60,17 @@ shows it → filter excludes it), **U-27** grouping (Month shows month headers),
   - **UNVERIFIED on a device:** an APK build needs disk space this machine doesn't have (3.9 GB
     free, floor 4 GB). The CI release build compiles it; U-12 (Android) checks it in the batched
     Android round.
+- **Phase 2 (2026-11-14):**
+  - `EntryMetadataV1.favorite` (optional). `applyEntryEdit` and `mergeMetadata` (three-way: the
+    side that changed it wins) write the field only when it is true, so blobs without favorites
+    stay byte-compatible. `metadataEquivalent` now compares it, so a favorite-only edit counts as
+    a change (found by the bulk test). The index carries `favorite`, and attributes gain
+    `favorite`.
+  - Entries service: `setFavorite`, `renameTag`, `deleteTag` on a shared `bulkEdit`. The latter
+    two are for the phase 4 Tags editor.
+  - Client: `galleryFilters.favorite` and `galleryBadges.favorite` use zod `.default`, so stored
+    settings from before keep their other values. A heart badge; a heart action in the viewer
+    (`viewer.favorite`); Add to/Remove from Favorites bulk actions; a Favorites pseudo-tab after
+    All (`gallery.tagTab.favorites`, it drives the `favorite` filter).
+  - U-26 was written after the code (no red run).
+

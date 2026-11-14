@@ -54,6 +54,8 @@ export const ICONS = Object.freeze({
   signOut: 'logout',
   flip: 'flip-camera-android',
   map: 'map',
+  favorite: 'favorite',
+  favoriteOff: 'favorite-border',
   place: 'place',
   locationOff: 'location-off',
 } satisfies Record<string, MaterialIconName>);

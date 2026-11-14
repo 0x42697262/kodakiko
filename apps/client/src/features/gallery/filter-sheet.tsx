@@ -59,6 +59,7 @@ export function FilterSheet({ onClose }: { readonly onClose: () => void }) {
     { key: 'multiple', label: EN['sheet.multiple'] },
     { key: 'shared', label: EN['sheet.shared'] },
     { key: 'pending', label: EN['sheet.pending'] },
+    { key: 'favorite', label: EN['sheet.favorite'] },
   ];
   const sortRows: readonly {
     readonly key: typeof settings.gallerySort.key;

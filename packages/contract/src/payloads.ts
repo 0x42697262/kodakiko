@@ -55,6 +55,7 @@ export const EntryMetadataV1 = z.object({
   media: z.array(MediaDescriptorV1).min(1).max(MEDIA_PER_ENTRY_HARD_MAX),
   createdAtUtc: z.iso.datetime(),
   editedAtUtc: z.iso.datetime(),
+  favorite: z.boolean().optional(),
 });
 
 export const CollectionMetadataV1 = z.object({

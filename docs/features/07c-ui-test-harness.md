@@ -351,6 +351,7 @@ rows in `behaviors.md` point here.
 | U-23 | A | — | part 2 of U-22's device state (no `clearState`): sidecar seeds an invite → Settings › Account › Connect a Server… (`10.0.2.2` UI stack, invite link, password) → `connect.done`; sidecar checks the server has 1 entry for the username | 20a |
 | U-24 | W-d | — | `seedEntries` a photo and a video → Filter sheet: `sheet.filter.video` include → Display tab: display mode List → 1 tile with the clip's note; lock and unlock → still 1 tile (settings persist) | 22 |
 | U-25 | W | — | `seedEntries` 3 entries tagged beach, city, city → tag tabs All, beach, city; `gallery.tagTab.1` → 2 tiles; All → 3 | 22 |
+| U-26 | W-d | — | 2 entries → open the second, `viewer.favorite` → Favorited; `gallery.tagTab.favorites` → 1 tile; All → 2; Filter sheet favorite include→exclude → 1 tile | 23 |
 
 Behaviors that stay `manual` (neither tool can drive them here; recorded in `behaviors.md`):
 fingerprint unlock (B-009 Android), the background upload notification and resume (B-060),

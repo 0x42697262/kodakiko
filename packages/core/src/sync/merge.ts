@@ -127,6 +127,16 @@ export function mergeMetadata(
     media: mergeMedia(ancestor, local, server),
     createdAtUtc: ancestor.createdAtUtc,
     editedAtUtc: nowUtc,
+    ...(pickSide(
+      (ancestor.favorite === true) !== (local.favorite === true),
+      (ancestor.favorite === true) !== (server.favorite === true),
+      local,
+      server,
+      local.favorite === true,
+      server.favorite === true,
+    )
+      ? { favorite: true }
+      : {}),
   };
 }
 
@@ -140,6 +150,7 @@ export function metadataEquivalent(left: Metadata, right: Metadata): boolean {
     left.createdAtUtc === right.createdAtUtc &&
     sameValue(normalizedTags(left.tags), normalizedTags(right.tags)) &&
     sameValue(left.location, right.location) &&
-    sameValue(left.media, right.media)
+    sameValue(left.media, right.media) &&
+    (left.favorite === true) === (right.favorite === true)
   );
 }

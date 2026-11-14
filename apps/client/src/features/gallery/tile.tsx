@@ -71,6 +71,11 @@ function Badges({ entry, position, badges }: { readonly entry: IndexedEntry; rea
           <Icon name="upload" size={BADGE_ICON_SIZE} color={colors.onPrimary} />
         </View>
       ) : null}
+      {badges.favorite && entry.favorite === true ? (
+        <View style={pill}>
+          <Icon name="favorite" size={BADGE_ICON_SIZE} color={colors.onPrimary} />
+        </View>
+      ) : null}
       {badges.video && entry.hasVideo ? (
         <View style={pill}>
           <Icon name="video" size={BADGE_ICON_SIZE} color={colors.onPrimary} />

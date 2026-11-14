@@ -499,6 +499,19 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                       },
                     },
                   ]),
+              ...(owner && !summary.trashed
+                ? [
+                    {
+                      key: 'favorite',
+                      icon: (metadata.favorite === true ? 'favorite' : 'favoriteOff') as 'favorite' | 'favoriteOff',
+                      label: metadata.favorite === true ? EN['viewer.actionFavorited'] : EN['viewer.actionFavorite'],
+                      testID: 'viewer.favorite',
+                      onPress: () => {
+                        services.entries.setFavorite([entryId], metadata.favorite !== true).catch(() => undefined);
+                      },
+                    },
+                  ]
+                : []),
               {
                 key: 'details',
                 icon: 'info' as const,

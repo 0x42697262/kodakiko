@@ -88,12 +88,14 @@ function attributeOf(entry: IndexedEntry, key: AttributeKey, homeCollectionId: s
       return !entry.isOwn || entry.collectionIds.some((id) => id !== homeCollectionId);
     case 'pending':
       return entry.pending;
+    case 'favorite':
+      return entry.favorite === true;
     default:
       return false;
   }
 }
 
-const ATTRIBUTE_KEYS: readonly AttributeKey[] = ['video', 'note', 'multiple', 'shared', 'pending'];
+const ATTRIBUTE_KEYS: readonly AttributeKey[] = ['video', 'note', 'multiple', 'shared', 'pending', 'favorite'];
 
 export function attributesMatch(entry: IndexedEntry, filters: AttributeFilters, homeCollectionId: string): boolean {
   for (const key of ATTRIBUTE_KEYS) {

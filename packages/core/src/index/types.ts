@@ -14,6 +14,7 @@ export type IndexedEntry = {
   readonly hasVideo: boolean;
   readonly notePreview: string;
   readonly pending: boolean;
+  readonly favorite?: boolean;
 };
 
 export type GalleryFilter = {
@@ -27,7 +28,7 @@ export type GalleryFilter = {
 };
 
 export type TriState = 'off' | 'include' | 'exclude';
-export type AttributeKey = 'video' | 'note' | 'multiple' | 'shared' | 'pending';
+export type AttributeKey = 'video' | 'note' | 'multiple' | 'shared' | 'pending' | 'favorite';
 export type AttributeFilters = Readonly<Partial<Record<AttributeKey, TriState>>>;
 export type GallerySortKey = 'takenAt' | 'noteLength' | 'mediaCount' | 'random';
 export type GallerySort = { readonly key: GallerySortKey; readonly descending: boolean };

@@ -24,11 +24,11 @@ const SPEC_22_DEFAULTS = {
   galleryColumnsPortrait: 0,
   galleryColumnsLandscape: 0,
   galleryGroupByDay: true,
-  galleryBadges: { video: true, photoCount: true, note: true, pending: true, keptOffline: false },
+  galleryBadges: { video: true, photoCount: true, note: true, pending: true, keptOffline: false, favorite: true },
   galleryShowTagTabs: true,
   galleryShowCounts: false,
   gallerySort: { key: 'takenAt', descending: true },
-  galleryFilters: { video: 'off', note: 'off', multiple: 'off', shared: 'off', pending: 'off', keptOffline: 'off' },
+  galleryFilters: { video: 'off', note: 'off', multiple: 'off', shared: 'off', pending: 'off', keptOffline: 'off', favorite: 'off' },
   hideShared: false,
   onThisDay: true,
   confirmTrash: true,
@@ -78,6 +78,19 @@ describe('device settings defaults', () => {
       autoLockMinutes: 15,
       ...SPEC_22_DEFAULTS,
     });
+  });
+});
+
+describe('spec 23 settings', () => {
+  it('keeps stored gallery filters and badges from before favorites and fills the new keys', async () => {
+    await rowStore.kvSetJson(STORAGE_KEYS.settingsDevice, {
+      schemaVersion: 1,
+      galleryFilters: { video: 'include', note: 'off', multiple: 'off', shared: 'off', pending: 'off', keptOffline: 'off' },
+      galleryBadges: { video: false, photoCount: true, note: true, pending: true, keptOffline: false },
+    });
+    const settings = await createDeviceSettings({ rowStore, defaults: NATIVE_DEFAULTS });
+    expect(settings.get().galleryFilters).toEqual({ ...NATIVE_DEFAULTS.galleryFilters, video: 'include', favorite: 'off' });
+    expect(settings.get().galleryBadges).toEqual({ ...NATIVE_DEFAULTS.galleryBadges, video: false, favorite: true });
   });
 });
 

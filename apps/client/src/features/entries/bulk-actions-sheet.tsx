@@ -177,6 +177,8 @@ export function BulkActionsSheet({ ids, mode, collectionId, onDone }: BulkAction
             variant="secondary"
             onPress={() => setPanel('removeTag')}
           />
+          <Button testID="bulk.favorite" label={EN['bulk.favorite']} variant="secondary" busy={busy} onPress={() => void run(() => services.entries.setFavorite(ids, true))} />
+          <Button testID="bulk.unfavorite" label={EN['bulk.unfavorite']} variant="secondary" busy={busy} onPress={() => void run(() => services.entries.setFavorite(ids, false))} />
           <Button
             testID={testId('bulk.trash')}
             label={EN['bulk.trash']}

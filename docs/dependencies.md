@@ -108,6 +108,7 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `expo-status-bar` | 58.0.4 | Full screen setting (spec 22 §11.1) |
 | `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (spec 22 §11.1) |
 | `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (spec 22 §11.3) |
+| `react-native-zoom-toolkit` | 5.1.1 | Android photo viewer `Gallery` (spec 23 phase 1); MIT; released 2026-08-30 |
 | `expo-local-authentication` | 58.0.2 | biometrics (F-LIB-13) |
 | `expo-image` | 58.0.18 | display, cache, dimensions (F-LIB-09) |
 | `expo-image-picker` | 58.0.10 | Android Photo Picker import (F-LIB-12) |

@@ -882,6 +882,27 @@ describe('addMedia', () => {
 });
 
 describe('tag edits on many entries', () => {
+  it('spec 23: marks and unmarks favorites in bulk and skips entries already in that state', async () => {
+    const first = await harness.createEntry([fakeJpeg(PHOTO_BYTES)]);
+    const second = await harness.createEntry([fakeJpeg(PHOTO_BYTES)]);
+    for (const id of [first, second]) await harness.markSynced(id);
+    expect(await harness.service.setFavorite([first], true)).toEqual({ changed: 1, skipped: 0 });
+    expect(await harness.service.setFavorite([first, second], true)).toEqual({ changed: 1, skipped: 1 });
+    expect((await metadataOf(second)).favorite).toBe(true);
+    expect(await harness.service.setFavorite([first], false)).toEqual({ changed: 1, skipped: 0 });
+    expect((await metadataOf(first)).favorite).toBeUndefined();
+  });
+
+  it('spec 23: renames and deletes a tag on every entry that has it', async () => {
+    const first = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['trip', 'a'] });
+    const second = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['b'] });
+    for (const id of [first, second]) await harness.markSynced(id);
+    expect(await harness.service.renameTag([first, second], 'trip', 'Journey')).toEqual({ changed: 1, skipped: 1 });
+    expect((await metadataOf(first)).tags).toEqual(['a', 'journey']);
+    expect(await harness.service.deleteTag([first, second], 'a')).toEqual({ changed: 1, skipped: 1 });
+    expect((await metadataOf(first)).tags).toEqual(['journey']);
+  });
+
   it('B-023: adds a tag to 3 entries where one already has it: changed 2, skipped 1', async () => {
     const first = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['a'] });
     const second = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['trip', 'a'] });

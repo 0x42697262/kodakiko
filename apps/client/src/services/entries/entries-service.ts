@@ -106,6 +106,9 @@ export type EntriesService = {
   readonly deletePermanently: (entryIds: readonly string[]) => Promise<BulkResult>;
   readonly addTagToMany: (entryIds: readonly string[], tag: string) => Promise<BulkResult>;
   readonly removeTagFromMany: (entryIds: readonly string[], tag: string) => Promise<BulkResult>;
+  readonly setFavorite: (entryIds: readonly string[], favorite: boolean) => Promise<BulkResult>;
+  readonly renameTag: (entryIds: readonly string[], from: string, to: string) => Promise<BulkResult>;
+  readonly deleteTag: (entryIds: readonly string[], tag: string) => Promise<BulkResult>;
   readonly readMetadata: (entryId: string) => Promise<Metadata>;
 };
 
@@ -543,19 +546,26 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
     return { changed: removed.done.length, skipped: ids.length - removed.done.length };
   }
 
-  async function bulkTags(
+  function bulkTags(
     entryIds: readonly string[],
     build: (tags: readonly string[]) => readonly string[] | null,
+  ): Promise<BulkResult> {
+    return bulkEdit(entryIds, (current) => {
+      const tags = build(current.tags);
+      return tags === null ? null : { tags };
+    });
+  }
+
+  async function bulkEdit(
+    entryIds: readonly string[],
+    build: (current: Metadata) => MetadataEdit | null,
   ): Promise<BulkResult> {
     const userId = requireUserId();
     const changedIds: string[] = [];
     let skipped = 0;
     for (const entryId of uniqueIds(entryIds)) {
       try {
-        const outcome = await mutate(entryId, userId, (current) => {
-          const tags = build(current.tags);
-          return tags === null ? null : { tags };
-        });
+        const outcome = await mutate(entryId, userId, build);
         if (outcome === 'changed') changedIds.push(entryId);
         else skipped += 1;
       } catch (error) {
@@ -583,6 +593,21 @@ export function createEntriesService(deps: EntriesServiceDeps): EntriesService {
         return result.rejected === null ? result.tags : null;
       }),
     removeTagFromMany: (entryIds, tag) =>
+      bulkTags(entryIds, (tags) => {
+        const normalized = normalizeTag(tag);
+        if (normalized === null || !tags.includes(normalized)) return null;
+        return removeTag(tags, normalized);
+      }),
+    setFavorite: (entryIds, favorite) =>
+      bulkEdit(entryIds, (current) => ((current.favorite === true) === favorite ? null : { favorite })),
+    renameTag: (entryIds, from, to) =>
+      bulkTags(entryIds, (tags) => {
+        const old = normalizeTag(from);
+        if (old === null || !tags.includes(old)) return null;
+        const result = addTag(removeTag(tags, old), to);
+        return result.rejected === null ? result.tags : null;
+      }),
+    deleteTag: (entryIds, tag) =>
       bulkTags(entryIds, (tags) => {
         const normalized = normalizeTag(tag);
         if (normalized === null || !tags.includes(normalized)) return null;
