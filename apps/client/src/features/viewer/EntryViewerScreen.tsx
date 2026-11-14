@@ -47,6 +47,7 @@ import {
 import { useViewerKeys } from './use-viewer-keys';
 import { ShareSheet } from '../sharing/ShareSheet';
 import { InlineVideo } from '../video/inline-video';
+import { VoiceNotes } from '../voice/voice-notes';
 
 type Metadata = z.infer<typeof EntryMetadataV1>;
 type Descriptor = Metadata['media'][number];
@@ -318,7 +319,8 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
     }
   }, [status, summary, services.galleryNotice, router]);
 
-  const total = metadata?.media.length ?? 0;
+  const visual = (metadata?.media ?? []).filter((item) => item.kind !== 'audio');
+  const total = visual.length;
   const goTo = useCallback(
     (next: number) => {
       if (zoomed || next < 0 || next >= total) return;
@@ -436,9 +438,9 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
           <View onLayout={onLayout}>
             {width === 0 ? null : (
               <MediaPager
-                key={metadata.media.map((item) => item.mediaId).join()}
+                key={visual.map((item) => item.mediaId).join()}
                 handle={pager}
-                items={metadata.media}
+                items={visual}
                 keyOf={(item) => item.mediaId}
                 width={width}
                 height={pageHeight}
@@ -446,7 +448,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 onPageChange={setPage}
                 onZoomChange={setZoomed}
                 onItemTap={(index) => {
-                  const tapped = metadata.media[index];
+                  const tapped = visual[index];
                   if (tapped?.kind === 'video' && services.videoLauncher.canPlay())
                     services.videoLauncher.open(entryId, tapped.mediaId);
                 }}
@@ -465,9 +467,9 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
               />
             )}
           </View>
-          {metadata.media[page]?.caption === undefined ? null : (
+          {visual[page]?.caption === undefined ? null : (
             <Text testID="viewer.caption" numberOfLines={1} style={[styles.indicator, { color: colors.text }]}>
-              {metadata.media[page]?.caption}
+              {visual[page]?.caption}
             </Text>
           )}
           <Text
@@ -549,6 +551,7 @@ export function EntryViewerScreen({ entryId }: { readonly entryId: string }) {
                 : []),
             ]}
           />
+          <VoiceNotes entryId={entryId} media={metadata.media} onRemove={null} />
           {metadata.tags.length === 0 ? null : (
             <ScrollView
               horizontal

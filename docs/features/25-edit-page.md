@@ -111,4 +111,15 @@ Trim and delete originals (v0.3.1); transcription; PicDiary's player; auto note 
   the full player and broke U-13; inline videos now stop when their screen loses focus and start
   only after a page has been shown for 0.8 s (also saves data on quick swipes). **U-39** (written
   with the code). `react-native-share`'s config plugin is not added (iOS-only entries).
+- **Phase 6:** `importService.importVoiceNote` (unit tests red first): audio items skip probing and
+  thumbnail rendering; the thumbnail is a bundled 256 px waveform WebP
+  (`constants/voice-note-constants.ts`), so gallery, sync, links and export treat audio like any
+  item. The import code's store step is shared (`persist`). Recorder: `adapters/voice-recorder`
+  (Android `expo-audio` HIGH_QUALITY preset, AAC `audio/mp4`; web `MediaRecorder`, Opus
+  `audio/webm`), 10 min cap. `features/voice`: `VoiceNotes` list (opens the original on first
+  play), `RecordingTile` (live timer + stop), `VoicePlayer` (Android `expo-audio`, web `<audio>`).
+  Edit page: mic in the action bar, the list under it, remove per note (not the last item).
+  Viewer: audio items leave the pager (page indicator counts photos and videos) and show as a
+  list. **U-40** (Chromium fake microphone; written with the code). Android recording and AAC
+  playback UNVERIFIED.
 

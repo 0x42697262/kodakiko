@@ -39,6 +39,7 @@ import {
 import type { ConfigService } from '../config/config-service';
 import type { DeviceSettings } from '../settings/device-settings';
 import { pickerExifToMetadata } from './picker-exif';
+import { VOICE_THUMBNAIL_BASE64, VOICE_THUMBNAIL_SIZE } from '../../constants/voice-note-constants';
 
 export type MediaDescriptor = z.infer<typeof MediaDescriptorV1>;
 
@@ -62,9 +63,21 @@ export type ImportOutcome =
   | { readonly ok: false; readonly reason: ImportRefusal; readonly fileName: string | null };
 
 export type ImportSlots = { readonly used: number; readonly limit: number };
+export type VoiceNoteInfo = { readonly durationMs: number; readonly mimeType: string };
+
+let voiceThumbnail: Uint8Array | null = null;
+
+function voiceThumbnailBytes(): Uint8Array {
+  if (voiceThumbnail === null) {
+    const binary = atob(VOICE_THUMBNAIL_BASE64);
+    voiceThumbnail = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  }
+  return voiceThumbnail.slice();
+}
 
 export type ImportService = {
   readonly importOne: (input: MediaInput, slots: ImportSlots) => Promise<ImportOutcome>;
+  readonly importVoiceNote: (input: MediaInput, voice: VoiceNoteInfo, slots: ImportSlots) => Promise<ImportOutcome>;
 };
 
 export type ImportServiceDeps = {
@@ -215,7 +228,59 @@ export function createImportService(deps: ImportServiceDeps): ImportService {
       deviceOffsetMinutes: deviceOffsetMinutes(new Date(deps.clock.now())),
     });
     const thumbnail = await deps.toolkit.makeThumbnail(input, format, posterTimeMs(format, probe));
+    const turned = embedded.rotationDegrees === QUARTER_TURN || embedded.rotationDegrees === THREE_QUARTER_TURN;
+    return persist({
+      source,
+      thumbnail,
+      time,
+      kind: format.kind,
+      mimeType: format.mimeType,
+      size: turned ? { width: probe.height, height: probe.width } : probe,
+      durationMs: format.kind === 'video' && probe.durationMs !== null ? Math.round(probe.durationMs) : null,
+      originalFileName: camera ? null : input.fileName,
+      location: camera || embedded.gps === null ? null : { point: embedded.gps, source: 'exif' },
+    });
+  }
 
+  async function buildVoice(input: MediaInput, voice: VoiceNoteInfo, slots: ImportSlots): Promise<ImportedMedia> {
+    if (slots.used >= slots.limit) throw new Refusal('trayFull');
+    const source = await deps.toolkit.byteSource(input);
+    const time = resolveCaptureTime({
+      exifDateTimeOriginal: null,
+      exifOffset: null,
+      containerCreationUtc: null,
+      fileModifiedUtc: null,
+      nowUtc: deps.clock.nowIso(),
+      deviceOffsetMinutes: deviceOffsetMinutes(new Date(deps.clock.now())),
+    });
+    return persist({
+      source,
+      thumbnail: { bytes: voiceThumbnailBytes(), width: VOICE_THUMBNAIL_SIZE, height: VOICE_THUMBNAIL_SIZE },
+      time,
+      kind: 'audio',
+      mimeType: voice.mimeType,
+      size: { width: VOICE_THUMBNAIL_SIZE, height: VOICE_THUMBNAIL_SIZE },
+      durationMs: Math.round(voice.durationMs),
+      originalFileName: null,
+      location: null,
+    });
+  }
+
+  async function persist(plan: {
+    readonly source: ByteSource;
+    readonly thumbnail: { readonly bytes: Uint8Array; readonly width: number; readonly height: number };
+    readonly time: ResolvedTime;
+    readonly kind: MediaDescriptor['kind'];
+    readonly mimeType: string;
+    readonly size: { readonly width: number; readonly height: number };
+    readonly durationMs: number | null;
+    readonly originalFileName: string | null;
+    readonly location: ImportedMedia['location'];
+  }): Promise<ImportedMedia> {
+    const { source, thumbnail, time } = plan;
+    const limits = deps.config.get() ?? CONFIG_FALLBACK;
+    const originalLayout = streamLayout(source.size, STREAM_CHUNK_SIZE_EXPONENT);
+    if (originalLayout.ciphertextSize > limits.maxUploadBytes) throw new Refusal('tooLarge');
     const mediaId = deps.randomId();
     const originalObjectId = deps.randomId();
     const thumbnailObjectId = deps.randomId();
@@ -238,15 +303,13 @@ export function createImportService(deps: ImportServiceDeps): ImportService {
       if (!encryptThumbnails) {
         await deps.fileStore.writePlainThumbnail(mediaId, thumbnail.bytes);
       }
-      const turned = embedded.rotationDegrees === QUARTER_TURN || embedded.rotationDegrees === THREE_QUARTER_TURN;
-      const size = turned ? { width: probe.height, height: probe.width } : probe;
       const descriptor = MediaDescriptorV1.parse({
         mediaId,
-        kind: format.kind,
-        mimeType: format.mimeType,
-        width: size.width,
-        height: size.height,
-        durationMs: format.kind === 'video' && probe.durationMs !== null ? Math.round(probe.durationMs) : null,
+        kind: plan.kind,
+        mimeType: plan.mimeType,
+        width: plan.size.width,
+        height: plan.size.height,
+        durationMs: plan.durationMs,
         originalPlaintextBytes: source.size,
         thumbnail: {
           width: thumbnail.width,
@@ -255,7 +318,7 @@ export function createImportService(deps: ImportServiceDeps): ImportService {
           plaintextBytes: thumbnail.bytes.length,
         },
         capturedAtUtc: time.capturedAtUtc,
-        originalFileName: camera ? null : input.fileName,
+        originalFileName: plan.originalFileName,
       });
       return {
         mediaId,
@@ -267,8 +330,7 @@ export function createImportService(deps: ImportServiceDeps): ImportService {
           .ciphertextSize,
         descriptor,
         time,
-        location:
-          camera || embedded.gps === null ? null : { point: embedded.gps, source: 'exif' },
+        location: plan.location,
         thumbnailBytes: thumbnail.bytes,
       };
     } catch (error) {
@@ -281,20 +343,19 @@ export function createImportService(deps: ImportServiceDeps): ImportService {
     }
   }
 
+  async function settle(input: MediaInput, run: () => Promise<ImportedMedia>): Promise<ImportOutcome> {
+    try {
+      const media = await run();
+      await discardQuietly(input);
+      return { ok: true, media };
+    } catch (error) {
+      await discardQuietly(input);
+      return { ok: false, reason: error instanceof Refusal ? error.reason : 'readFailed', fileName: input.fileName };
+    }
+  }
+
   return {
-    importOne: async (input, slots) => {
-      try {
-        const media = await build(input, slots);
-        await discardQuietly(input);
-        return { ok: true, media };
-      } catch (error) {
-        await discardQuietly(input);
-        return {
-          ok: false,
-          reason: error instanceof Refusal ? error.reason : 'readFailed',
-          fileName: input.fileName,
-        };
-      }
-    },
+    importVoiceNote: (input, voice, slots) => settle(input, () => buildVoice(input, voice, slots)),
+    importOne: (input, slots) => settle(input, () => build(input, slots)),
   };
 }

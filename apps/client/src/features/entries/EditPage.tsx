@@ -2,7 +2,7 @@ import { deviceOffsetMinutes } from '@kodakiko/core';
 import type { EntryMetadataV1 } from '@kodakiko/contract';
 import { Image } from 'expo-image';
 import { useFocusEffect, useNavigation, type Href } from 'expo-router';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
 import type { z } from 'zod';
 import { useAppContext } from '../../composition/app-context';
@@ -34,6 +34,9 @@ import type { MediaInput } from '../../adapters/media/media-toolkit';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';
 import { Sheet } from '../gallery/sheet';
 import { ShareSheet } from '../sharing/ShareSheet';
+import { useVoiceRecorder } from '../../adapters/voice-recorder/voice-recorder';
+import { RecordingTile, VoiceNotes } from '../voice/voice-notes';
+import { VOICE_MAX_MS } from '../../constants/voice-note-constants';
 import { InlineVideo } from '../video/inline-video';
 import { Touchable } from '../../ui/Touchable';
 import { MediaMenus, type MediaMenuState } from './media-menus';
@@ -111,6 +114,12 @@ export function EditPage({
   const pager = useRef<FlatList<Descriptor>>(null);
   const [menu, setMenu] = useState<MediaMenuState>(null);
   const [sharing, setSharing] = useState(false);
+  const [voiceFailed, setVoiceFailed] = useState(false);
+  const voice = useVoiceRecorder();
+  const stopVoice = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    if (voice.recording && voice.elapsedMs >= VOICE_MAX_MS) stopVoice.current?.();
+  }, [voice.recording, voice.elapsedMs]);
   const [hasImage, setHasImage] = useState(false);
   const config = services.config.get();
   const sharingAvailable = config?.sharingEnabled === true || config?.publicLinksEnabled === true;
@@ -199,7 +208,27 @@ export function EditPage({
   const media = draft.mediaIds
     .map((mediaId) => mediaById.get(mediaId))
     .filter((item): item is Descriptor => item !== undefined);
-  const current = Math.min(page, Math.max(0, media.length - 1));
+  const visual = media.filter((item) => item.kind !== 'audio');
+  const current = Math.min(page, Math.max(0, visual.length - 1));
+
+  async function toggleRecording(): Promise<void> {
+    if (!voice.recording) {
+      await voice.start();
+      return;
+    }
+    const recorded = await voice.stop();
+    if (recorded === null) return;
+    await saver.flush();
+    const currentMeta = await services.entries.readMetadata(entryId);
+    const limit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
+    const outcome = await services.mediaImport.importVoiceNote(recorded.input, { durationMs: recorded.durationMs, mimeType: recorded.mimeType }, { used: currentMeta.media.length, limit });
+    if (!outcome.ok) throw new Error(outcome.reason);
+    await services.entries.addMedia(entryId, [outcome.media]);
+    reload();
+  }
+  stopVoice.current = () => {
+    toggleRecording().catch(() => setVoiceFailed(true));
+  };
 
   function change(patch: Partial<EditDraft>, debounced = false): void {
     if (draft === null) return;
@@ -286,7 +315,7 @@ export function EditPage({
           <FlatList
             ref={pager}
             testID={EDIT_PAGE_IDS.pager}
-            data={media}
+            data={visual}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
@@ -314,7 +343,7 @@ export function EditPage({
           />
         )}
       </View>
-      <PageDots count={media.length} active={current} onSelect={goTo} />
+      <PageDots count={visual.length} active={current} onSelect={goTo} />
 
       <View style={styles.actions}>
         <IconAction
@@ -344,8 +373,37 @@ export function EditPage({
         {clipboardButtonSupported && hasImage ? (
           <IconAction testID="edit.paste" icon="paste" label={EN['edit.paste']} onPress={() => pasteFromClipboard().catch(() => undefined)} />
         ) : null}
+        {voice.supported ? (
+          <IconAction
+            testID="edit.recordVoice"
+            icon={voice.recording ? 'stop' : 'mic'}
+            label={voice.recording ? EN['voice.stop'] : EN['voice.record']}
+            onPress={() => {
+              setVoiceFailed(false);
+              toggleRecording().catch(() => setVoiceFailed(true));
+            }}
+          />
+        ) : null}
         <IconAction testID="edit.share" icon="share" label={EN['edit.share']} onPress={() => setSharing(true)} />
       </View>
+      {voice.recording ? (
+        <RecordingTile
+          elapsedMs={voice.elapsedMs}
+          onStop={() => {
+            toggleRecording().catch(() => setVoiceFailed(true));
+          }}
+        />
+      ) : null}
+      {voiceFailed ? <Banner testID="voice.failed" kind="error" message={EN['voice.failed']} /> : null}
+      <VoiceNotes
+        entryId={entryId}
+        media={media}
+        onRemove={
+          media.length <= 1
+            ? null
+            : (mediaId) => change({ mediaIds: draft.mediaIds.filter((id) => id !== mediaId) })
+        }
+      />
 
       <View style={styles.section}>
         <Text style={[styles.label, { color: colors.textMuted }]}>{EN['compose.when']}</Text>
