@@ -77,3 +77,5 @@ point at private addresses.
 | 21 | `21-deployment.md` production images and compose, Caddy DNS-01 + CSP hashes, Garage setup + CORS, operations guide, CI and release workflows, release checklist | all |
 | 22 | `22-material-ui.md` Material 3 UI modeled on Mihon: app bars, icon bottom navigation, More tab, tag tabs, Filter/Sort/Display sheet, declarative settings (D-84) | all client specs |
 | 23 | `23-mihon-parity.md` v0.2.0: Mihon parity and power users: zoom-toolkit viewer, favorites, Filter/Sort/Display/Group sheet, More, tags editor, statistics, server and keys, data and storage, import and encrypted export | 22 |
+| 24 | `24-native-feel.md` v0.2.2: ripples, Paper buttons and snackbars, transitions, predictive back, drag-to-close sheets, haptics, pull-to-sync, Material You (D-102, D-103) | 22, 23 |
+| 25 | `25-edit-page.md` v0.3.0: one autosaving edit page, captions, set as cover, crop, inline autoplay, voice notes, share to apps, paste (D-86 … D-100) | 24 |

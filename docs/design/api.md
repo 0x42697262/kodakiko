@@ -1,8 +1,9 @@
 # API
 
-Status: draft 2 (2026-11-11, after review 1). Normative for `packages/contract/src/` (Zod schemas,
-shared by server and client) and `apps/server/src/http/`. Every route is defined once in `contract`
-and bound to the server through `fastify-type-provider-zod` (F-TOOL-07).
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `packages/contract/src/` (Zod schemas, shared by server and client) and `apps/server/src/http/`. Every route is defined once in `contract` and bound to the server through `fastify-type-provider-zod` (F-TOOL-07).
 
 ## 1. Conventions
 

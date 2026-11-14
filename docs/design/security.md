@@ -1,7 +1,9 @@
 # Security
 
-Status: draft 1 (2026-11-11). Normative for the threat model, the security-relevant behavior of
-every component, and the hardening checklist. Crypto details: `docs/design/crypto.md`.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for the threat model, the security-relevant behavior of every component, and the hardening checklist. Crypto details: `docs/design/crypto.md`.
 
 ## 1. Threat model (D-29)
 

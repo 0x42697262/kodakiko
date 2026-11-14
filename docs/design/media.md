@@ -1,8 +1,9 @@
 # Media
 
-Status: draft 1 (2026-11-11). Normative for the capture and import paths in
-`apps/client/src/features/capture/`, the thumbnail pipeline in
-`apps/client/src/services/media/`, and EXIF handling in `packages/core/src/media/`.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for the capture and import paths in `apps/client/src/features/capture/`, the thumbnail pipeline in `apps/client/src/services/media/`, and EXIF handling in `packages/core/src/media/`.
 
 Covers: capture (camera), import (picker, drag-drop, paste), thumbnails, EXIF and time extraction,
 video specifics, and the strip-for-public-link pipeline (D-25).

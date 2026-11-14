@@ -1,7 +1,9 @@
 # Data model
 
-Status: draft 1 (2026-11-11). Normative for `apps/server/src/adapters/db/migrations/`,
-`apps/client/src/adapters/rowstore/`, and `packages/contract/src/payloads.ts`.
+Design reference written before the build (2026-11-11). Where it differs from the code, the code
+and the feature specs' implementation notes are right.
+
+Normative for `apps/server/src/adapters/db/migrations/`, `apps/client/src/adapters/rowstore/`, and `packages/contract/src/payloads.ts`.
 
 Three layers of data:
 
