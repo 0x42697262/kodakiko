@@ -1,1 +1,1 @@
-{"extends": "./tsconfig.base.json", "compilerOptions": {"types": ["node"], "noEmit": true}, "include": ["infra/scripts", "scripts", "vitest.scripts.config.ts"], "exclude": ["scripts/local"]}
+{ "extends": "./tsconfig.base.json", "compilerOptions": { "types": ["node"], "noEmit": true }, "include": ["infra/scripts", "scripts", "vitest.scripts.config.ts"], "exclude": ["scripts/local"] }
