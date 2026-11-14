@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CROP_MIN_FRACTION, FULL_CROP, dragCorner, moveCrop, toPixels } from '../src/features/entries/crop-math';
 
-describe('crop math (spec 25, D-90)', () => {
+describe('crop math', () => {
   it('converts a normalized rectangle to whole pixels inside the image', () => {
     expect(toPixels({ x: 0.1, y: 0.2, width: 0.5, height: 0.5 }, 1000, 800)).toEqual({ originX: 100, originY: 160, width: 500, height: 400 });
     expect(toPixels(FULL_CROP, 333, 221)).toEqual({ originX: 0, originY: 0, width: 333, height: 221 });

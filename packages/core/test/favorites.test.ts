@@ -36,7 +36,7 @@ function metadata(patch: Partial<Metadata> = {}): Metadata {
   });
 }
 
-describe('favorites in entry metadata (spec 23)', () => {
+describe('favorites in entry metadata', () => {
   it('accepts metadata with and without the favorite flag', () => {
     expect(EntryMetadataV1.safeParse(metadata()).success).toBe(true);
     expect(metadata({ favorite: true }).favorite).toBe(true);

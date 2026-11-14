@@ -41,7 +41,7 @@ async function decrypt(file: Uint8Array, passphrase = PASSPHRASE): Promise<Uint8
   return decryptKdkx(sodium, await deriveKdkxKey(sodium, passphrase, params), file);
 }
 
-describe('.kdkx encrypted export parts (spec 23 §7)', () => {
+describe('.kdkx encrypted export parts', () => {
   it('round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces', async () => {
     for (const size of [0, 5, KDKX_CHUNK_BYTES, KDKX_CHUNK_BYTES * 2 + 7]) {
       const plain = bytes(size, size);

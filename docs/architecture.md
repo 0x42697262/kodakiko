@@ -60,7 +60,7 @@ NetBird, Headscale). The apps only know an HTTPS base URL for the API and one fo
         ui/                        Playwright (web) and Maestro (Android) UI flows, screenshots
       docs/                        guide, operations, design reference, build history
 
-Dependency direction (enforced by lint import rules, spec 01 §1.2; string placement in catalogs is
+Dependency direction (enforced by lint import rules; string placement in catalogs is
 a review item, not a lint rule):
 
 | Package | May import | Must not import |
@@ -82,13 +82,13 @@ a review item, not a lint rule):
 | `config/` | Config | `settings.ts` (Zod env schema -> frozen typed `Settings`), `constants.ts` (internal tuning) |
 | `http/routes/` | Entry | One file per resource; route definitions bound to `contract` schemas |
 | `http/controllers/` | Entry | 5-15 lines each: validated input -> one service call -> response DTO |
-| `http/*.ts` | Entry | request context (request id, HTTPS check), auth plugin (bearer token → user), rate limits, error handler (error class → `ErrorCode` + HTTP status), log redaction (spec 03 §2.2) |
+| `http/*.ts` | Entry | request context (request id, HTTPS check), auth plugin (bearer token → user), rate limits, error handler (error class → `ErrorCode` + HTTP status), log redaction |
 | `services/` | Use cases | accounts, sessions, invites, collections, entries, media uploads, sync, sharing, public links, quotas, admin, account deletion |
 | `domain/` | Pure rules | permissions per role, quota checks, sign-up policy (`signupMode`, D-27), Argon2id parameter floor, deletion schedules, object-key layout |
 | `adapters/db/` | Adapter | Kysely repositories over `pg`; migrations in `adapters/db/migrations/` |
 | `adapters/storage/` | Adapter | S3 presigner (single PUT, multipart create/part/complete/abort, GET with Range), delete |
 | `jobs/` | Background | object garbage collection, account erase, stale multipart abort, trash purge; in-process scheduler guarded by `pg_try_advisory_lock` so one instance runs each job |
-| `cli.ts` | Entry | operational commands in one dispatch map: `migrate-status` (spec 03), `create-invite` (spec 04), `apply-bucket-cors` (spec 05), admin commands (spec 19). No command creates an account: keys are generated on clients (D-47) |
+| `cli.ts` | Entry | operational commands in one dispatch map: `migrate-status`, `create-invite`, `apply-bucket-cors`, admin commands. No command creates an account: keys are generated on clients (D-47) |
 | `text/` | Catalog | log event names, error messages |
 
 The server has **no libsodium dependency**: it hashes the login key with `node:crypto` SHA-256
@@ -105,7 +105,7 @@ inside linked workspace packages, and one bundled file starts faster and ships f
 | Folder | Layer | Job |
 |---|---|---|
 | `app/` | Entry (Expo Router routes) | Thin screens: read view-model hooks, render feature components |
-| `src/composition/` | Composition root | `createAppContext()` (async): builds the platform's adapters (Metro picks `*.native.ts` / `*.web.ts`), services, the sync engine; provided through one React context (spec 07a §5) |
+| `src/composition/` | Composition root | `createAppContext()` (async): builds the platform's adapters (Metro picks `*.native.ts` / `*.web.ts`), services, the sync engine; provided through one React context |
 | `src/config/` | Config | client constants and the server base URL resolution (web: same origin; Android: chosen at first run, `client.md` §7.1); server-provided `PublicConfigDto` validated with Zod |
 | `src/features/<feature>/` | UI | components, hooks and view-model per feature: `gallery`, `calendar`, `capture`, `entries` (edit page, note editor, crop, media menu), `viewer`, `video`, `voice`, `markdown`, `tags`, `sharing`, `links`, `link-viewer`, `settings`, `more`, `auth`, `lock`, `admin`, `sync`, `diagnostics` |
 | `src/services/` | Use cases | auth, entries, media import, index, sync, originals and thumbnails caches, video, sharing, public links, export and journal import, settings, lock, admin |
@@ -156,7 +156,7 @@ Client ports and their implementations:
 
 ### 5.2 Browse and filter
 
-1. On unlock: decrypt every entry's metadata and build the in-memory index (spec 11; the encrypted
+1. On unlock: decrypt every entry's metadata and build the in-memory index (the encrypted
    snapshot of D-46 is reserved, not built in v1).
 2. Gallery and calendar read from the index; thumbnails load from `ThumbnailCache`, downloading
    and decrypting missing ones on demand with bounded concurrency.
@@ -164,7 +164,7 @@ Client ports and their implementations:
 ### 5.3 Sync pull
 
 1. Client calls `GET /sync/state` (all readable collections with their sequence numbers), then
-   pulls each changed collection's diff from its own cursor (spec 08).
+   pulls each changed collection's diff from its own cursor ([features/sync.md](features/sync.md)).
 2. Server returns changed rows (ciphertext) ordered by a monotonic sequence, bounded page size,
    `hasMore` flag (F-ENTE-17, but sequence instead of timestamp).
 3. Client stores rows, decrypts metadata into the index, advances cursors.
@@ -192,5 +192,5 @@ Client ports and their implementations:
 | Client scenarios | `tests/e2e` | Two simulated devices against a real server |
 | UI flows | `tests/ui/web/specs/U-NN-*.spec.ts`, `tests/ui/android/flows` | Playwright on desktop and phone viewports; Maestro on the emulator |
 
-The flow catalog (U-01 …) is in `docs/features/07c-ui-test-harness.md`; behaviors in
-`docs/features/behaviors.md`. More in [testing.md](testing.md).
+The flow catalog (U-01 …) is in [testing.md](testing.md#flow-catalog); behaviors in
+[behaviors.md](behaviors.md).

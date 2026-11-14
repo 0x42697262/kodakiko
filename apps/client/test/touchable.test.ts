@@ -13,7 +13,7 @@ function render(props: Props): ReactElement<Props> {
   return Touchable({ testID: 't', onPress: () => undefined, ...props }) as ReactElement<Props>;
 }
 
-describe('Touchable (spec 24 phase 2)', () => {
+describe('Touchable', () => {
   it('gives Android a foreground ripple in the theme text color at low alpha', () => {
     platform.OS = 'android';
     expect(render({}).props['android_ripple']).toEqual({ color: '#1111141F', borderless: false, foreground: true });

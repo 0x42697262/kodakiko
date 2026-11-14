@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { moveTag, orderTags } from '../src/features/tags/tag-order';
 
-describe('tag order (spec 23 tags editor)', () => {
+describe('tag order', () => {
   const counted = [
     { tag: 'beach', count: 3 },
     { tag: 'city', count: 1 },

@@ -72,7 +72,7 @@ function fakes(existing: { takenAtUtc: string; mediaCount: number }[] = []) {
   return { service, created, favorites, captions };
 }
 
-describe('journal import (spec 23 §7)', () => {
+describe('journal import', () => {
   it('creates an entry per entry.md with its time, offset, tags, place, note and media in order', async () => {
     const { service, created, favorites } = fakes();
     const summary = await service.run([{ name: 'kodakiko-export-01.zip', bytes: exportZip([noteFor('A', { favorite: true })]) }], null, () => undefined);
@@ -116,7 +116,7 @@ describe('journal import (spec 23 §7)', () => {
     expect(created).toHaveLength(0);
   });
 
-  it('restores captions on the imported media (spec 25)', async () => {
+  it('restores captions on the imported media', async () => {
     const { service, captions } = fakes();
     const captioned = noteFor('C', { media: [{ ...MEDIA, mediaId: 'mmmmmmmmmmmmmmmmmmmm01', originalFileName: 'beach.jpg', caption: 'Low tide' }] });
     await service.run([{ name: 'c.zip', bytes: exportZip([captioned]) }], null, () => undefined);

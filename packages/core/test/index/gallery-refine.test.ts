@@ -56,7 +56,7 @@ function filled() {
   return index;
 }
 
-describe('gallery attribute filters (spec 22)', () => {
+describe('gallery attribute filters', () => {
   it('includes or excludes each attribute', () => {
     const index = filled();
     expect(ids(index, filter({ video: 'include' }))).toEqual(['video']);
@@ -84,7 +84,7 @@ describe('gallery attribute filters (spec 22)', () => {
   });
 });
 
-describe('sortEntryIds (spec 22)', () => {
+describe('sortEntryIds', () => {
   const lookup = new Map<string, IndexedEntry>([
     ['a', entry('a', { takenAtUtc: '2026-01-01T00:00:00.000Z', notePreview: 'xx', mediaCount: 2 })],
     ['b', entry('b', { takenAtUtc: '2026-03-01T00:00:00.000Z', notePreview: '', mediaCount: 5 })],
@@ -109,7 +109,7 @@ describe('sortEntryIds (spec 22)', () => {
   });
 });
 
-describe('allTags (spec 22 tag tabs)', () => {
+describe('allTags', () => {
   it('lists every tag of journal entries alphabetically with its count', () => {
     const index = createGalleryIndex({ homeCollectionId: HOME });
     index.upsert(entry('x', { tags: ['beach', 'family'] }), '');

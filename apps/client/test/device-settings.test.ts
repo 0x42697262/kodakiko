@@ -65,7 +65,7 @@ async function storedJson(): Promise<Record<string, unknown> | null> {
 }
 
 describe('device settings defaults', () => {
-  it('has the Android defaults of spec 09 §4.2', () => {
+  it('has the Android defaults', () => {
     expect(NATIVE_DEFAULTS).toEqual({
       encryptThumbnails: false,
       originalCacheCapBytes: 2_147_483_648,
@@ -77,7 +77,7 @@ describe('device settings defaults', () => {
     });
   });
 
-  it('has the web defaults of spec 09 §4.2', () => {
+  it('has the web defaults', () => {
     expect(WEB_DEFAULTS).toEqual({
       encryptThumbnails: true,
       originalCacheCapBytes: 1_073_741_824,
@@ -90,7 +90,7 @@ describe('device settings defaults', () => {
   });
 });
 
-describe('spec 23 settings', () => {
+describe('power-user and favorites settings', () => {
   it('keeps stored gallery filters and badges from before favorites and fills the new keys', async () => {
     await rowStore.kvSetJson(STORAGE_KEYS.settingsDevice, {
       schemaVersion: 1,
@@ -103,8 +103,8 @@ describe('spec 23 settings', () => {
   });
 });
 
-describe('spec 22 settings', () => {
-  it('fills the spec 22 fields with defaults for settings stored before spec 22', async () => {
+describe('Material UI settings', () => {
+  it('fills newer fields with defaults for settings stored before they existed', async () => {
     await rowStore.kvSetJson(STORAGE_KEYS.settingsDevice, {
       schemaVersion: 1,
       encryptThumbnails: false,

@@ -15,7 +15,8 @@
 | [architecture.md](architecture.md) | Repository layout, layers, platform adapters, data flows |
 | [encryption.md](encryption.md) | What is encrypted, the key hierarchy, where keys live |
 | [development.md](development.md) | Toolchain, local stack, Android builds, releases, client conventions |
-| [testing.md](testing.md) | Test commands, rules, where flows and fixtures live |
+| [testing.md](testing.md) | Test commands, rules, the UI flow catalog |
+| [behaviors.md](behaviors.md) | Every user-visible behavior and the test that proves it |
 | [engineering-guidelines.md](engineering-guidelines.md) | The engineering rules every change follows |
 | [dependencies.md](dependencies.md) | Allowed packages with versions and reasons, pnpm policy |
 | [facts.md](facts.md) | Confirmed facts about third-party libraries and services, with sources (F-XXX-NN) |
@@ -23,7 +24,7 @@
 ## Design reference
 
 Written before the build (2026-11-11) and kept as the detailed specification. Where one differs
-from the code, the code and the feature specs' implementation notes are right.
+from the code, the code and the feature docs are right.
 
 | Doc | What it is |
 |---|---|
@@ -37,13 +38,14 @@ from the code, the code and the feature specs' implementation notes are right.
 | [design/security.md](design/security.md) | Threat model, key handling, headers, rate limits |
 | [design/deployment.md](design/deployment.md) | Compose stack, private and public profiles, VPN, DNS-01 TLS, flags |
 
-## Build history
+## Features
 
-How the app was planned and built, in order.
+[features/README.md](features/README.md) lists one doc per feature area (capture, edit page,
+gallery, viewer, sync, sharing, …), each describing in detail how it works today.
+[behaviors.md](behaviors.md) lists every user-visible behavior with the test that proves it.
+
+## History
 
 | Doc | What it is |
 |---|---|
-| [features/README.md](features/README.md) | The build order and its rules; one spec per feature (01 … 25), each ending with implementation notes on what changed during the build |
-| [features/07c-ui-test-harness.md](features/07c-ui-test-harness.md) | UI test harness and the flow catalog (U-01 …) |
-| [features/behaviors.md](features/behaviors.md) | Behavior catalog: Given / When / Then rows mapped to specs and tests |
 | [adr/](adr/) | Architecture decision records 0001 … 0010 |

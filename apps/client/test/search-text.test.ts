@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { searchTextOf } from '../src/services/index/search-text';
 
-describe('searchTextOf (spec 25)', () => {
+describe('searchTextOf', () => {
   it('joins the note and every caption so search finds captions', () => {
     expect(searchTextOf({ note: 'Lake day', media: [{ caption: 'Sunset' }, {}, { caption: 'Swim' }] })).toBe('Lake day\nSunset\nSwim');
   });

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createAutosaver, AUTOSAVE_DEBOUNCE_MS } from '../src/features/entries/autosaver';
 
-describe('autosaver (spec 25, D-89)', () => {
+describe('autosaver', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 

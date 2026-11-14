@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SHEET_CLOSE_FRACTION, SHEET_FLING_VELOCITY, shouldCloseSheet } from '../src/features/gallery/sheet-drag';
 
-describe('shouldCloseSheet (spec 24 phase 4)', () => {
+describe('shouldCloseSheet', () => {
   const height = 400;
 
   it('closes when dragged down past the close fraction of its height', () => {

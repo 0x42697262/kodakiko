@@ -284,7 +284,7 @@ describe('originals', () => {
     expect((await objectRows(mediaId)).find((row) => row.variant === 'original')?.localState).toBe('present');
   });
 
-  it('local-only mode never evicts, neither by cap nor by clearing (spec 20a)', async () => {
+  it('local-only mode never evicts, neither by cap nor by clearing', async () => {
     const local = createDownloadingOriginalSource({
       local: harness.originals,
       downloader,

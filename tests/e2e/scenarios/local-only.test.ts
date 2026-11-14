@@ -20,7 +20,7 @@ async function entryIdsOf(device: Device): Promise<string[]> {
   return (await device.context.rowStore.transaction((tx) => tx.entries.all())).map((entry) => entry.id).sort();
 }
 
-describe('local-only mode (spec 20a)', () => {
+describe('local-only mode', () => {
   it('a journal kept without a server uploads after connecting and opens on a second device', async () => {
     const a = await setUpLocalDevice(harness, 'A');
     const photo = randomMedia(SMALL_MEDIA_BYTES);

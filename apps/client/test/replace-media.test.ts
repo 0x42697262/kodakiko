@@ -19,7 +19,7 @@ function fakeEntries(ids: string[], captions: Record<string, string> = {}) {
   };
 }
 
-describe('replaceMedia (spec 25 crop, D-97)', () => {
+describe('replaceMedia', () => {
   it('puts the new item where the old one was, keeps its caption and drops the old one', async () => {
     const entries = fakeEntries(['a', 'b', 'c'], { b: 'Sunset' });
     const importOne = vi.fn(async () => ({ ok: true as const, media: { mediaId: 'n' } }));

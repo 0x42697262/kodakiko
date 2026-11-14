@@ -154,7 +154,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe('local-only mode (spec 20a)', () => {
+describe('local-only mode', () => {
   it('a pass pushes and pulls nothing and keeps the outbox', async () => {
     localOnly = true;
     await enqueue(row('trashEntry', fixture.randomId()));

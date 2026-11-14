@@ -385,7 +385,7 @@ describe('metadataEquivalent', () => {
   });
 });
 
-describe('caption merge (spec 25)', () => {
+describe('caption merge', () => {
   const captioned = (caption: string | undefined): Descriptor =>
     caption === undefined ? descriptor(ID_ONE) : { ...descriptor(ID_ONE), caption };
 

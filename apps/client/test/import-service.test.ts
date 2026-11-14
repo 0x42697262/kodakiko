@@ -778,7 +778,7 @@ describe('importOne: responsiveness', () => {
   });
 });
 
-describe('importVoiceNote (spec 25, D-95)', () => {
+describe('importVoiceNote', () => {
   it('stores an audio item with its duration and the bundled waveform thumbnail', async () => {
     const { service, calls } = await createHarness({ bytes: Uint8Array.of(1, 2, 3, 4) });
     const media = expectOk(await service.importVoiceNote(pickerInput({ origin: 'camera', fileName: null }), { durationMs: 4200, mimeType: 'audio/webm' }, { used: 0, limit: 20 }));

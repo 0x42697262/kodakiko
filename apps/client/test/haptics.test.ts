@@ -8,7 +8,7 @@ vi.mock('react-native', () => ({ Platform: { OS: 'android' } }));
 
 const { createHaptics } = await import('../src/ui/haptics');
 
-describe('haptics (spec 24 phase 5)', () => {
+describe('haptics', () => {
   it('maps each kind to an Android haptic type when on', () => {
     const perform = vi.fn(() => Promise.resolve());
     const haptics = createHaptics('android', perform);

@@ -882,7 +882,7 @@ describe('addMedia', () => {
 });
 
 describe('tag edits on many entries', () => {
-  it('spec 23: marks and unmarks favorites in bulk and skips entries already in that state', async () => {
+  it('marks and unmarks favorites in bulk and skips entries already in that state', async () => {
     const first = await harness.createEntry([fakeJpeg(PHOTO_BYTES)]);
     const second = await harness.createEntry([fakeJpeg(PHOTO_BYTES)]);
     for (const id of [first, second]) await harness.markSynced(id);
@@ -893,7 +893,7 @@ describe('tag edits on many entries', () => {
     expect((await metadataOf(first)).favorite).toBeUndefined();
   });
 
-  it('spec 23: renames and deletes a tag on every entry that has it', async () => {
+  it('renames and deletes a tag on every entry that has it', async () => {
     const first = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['trip', 'a'] });
     const second = await harness.createEntry([fakeJpeg(PHOTO_BYTES)], { tags: ['b'] });
     for (const id of [first, second]) await harness.markSynced(id);

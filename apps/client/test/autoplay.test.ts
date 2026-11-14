@@ -3,7 +3,7 @@ import { shouldAutoplay } from '../src/features/video/autoplay';
 
 const ON = { autoplayVideos: true, autoplayOnMobileData: false };
 
-describe('shouldAutoplay (spec 25, D-91/D-99)', () => {
+describe('shouldAutoplay', () => {
   it('plays only the current page and only when the setting is on', () => {
     expect(shouldAutoplay(ON, { active: true, cached: true, wifi: false })).toBe(true);
     expect(shouldAutoplay(ON, { active: false, cached: true, wifi: true })).toBe(false);

@@ -32,7 +32,7 @@ function metadata(patch: Record<string, unknown> = {}) {
   });
 }
 
-describe('parseEntryNote (spec 23 import)', () => {
+describe('parseEntryNote', () => {
   it('reads back everything the exporter wrote', () => {
     const plan = planEntryExport('ENTRY1', metadata({ favorite: true }));
     expect(parseEntryNote(plan.noteText)).toEqual({
@@ -64,7 +64,7 @@ describe('parseEntryNote (spec 23 import)', () => {
   });
 });
 
-describe('captions and audio in exports (spec 25)', () => {
+describe('captions and audio in exports', () => {
   it('writes captions and reads them back with audio items', () => {
     const plan = planEntryExport(
       'ENTRY3',

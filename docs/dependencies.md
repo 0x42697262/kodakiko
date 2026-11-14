@@ -33,7 +33,7 @@ catalogMode: strict
   script). When `pnpm install` stops with `ERR_PNPM_IGNORED_BUILDS` for another package, the implementer
   adds it **only if that package is on this allowlist**, with `true` if its build is needed for the
   app to run (native binary download) and `false` otherwise, and records the line here. Anything
-  else stops the work. Recorded so far: `react-native-libsodium: true` (2026-11-12, spec 07a; its
+  else stops the work. Recorded so far: `react-native-libsodium: true` (2026-11-12, client foundation; its
   postinstall unpacks the bundled prebuilt libsodium, `tar -xzf libsodium/build.tgz`, needed by the
   Android build).
 - `packageManager` in the root `package.json`: `pnpm@12.17.0` (2026-10-30, compliant).
@@ -100,19 +100,19 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `expo-file-system` | 58.0.13 | FileHandle chunked I/O (F-LIB-05) |
 | `expo-sqlite` | 58.0.15 | RowStore, plain (D-37); no SQLCipher plugin |
 | `expo-secure-store` | 58.0.2 | KeyVault (F-LIB-13) |
-| `expo-font` | 58.0.11 | peer of `@expo/vector-icons` (spec 22) |
-| `expo-screen-capture` | 58.0.6 | Secure screen setting, Android `FLAG_SECURE` (spec 22, OQ-2) |
-| `@expo/vector-icons` | 15.1.1 | MaterialIcons for every icon (spec 22, D-84); MIT; released 2026-02-23 |
-| `react-native-paper` | 5.15.4 | Material 3 components (spec 22, D-84); MIT; released 2026-11-02 |
-| `expo-status-bar` | 58.0.4 | Full screen setting (spec 22 §11.1) |
-| `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (spec 22 §11.1) |
-| `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (spec 22 §11.3) |
-| `expo-haptics` | 58.0.7 | Haptic ticks (spec 24, D-103 Q1); SDK 58 bundled `~58.0.7`; released 2026-10-16 |
-| `expo-audio` | 58.0.11 | Voice notes: recording and playback (spec 25, D-95); SDK 58 bundled `~58.0.11`; released 2026-10-31 |
-| `expo-clipboard` | 58.0.4 | Android image paste on the edit page (spec 25, D-96; re-added after review 1 removed it); SDK 58 bundled `~58.0.4`; released 2026-10-21 |
-| `react-native-share` | 12.3.1 | Share several decrypted files to other apps (`ACTION_SEND_MULTIPLE`; spec 25, D-93); MIT; released 2026-05-04; `expo-sharing` shares one file only |
-| `@pchmn/expo-material3-theme` | 1.4.0 | Material You dynamic color setting (spec 24, D-103 Q2); MIT; released 2026-02-02; deps `@material/material-color-utilities`, `color` |
-| `react-native-zoom-toolkit` | 5.1.1 | Android photo viewer `Gallery` (spec 23 phase 1); MIT; released 2026-08-30 |
+| `expo-font` | 58.0.11 | peer of `@expo/vector-icons` (Material UI) |
+| `expo-screen-capture` | 58.0.6 | Secure screen setting, Android `FLAG_SECURE` (Material UI, OQ-2) |
+| `@expo/vector-icons` | 15.1.1 | MaterialIcons for every icon (Material UI, D-84); MIT; released 2026-02-23 |
+| `react-native-paper` | 5.15.4 | Material 3 components (Material UI, D-84); MIT; released 2026-11-02 |
+| `expo-status-bar` | 58.0.4 | Full screen setting (Material UI) |
+| `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (Material UI) |
+| `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (Material UI) |
+| `expo-haptics` | 58.0.7 | Haptic ticks (native feel, D-103 Q1); SDK 58 bundled `~58.0.7`; released 2026-10-16 |
+| `expo-audio` | 58.0.11 | Voice notes: recording and playback (edit page, D-95); SDK 58 bundled `~58.0.11`; released 2026-10-31 |
+| `expo-clipboard` | 58.0.4 | Android image paste on the edit page (edit page, D-96; re-added after review 1 removed it); SDK 58 bundled `~58.0.4`; released 2026-10-21 |
+| `react-native-share` | 12.3.1 | Share several decrypted files to other apps (`ACTION_SEND_MULTIPLE`; edit page, D-93); MIT; released 2026-05-04; `expo-sharing` shares one file only |
+| `@pchmn/expo-material3-theme` | 1.4.0 | Material You dynamic color setting (native feel, D-103 Q2); MIT; released 2026-02-02; deps `@material/material-color-utilities`, `color` |
+| `react-native-zoom-toolkit` | 5.1.1 | Android photo viewer `Gallery` (viewer); MIT; released 2026-08-30 |
 | `expo-local-authentication` | 58.0.2 | biometrics (F-LIB-13) |
 | `expo-image` | 58.0.18 | display, cache, dimensions (F-LIB-09) |
 | `expo-image-picker` | 58.0.10 | Android Photo Picker import (F-LIB-12) |
@@ -137,7 +137,7 @@ Removed in review 1: `expo-clipboard` (web paste uses DOM events), `expo-applica
 | `marked` | 18.1.3 | markdown **lexer only** for notes; tokens rendered by our code; HTML output never used | D-51 (F-LIB-16) |
 | `fflate` | 0.8.3 | streaming zip writer for the journal export, behind the `ArchiveWriter` port | D-52 (F-LIB-17) |
 
-### Test tooling (spec 07c, D-74)
+### Test tooling (UI tests, D-74)
 
 | Package / tool | Version | Why |
 |---|---|---|
@@ -153,16 +153,16 @@ Pinned by digest when first pulled; the digest is recorded here in the same comm
 
 | Image | Tag | Digest | Purpose |
 |---|---|---|---|
-| `postgres` | `17` @ `sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f` (pulled 2026-11-12) | recorded | database (`deployment.md` §2), also the test database (spec 03) |
+| `postgres` | `17` @ `sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f` (pulled 2026-11-12) | recorded | database (`deployment.md` §2), also the test database |
 | `dxflrs/garage` | `v2.5.0` @ `sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5` (linux/amd64, pulled 2026-11-12) | recorded | object storage (F-S3-02) |
-| `caddy` | runtime `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03` (pulled 2026-11-12, used by the UI stack and the production image) | recorded | TLS + reverse proxy, built with the DNS provider plugin (spec 21) |
-| `node` | `22.23.4-bookworm-slim` @ `sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d` (tag pushed 2026-11-05, recorded 2026-11-13; the floating `22-bookworm-slim` tag was 2 days old, under the 7-day rule) | recorded | API runtime, build stages, `garage-setup` (spec 21) |
-| `caddy` | `2.11.8-builder` @ `sha256:d4eb070c36154bd2d4c94b40359a03c6168346d5af5404963c74691ab77fb63f` (tag pushed 2026-11-05) | recorded | xcaddy build with `CADDY_VERSION=v2.11.8` and `DNS_MODULE=github.com/caddy-dns/cloudflare@v0.2.4` (spec 21, D-68); the production runtime stage reuses the recorded `caddy:2` digest above |
-| `rclone/rclone` | `1.75.2` @ `sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5` (tag pushed 2026-10-09; 1.76.0 was 7 days old) | recorded | backups: dump copy and bucket sync (spec 21, operations guide §5) |
+| `caddy` | runtime `caddy:2` = v2.11.9 @ `sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03` (pulled 2026-11-12, used by the UI stack and the production image) | recorded | TLS + reverse proxy, built with the DNS provider plugin (deployment) |
+| `node` | `22.23.4-bookworm-slim` @ `sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d` (tag pushed 2026-11-05, recorded 2026-11-13; the floating `22-bookworm-slim` tag was 2 days old, under the 7-day rule) | recorded | API runtime, build stages, `garage-setup` (deployment) |
+| `caddy` | `2.11.8-builder` @ `sha256:d4eb070c36154bd2d4c94b40359a03c6168346d5af5404963c74691ab77fb63f` (tag pushed 2026-11-05) | recorded | xcaddy build with `CADDY_VERSION=v2.11.8` and `DNS_MODULE=github.com/caddy-dns/cloudflare@v0.2.4` (deployment, D-68); the production runtime stage reuses the recorded `caddy:2` digest above |
+| `rclone/rclone` | `1.75.2` @ `sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5` (tag pushed 2026-10-09; 1.76.0 was 7 days old) | recorded | backups: dump copy and bucket sync (deployment, operations guide §5) |
 
 ### CI actions
 
-Pinned by commit SHA (spec 21 §5); each release was older than 7 days when pinned (2026-11-13).
+Pinned by commit SHA (release workflow); each release was older than 7 days when pinned (2026-11-13).
 
 | Action | Version | Commit | Used by |
 |---|---|---|---|
@@ -194,7 +194,7 @@ Pinned by commit SHA (spec 21 §5); each release was older than 7 days when pinn
 3. `osv-scanner scan -L pnpm-lock.yaml` (v2.7.1, F-TOOL-06): fails on any unreviewed advisory.
 4. `pnpm licenses list --json --prod`: every license must be one of MIT, ISC, BSD-2-Clause,
    BSD-3-Clause, Apache-2.0, 0BSD, BlueOak-1.0.0, CC0-1.0, Unlicense, MPL-2.0 (file-level copyleft,
-   fine for unmodified use), Python-2.0, CC-BY-4.0 (D-70; `scripts/check-licenses.ts`, spec 21).
+   fine for unmodified use), Python-2.0, CC-BY-4.0 (D-70; `scripts/check-licenses.ts`, deployment).
 5. `pnpm sbom --prod --out sbom.cdx.json` attached to each tagged release.
 6. Renovate PRs with `minimumReleaseAge: "7 days"` (F-TOOL-06); crypto-package updates need a
    human review note.

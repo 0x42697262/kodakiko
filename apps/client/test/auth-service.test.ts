@@ -903,7 +903,7 @@ describe('review additions', () => {
   });
 });
 
-describe('settings additions (spec 20)', () => {
+describe('settings additions', () => {
   it('changePassword sends the new material, replaces the session and stores the new parameters', async () => {
     const server = createFakeAuthServer();
     const device = createDevice();
@@ -991,7 +991,7 @@ function localAccountKey(app: { readonly context: AuthServiceContext }): string 
   return key;
 }
 
-describe('local-only mode (spec 20a)', () => {
+describe('local-only mode', () => {
   it('setUpLocal sends no request, stores the recovery wrap and the local mode, and ends unlocked', async () => {
     const server = createFakeAuthServer();
     const device = createDevice();

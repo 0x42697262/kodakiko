@@ -99,7 +99,7 @@ describe('EntryMetadataV1', () => {
   });
 });
 
-describe('MediaDescriptorV1 additions (spec 25)', () => {
+describe('MediaDescriptorV1 additions', () => {
   it('accepts an optional caption up to the limit and keeps old blobs valid', () => {
     const withCaption = entryMetadata({ media: [{ ...mediaDescriptor(), caption: 'x'.repeat(CAPTION_MAX_CHARS) }] });
     expect(EntryMetadataV1.safeParse(withCaption).success).toBe(true);

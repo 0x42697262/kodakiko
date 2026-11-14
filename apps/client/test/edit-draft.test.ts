@@ -109,7 +109,7 @@ describe('edit draft diff', () => {
   });
 });
 
-describe('edit draft captions (spec 25)', () => {
+describe('edit draft captions', () => {
   it('carries captions and diffs only the changed ones', () => {
     const current = metadata();
     const draft = draftFromMetadata(current);

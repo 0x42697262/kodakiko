@@ -3,7 +3,7 @@ import { applyMarkdownAction } from '../src/features/markdown/toolbar';
 
 const at = (start: number, end = start) => ({ start, end });
 
-describe('markdown toolbar (spec 25, D-94)', () => {
+describe('markdown toolbar', () => {
   it('wraps a selection in bold, italic and strikethrough markers', () => {
     expect(applyMarkdownAction('bold', 'a big day', at(2, 5))).toEqual({ text: 'a **big** day', selection: at(4, 7) });
     expect(applyMarkdownAction('italic', 'a big day', at(2, 5)).text).toBe('a *big* day');

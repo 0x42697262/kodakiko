@@ -41,7 +41,7 @@ function joined(parts: readonly Uint8Array[]): Uint8Array {
   return out;
 }
 
-describe('encryptedDestination (spec 23 §7)', () => {
+describe('encryptedDestination', () => {
   it('writes each part as name.kdkx that decrypts with the passphrase to the original bytes', async () => {
     const inner = memoryDestination();
     const destination = await encryptedDestination(sodium, inner.destination, 'export passphrase', { opsLimit: 2, memLimitBytes: 8_388_608 });

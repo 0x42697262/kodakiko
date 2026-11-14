@@ -16,7 +16,7 @@ const SCHEME = {
   outlineVariant: '#888888',
 };
 
-describe('dynamic color (spec 24 phase 6)', () => {
+describe('dynamic color', () => {
   it('maps a Material 3 scheme onto the Kodakiko color set', () => {
     expect(colorsFromMaterial3(SCHEME)).toEqual({
       background: '#333333',

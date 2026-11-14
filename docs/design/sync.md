@@ -197,7 +197,7 @@ be retried manually. This is the dead-letter path (guidelines 6).
 
 `packages/core/src/sync/` has no I/O. Instead of one generic state machine it exports small pure
 decision functions, each unit-tested on its own; exact signatures are in
-`docs/features/08-sync-client.md` §2:
+`packages/core/src/sync/` (summary in `docs/features/sync.md`):
 
 | Function | Decides |
 |---|---|

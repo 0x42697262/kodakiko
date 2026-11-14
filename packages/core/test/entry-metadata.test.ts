@@ -239,7 +239,7 @@ describe('applyEntryEdit', () => {
   });
 });
 
-describe('applyEntryEdit captions (spec 25)', () => {
+describe('applyEntryEdit captions', () => {
   it('sets, trims and clears captions per media item', () => {
     const base = existing();
     const first = base.media[0]?.mediaId ?? '';

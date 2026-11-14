@@ -11,7 +11,7 @@ async function ruleIds(code: string, filePath: string): Promise<readonly (string
 const PRESSABLE = "import { Pressable } from 'react-native';\nexport const touch = Pressable;\n";
 const NO_SCALE = "export const label = <Text allowFontScaling={false}>x</Text>;\n";
 
-describe('client lint rules (spec 24)', () => {
+describe('client lint rules', () => {
   it('forbids a raw Pressable outside src/ui', async () => {
     expect(await ruleIds(PRESSABLE, 'apps/client/src/features/gallery/zz-lint.tsx')).toContain('no-restricted-imports');
   });

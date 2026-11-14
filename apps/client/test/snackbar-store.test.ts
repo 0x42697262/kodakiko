@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createSnackbarStore } from '../src/ui/snackbar-store';
 
-describe('snackbar store (spec 24 phase 3)', () => {
+describe('snackbar store', () => {
   it('shows a message and notifies listeners', () => {
     const store = createSnackbarStore();
     const listener = vi.fn();

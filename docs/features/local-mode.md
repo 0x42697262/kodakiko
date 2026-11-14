@@ -3,7 +3,7 @@
 Kodakiko can run with no server at all: the journal lives only on the phone, encrypted exactly as
 it would be for a server, and can move to a server later without re-encrypting anything. Code:
 `packages/core/src/account/local.ts`, `apps/client/src/services/auth-service.ts` (`setUpLocal`,
-`connectServer`, `eraseLocal`), `apps/client/src/services/account/account-mode.ts`,
+`connectServer`, `eraseLocal`, the `mode` observable),
 `apps/client/src/features/auth/LocalSetupScreen.tsx`, `features/settings/ConnectServerScreen.tsx`.
 
 ## Setting up

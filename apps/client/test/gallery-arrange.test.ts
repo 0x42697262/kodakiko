@@ -67,7 +67,7 @@ describe('columnsFor', () => {
   });
 });
 
-describe('grouping (spec 23)', () => {
+describe('grouping', () => {
   const tagged = new Map([
     ['a', { ...entry('a', '2026-11-02T10:00:00.000Z'), tags: ['beach'] }],
     ['b', { ...entry('b', '2026-10-02T08:00:00.000Z'), tags: ['beach', 'city'] }],

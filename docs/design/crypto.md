@@ -281,7 +281,7 @@ so the vectors can test it directly.
 Functions: `sealJson(..., value, ...)` and `openJson(..., schema, currentVersion, migrations,
 ...)`; `openJson` migrates older `schemaVersion` values on read through a per-payload migration
 table, then parses with the Zod schema from `packages/contract`. Exact signatures and error rules:
-`docs/features/02-crypto-core.md` §7.
+`packages/core/src/crypto/sealed-blob.ts` and `packages/core/test/crypto.test.ts`.
 
 ## 7. STREAM object format (media originals and thumbnails, D-38)
 
@@ -445,7 +445,7 @@ memory is two chunks (about 2 MiB) regardless of file size.
 - Vectors cover: Argon2id with small test parameters (8 MiB, ops 2; the floor applies to accounts,
   not to the primitive), KDF subkeys for each context, sealed blob for each AD context, padding
   edge cases (0, 1, 255, 256, 257, 512 bytes), STREAM objects of 0 bytes, 1 byte, C − 1, exactly
-  C, C + 1 and 3C bytes, share payload, recovery words. Exact case lists: `docs/features/02-crypto-core.md` §11.
+  C, C + 1 and 3C bytes, share payload, recovery words. Exact case lists: `packages/core/test/vectors.test.ts`.
 - Both client adapters run the same vectors through the in-app diagnostics screen (spec 07a) on
   Android and in the browser; identical output is the proof that both wrappers behave the same
   (D-11).

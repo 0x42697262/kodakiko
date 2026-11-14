@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { pullToSyncEnabled, runPullToSync } from '../src/features/sync/pull-to-sync';
 
-describe('pull to sync (spec 24 phase 5)', () => {
+describe('pull to sync', () => {
   it('is available only for server accounts with sync running', () => {
     expect(pullToSyncEnabled('server', false)).toBe(true);
     expect(pullToSyncEnabled('local', false)).toBe(false);

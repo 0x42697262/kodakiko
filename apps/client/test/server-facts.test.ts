@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { serverFactSections } from '../src/features/settings/server-facts';
 
-describe('serverFactSections (spec 23 server and keys)', () => {
+describe('serverFactSections', () => {
   const sections = serverFactSections({
     serverUrl: 'https://kodakiko.example.com',
     config: {

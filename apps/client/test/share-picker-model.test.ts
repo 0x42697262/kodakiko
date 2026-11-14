@@ -7,7 +7,7 @@ const items = [
   { mediaId: 'c', bytes: 100_000_000, caption: 'Gulls' },
 ];
 
-describe('share picker model (spec 25, D-98)', () => {
+describe('share picker model', () => {
   it('counts the checked items and warns above the size limit', () => {
     expect(shareSelection(items, new Set(['a', 'b']))).toEqual({ count: 2, bytes: 450_000_000, warn: false });
     const all = shareSelection(items, new Set(['a', 'b', 'c']));

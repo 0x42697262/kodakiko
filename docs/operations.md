@@ -1,7 +1,7 @@
 # Operations guide
 
 How to run Kodakiko on a home server or a VPS behind a private VPN, with real HTTPS, backups and a
-restore drill. Design background: `docs/design/deployment.md`. Spec: `docs/features/21-deployment.md`.
+restore drill. Design background: `docs/design/deployment.md`.
 
 All commands run in `infra/compose/` on the server unless a step says otherwise. In phase 1 (no
 registry yet) every `docker compose` command also gets `-f docker-compose.yml -f

@@ -4,7 +4,7 @@ A public link shows chosen photos and videos to anyone with the link, without an
 the server still sees only ciphertext (server flag `public_links`, modeled on 1Password's share
 links). Code: `apps/server/src/services/public-links-service.ts`,
 `apps/client/src/services/links/`, `apps/client/src/features/links/`,
-`apps/client/src/features/link-viewer/`, `packages/core/src/media/iso-bmff-strip.ts`.
+`apps/client/src/features/link-viewer/`, `packages/core/src/media/strip.ts`.
 
 ## Creating a link
 
