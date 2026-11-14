@@ -165,6 +165,7 @@ Pinned by commit SHA (spec 21 §5); each release was older than 7 days when pinn
 | `actions/checkout` | v7.0.1 (2026-07-20) | `3d3c42e5aac5ba805825da76410c181273ba90b1` | `android-release.yml` |
 | `actions/setup-node` | v7.1.0 (2026-10-08) | `949feb2413d6458794dcd2491c4babbbce0c15c1` | `android-release.yml` |
 | `actions/setup-java` | v6.2.0 (2026-11-04) | `77dd5b2ce225ea11469928ac317850245a74ae78` | `android-release.yml` |
+| `gradle/actions/setup-gradle` | v6.4.1 (2026-10-28; pinned 2026-11-14) | `8da46b539cd8fe6ab27ca75128919a18d757604c` | `android-release.yml` (Gradle dependency and build cache; written on `main`, read by tag builds) |
 
 ### Deliberately excluded
 
