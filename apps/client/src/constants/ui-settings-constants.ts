@@ -51,5 +51,7 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   syncPaused: false,
   tagOrder: Object.freeze([]) as readonly string[],
   pureBlack: false,
+  hapticFeedback: true,
+  dynamicColor: false,
   timeFormat: '24h',
 } as const);

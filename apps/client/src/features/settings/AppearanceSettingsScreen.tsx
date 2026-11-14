@@ -29,6 +29,7 @@ export function AppearanceSettingsScreen() {
             ],
             onChange: (value) => update({ appTheme: value as typeof settings.appTheme }),
           },
+          { kind: 'switch', key: 'hapticFeedback', testID: 'settings.haptics', title: EN['prefs.haptics'], summary: EN['prefs.hapticsSummary'], value: settings.hapticFeedback, onChange: (hapticFeedback) => update({ hapticFeedback }) },
           { kind: 'switch', key: 'pureBlack', testID: 'settings.pureBlack', title: EN['prefs.pureBlack'], summary: EN['prefs.pureBlackSummary'], value: settings.pureBlack, onChange: (pureBlack) => update({ pureBlack }) },
           {
             kind: 'choice',

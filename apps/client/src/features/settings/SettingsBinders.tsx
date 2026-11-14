@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 import { useAppContext } from '../../composition/app-context';
 import { UI_SETTINGS_DEFAULTS } from '../../constants/ui-settings-constants';
 import { setThemeChoice } from '../../ui/theme';
+import { haptics } from '../../ui/haptics';
 import { setFullScreenInsets } from '../../ui/system-insets';
 
 const SECURE_KEY = 'kodakiko.secureScreen';
@@ -34,6 +35,7 @@ export function SettingsBinders() {
       const loaded = services.deviceSettings.loaded();
       const settings = services.deviceSettings.get();
       if (loaded) setThemeChoice(settings.appTheme, settings.pureBlack);
+      haptics.setEnabled(loaded ? settings.hapticFeedback : UI_SETTINGS_DEFAULTS.hapticFeedback);
       const wanted = loaded ? settings.secureScreen : UI_SETTINGS_DEFAULTS.secureScreen;
       if (Platform.OS !== 'android' || secure === wanted) return;
       secure = wanted;

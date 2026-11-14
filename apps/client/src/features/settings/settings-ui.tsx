@@ -6,6 +6,7 @@ import { SWITCH_DISABLED_OPACITY } from '../../constants/settings-constants';
 import { AppBar } from '../../ui/AppBar';
 import { FONT_SIZE, SPACING } from '../../ui/theme-constants';
 import { useTheme } from '../../ui/theme';
+import { haptics } from '../../ui/haptics';
 
 export function SettingsPage({
   testID,
@@ -103,7 +104,10 @@ export function SwitchRow({
       disabled={disabled}
       title={label}
       description={hint}
-      onPress={() => onChange(!value)}
+      onPress={() => {
+        haptics.tick('toggle');
+        onChange(!value);
+      }}
       titleStyle={{ color: colors.text }}
       descriptionStyle={{ color: colors.textMuted }}
       descriptionNumberOfLines={HINT_LINES}
@@ -113,7 +117,10 @@ export function SwitchRow({
         <Switch
           value={value}
           disabled={disabled}
-          onValueChange={onChange}
+          onValueChange={(next) => {
+            haptics.tick('toggle');
+            onChange(next);
+          }}
           pointerEvents={SWITCH_POINTER_EVENTS}
         />
       )}

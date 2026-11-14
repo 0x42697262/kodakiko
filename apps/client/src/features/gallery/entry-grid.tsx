@@ -19,6 +19,8 @@ import { todayLocalDate, useArrangedSections } from './hooks';
 import { OnThisDayCard } from './on-this-day-card';
 import { Tile } from './tile';
 import type { Selection } from './use-selection';
+import { haptics } from '../../ui/haptics';
+import { usePullToSync } from '../sync/use-pull-to-sync';
 
 type EntryGridProps = {
   readonly filter: GalleryFilter;
@@ -34,6 +36,7 @@ function itemKey(item: GalleryItem): string {
 }
 
 export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGridProps) {
+  const pullToSync = usePullToSync();
   const router = useRouter();
   const { clock, services } = useAppContext();
   const { colors } = useTheme();
@@ -92,7 +95,9 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
               if (!selection.tap(id, modifiers, order)) router.push(entryRoute(id) as Href);
             }}
             onLongPress={(id) => {
-              if (!selection.selecting) selection.start(id);
+              if (selection.selecting) return;
+              haptics.tick('select');
+              selection.start(id);
             }}
           />
         ))}
@@ -120,6 +125,7 @@ export function EntryGrid({ filter, showOnThisDay, selection, empty }: EntryGrid
             }
           }}
           scrollEventThrottle={SCROLL_THROTTLE_MS}
+          refreshControl={pullToSync}
           ListFooterComponent={sections.length === 0 ? <>{empty}</> : null}
         />
       )}

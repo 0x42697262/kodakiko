@@ -3,6 +3,7 @@ import { SegmentedButtons } from 'react-native-paper';
 import { useAppContext } from '../../composition/app-context';
 import { EN } from '../../text/en';
 import { shutterAction, type CaptureMode, type ShutterEvent } from './shutter-action';
+import { haptics } from '../../ui/haptics';
 
 const MS_PER_SECOND = 1_000;
 
@@ -29,12 +30,15 @@ export function useCaptureMode(actions: {
     (event: ShutterEvent) => {
       switch (shutterAction(mode, event, settings.holdToRecordOn, recording, capTimer.current !== null)) {
         case 'photo':
+          haptics.tick('shutter');
           takePhoto();
           return;
         case 'start':
+          haptics.tick('recordStart');
           startRecording();
           return;
         case 'startCapped':
+          haptics.tick('recordStart');
           startRecording();
           capTimer.current = setTimeout(stopRecording, settings.holdToRecordMaxSeconds * MS_PER_SECOND);
           return;
@@ -43,6 +47,7 @@ export function useCaptureMode(actions: {
             clearTimeout(capTimer.current);
             capTimer.current = null;
           }
+          haptics.tick('recordStop');
           stopRecording();
           return;
         default:

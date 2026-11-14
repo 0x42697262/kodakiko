@@ -18,6 +18,7 @@ import { COLLECTION_NAME_MAX_CHARS as COLLECTION_NAME_MAX } from '@kodakiko/cont
 import { sharingErrorText } from './sharing-errors';
 import { SHARING_IDS } from './sharing-ids';
 import { useSharedCollections, type SharedCollection } from './use-shared-collections';
+import { usePullToSync } from '../sync/use-pull-to-sync';
 
 function Row({
   testID,
@@ -45,6 +46,7 @@ function Row({
 }
 
 export function SharedScreen() {
+  const pullToSync = usePullToSync();
   const router = useRouter();
   const { services } = useAppContext();
   const { colors } = useTheme();
@@ -88,7 +90,7 @@ export function SharedScreen() {
   }
 
   return (
-    <Screen testID={SHARING_IDS.screen} scroll>
+    <Screen testID={SHARING_IDS.screen} scroll refreshControl={pullToSync}>
       <Title text={EN['shared.tab']} />
       <View style={styles.section}>
         <Text style={[styles.heading, { color: colors.text }]}>{EN['shared.mine']}</Text>

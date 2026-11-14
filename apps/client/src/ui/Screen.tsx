@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import type { ReactElement, ReactNode } from 'react';
+import { ScrollView, StyleSheet, View, type RefreshControlProps } from 'react-native';
 import { useSystemInsets } from './system-insets';
 import { SPACING } from './theme-constants';
 import { useTheme } from './theme';
@@ -8,9 +8,10 @@ type ScreenProps = {
   readonly testID: string;
   readonly children: ReactNode;
   readonly scroll?: boolean;
+  readonly refreshControl?: ReactElement<RefreshControlProps> | undefined;
 };
 
-export function Screen({ testID, children, scroll = false }: ScreenProps) {
+export function Screen({ testID, children, scroll = false, refreshControl }: ScreenProps) {
   const theme = useTheme();
   const insets = useSystemInsets();
   return (
@@ -22,7 +23,7 @@ export function Screen({ testID, children, scroll = false }: ScreenProps) {
       ]}
     >
       {scroll ? (
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={refreshControl}>
           {children}
         </ScrollView>
       ) : (

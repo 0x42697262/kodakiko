@@ -78,6 +78,15 @@ Shared-element transitions; swipe between tag tabs; Undo; a sheet library; Kotli
   'none'`, because a text selection makes React Native Web cancel the responder. **U-33**
   (mobile project): a short drag springs back, a long drag closes the sheet.
 
+- **Phase 5:** `ui/haptics.ts` (`createHaptics`, Android `performAndroidHapticsAsync` so the
+  system touch-feedback switch applies; no-op on web and when **Haptic feedback** is off; unit
+  test red first). Ticks: long-press select (grid), switches (preference list and settings rows),
+  shutter, record start/stop, pull-to-refresh. Pull-to-sync: `features/sync/pull-to-sync.ts`
+  (unit test red first) + `usePullToSync()` `RefreshControl` on every entry grid (Gallery, Day,
+  Trash, collections), Calendar (now a scrolling screen) and Shared; hidden in local mode and
+  while sync is paused. Long-press selection already existed in the Day list (it uses the shared
+  grid). Device settings gain `hapticFeedback` (default on) and `dynamicColor` (phase 6).
+
 ## 5. Device checklist (programmer, on the v0.2.2 APK)
 
 | Screen | Action | Feels native? | Note |

@@ -6,6 +6,7 @@ import { Icon, type IconKey } from '../icons';
 import { useTheme } from '../theme';
 import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from '../theme-constants';
 import { choiceSummary, type PreferenceItem } from './preference-types';
+import { haptics } from '../haptics';
 
 const ICON_SIZE = 24;
 const ICON_COLUMN = 56;
@@ -152,13 +153,19 @@ export function PreferenceList({ items }: { readonly items: readonly PreferenceI
                 role="switch"
                 checked={item.value}
                 disabled={item.disabled ?? false}
-                onPress={() => item.onChange(!item.value)}
+                onPress={() => {
+                  haptics.tick('toggle');
+                  item.onChange(!item.value);
+                }}
                 right={
                   <Switch
                     testID={`${item.testID}.switch`}
                     value={item.value}
                     disabled={item.disabled ?? false}
-                    onValueChange={item.onChange}
+                    onValueChange={(next) => {
+                      haptics.tick('toggle');
+                      item.onChange(next);
+                    }}
                     pointerEvents={SWITCH_POINTER_EVENTS}
                   />
                 }
