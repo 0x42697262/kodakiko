@@ -4,6 +4,7 @@ import { BottomNavigation } from 'react-native-paper';
 import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { useBarsHidden } from '../../ui/bars-store';
+import { useSystemInsets } from '../../ui/system-insets';
 import { Icon, type IconKey } from '../../ui/icons';
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -19,6 +20,7 @@ const TABS: Readonly<Record<string, { readonly icon: IconKey; readonly title: st
 
 export function MaterialTabBar({ state, navigateToTab, insets, hidden }: TabBarProps & { readonly hidden: ReadonlySet<string> }) {
   const barsHidden = useBarsHidden();
+  const minimum = useSystemInsets();
   const routes = state.routes.filter((route) => !hidden.has(route.name));
   if (barsHidden) return null;
   const active = state.routes[state.index];
@@ -26,7 +28,7 @@ export function MaterialTabBar({ state, navigateToTab, insets, hidden }: TabBarP
   return (
     <BottomNavigation.Bar
       navigationState={{ index, routes: routes.map((route) => ({ key: route.key, title: route.name })) }}
-      safeAreaInsets={insets}
+      safeAreaInsets={{ ...insets, bottom: Math.max(insets.bottom, minimum.bottom) }}
       renderIcon={({ route, color }) => {
         const tab = TABS[route.title ?? ''];
         return tab === undefined ? null : <Icon name={tab.icon} size={TAB_ICON_SIZE} color={color} />;

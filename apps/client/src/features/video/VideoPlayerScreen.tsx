@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEventListener } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useCallback, useEffect, useState } from 'react';

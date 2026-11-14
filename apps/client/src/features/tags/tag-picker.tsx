@@ -1,5 +1,6 @@
 import { TAGS_PER_ENTRY_MAX } from '@kodakiko/contract';
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button as PaperButton, Checkbox, Dialog, Portal } from 'react-native-paper';

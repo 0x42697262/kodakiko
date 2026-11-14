@@ -1,4 +1,5 @@
-import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { FAB } from 'react-native-paper';

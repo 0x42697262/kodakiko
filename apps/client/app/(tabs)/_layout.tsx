@@ -1,4 +1,5 @@
-import { Tabs, useRouter } from 'expo-router';
+import { Tabs } from 'expo-router';
+import { useRouter } from '../../src/navigation/use-router';
 import { useEffect } from 'react';
 import { useAccountMode, useAccountState, useAppContext } from '../../src/composition/app-context';
 import { ROUTE_BY_STATE } from '../../src/composition/route-by-state';

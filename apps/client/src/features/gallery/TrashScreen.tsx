@@ -1,4 +1,5 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';

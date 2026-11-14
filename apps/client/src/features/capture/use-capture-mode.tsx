@@ -27,7 +27,7 @@ export function useCaptureMode(actions: {
 
   const handle = useCallback(
     (event: ShutterEvent) => {
-      switch (shutterAction(mode, event, settings.holdToRecord, recording)) {
+      switch (shutterAction(mode, event, settings.holdToRecordOn, recording, capTimer.current !== null)) {
         case 'photo':
           takePhoto();
           return;
@@ -39,13 +39,17 @@ export function useCaptureMode(actions: {
           capTimer.current = setTimeout(stopRecording, settings.holdToRecordMaxSeconds * MS_PER_SECOND);
           return;
         case 'stop':
+          if (capTimer.current !== null) {
+            clearTimeout(capTimer.current);
+            capTimer.current = null;
+          }
           stopRecording();
           return;
         default:
           return;
       }
     },
-    [mode, settings.holdToRecord, settings.holdToRecordMaxSeconds, recording, takePhoto, startRecording, stopRecording],
+    [mode, settings.holdToRecordOn, settings.holdToRecordMaxSeconds, recording, takePhoto, startRecording, stopRecording],
   );
 
   return {

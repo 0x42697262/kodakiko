@@ -1,8 +1,8 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../navigation/use-router';
 import { useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { Appbar, Portal, Surface, useTheme } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSystemInsets } from './system-insets';
 import { FONT_SIZE, MIN_TOUCH_TARGET, SPACING } from './theme-constants';
 import { EN } from '../text/en';
 import { ICONS, type IconKey } from './icons';
@@ -49,7 +49,7 @@ export function AppBar({
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
+  const insets = useSystemInsets();
   return (
     <Appbar.Header statusBarHeight={0}>
       {backTestID === undefined ? null : (

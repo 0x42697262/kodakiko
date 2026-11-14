@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect } from 'react';
 import { useAppContext } from '../../composition/app-context';
 import { APP_ROUTES } from '../../keys/routes';

@@ -45,7 +45,7 @@ export const UI_SETTINGS_DEFAULTS = Object.freeze({
   fullScreen: true,
   hideBarsOnScroll: true,
   showTechnicalDetails: false,
-  holdToRecord: false,
+  holdToRecordOn: true,
   holdToRecordMaxSeconds: 15,
   cameraApp: 'kodakiko',
   syncPaused: false,

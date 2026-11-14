@@ -31,6 +31,12 @@ Before writing the build spec:
 | B2 | Settings | v0.1.3 | Some toggle (switch) rows get stuck | untested | **still there** (code unchanged) → fixed in v0.2.1, Android re-check pending |
 | B3 | Capture | v0.1.3 | While a video is recording, NEXT can be pressed before the recording is ended | untested | **still there** (code unchanged) → fixed in v0.2.1 |
 | B4 | Tags | v0.1.3 | Tags should only be added or updated in Settings, like categories in Mihon | n/a | **moved to v0.2.0** (D-87) |
+| B5 | Navigation | v0.2.0 | Fast repeated taps open the same page several times; Back must be pressed as often | — | fixed in v0.2.1 (U-31) |
+| B6 | Calendar | v0.2.0 | Dragging to change months does not feel natural | — | fixed in v0.2.1 (paging month list) |
+| B7 | Capture | v0.2.0 | Holding the shutter takes a photo instead of recording; hold-to-record should work in both modes, capped, while tap-recording in video mode is uncapped | — | fixed in v0.2.1 |
+| B8 | Layout | v0.2.0 | Some buttons overlap the status bar or the gesture bar | — | fixed in v0.2.1, Android re-check pending |
+| B9 | Viewer | v0.2.0 | Videos do not play on Android (any video) | — | fixed in v0.2.1, Android re-check pending |
+| B10 | Viewer | v0.2.0 | Two details (info) icons in the entry viewer | — | fixed in v0.2.1 |
 
 ## 2. B1 — calendar moves into empty future months
 
@@ -163,4 +169,32 @@ Q2 A, Q4 A, Q5 A, Q6 A. Q3 was answered from the code (cause below).
   surfaces report recording through `onRecordingChange`; Next and Add to entry stay disabled while
   recording. Close keeps its discard prompt. Web has no camera in the UI test stack, so the check is
   the unit test plus manual Android use.
+
+## 8. Result for the bugs found on v0.2.0 (B5-B10)
+
+- **B5:** every screen's `useRouter` now comes from `src/navigation/use-router.ts`, which drops a
+  repeat `push`/`navigate` to the **same** page within 600 ms (`navigation-guard.ts`, unit-tested
+  red first). Different pages pass at once (a first version blocked all pushes and broke U-16,
+  U-18, U-19, U-20 and U-29). **U-31** (5 fast clicks on More › Tags, one Back returns to More)
+  failed on v0.2.0 with 5 pages and passes now.
+- **B6:** the calendar grid is a horizontal paging list (`FlatList` with `pagingEnabled`; native
+  snap on Android, scroll-snap on web) instead of a release-only swipe detector, so the month
+  follows the finger and snaps. Pages (`pagerMonths`, unit-tested red first): every month from a
+  year before the earliest entry to now, then only future months with entries (B1 rule). ‹ ›,
+  keys and Jump scroll the list. U-30 extended with a swipe step.
+- **B7:** cause: hold-to-record was off by default and, when on, only worked in photo mode. Now
+  (programmer's rule) holding the shutter records a capped clip in **both** modes and release
+  stops it; tapping in video mode starts/stops an uncapped recording. The setting is a new key
+  `holdToRecordOn` (default on) so the old stored `false` does not carry over.
+  `shutter-action.ts` unit-tested red first. UNVERIFIED on a device.
+- **B8:** cause: full screen (immersive) hides the system bars, so safe-area insets drop to 0
+  and content runs under the camera cutout and the gesture bar. `ui/system-insets.ts`
+  `useSystemInsets` keeps at least 28 dp top and 20 dp bottom in full screen on Android; used by
+  `Screen`, settings pages, capture, More, the app bar and the bottom bar. UNVERIFIED on a device.
+- **B9:** cause (from the code, not reproduced): spec 23 phase 1 moved the Android viewer into
+  `react-native-zoom-toolkit`'s `Gallery`, whose tap gesture takes taps before the play button
+  inside a page sees them. The Gallery's `onTap` now opens the player when the current item is a
+  video. Web was not affected (its pager is unchanged; U-07 passes). UNVERIFIED on a device.
+- **B10:** the viewer had both the app-bar info icon (v0.1.4) and the action-row Details button;
+  the app-bar icon is removed (`viewer.detailsAction` stays).
 

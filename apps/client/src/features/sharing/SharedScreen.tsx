@@ -1,4 +1,5 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAccountMode, useAppContext } from '../../composition/app-context';

@@ -1,5 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { scrollDirectionHides, setBarsHidden } from '../../ui/bars-store';
 import { StyleSheet, Text, useWindowDimensions, View, type LayoutChangeEvent } from 'react-native';

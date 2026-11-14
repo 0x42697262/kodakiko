@@ -1,4 +1,5 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { platformTraits } from '../../adapters/platform-traits/platform-traits';

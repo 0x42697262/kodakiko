@@ -1,4 +1,5 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,7 +12,7 @@ import { testId } from '../../keys/test-ids';
 import { EN } from '../../text/en';
 import { Banner } from '../../ui/Banner';
 import { FAB } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSystemInsets } from '../../ui/system-insets';
 import { Button } from '../../ui/Button';
 import { IconAction } from '../../ui/IconAction';
 import { captureActionsEnabled } from './capture-actions';
@@ -43,6 +44,7 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   const { services } = useAppContext();
   const { colors } = useTheme();
   useKeepScreenOn();
+  const insets = useSystemInsets();
   const [recording, setRecording] = useState(false);
   const configLimit = (services.config.get() ?? CONFIG_FALLBACK).maxMediaPerEntry;
   const limitOverride = addToEntry === undefined ? null : Math.max(0, configLimit - addToEntry.currentCount);
@@ -106,7 +108,7 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
   }
 
   return (
-    <SafeAreaView testID={CAPTURE_IDS.screen} edges={CAPTURE_EDGES} style={styles.root}>
+    <View testID={CAPTURE_IDS.screen} style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
       <View style={styles.surface}>
         <CaptureSurface
           onInputs={addInputs}
@@ -165,11 +167,9 @@ export function CaptureScreen({ addToEntry }: CaptureScreenProps = {}) {
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
-
-const CAPTURE_EDGES = ['top', 'bottom', 'left', 'right'] as const;
 const CAPTURE_BACKGROUND = '#000000';
 
 const styles = StyleSheet.create({

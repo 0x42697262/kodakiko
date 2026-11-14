@@ -399,7 +399,7 @@ export const EN = {
   'prefs.technicalDetails': 'Show technical details',
   'prefs.technicalDetailsSummary': 'Ids, file sizes and storage state in the viewer and the list view',
   'prefs.holdToRecord': 'Hold shutter to record',
-  'prefs.holdToRecordSummary': 'In photo mode, holding the shutter records a video',
+  'prefs.holdToRecordSummary': 'Hold the shutter to record a short video, up to the length below. Tap in video mode for longer videos.',
   'prefs.holdMax': 'Maximum hold-to-record length',
   'prefs.seconds': (seconds: number) => `${seconds} s`,
   'prefs.cameraApp': 'Camera app',

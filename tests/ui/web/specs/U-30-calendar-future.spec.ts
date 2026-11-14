@@ -35,6 +35,13 @@ test('U-30 the calendar skips empty future months, stops after the last one, and
   await page.getByTestId('calendar.next').click();
   await expect(page.getByTestId('calendar.monthTitle')).toContainText(MONTH_NAMES[later.getUTCMonth()] ?? '');
   await expect(page.getByTestId('calendar.next')).toBeDisabled();
+  const pager = page.getByTestId('calendar.pager');
+  await pager.evaluate((element) => element.scrollBy({ left: element.clientWidth }));
+  await page.waitForTimeout(600);
+  await expect(page.getByTestId('calendar.monthTitle')).toContainText(MONTH_NAMES[later.getUTCMonth()] ?? '');
+  await pager.evaluate((element) => element.scrollBy({ left: -element.clientWidth }));
+  await expect(page.getByTestId('calendar.monthTitle')).toContainText(MONTH_NAMES[monthsFromNow(0).getUTCMonth()] ?? '');
+  await page.getByTestId('calendar.next').click();
   await page.getByTestId('calendar.jump').click();
   await page.getByTestId('calendar.jumpField').fill(yearMonth(monthsFromNow(1)));
   await page.getByTestId('calendar.jumpField').press('Enter');

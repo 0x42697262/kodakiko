@@ -120,3 +120,13 @@ export function monthTarget(
   const later = [...monthsWithEntries].filter((month) => month > candidate).sort();
   return later[0] ?? null;
 }
+
+export const PAGER_LEAD_MONTHS = 12;
+
+export function pagerMonths(currentYearMonth: string, monthsWithEntries: ReadonlySet<string>, shownYearMonth: string): readonly string[] {
+  const earliest = [...monthsWithEntries, shownYearMonth, currentYearMonth].sort()[0] ?? currentYearMonth;
+  const months: string[] = [];
+  for (let month = addMonths(earliest, -PAGER_LEAD_MONTHS); month <= currentYearMonth; month = addMonths(month, 1)) months.push(month);
+  const future = [...monthsWithEntries].filter((month) => month > currentYearMonth).sort();
+  return [...months, ...future];
+}

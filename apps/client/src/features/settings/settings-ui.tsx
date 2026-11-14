@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSystemInsets } from '../../ui/system-insets';
 import { SWITCH_DISABLED_OPACITY, SWITCH_TRACK_PADDING } from '../../constants/settings-constants';
 import { Button } from '../../ui/Button';
 import { AppBar } from '../../ui/AppBar';
@@ -21,17 +21,16 @@ export function SettingsPage({
   readonly actions?: ComponentProps<typeof AppBar>['actions'];
 }) {
   const { colors } = useTheme();
+  const insets = useSystemInsets();
   return (
-    <SafeAreaView testID={testID} edges={SAFE_EDGES} style={[styles.page, { backgroundColor: colors.background }]}>
+    <View testID={testID} style={[styles.page, { backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }]}>
       <AppBar title={title} backTestID="settings.back" {...(actions === undefined ? {} : { actions })} />
       <ScrollView contentContainerStyle={padded ? styles.body : styles.flush} keyboardShouldPersistTaps="handled">
         {children}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
-
-const SAFE_EDGES = ['top', 'left', 'right'] as const;
 
 export function SettingsRow({ testID, label, detail, onPress }: { readonly testID: string; readonly label: string; readonly detail?: string; readonly onPress: () => void }) {
   const { colors } = useTheme();

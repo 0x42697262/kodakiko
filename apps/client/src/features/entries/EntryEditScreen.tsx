@@ -1,7 +1,7 @@
 import { deviceOffsetMinutes } from '@kodakiko/core';
 import { type EntryMetadataV1 } from '@kodakiko/contract';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { z } from 'zod';

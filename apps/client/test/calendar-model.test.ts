@@ -5,7 +5,7 @@ import {
   formatMonthTitle,
   isValidLocalDate,
   monthDayInfo,
-  weekdayNames, canShowMonth, monthTarget } from '../src/features/calendar/calendar-model';
+  weekdayNames, canShowMonth, monthTarget, pagerMonths } from '../src/features/calendar/calendar-model';
 
 const HOME = 'H'.repeat(22);
 
@@ -101,5 +101,20 @@ describe('monthTarget (v0.2.1 fix B1)', () => {
     expect(canShowMonth('2026-06', '2026-06', withEntries)).toBe(true);
     expect(canShowMonth('2026-08', '2026-06', withEntries)).toBe(true);
     expect(canShowMonth('2026-07', '2026-06', withEntries)).toBe(false);
+  });
+});
+
+describe('pagerMonths (v0.2.1 fix B6)', () => {
+  it('lists every month from a year before the earliest entry to now, then only future months with entries', () => {
+    const months = pagerMonths('2026-06', new Set(['2026-02', '2026-08', '2026-12']), '2026-06');
+    expect(months[0]).toBe('2025-02');
+    expect(months).toContain('2026-01');
+    expect(months).not.toContain('2026-07');
+    expect(months.slice(-3)).toEqual(['2026-06', '2026-08', '2026-12']);
+  });
+
+  it('starts a year before the shown month when that is earlier, and works without entries', () => {
+    expect(pagerMonths('2026-06', new Set(), '2020-05')[0]).toBe('2019-05');
+    expect(pagerMonths('2026-06', new Set(), '2026-06')).toHaveLength(13);
   });
 });

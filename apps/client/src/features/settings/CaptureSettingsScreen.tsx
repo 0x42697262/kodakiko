@@ -68,7 +68,7 @@ export function CaptureSettingsScreen() {
                 },
               ] satisfies PreferenceItem[])
             : []),
-          { kind: 'switch', key: 'holdToRecord', testID: 'settings.holdToRecord', title: EN['prefs.holdToRecord'], summary: EN['prefs.holdToRecordSummary'], value: settings.holdToRecord, onChange: (holdToRecord) => update({ holdToRecord }) },
+          { kind: 'switch', key: 'holdToRecord', testID: 'settings.holdToRecord', title: EN['prefs.holdToRecord'], summary: EN['prefs.holdToRecordSummary'], value: settings.holdToRecordOn, onChange: (holdToRecordOn) => update({ holdToRecordOn }) },
           {
             kind: 'choice',
             key: 'holdMax',

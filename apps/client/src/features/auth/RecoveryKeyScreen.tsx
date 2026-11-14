@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { RECOVERY_WORD_COUNT } from '@kodakiko/core';

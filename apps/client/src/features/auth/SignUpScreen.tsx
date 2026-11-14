@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useState } from 'react';
 import { useAppContext } from '../../composition/app-context';
 import { CONFIG_FALLBACK } from '../../constants/auth-constants';

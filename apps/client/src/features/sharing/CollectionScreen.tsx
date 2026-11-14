@@ -1,5 +1,6 @@
 import { COLLECTION_NAME_MAX_CHARS } from '@kodakiko/contract';
-import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppContext } from '../../composition/app-context';

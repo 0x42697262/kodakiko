@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter } from '../../navigation/use-router';
 import { StyleSheet, Text } from 'react-native';
 import { GALLERY_IDS } from '../../keys/gallery-ids';
 import { testId } from '../../keys/test-ids';

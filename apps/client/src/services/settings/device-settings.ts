@@ -73,7 +73,7 @@ export const deviceSettingsSchema = z.object({
   fullScreen: z.boolean(),
   hideBarsOnScroll: z.boolean(),
   showTechnicalDetails: z.boolean(),
-  holdToRecord: z.boolean(),
+  holdToRecordOn: z.boolean(),
   holdToRecordMaxSeconds: z.number().refine((value) => (HOLD_TO_RECORD_SECONDS as readonly number[]).includes(value)),
   cameraApp: z.enum(CAMERA_APPS),
   syncPaused: z.boolean(),
