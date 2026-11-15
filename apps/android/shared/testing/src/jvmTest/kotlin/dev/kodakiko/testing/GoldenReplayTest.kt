@@ -28,6 +28,22 @@ class GoldenReplayTest {
     }
 
     @Test
+    fun aFunctionFilterReplaysOnlyThoseCasesAndRejectsUnknownFunctions() {
+        val path = "domain/tags.json"
+        val all = GoldenReplay.functions(path)
+        assertTrue("addTag" in all)
+        val seen = mutableSetOf<String>()
+        assertFailsWith<GoldenFailure> {
+            GoldenReplay.run(path, { fn, _ ->
+                seen += fn
+                JsonPrimitive("wrong")
+            }, setOf("addTag"))
+        }
+        assertTrue(seen == setOf("addTag"))
+        assertFailsWith<IllegalStateException> { GoldenReplay.run(path, { _, _ -> JsonPrimitive(0) }, setOf("noSuchFunction")) }
+    }
+
+    @Test
     fun errorsAreEncodedLikeTheTypeScriptGoldens() {
         class InvalidEditError(message: String) : Exception(message)
         assertTrue(GoldenReplay.equivalent(json("{\"error\":\"InvalidEditError\",\"message\":\"m\"}"), GoldenReplay.error(InvalidEditError("m"))))

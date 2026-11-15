@@ -12,4 +12,7 @@ class IndexGoldenTest {
 
     @Test
     fun onThisDay() = GoldenReplay.run("index/on-this-day.json", IndexGoldenAdapter)
+
+    @Test
+    fun entryEditAttributes() = GoldenReplay.run("domain/entry-edit.json", IndexGoldenAdapter, setOf("attributesMatch"))
 }

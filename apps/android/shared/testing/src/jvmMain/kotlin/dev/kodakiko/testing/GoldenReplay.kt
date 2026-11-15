@@ -77,9 +77,20 @@ object GoldenReplay {
         return if (left != null && right != null) left.compareTo(right) == 0 else expected.content == actual.content
     }
 
-    fun run(path: String, adapter: GoldenAdapter) {
-        val cases = cases(path)
+    fun functions(path: String): Set<String> = cases(path).map { it.getValue("fn").jsonPrimitive.content }.toSet()
+
+    fun run(path: String, adapter: GoldenAdapter) = replay(path, adapter, null)
+
+    fun run(path: String, adapter: GoldenAdapter, only: Set<String>) = replay(path, adapter, only)
+
+    private fun replay(path: String, adapter: GoldenAdapter, only: Set<String>?) {
+        val all = cases(path)
+        val cases = if (only == null) all else all.filter { it.getValue("fn").jsonPrimitive.content in only }
         check(cases.isNotEmpty()) { "$path has no cases" }
+        if (only != null) {
+            val missing = only - cases.map { it.getValue("fn").jsonPrimitive.content }.toSet()
+            check(missing.isEmpty()) { "$path has no cases for $missing" }
+        }
         val failures = mutableListOf<String>()
         for (case in cases) {
             val name = case.getValue("name").jsonPrimitive.content

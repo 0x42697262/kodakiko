@@ -18,4 +18,7 @@ class SyncGoldenTest {
 
     @Test
     fun merge() = GoldenReplay.run("sync/merge.json", SyncGoldenAdapter)
+
+    @Test
+    fun entryEditMerge() = GoldenReplay.run("domain/entry-edit.json", SyncGoldenAdapter, setOf("mergeMetadata", "metadataEquivalent"))
 }
