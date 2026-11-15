@@ -22,14 +22,3 @@ const val YEAR_MONTH_LENGTH = 7
 const val DATE_PART_SEPARATOR = "-"
 const val FIRST_DAY_OF_MONTH = 1.0
 const val MS_PER_DAY = 86_400_000.0
-
-internal object JsNumberText {
-    const val NAN = "NaN"
-    const val INFINITY = "Infinity"
-    const val NEGATIVE_INFINITY = "-Infinity"
-    const val PLUS = '+'
-    const val MINUS = '-'
-    const val DECIMAL_RADIX = 10
-}
-
-internal const val SURROGATE_PAIR_LENGTH = 2

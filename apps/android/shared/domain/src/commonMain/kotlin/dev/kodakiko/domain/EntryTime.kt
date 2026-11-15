@@ -1,6 +1,7 @@
 package dev.kodakiko.domain
 
-import dev.kodakiko.media.JsDate
+import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.jsParseInt
 
 private fun shiftedIso(takenAtUtc: String, utcOffsetMinutes: Long): String =
     JsDate.toIsoString(JsDate.parse(takenAtUtc) + utcOffsetMinutes * MS_PER_MINUTE)

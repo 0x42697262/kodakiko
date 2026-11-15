@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared.contract)
+            implementation(projects.shared.js)
         }
         jvmTest.dependencies {
             implementation(projects.shared.testing)

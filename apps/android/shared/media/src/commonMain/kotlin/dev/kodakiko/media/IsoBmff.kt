@@ -1,5 +1,7 @@
 package dev.kodakiko.media
 
+import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.jsTrim
 import kotlin.math.abs
 
 data class VideoMetadata(

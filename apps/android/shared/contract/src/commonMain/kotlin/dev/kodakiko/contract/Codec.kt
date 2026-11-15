@@ -1,5 +1,7 @@
 package dev.kodakiko.contract
 
+import dev.kodakiko.js.jsTrim
+import dev.kodakiko.js.jsonStringifyNumber
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -110,8 +112,8 @@ internal class DoubleCodec(
     override fun decode(json: JsonElement?, path: String): Double {
         val number = numberOf(json, path)
         if (!number.isFinite()) throw InvalidValue(path, ContractText.EXPECTED_NUMBER)
-        if (number < minimum) throw InvalidValue(path, ContractText.tooSmall(jsNumberToString(minimum)))
-        if (number > maximum) throw InvalidValue(path, ContractText.tooBig(jsNumberToString(maximum)))
+        if (number < minimum) throw InvalidValue(path, ContractText.tooSmall(jsonStringifyNumber(minimum)))
+        if (number > maximum) throw InvalidValue(path, ContractText.tooBig(jsonStringifyNumber(maximum)))
         return number
     }
 

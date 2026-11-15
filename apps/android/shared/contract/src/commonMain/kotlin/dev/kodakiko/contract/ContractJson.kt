@@ -1,5 +1,6 @@
 package dev.kodakiko.contract
 
+import dev.kodakiko.js.jsonStringifyNumber
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -87,7 +88,7 @@ object ContractJson {
             else -> {
                 val number = content.toDoubleOrNull()
                     ?: throw ContractViolation(ContractText.JSON_SCHEMA, ContractText.at(content, ContractText.UNPRINTABLE_NUMBER))
-                builder.append(jsNumberToString(number))
+                builder.append(jsonStringifyNumber(number))
             }
         }
     }

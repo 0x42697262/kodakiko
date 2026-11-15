@@ -3,8 +3,9 @@ package dev.kodakiko.domain
 import dev.kodakiko.contract.TAGS_PER_ENTRY_MAX
 import dev.kodakiko.contract.TAG_MAX_CHARS
 import dev.kodakiko.contract.WireEnum
-import dev.kodakiko.media.collapseJsWhitespace
-import dev.kodakiko.media.jsTrim
+import dev.kodakiko.js.collapseJsWhitespace
+import dev.kodakiko.js.jsTrim
+import dev.kodakiko.js.normalizeNfkc
 
 enum class TagRejection(override val wire: String) : WireEnum {
     EMPTY("empty"),

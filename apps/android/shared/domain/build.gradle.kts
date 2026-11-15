@@ -7,7 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.shared.contract)
             api(projects.shared.media)
-            implementation(projects.shared.crypto)
+            implementation(projects.shared.js)
         }
         jvmTest.dependencies {
             implementation(projects.shared.testing)

@@ -1,5 +1,6 @@
 package dev.kodakiko.media
 
+import dev.kodakiko.js.RangeError
 import dev.kodakiko.media.StripConstants.BITS_PER_BYTE
 import dev.kodakiko.media.StripConstants.BYTE_MASK
 import dev.kodakiko.media.StripConstants.EBML_DATE_BYTES

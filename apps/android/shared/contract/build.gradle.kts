@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.shared.crypto)
+            implementation(projects.shared.js)
             api(libs.kotlinx.serialization.json)
         }
     }

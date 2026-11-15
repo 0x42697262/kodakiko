@@ -1,0 +1,16 @@
+package dev.kodakiko.sync
+
+const val PUSH_CONCURRENCY = 4
+const val MAX_ATTEMPTS = 8
+const val BACKOFF_BASE_MS = 2000.0
+const val BACKOFF_CAP_MS = 900_000.0
+const val PULL_PAGE_LIMIT = 500
+const val SYNC_INTERVAL_MS = 60_000L
+const val SYNC_DEBOUNCE_MS = 2000L
+const val UPLOAD_PART_CONCURRENCY = 3
+const val BACKOFF_FACTOR = 2.0
+const val MS_PER_SECOND = 1000.0
+const val NOT_FOUND_STATUS = 404
+const val UNAUTHORIZED_STATUS = 401
+const val TOO_MANY_REQUESTS_STATUS = 429
+const val SERVER_ERROR_STATUS_MIN = 500

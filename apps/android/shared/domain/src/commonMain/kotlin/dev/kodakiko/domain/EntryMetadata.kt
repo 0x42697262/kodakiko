@@ -6,11 +6,11 @@ import dev.kodakiko.contract.EntryMetadataV1
 import dev.kodakiko.contract.LocationSource
 import dev.kodakiko.contract.MediaDescriptorV1
 import dev.kodakiko.contract.OptionalValue
+import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.jsTrim
 import dev.kodakiko.media.GeoPoint
-import dev.kodakiko.media.JsDate
 import dev.kodakiko.media.ResolvedTime
 import dev.kodakiko.media.earliestTime
-import dev.kodakiko.media.jsTrim
 
 data class DeviceLocation(val point: GeoPoint, val accuracyMeters: Double?)
 

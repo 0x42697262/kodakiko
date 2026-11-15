@@ -1,13 +1,8 @@
 package dev.kodakiko.media
 
-import kotlin.math.floor
+import dev.kodakiko.js.jsRound
 
 data class MediaSize(val width: Int, val height: Int)
-
-internal fun jsRound(value: Double): Double {
-    val lower = floor(value)
-    return if (value - lower >= JS_ROUND_HALF) lower + 1 else lower
-}
 
 fun fitWithin(width: Int, height: Int, maxEdge: Int): MediaSize {
     val longest = maxOf(width, height)

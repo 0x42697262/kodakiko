@@ -58,19 +58,9 @@ internal const val JSON_UNICODE_ESCAPE_DIGITS = 4
 internal const val HEX_RADIX = 16
 internal const val DECIMAL_RADIX = 10
 internal const val OCTAL_RADIX = 8
-internal const val BINARY_RADIX = 2
 internal const val RADIX_PREFIX_LENGTH = 2
 
-internal const val JS_FIXED_EXPONENT_MAX = 21
-internal const val JS_FIXED_EXPONENT_MIN = -6
-internal const val JS_ROUND_UP_DIGIT = '5'
 internal const val JS_DIGIT_NINE = '9'
-
-internal val JS_WHITESPACE: Set<Char> = setOf(
-    '\u0009', '\u000A', '\u000B', '\u000C', '\u000D', '\u0020', '\u00A0', '\u1680',
-    '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009', '\u200A',
-    '\u2028', '\u2029', '\u202F', '\u205F', '\u3000', '\uFEFF',
-)
 
 internal const val URL_PORT_MAX = 65_535
 internal const val URL_PORT_DIGITS_MAX = 5

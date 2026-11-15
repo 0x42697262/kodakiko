@@ -1,6 +1,8 @@
 package dev.kodakiko.domain
 
-import dev.kodakiko.media.JsDate
+import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.jsIntegerString
+import dev.kodakiko.js.jsParseInt
 import kotlin.math.floor
 
 data class CalendarCell(val localDate: String, val inMonth: Boolean, val isToday: Boolean)

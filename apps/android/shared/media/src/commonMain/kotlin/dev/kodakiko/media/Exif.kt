@@ -1,5 +1,6 @@
 package dev.kodakiko.media
 
+import dev.kodakiko.js.TypeError
 import kotlin.math.abs
 
 data class GeoPoint(val latitude: Double, val longitude: Double)

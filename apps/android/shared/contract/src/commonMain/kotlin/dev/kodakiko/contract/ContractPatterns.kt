@@ -12,22 +12,15 @@ internal object ContractPatterns {
             "T(?:(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:Z))$",
     )
     val JSON_NUMBER = Regex("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$")
-    val JS_DECIMAL = Regex("^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$")
-    val JS_INFINITY = Regex("^[+-]?Infinity$")
     val URL_SCHEME = Regex("^([A-Za-z][A-Za-z0-9+.-]*):")
     val ASCII_DIGITS = Regex("^[0-9]+$")
 
     const val HEX_PREFIX = "0x"
-    const val OCTAL_PREFIX = "0o"
-    const val BINARY_PREFIX = "0b"
-    const val NEGATIVE_INFINITY_PREFIX = '-'
     const val JSON_TRUE = "true"
     const val JSON_FALSE = "false"
     const val JSON_NULL = "null"
     const val JS_OBJECT_STRING = "[object Object]"
     const val JS_ARRAY_SEPARATOR = ","
-    const val JS_EXPONENT_MARKER = 'e'
-    const val KOTLIN_EXPONENT_MARKER = 'E'
     const val DECIMAL_POINT = '.'
     const val MINUS = '-'
     const val PLUS = '+'

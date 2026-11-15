@@ -1,26 +1,26 @@
-package dev.kodakiko.media
+package dev.kodakiko.js
 
-import dev.kodakiko.media.JsDateConstants.CENTURY_YEARS
-import dev.kodakiko.media.JsDateConstants.DAYS_PER_ERA
-import dev.kodakiko.media.JsDateConstants.DAYS_PER_WEEK
-import dev.kodakiko.media.JsDateConstants.DAYS_PER_YEAR
-import dev.kodakiko.media.JsDateConstants.ERA_CENTURY_DAYS
-import dev.kodakiko.media.JsDateConstants.ERA_DAY_OFFSET
-import dev.kodakiko.media.JsDateConstants.ERA_FOUR_YEAR_DAYS
-import dev.kodakiko.media.JsDateConstants.ERA_LAST_DAY
-import dev.kodakiko.media.JsDateConstants.LEAP_CYCLE_YEARS
-import dev.kodakiko.media.JsDateConstants.MARCH_BASED_DAY_ROUNDING
-import dev.kodakiko.media.JsDateConstants.MARCH_BASED_MONTH_DAYS
-import dev.kodakiko.media.JsDateConstants.MARCH_BASED_MONTH_OFFSET
-import dev.kodakiko.media.JsDateConstants.MARCH_SHIFT_BACK
-import dev.kodakiko.media.JsDateConstants.MARCH_SHIFT_FORWARD
-import dev.kodakiko.media.JsDateConstants.MARCH_SHIFT_LIMIT
-import dev.kodakiko.media.JsDateConstants.MONTHS_PER_YEAR
-import dev.kodakiko.media.JsDateConstants.MS_PER_DAY
-import dev.kodakiko.media.JsDateConstants.MS_PER_HOUR
-import dev.kodakiko.media.JsDateConstants.MS_PER_MINUTE
-import dev.kodakiko.media.JsDateConstants.MS_PER_SECOND
-import dev.kodakiko.media.JsDateConstants.YEARS_PER_ERA
+import dev.kodakiko.js.JsDateConstants.CENTURY_YEARS
+import dev.kodakiko.js.JsDateConstants.DAYS_PER_ERA
+import dev.kodakiko.js.JsDateConstants.DAYS_PER_WEEK
+import dev.kodakiko.js.JsDateConstants.DAYS_PER_YEAR
+import dev.kodakiko.js.JsDateConstants.ERA_CENTURY_DAYS
+import dev.kodakiko.js.JsDateConstants.ERA_DAY_OFFSET
+import dev.kodakiko.js.JsDateConstants.ERA_FOUR_YEAR_DAYS
+import dev.kodakiko.js.JsDateConstants.ERA_LAST_DAY
+import dev.kodakiko.js.JsDateConstants.LEAP_CYCLE_YEARS
+import dev.kodakiko.js.JsDateConstants.MARCH_BASED_DAY_ROUNDING
+import dev.kodakiko.js.JsDateConstants.MARCH_BASED_MONTH_DAYS
+import dev.kodakiko.js.JsDateConstants.MARCH_BASED_MONTH_OFFSET
+import dev.kodakiko.js.JsDateConstants.MARCH_SHIFT_BACK
+import dev.kodakiko.js.JsDateConstants.MARCH_SHIFT_FORWARD
+import dev.kodakiko.js.JsDateConstants.MARCH_SHIFT_LIMIT
+import dev.kodakiko.js.JsDateConstants.MONTHS_PER_YEAR
+import dev.kodakiko.js.JsDateConstants.MS_PER_DAY
+import dev.kodakiko.js.JsDateConstants.MS_PER_HOUR
+import dev.kodakiko.js.JsDateConstants.MS_PER_MINUTE
+import dev.kodakiko.js.JsDateConstants.MS_PER_SECOND
+import dev.kodakiko.js.JsDateConstants.YEARS_PER_ERA
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.truncate
@@ -125,7 +125,7 @@ object JsDate {
         val hours = text.substring(1, JsDateConstants.OFFSET_HOURS_END).toInt()
         val minutes = text.substring(JsDateConstants.OFFSET_MINUTES_START).toInt()
         if (hours > JsDateConstants.OFFSET_HOUR_MAX || minutes > JsDateConstants.MINUTE_MAX) return null
-        val total = (hours * MEDIA_MINUTES_PER_HOUR + minutes).toDouble()
+        val total = (hours * JsDateConstants.MINUTES_PER_HOUR + minutes).toDouble()
         return if (text[0] == JsDateConstants.MINUS) -total else total
     }
 

@@ -3,6 +3,8 @@ package dev.kodakiko.media
 import dev.kodakiko.contract.UTC_OFFSET_MINUTES_MAX
 import dev.kodakiko.contract.UTC_OFFSET_MINUTES_MIN
 import dev.kodakiko.contract.WireEnum
+import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.RangeError
 
 enum class TimeSource(override val wire: String) : WireEnum {
     EXIF("exif"),

@@ -1,5 +1,8 @@
 package dev.kodakiko.account
 
+import dev.kodakiko.js.codePointsOf
+import dev.kodakiko.js.normalizeNfkc
+
 enum class PasswordRule {
     TOO_SHORT,
     EQUALS_USERNAME,

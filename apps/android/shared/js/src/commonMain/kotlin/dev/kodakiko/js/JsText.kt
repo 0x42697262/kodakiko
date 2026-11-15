@@ -1,9 +1,28 @@
-package dev.kodakiko.account
+package dev.kodakiko.js
 
 import dev.kodakiko.crypto.passwordToBytes
 import dev.kodakiko.crypto.wipe
 
-internal fun codePointsOf(text: String): List<String> {
+fun isJsWhitespace(char: Char): Boolean = char in JS_WHITESPACE
+
+fun jsTrim(text: String): String = text.trim { isJsWhitespace(it) }
+
+fun collapseJsWhitespace(text: String, replacement: String): String {
+    val builder = StringBuilder(text.length)
+    var index = 0
+    while (index < text.length) {
+        if (isJsWhitespace(text[index])) {
+            while (index < text.length && isJsWhitespace(text[index])) index += 1
+            builder.append(replacement)
+        } else {
+            builder.append(text[index])
+            index += 1
+        }
+    }
+    return builder.toString()
+}
+
+fun codePointsOf(text: String): List<String> {
     val codePoints = ArrayList<String>(text.length)
     var index = 0
     while (index < text.length) {
@@ -27,7 +46,7 @@ private fun normalizeWellFormed(segment: String): String {
     }
 }
 
-internal fun normalizeNfkc(text: String): String {
+fun normalizeNfkc(text: String): String {
     if (text.none { it.isSurrogate() }) return normalizeWellFormed(text)
     val normalized = StringBuilder(text.length)
     val segment = StringBuilder()

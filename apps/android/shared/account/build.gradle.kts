@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.shared.contract)
             implementation(projects.shared.crypto)
+            implementation(projects.shared.js)
         }
     }
 }
