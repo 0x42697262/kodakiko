@@ -72,6 +72,8 @@ class DownloadQueue(
 
     fun resume() = pump()
 
+    fun waiting(): Map<String, DownloadPriority> = synchronized(lock) { queued.associate { it.row.id to it.priority } }
+
     fun onCompleted(listener: (String) -> Unit): () -> Unit {
         completedListeners.add(listener)
         return { completedListeners.remove(listener) }

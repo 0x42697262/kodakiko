@@ -42,10 +42,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @RunWith(RobolectricTestRunner::class)
 class DownloadQueueTest {
-    private companion object {
-        const val QUEUE_SETTLE_MS = 400L
-    }
-
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val hash = "00112233445566bb"
     private val server = MockWebServer()
@@ -128,6 +124,14 @@ class DownloadQueueTest {
     private fun row(objectId: String) = database.transaction { it.objects.get(objectId)!! }
 
     private fun async(block: () -> Unit): Future<*> = pool.submit(block)
+
+    private fun waitUntil(condition: () -> Boolean) {
+        val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10)
+        while (!condition()) {
+            check(System.nanoTime() < deadline) { "condition not reached" }
+            Thread.sleep(5)
+        }
+    }
 
     @Before
     fun start() {
@@ -258,11 +262,18 @@ class DownloadQueueTest {
             async { queue.fetch(background, DownloadPriority.BACKGROUND) },
             async { queue.fetch(raised, DownloadPriority.BACKGROUND) },
         )
-        Thread.sleep(QUEUE_SETTLE_MS)
+        waitUntil { queue.waiting() == mapOf(background to DownloadPriority.BACKGROUND, raised to DownloadPriority.BACKGROUND) }
         val more = listOf(async { queue.fetch(visible, DownloadPriority.VISIBLE) })
-        Thread.sleep(QUEUE_SETTLE_MS)
+        waitUntil { visible in queue.waiting() }
         val top = listOf(async { queue.fetch(opened, DownloadPriority.OPENED) }, async { queue.fetch(raised, DownloadPriority.OPENED) })
-        Thread.sleep(QUEUE_SETTLE_MS)
+        waitUntil {
+            queue.waiting() == mapOf(
+                background to DownloadPriority.BACKGROUND,
+                raised to DownloadPriority.OPENED,
+                visible to DownloadPriority.VISIBLE,
+                opened to DownloadPriority.OPENED,
+            )
+        }
         gate!!.countDown()
         (running + waiting + more + top).forEach { it.get(20, TimeUnit.SECONDS) }
         val after = bucketOrder.drop(2)
