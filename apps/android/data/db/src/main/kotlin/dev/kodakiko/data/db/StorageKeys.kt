@@ -18,6 +18,7 @@ object StorageKeys {
     const val DEVICE_NOTIFICATION_PERMISSION_ASKED = "device.notificationPermissionAsked"
     const val SETTINGS_DEVICE = "settings.device"
     const val DIAGNOSTICS_PROBE = "diagnostics.probe"
+    const val MIGRATION_V031_ADOPTED = "migration.v031.adopted"
 
     val ALL: List<String> = listOf(
         ACCOUNT_USER_ID,

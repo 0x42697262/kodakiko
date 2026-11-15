@@ -41,6 +41,7 @@ tasks.register("verify") {
         ":shared:markdown:testAndroidHostTest",
         ":data:db:testDebugUnitTest",
         ":data:files:testDebugUnitTest",
+        ":data:migration:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",

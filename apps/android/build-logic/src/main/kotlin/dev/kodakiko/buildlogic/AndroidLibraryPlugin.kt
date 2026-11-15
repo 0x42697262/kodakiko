@@ -11,6 +11,7 @@ class AndroidLibraryPlugin : Plugin<Project> {
         applyKodakikoBase()
         extensions.configure<LibraryExtension> {
             configureAndroidCommon(this)
+            defaultConfig.testInstrumentationRunner = BuildLogicConstants.INSTRUMENTATION_RUNNER
         }
     }
 }
