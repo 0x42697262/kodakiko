@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+
 plugins {
     id("kodakiko.android.library")
     alias(libs.plugins.sqldelight)
@@ -17,6 +19,9 @@ dependencies {
     testImplementation(projects.shared.crypto)
     testImplementation(projects.shared.contract)
     testImplementation(projects.shared.account)
+    testImplementation(projects.shared.testing) {
+        attributes { attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm) }
+    }
     testImplementation(libs.junit4)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.ext.junit)

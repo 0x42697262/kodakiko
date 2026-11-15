@@ -1,8 +1,8 @@
 # Client golden fixtures for the Kotlin port
 
 Deterministic outputs of the Expo client's TypeScript code (`apps/client`) that the Kotlin client
-must reproduce: the markdown parser and toolbar, the calendar model, the gallery arrangement and
-the export ZIP container. Everything except `manifest.json` (the judge's list of required files and
+must reproduce: the markdown parser and toolbar, the calendar model, the gallery arrangement,
+the export ZIP container and the v0.3.1 device settings (`settings.device`). Everything except `manifest.json` (the judge's list of required files and
 fields) and this README is generated:
 
 ```sh
@@ -34,13 +34,15 @@ Same conventions as `tests/fixtures/golden/README.md` ("Function-case files"):
   parenthesized suffix when one TS test holds several assertions, or `<fn>: edge: <what>` for extra
   cases with no TS test of their own. The archive cases have no TS unit test, so their names only
   describe the scenario. Every file except `markdown/toolbar.json` (whose constants are private
-  to the module and spelled out below) ends with one case named `constants` (`fn: "constants"`,
+  to the module and spelled out below) and `settings/device.json` (whose constants are spelled
+  out in its section, because the Kotlin judge replays every case of that file) ends with one case named `constants` (`fn: "constants"`,
   `args: {}`), whose `result` lists the TS constants the file depends on, so the Kotlin
   `*Constants` objects can be checked against them.
 - `args` is an object keyed by the TS parameter names; the call passes them in the order given
   for each `fn` below. Absent optional keys mean "argument not passed" (TS `undefined`).
 - `result` is the return value encoded as below. No case in these files throws (there is no
-  `{ "error", "message" }` result).
+  `{ "error", "message" }` result); `settings/device.json` reports a thrown `update` as
+  `rejected: true` instead.
 - No clock is read and no unseeded randomness is used.
 
 ### Encoding of non-JSON values
@@ -430,6 +432,190 @@ non-ASCII names, and also for the `zipSync` ones), extra fields and comments.
 `{ EXPORT_MTIME_MIN, EXPORT_MTIME_MAX, timeZone: "UTC" }`. The deflate level (6) is a private
 constant of `fflate-archive-writer.ts`.
 
+## `settings/device.json`
+
+The device settings of v0.3.1 (`apps/client/src/services/settings/device-settings.ts`), stored as
+JSON under the kv key `settings.device` of the account's row store. The Kotlin client installs as
+an update over v0.3.1 and must read what v0.3.1 wrote and write what v0.3.1 would read. 140 cases:
+`nativeDefaults` 1, `resolveStored` 84, `update` 55. No `constants` case (the Kotlin judge would
+reject an unknown `fn`); the constants are listed below.
+
+### Functions
+
+| `fn` | `args` | `result` |
+|---|---|---|
+| `nativeDefaults` | `{}` | `DEVICE_SETTINGS_DEFAULTS` of `device-settings-defaults.native.ts` (the Android defaults), no `schemaVersion` |
+| `resolveStored` | `{ raw }` | `{ value, invalid, loaded }` |
+| `update` | `{ raw, partial }` | `{ rejected, value, stored, notified }` |
+
+`raw` is what the kv table holds under `settings.device` before the call:
+
+- `{ "$absent": true }`: no row (the key was never written).
+- `{ "$bytes": "<hex>" }`: exactly these bytes are stored (`kvSet`). Used for bytes that are not
+  valid UTF-8 or not valid JSON, and for valid JSON that cannot be written by `JSON.stringify`
+  (`1.0`, `-0`, `1e400`, duplicate keys, escaped key names, a byte order mark, extra whitespace).
+- any other JSON value: stored as `JSON.stringify(raw)` in UTF-8 (`kvSetJson`). The Kotlin judge
+  stores `raw.toString()`, which is the same JSON (no raw value contains a lone surrogate).
+
+Procedure (TS): an in-memory `RowStore` (`createMemoryRowStore`, opened for one account) is seeded
+with `raw`, then `createDeviceSettings({ rowStore, defaults: DEVICE_SETTINGS_DEFAULTS (native),
+onInvalidFields })`.
+
+- `resolveStored`: `value` = `get()`; `invalid` = the list passed to `onInvalidFields` (`[]` when
+  it is not called; it is called at most once, only with a non-empty list); `loaded` = `loaded()`.
+- `update`: no `onInvalidFields`; one listener that counts its calls is subscribed, then
+  `await update(partial)` (a throw is caught). `rejected` = whether it threw; `value` = `get()`
+  afterwards; `stored` = the bytes now under `settings.device`, parsed as JSON (`null` when there
+  is no row); `notified` = the listener's call count (1 after a successful update, 0 after a
+  rejected one). No case rejects an update over `$bytes` that are not JSON, so `stored` always
+  parses.
+
+`value` and the `stored` object (minus `schemaVersion`) are `DeviceSettingsValue`:
+
+```
+{ encryptThumbnails: bool, originalCacheCapBytes: int, largeUploadsOnWifiOnly: bool,
+  largeUploadThresholdBytes: int, locationForCaptures: bool, autoLockMinutes: int,
+  appTheme: "system"|"light"|"dark", dateFormat: "system"|"iso"|"dmy"|"mdy", relativeDates: bool,
+  startScreen: "gallery"|"calendar",
+  galleryDisplayMode: "comfortableGrid"|"compactGrid"|"photoGrid"|"list",
+  galleryColumnsPortrait: int, galleryColumnsLandscape: int, galleryGroupByDay: bool,
+  galleryGroupBy: "day"|"month"|"year"|"tag"|"none",
+  galleryBadges: { video, photoCount, note, pending, keptOffline, favorite: bool },
+  galleryShowTagTabs: bool, galleryShowCounts: bool,
+  gallerySort: { key: "takenAt"|"noteLength"|"mediaCount"|"random", descending: bool },
+  galleryFilters: { video, note, multiple, shared, pending, keptOffline, favorite: "off"|"include"|"exclude" },
+  hideShared, onThisDay, confirmTrash: bool, captureStartCamera: "back"|"front",
+  captureKeepScreenOn, hideNotePreviews, secureScreen, fullScreen, hideBarsOnScroll,
+  showTechnicalDetails, holdToRecordOn: bool, holdToRecordMaxSeconds: 5|10|15|30|60|120,
+  cameraApp: "kodakiko"|"system", syncPaused: bool, tagOrder: string[], pureBlack,
+  hapticFeedback, dynamicColor, autoplayVideos, autoplayOnMobileData: bool,
+  timeFormat: "24h"|"12h" }
+```
+
+This is also the key order of the zod schema shape, and therefore of the stored JSON:
+`{"schemaVersion":1,"encryptThumbnails":…,…,"timeFormat":…}` (compact `JSON.stringify`, nested
+objects in the order shown). The key order of `value` in the file is the defaults' order (the
+same); compare parsed JSON.
+
+Constants: `DEVICE_SETTINGS_SCHEMA_VERSION = 1`, `MIN_LARGE_UPLOAD_THRESHOLD_BYTES = 1048576`,
+`AUTO_LOCK_MINUTES_MIN = 1`, `AUTO_LOCK_MINUTES_MAX = 60`, `GALLERY_COLUMNS_AUTO = 0`,
+`GALLERY_COLUMNS_MAX = 10`, `HOLD_TO_RECORD_SECONDS = [5, 10, 15, 30, 60, 120]`; Android defaults
+`originalCacheCapBytes = 2147483648`, `largeUploadThresholdBytes = 104857600`,
+`autoLockMinutes = 5`, `holdToRecordMaxSeconds = 15` (the rest in the `nativeDefaults` case).
+
+### Reading (`createDeviceSettings`)
+
+1. Read: `kvGetJson(settings.device, z.unknown())` = no row → `null`; else
+   `JSON.parse(utf8Decode(bytes))`. `utf8Decode` is `TextDecoder('utf-8', { fatal: true })`: invalid
+   UTF-8 (lone continuation byte, overlong form, encoded surrogate, truncated sequence) throws,
+   and **one leading byte order mark is removed** (a second one is not whitespace and fails
+   `JSON.parse`). Any throw → `loaded = false`, the value is the defaults, `onInvalidFields` is not
+   called. Otherwise `loaded = true` (also when there is no row).
+2. A value that is not a plain object (`null`, array, string, number, boolean) → the defaults,
+   `invalid = []`.
+3. `raw.schemaVersion !== 1` (missing, `"1"`, `0`, `null`, `2`) → the defaults and
+   `invalid = ["schemaVersion"]`, even when every other field is valid. `1.0` is the number 1.
+4. Otherwise start from the defaults and, for each schema field in shape order that is a key of
+   `raw`, parse `raw[field]` with the field's zod schema: success replaces the default, failure
+   keeps the default and appends the field name to `invalid`. Absent fields keep the default and
+   are not reported. Unknown keys (`holdToRecord`, `sparkle`, `__proto__` as a JSON key) are
+   ignored.
+
+### Writing (`update(partial)`)
+
+`next = deviceSettingsSchema.parse({ schemaVersion: 1, ...current, ...partial })` (a shallow
+merge: a nested object in `partial` replaces the whole nested object; `schemaVersion` in `partial`
+overrides the 1, so `2` is rejected). If the parse throws, nothing is written, `current` and
+`loaded` do not change and no listener runs. Otherwise `kvSetJson(settings.device, next)`, then
+`current = next` without `schemaVersion`, `loaded = true`, and every subscribed listener is called
+once. An update over unreadable bytes, a newer `schemaVersion` or a non-object value overwrites it
+with a complete version-1 value (the defaults plus `partial`); fields that were invalid when read
+are written with their defaults.
+
+### zod behaviors to mimic (zod 4.6.7)
+
+- `z.boolean()`: only JSON `true`/`false` (`1`, `"true"`, `null`, `[]` fail).
+- `z.enum([...])`: only those exact strings (case-sensitive; numbers and `null` fail).
+- `z.number()` rejects non-numbers, `NaN` and ±Infinity (`1e400` parses to Infinity and fails).
+  `.int()` in zod 4 is a **safe integer** check: `Number.isSafeInteger`, so `1.5` fails,
+  `9007199254740991` passes, `9007199254740992` and `1e20` fail. Integral doubles pass whatever
+  their spelling: `3.0`, `1e3`, `2E+6`, `10.000`, `1.2e2`, and `-0` (written back as `0`).
+- Ranges are inclusive: `originalCacheCapBytes >= 0` (0 = no limit), `largeUploadThresholdBytes
+  >= 1048576`, `1 <= autoLockMinutes <= 60`, `0 <= galleryColumns* <= 10` (0 = automatic). There
+  is no upper bound other than the safe-integer limit on the two byte counts.
+- `holdToRecordMaxSeconds`: `z.number()` refined to `[5, 10, 15, 30, 60, 120].includes(value)`:
+  `"15"`, `7`, `0` and `15.5` fail; `120.0` passes.
+- `tagOrder: z.array(z.string()).readonly()`: any array of strings, kept as is (empty strings,
+  duplicates, non-ASCII, control characters, lone surrogates); one non-string element fails the
+  whole field; an object with index keys is not an array.
+- `z.object(...)` (nested `galleryBadges`, `gallerySort`, `galleryFilters`, and the whole schema
+  on write): every non-default key is required; **unknown keys are stripped** (never written
+  back); a non-object (array, string, `null`) fails. `galleryBadges.favorite` has
+  `.default(true)` and `galleryFilters.favorite` `.default('off')`: applied only when the key is
+  **absent** (settings stored before favorites existed); an explicit `null` fails the nested
+  object. One bad nested key fails the whole nested field.
+- `z.literal(1)` for `schemaVersion` on write.
+
+### JSON behaviors to mimic
+
+- `JSON.parse`: whitespace is only space, tab, LF and CR (U+00A0 fails); no trailing commas,
+  comments, single quotes, unquoted keys or values, `NaN`, `True`, leading zeros (`01`), leading
+  `+`, `1.`; raw control characters (< U+0020) inside strings fail; escapes are `\" \\ \/ \b \f \n
+  \r \t \uXXXX` only (`\x41`, `\u41` fail); `\uXXXX` may produce lone surrogates; escaped key
+  names are ordinary keys (`"schema\u0056ersion"` is `schemaVersion`); for duplicate keys the last
+  value wins; empty input and whitespace-only input fail.
+- `JSON.stringify` (what is written): compact, no spaces; integers printed in decimal; strings
+  escape `"`, `\`, `\b`, `\f`, `\n`, `\r`, `\t` with their short forms, other characters below
+  U+0020 and **lone surrogates** as lowercase `\u00XX` / `\udXXX`; everything else (U+007F,
+  U+2028, U+2029, non-ASCII, paired surrogates) is written as UTF-8. Kotlin's
+  `String.encodeToByteArray()` would replace a lone surrogate by U+FFFD, so the writer must
+  escape it first (case `update: edge: tagOrder with special characters …`).
+
+### Coverage
+
+Every `it` of `apps/client/test/device-settings.test.ts`, against the **native** defaults:
+
+- `has the Android defaults` → `nativeDefaults`. `has the web defaults` is **not covered**: the
+  Kotlin client is Android only.
+- `keeps stored gallery filters and badges from before favorites …`, `fills newer fields …`,
+  `returns the platform defaults when nothing is stored`, `falls back to the defaults when the
+  stored value is not readable` (`$bytes 010203`), `replaces an invalid field …`, `uses the
+  defaults and reports schemaVersion …`, `uses the defaults when the stored value has no
+  schemaVersion`, `fills fields that are missing …` → `resolveStored` (the last one with native
+  instead of web defaults).
+- `merges an update …` → `update`. `notifies subscribers after an update and stops after
+  unsubscribe` → `update` (`notified: 1`); the unsubscribe half is not expressible in this case
+  shape (the judge subscribes once and never unsubscribes).
+- `loads what an earlier instance stored` and `is loaded after a successful read, with or without
+  a stored value` → an `update` case for the first instance plus a `resolveStored` case whose `raw`
+  is that update's `stored` value (and a `$absent` case).
+- `is not loaded after a read error and serves the defaults`: the TS test makes `kvGetJson` throw;
+  here the read fails because the bytes are not valid UTF-8 (`$bytes 7bff7d`), which takes the same
+  `catch` path.
+- `rejects unknown choices and out-of-range columns` (7 assertions; the `holdToRecord` key
+  assertion is covered by `nativeDefaults`), `accepts the defaults`, `rejects an auto-lock of %s
+  minutes` (0, 61, 1.5, -5), `accepts an auto-lock of %i minutes` (1, 60), the upload threshold,
+  cache cap and non-boolean switch tests (`deviceSettingsSchema.safeParse`) → `update` cases
+  (a failing `safeParse` is a rejected update with nothing stored and no notification).
+
+Edge cases (`edge:`): `schemaVersion` as a string, 0, `null`, `1.0`, newer with valid fields,
+missing; an empty object; every boolean field with a wrong type and every boolean flipped; every
+enum with an unknown and with another valid value; int boundaries (lowest/highest accepted, just
+outside, fractions, unsafe integers, strings, `null`, integral spellings, overflow to infinity);
+columns automatic/1/10/11/-1; `holdToRecordMaxSeconds` allowed (5, 10, 30, 60, 120) and not
+(7, 0, `"15"`, 15.5); `tagOrder` variants; nested objects with and without the defaulted
+`favorite`, with unknown keys, missing keys, `null` favorite, wrong types and non-objects;
+unknown top-level keys and `__proto__`; duplicate keys; non-object raw values (array, array of a
+settings object, string, number, boolean, `null`); 20 kinds of invalid JSON and 4 of invalid
+UTF-8; a byte order
+mark; JSON whitespace; escaped key names; updates merging several fields, touching only nested
+objects, nested objects without `favorite`, a partial nested object (rejected, no deep merge),
+unknown keys (dropped, also those stored earlier), an empty partial (still writes and
+notifies), one invalid field among valid ones, a rejected update over a stored value (kept
+byte for byte), `schemaVersion` 1 and 2 in the partial, `null`, updates over unreadable bytes,
+over invalid fields, over a newer version and over a non-object value, the largest and an
+unsafe cache cap, and strings that `JSON.stringify` escapes.
+
 ## Files
 
 | File | Cases | `fn`s |
@@ -439,5 +625,7 @@ constant of `fflate-archive-writer.ts`.
 | `calendar/model.json` | 64 | `canShowMonth` 6, `monthTarget` 16, `pagerMonths` 7, `isValidLocalDate` 25, `formatMonthTitle` 3, `weekdayNames` 2, `cellLabel` 4, `constants` |
 | `gallery/arrange.json` | 51 | `groupSections` 19, `arrangeSections` 12, `galleryAttributes` 4, `columnsFor` 11, `buildGalleryItems` 4, `constants` |
 | `archive/zips.json` | 20 | `writeArchive` 8, `readArchive` 11, `constants` |
+| `settings/device.json` | 140 | `nativeDefaults` 1, `resolveStored` 84, `update` 55 |
 
-Total size about 1.6 MB, of which `archive/files/large.bin` is 1 MiB.
+Total size about 2.0 MB (`settings/device.json` about 0.4 MB, because every case lists the full
+settings value), of which `archive/files/large.bin` is 1 MiB.

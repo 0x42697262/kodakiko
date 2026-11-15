@@ -4,6 +4,7 @@ import { writeArchiveGoldens } from './golden-client/archive';
 import { writeCalendarGoldens } from './golden-client/calendar';
 import { writeGalleryGoldens } from './golden-client/gallery';
 import { writeMarkdownGoldens } from './golden-client/markdown';
+import { writeSettingsGoldens } from './golden-client/settings';
 import { GoldenWriter } from './golden-client/shared';
 
 const GOLDEN_DIRECTORY = fileURLToPath(new URL('../../../tests/fixtures/golden-client/', import.meta.url));
@@ -14,6 +15,7 @@ export async function generateClientGoldens(outputDirectory: string): Promise<re
   await writeCalendarGoldens(writer);
   await writeGalleryGoldens(writer);
   await writeArchiveGoldens(writer);
+  await writeSettingsGoldens(writer);
   return writer.written;
 }
 

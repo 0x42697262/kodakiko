@@ -21,4 +21,10 @@ internal object DbText {
     fun invalidPragma(name: String): String = "Not a pragma name: $name"
 
     fun invalidAccountHash(hash: String): String = "Not an account hash: $hash"
+
+    fun invalidDeviceSettings(fields: List<String>): String = "Invalid device settings: ${fields.joinToString(", ")}"
+
+    fun deviceSettingsNotObject(): String = "Device settings must be a JSON object."
+
+    fun jsonSyntax(position: Int): String = "Invalid JSON at position $position"
 }
