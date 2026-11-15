@@ -57,7 +57,9 @@ class DownloadQueueTest {
     private val maxInFlight = ConcurrentHashMap<ObjectVariant, AtomicInteger>()
     private val sleeps = Collections.synchronizedList(mutableListOf<Long>())
     private var bucketDelayMs = 0L
+    private val bucketDelays = ConcurrentHashMap<String, Long>()
     private var offline = false
+
     @Volatile private var gate: CountDownLatch? = null
     private var clock = 5_000L
 
@@ -86,6 +88,7 @@ class DownloadQueueTest {
                 bucketOrder += objectId
                 gate?.await(10, TimeUnit.SECONDS)
                 if (bucketDelayMs > 0) Thread.sleep(bucketDelayMs)
+                bucketDelays[objectId]?.let { Thread.sleep(it) }
                 val failure = bucketFailures[objectId]?.let { list -> synchronized(list) { list.removeFirstOrNull() } }
                 if (failure == "serverError") return MockResponse.Builder().code(503).build()
                 val bytes = bucket[objectId] ?: return MockResponse.Builder().code(404).build()
@@ -242,6 +245,7 @@ class DownloadQueueTest {
         val visible = id("o", 4).also { addObject(it, 100) }
         val opened = id("o", 5).also { addObject(it, 100) }
         val raised = id("o", 6).also { addObject(it, 100) }
+        bucketDelays[raised] = 300
         val queue = queue()
         gate = CountDownLatch(1)
         val running = busy.map { objectId -> async { queue.fetch(objectId, DownloadPriority.VISIBLE) } }

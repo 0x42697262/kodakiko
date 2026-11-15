@@ -29,6 +29,28 @@ class OriginalCache(
 
     fun originalObjectId(mediaId: String): String? = originalRow(mediaId)?.id
 
+    fun open(mediaId: String): OriginalHandle? {
+        val row = originalRow(mediaId) ?: return null
+        val handle = OriginalHandle(row.id, retain(row.id))
+        try {
+            if (touchIfPresent(row.id)) return handle
+            if (row.uploadState != ObjectUploadState.UPLOADED || row.localState == ObjectLocalState.UNAVAILABLE) {
+                handle.release()
+                return null
+            }
+            fetch(row.id, DownloadPriority.OPENED)
+            if (!touchIfPresent(row.id)) {
+                handle.release()
+                return null
+            }
+            enforceCap()
+            return handle
+        } catch (failure: Throwable) {
+            handle.release()
+            throw failure
+        }
+    }
+
     fun enforceCap() {
         val cap = capBytes()
         if (cap == MediaConstants.ORIGINAL_CACHE_NO_LIMIT || localOnly()) return
@@ -93,6 +115,13 @@ class OriginalCache(
             val remaining = (openCounts[objectId] ?: 1) - 1
             if (remaining <= 0) openCounts.remove(objectId) else openCounts[objectId] = remaining
         }
+    }
+
+    private fun touchIfPresent(objectId: String): Boolean = database.transaction { tx ->
+        val current = tx.objects.get(objectId)
+        if (current == null || current.localState != ObjectLocalState.PRESENT || files.size(objectId) == null) return@transaction false
+        tx.objects.put(current.copy(lastAccessAt = now()))
+        true
     }
 
     private fun originalRow(mediaId: String): ObjectRow? =
