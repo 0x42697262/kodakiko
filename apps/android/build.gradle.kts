@@ -21,6 +21,8 @@ tasks.register("verify") {
         ":shared:crypto:testAndroidHostTest",
         ":shared:contract:jvmTest",
         ":shared:contract:testAndroidHostTest",
+        ":shared:account:jvmTest",
+        ":shared:account:testAndroidHostTest",
         ":data:db:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
