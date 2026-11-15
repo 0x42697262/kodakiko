@@ -61,6 +61,7 @@ tasks.register("verify") {
         ":service:diagnostics:testDebugUnitTest",
         ":service:shareout:testDebugUnitTest",
         ":service:backup:testDebugUnitTest",
+        ":ui:core:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",

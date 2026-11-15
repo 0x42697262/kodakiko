@@ -77,3 +77,10 @@ not pinned here (single-part bases such as `` `crop.${corner}` ``, `` `toolbar.$
 the settings-DSL suffixes `.dialog`, `.switch`, `.${value}`, `.mute`); the screen tasks that build
 those widgets pin them. `maestroUncovered` lists ids used by `tests/ui/android/flows/*.yaml` that
 no v0.3.1 source file produces (`tags.field` in U-10 is stale since D-87).
+
+## Android resources
+
+`emit-android.ts` turns `strings.json` into `apps/android/ui/core/src/main/res/values/strings.xml`
+(869 strings, 21 plurals). Run `node tests/fixtures/ui-strings/emit-android.ts` after regenerating
+the fixture, and `--check` to verify the XML is current. Numbers use `%N$s` so digits stay ASCII on
+every device locale, like v0.3.1.
