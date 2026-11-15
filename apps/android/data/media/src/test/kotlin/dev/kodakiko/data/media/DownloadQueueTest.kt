@@ -57,6 +57,7 @@ class DownloadQueueTest {
     private val maxInFlight = ConcurrentHashMap<ObjectVariant, AtomicInteger>()
     private val sleeps = Collections.synchronizedList(mutableListOf<Long>())
     private var bucketDelayMs = 0L
+    private var waitForFullLanes = false
     private val bucketDelays = ConcurrentHashMap<String, Long>()
     private var offline = false
 
@@ -87,6 +88,11 @@ class DownloadQueueTest {
             try {
                 bucketOrder += objectId
                 gate?.await(10, TimeUnit.SECONDS)
+                if (waitForFullLanes) {
+                    val limit = if (variant == ObjectVariant.THUMBNAIL) 6 else 2
+                    val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5)
+                    while (inFlight.getValue(variant).get() < limit && System.nanoTime() < deadline) Thread.sleep(5)
+                }
                 if (bucketDelayMs > 0) Thread.sleep(bucketDelayMs)
                 bucketDelays[objectId]?.let { Thread.sleep(it) }
                 val failure = bucketFailures[objectId]?.let { list -> synchronized(list) { list.removeFirstOrNull() } }
@@ -235,6 +241,7 @@ class DownloadQueueTest {
     @Test
     fun thumbnailsRunSixAtATimeAndOriginalsTwo() {
         bucketDelayMs = 150
+        waitForFullLanes = true
         val thumbs = (1..10).map { id("t", it).also { objectId -> addObject(objectId, 500) } }
         val originals = (1..5).map { id("o", it).also { objectId -> addObject(objectId, 500) } }
         val queue = queue()
