@@ -1,9 +1,9 @@
 package dev.kodakiko.media
 
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import java.io.File
 
 class MovieDurationTest {
     private val fixtures: File =

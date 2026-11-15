@@ -3,24 +3,27 @@ plugins {
 }
 
 abstract class DeviceTestFixtureAssets : DefaultTask() {
-    @get:InputFile
-    @get:PathSensitive(PathSensitivity.NONE)
-    abstract val fixture: RegularFileProperty
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val fixtures: ConfigurableFileCollection
 
     @get:OutputDirectory
     abstract val output: DirectoryProperty
 
     @TaskAction
     fun copy() {
-        val source = fixture.get().asFile
         val directory = output.get().asFile
         directory.listFiles()?.forEach { it.deleteRecursively() }
-        source.copyTo(directory.resolve(source.name))
+        fixtures.forEach { source -> source.copyTo(directory.resolve(source.name)) }
     }
 }
 
 val deviceTestFixtureAssets = tasks.register<DeviceTestFixtureAssets>("deviceTestFixtureAssets") {
-    fixture.set(rootProject.layout.projectDirectory.file("../../tests/fixtures/media/video-20s.mp4"))
+    val media = rootProject.layout.projectDirectory.dir("../../tests/fixtures/media")
+    fixtures.from(
+        listOf("video-20s.mp4", "photo-gps-base.jpg", "photo-portrait.jpg", "screenshot.png", "video-gps.mov", "video-short.webm")
+            .map { media.file(it) },
+    )
 }
 
 androidComponents {
@@ -36,6 +39,7 @@ dependencies {
     api(projects.data.db)
     api(projects.data.files)
     api(projects.data.net)
+    implementation(projects.shared.media)
     api(libs.media3.exoplayer)
     api(libs.coil3.coil)
     testImplementation(libs.junit4)

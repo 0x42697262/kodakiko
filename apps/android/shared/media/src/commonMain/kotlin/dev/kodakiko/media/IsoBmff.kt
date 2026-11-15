@@ -206,3 +206,50 @@ fun readVideoMetadata(source: ByteSource): VideoMetadata {
     }
     return found.freeze()
 }
+
+private class LocatedBox(val offset: Long, val header: BoxHeader) {
+    val bodyOffset: Long get() = offset + header.headerSize
+
+    val bodyLength: Long get() = header.size - header.headerSize
+}
+
+private fun findBox(source: ByteSource, start: Long, end: Long, type: String): LocatedBox? {
+    var offset = start
+    var count = 0
+    while (count < BOX_WALK_MAX_BOXES && offset < end) {
+        val available = end - offset
+        val header = parseBoxHeader(source.read(offset, minOf(BOX_PEEK_BYTES.toLong(), available)), available)
+        if (header.type == type) return LocatedBox(offset, header)
+        offset += header.size
+        count += 1
+    }
+    return null
+}
+
+private fun allOnes(bytes: ByteArray, offset: Long, length: Int): Boolean {
+    requireRange(bytes, offset, length.toLong())
+    return (0 until length).all { byteAt(bytes, offset + it) == ByteConstants.BYTE_MASK }
+}
+
+private fun movieDurationMs(mvhdPayload: ByteArray): Long? {
+    val version1 = readUint8(mvhdPayload, 0) == MVHD_VERSION_1
+    val timescaleOffset = if (version1) MVHD_TIMESCALE_OFFSET_V1 else MVHD_TIMESCALE_OFFSET_V0
+    val durationOffset = if (version1) MVHD_DURATION_OFFSET_V1 else MVHD_DURATION_OFFSET_V0
+    val durationBytes = if (version1) MEDIA_UINT64_BYTES else MEDIA_UINT32_BYTES
+    val timescale = readUint32(mvhdPayload, timescaleOffset.toLong())
+    if (timescale == 0L || allOnes(mvhdPayload, durationOffset.toLong(), durationBytes)) return null
+    val duration = if (version1) readUint64(mvhdPayload, durationOffset.toLong()) else readUint32(mvhdPayload, durationOffset.toLong())
+    val wholeSeconds = duration / timescale
+    val remainderMs = duration % timescale * MEDIA_MS_PER_SECOND
+    val roundedRemainder = (remainderMs * ROUNDING_DOUBLE + timescale) / (timescale * ROUNDING_DOUBLE)
+    return wholeSeconds * MEDIA_MS_PER_SECOND + roundedRemainder
+}
+
+fun readMovieDurationMs(source: ByteSource): Long? =
+    try {
+        val moov = findBox(source, 0, source.size, BOX_MOOV)
+        val mvhd = moov?.let { findBox(source, it.bodyOffset, it.bodyOffset + it.bodyLength, BOX_MVHD) }
+        mvhd?.let { movieDurationMs(source.read(it.bodyOffset, minOf(it.bodyLength, MVHD_DURATION_FIELDS_BYTES.toLong()))) }
+    } catch (error: Exception) {
+        null
+    }
