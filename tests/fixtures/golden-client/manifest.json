@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "generator": "apps/client/scripts/generate-golden-client.ts",
+  "files": [
+    {
+      "path": "markdown/parse.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 25
+    },
+    {
+      "path": "markdown/toolbar.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    {
+      "path": "calendar/model.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 20
+    },
+    {
+      "path": "gallery/arrange.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 15
+    },
+    { "path": "archive/zips.json", "caseFields": ["name", "fn", "args", "result"], "minCases": 6 }
+  ]
+}
