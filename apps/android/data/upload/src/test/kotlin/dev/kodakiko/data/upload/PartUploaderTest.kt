@@ -142,7 +142,7 @@ class PartUploaderTest {
 
     @Test
     fun drainUploadsEveryQueuedJobWithAtMostThreeInFlight() = runBlocking {
-        repeat(5) { server.enqueue(ok().newBuilder().headersDelay(200, TimeUnit.MILLISECONDS).build()) }
+        repeat(5) { server.enqueue(MockResponse.Builder().code(200).headersDelay(200, TimeUnit.MILLISECONDS).build()) }
         registry.submit((1..5).map { UploadJob("obj$it", file.path, listOf(UploadPart(1, server.url("/put/$it").toString(), 0, 1_000))) })
         val started = System.nanoTime()
         uploader().drain()
