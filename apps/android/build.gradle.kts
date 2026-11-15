@@ -45,6 +45,8 @@ tasks.register("verify") {
         ":data:upload:testDebugUnitTest",
         ":data:media:testDebugUnitTest",
         ":data:net:testDebugUnitTest",
+        ":platform:device:testDebugUnitTest",
+        ":platform:location:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
