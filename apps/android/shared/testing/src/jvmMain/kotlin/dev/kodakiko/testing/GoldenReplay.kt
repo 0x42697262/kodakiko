@@ -91,6 +91,8 @@ object GoldenReplay {
 
     fun clientFunctions(path: String): Set<String> = clientCases(path).map { it.getValue("fn").jsonPrimitive.content }.toSet()
 
+    fun clientCaseNames(path: String): List<String> = clientCases(path).map { it.getValue("name").jsonPrimitive.content }
+
     fun run(path: String, adapter: GoldenAdapter) = replay(path, cases(path), adapter, null)
 
     fun run(path: String, adapter: GoldenAdapter, only: Set<String>) = replay(path, cases(path), adapter, only)

@@ -31,6 +31,11 @@
       "path": "settings/device.json",
       "caseFields": ["name", "fn", "args", "result"],
       "minCases": 25
+    },
+    {
+      "path": "api/calls.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 46
     }
   ]
 }

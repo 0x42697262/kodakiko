@@ -59,6 +59,7 @@ const REQUIRED_FUNCTIONS: Readonly<Record<string, readonly string[]>> = {
   'gallery/arrange.json': ['groupSections', 'arrangeSections', 'galleryAttributes', 'columnsFor'],
   'archive/zips.json': ['writeArchive', 'readArchive'],
   'settings/device.json': ['nativeDefaults', 'resolveStored', 'update'],
+  'api/calls.json': ['call'],
 };
 
 describe('client golden fixtures for the Kotlin port', () => {
