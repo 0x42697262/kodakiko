@@ -9,6 +9,7 @@ import dev.kodakiko.data.db.MembershipRow
 import dev.kodakiko.data.db.ObjectRow
 import dev.kodakiko.data.db.RowStoreTx
 import dev.kodakiko.data.db.StorageKeys
+import dev.kodakiko.domain.openEntryMetadata
 import dev.kodakiko.index.GalleryIndex
 import dev.kodakiko.index.IndexedEntry
 import dev.kodakiko.service.account.AccountStorage

@@ -16,6 +16,7 @@ import dev.kodakiko.data.db.EntryLocalState
 import dev.kodakiko.data.db.EntryPurpose
 import dev.kodakiko.data.db.EntryRow
 import dev.kodakiko.data.db.MembershipRow
+import dev.kodakiko.domain.openEntryMetadata
 import dev.kodakiko.index.GalleryFilter
 import dev.kodakiko.index.GalleryIndex
 import dev.kodakiko.index.GalleryScope
