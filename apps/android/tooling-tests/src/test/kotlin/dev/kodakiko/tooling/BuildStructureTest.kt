@@ -49,6 +49,7 @@ class BuildStructureTest {
             "ui" to "kodakiko.android.library",
             "app" to "kodakiko.android.application",
             "tooling-tests" to "kodakiko.jvm.tooling",
+            "e2e" to "kodakiko.android.library",
         )
         val wrong = modules.mapNotNull { module ->
             val plugin = expected.getValue(module.removePrefix(":").substringBefore(':'))
