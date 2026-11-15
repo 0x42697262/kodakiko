@@ -1,0 +1,3758 @@
+{
+  "format": 1,
+  "generator": "tests/fixtures/ui-strings/generate.ts",
+  "tagCount": 615,
+  "droppedTags": {
+    "welcome.signIn": "WelcomeScreen WebActions (web only)",
+    "welcome.signUp": "WelcomeScreen WebActions (web only)",
+    "links.copy": "Platform.OS === 'web' branches",
+    "links.copied": "Platform.OS === 'web' branch",
+    "signIn.keepSignedIn": "B-105 (web only)",
+    "settings.keepUnlocked": "B-105 (web only)",
+    "share.unsupported": "navigator.share (web only)",
+    "export.downloads": "U-20 browser download fallback (replaced by SAF)",
+    "settings.persistence": "browser storage persistence (StorageSettingsScreen non-Android branch)",
+    "settings.askPersist": "browser storage persistence (StorageSettingsScreen non-Android branch)",
+    "diagnostics.measureKdf": "D-135",
+    "diagnostics.rowStoreSelfTest": "D-135",
+    "diagnostics.fileStoreSelfTest": "D-135",
+    "tempFiles.diagnosticsList": "D-135",
+    "sync.diagnosticsUploadTest": "D-135",
+    "diagnostics.indexBenchmark": "D-135"
+  },
+  "dynamicFamilies": [
+    "features/entries/crop-sheet.tsx: `crop.${corner}`",
+    "features/entries/note-section.tsx: `toolbar.${item.action}`",
+    "features/settings/settings-ui.tsx: `${testID}.${String(choice)}`",
+    "features/sync/sync-status-banner.tsx: `sync.${model.id}`",
+    "features/video/inline-player.native.tsx: `${testID}.mute`",
+    "ui/PlaceholderScreen.tsx: `${titleKey}.screen`",
+    "ui/preferences/PreferenceList.tsx: `${item.testID}.${String(option.value)}`",
+    "ui/preferences/PreferenceList.tsx: `${item.testID}.dialog`",
+    "ui/preferences/PreferenceList.tsx: `${item.testID}.switch`"
+  ],
+  "maestroUncovered": [
+    "tags.field"
+  ],
+  "tags": [
+    {
+      "tag": "admin.copyInvite",
+      "sources": [
+        "features/admin/AdminScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "admin.createInvite",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.createInvite"
+      ]
+    },
+    {
+      "tag": "admin.error",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.error"
+      ]
+    },
+    {
+      "tag": "admin.inviteDays",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.inviteDays"
+      ]
+    },
+    {
+      "tag": "admin.inviteRow",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.inviteRow"
+      ]
+    },
+    {
+      "tag": "admin.inviteSheet",
+      "sources": [
+        "features/admin/AdminScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "admin.inviteUrl",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.inviteUrl"
+      ]
+    },
+    {
+      "tag": "admin.newInvite",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.newInvite"
+      ]
+    },
+    {
+      "tag": "admin.notAdmin",
+      "sources": [
+        "features/admin/AdminScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "admin.quota",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.quota"
+      ]
+    },
+    {
+      "tag": "admin.revoke",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.revoke"
+      ]
+    },
+    {
+      "tag": "admin.role",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.role"
+      ]
+    },
+    {
+      "tag": "admin.role.admin",
+      "sources": [
+        "features/admin/AdminScreen.tsx template"
+      ]
+    },
+    {
+      "tag": "admin.role.member",
+      "sources": [
+        "features/admin/AdminScreen.tsx template"
+      ]
+    },
+    {
+      "tag": "admin.save",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.save"
+      ]
+    },
+    {
+      "tag": "admin.screen",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.screen"
+      ]
+    },
+    {
+      "tag": "admin.segment",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.segment"
+      ]
+    },
+    {
+      "tag": "admin.stat",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.stat"
+      ]
+    },
+    {
+      "tag": "admin.useDefault",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.useDefault"
+      ]
+    },
+    {
+      "tag": "admin.userRow",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.userRow"
+      ]
+    },
+    {
+      "tag": "admin.userSheet",
+      "sources": [
+        "features/admin/AdminScreen.tsx ADMIN_IDS.userSheet"
+      ]
+    },
+    {
+      "tag": "advanced.debug",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "advanced.debugText",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "advanced.message",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "advanced.rebuild",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "advanced.reset",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "advanced.screen",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "app.loadFailed",
+      "sources": [
+        "composition/app-context.tsx testID"
+      ]
+    },
+    {
+      "tag": "app.loadFailed.screen",
+      "sources": [
+        "composition/app-context.tsx testID"
+      ]
+    },
+    {
+      "tag": "app.loadFailedClass",
+      "sources": [
+        "composition/app-context.tsx testID"
+      ]
+    },
+    {
+      "tag": "app.loading",
+      "sources": [
+        "composition/app-context.tsx testID"
+      ]
+    },
+    {
+      "tag": "app.loading.screen",
+      "sources": [
+        "composition/app-context.tsx testID"
+      ]
+    },
+    {
+      "tag": "bulk.addTag",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.cancel",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()",
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.confirmDelete",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()",
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.deletePanel",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.bulkDeletePanel"
+      ]
+    },
+    {
+      "tag": "bulk.deletePermanently",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.favorite",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "bulk.menu",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.bulkMenu"
+      ]
+    },
+    {
+      "tag": "bulk.removeFromJournal",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.removeTag",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.restore",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.result",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.bulkResult"
+      ]
+    },
+    {
+      "tag": "bulk.share",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.tagOption",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx list base ``bulk.tagOption.${name}``"
+      ]
+    },
+    {
+      "tag": "bulk.tagPanel",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.bulkTagPanel"
+      ]
+    },
+    {
+      "tag": "bulk.trash",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "bulk.unfavorite",
+      "sources": [
+        "features/entries/bulk-actions-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "calendar.day",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.calendarDay"
+      ]
+    },
+    {
+      "tag": "calendar.dayNumber",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.dayNumber"
+      ]
+    },
+    {
+      "tag": "calendar.jump",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.jumpField",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.jumpInvalid",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.jumpError"
+      ]
+    },
+    {
+      "tag": "calendar.jumpSheet",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.jumpSheet"
+      ]
+    },
+    {
+      "tag": "calendar.jumpSubmit",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.monthTitle",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.monthTitle"
+      ]
+    },
+    {
+      "tag": "calendar.next",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.pager",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "calendar.previous",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.screen",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.screen"
+      ]
+    },
+    {
+      "tag": "calendar.today",
+      "sources": [
+        "features/calendar/CalendarScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "calendar.weekday",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.weekday"
+      ]
+    },
+    {
+      "tag": "cancelDeletion.body",
+      "sources": [
+        "features/auth/CancelDeletionScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "cancelDeletion.screen",
+      "sources": [
+        "features/auth/CancelDeletionScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "cancelDeletion.signOut",
+      "sources": [
+        "features/auth/CancelDeletionScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "cancelDeletion.submit",
+      "sources": [
+        "features/auth/CancelDeletionScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "cancelDeletion.title",
+      "sources": [
+        "features/auth/CancelDeletionScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "capture.addToEntry",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.allowCamera",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.camera",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.camera"
+      ]
+    },
+    {
+      "tag": "capture.cameraPermissionBody",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.cameraUnavailable",
+      "sources": [
+        "adapters/capture/web-camera.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.cancelAdd",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.close",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.discard",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.discardPanel",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.discardPanel"
+      ]
+    },
+    {
+      "tag": "capture.flip",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testId()",
+        "adapters/capture/web-camera.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.importing",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.importing"
+      ]
+    },
+    {
+      "tag": "capture.keep",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.mode.photo",
+      "sources": [
+        "features/capture/use-capture-mode.tsx testID"
+      ]
+    },
+    {
+      "tag": "capture.mode.video",
+      "sources": [
+        "features/capture/use-capture-mode.tsx testID"
+      ]
+    },
+    {
+      "tag": "capture.next",
+      "sources": [
+        "features/capture/CaptureScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.openSettings",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.pickFromGallery",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testId()"
+      ]
+    },
+    {
+      "tag": "capture.refusals",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.refusals"
+      ]
+    },
+    {
+      "tag": "capture.removeItem",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.removeItem"
+      ]
+    },
+    {
+      "tag": "capture.screen",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.screen"
+      ]
+    },
+    {
+      "tag": "capture.shutter",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.captureShutter"
+      ]
+    },
+    {
+      "tag": "capture.systemPhoto",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testID"
+      ]
+    },
+    {
+      "tag": "capture.systemVideo",
+      "sources": [
+        "adapters/capture/capture-surface.native.tsx testID"
+      ]
+    },
+    {
+      "tag": "capture.timer",
+      "sources": [
+        "keys/capture-keys.ts CAPTURE_IDS.timer"
+      ]
+    },
+    {
+      "tag": "capture.trayItem",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.captureTrayItem"
+      ]
+    },
+    {
+      "tag": "collection.delete",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.delete"
+      ]
+    },
+    {
+      "tag": "collection.deleteConfirm",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.deleteConfirm"
+      ]
+    },
+    {
+      "tag": "collection.leave",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.leave"
+      ]
+    },
+    {
+      "tag": "collection.leaveConfirm",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.leaveConfirm"
+      ]
+    },
+    {
+      "tag": "collection.more",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.collectionMore"
+      ]
+    },
+    {
+      "tag": "collection.rename",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.rename"
+      ]
+    },
+    {
+      "tag": "collection.screen",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.collectionScreen"
+      ]
+    },
+    {
+      "tag": "collection.shareWith",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.shareWith"
+      ]
+    },
+    {
+      "tag": "collection.sheet",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.collectionSheet"
+      ]
+    },
+    {
+      "tag": "collection.subtitle",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.collectionSubtitle"
+      ]
+    },
+    {
+      "tag": "collection.title",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.collectionTitle"
+      ]
+    },
+    {
+      "tag": "compose.back",
+      "sources": [
+        "features/entries/EditPage.tsx testId()"
+      ]
+    },
+    {
+      "tag": "compose.change",
+      "sources": [
+        "features/entries/EditPage.tsx testId()"
+      ]
+    },
+    {
+      "tag": "compose.failure",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.composeFailure"
+      ]
+    },
+    {
+      "tag": "compose.note",
+      "sources": [
+        "features/entries/note-section.tsx testId()"
+      ]
+    },
+    {
+      "tag": "compose.removeItem",
+      "sources": [
+        "features/entries/media-menus.tsx testId()"
+      ]
+    },
+    {
+      "tag": "compose.save",
+      "sources": [
+        "features/entries/EditPage.tsx testId()"
+      ]
+    },
+    {
+      "tag": "compose.screen",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.composeScreen"
+      ]
+    },
+    {
+      "tag": "compose.whenValue",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.composeWhenValue"
+      ]
+    },
+    {
+      "tag": "connect.action",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.done",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.invite",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.password",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.screen",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.server",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "connect.username",
+      "sources": [
+        "features/settings/ConnectServerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "crop.apply",
+      "sources": [
+        "features/entries/crop-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "crop.area",
+      "sources": [
+        "features/entries/crop-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "crop.cancel",
+      "sources": [
+        "features/entries/crop-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "crop.failed",
+      "sources": [
+        "features/entries/crop-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "crop.sheet",
+      "sources": [
+        "features/entries/crop-sheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "day.back",
+      "sources": [
+        "features/calendar/DayScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "day.empty",
+      "sources": [
+        "features/calendar/DayScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "day.screen",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.dayScreen"
+      ]
+    },
+    {
+      "tag": "day.title",
+      "sources": [
+        "keys/calendar-ids.ts CALENDAR_IDS.dayTitle"
+      ]
+    },
+    {
+      "tag": "details.screen",
+      "sources": [
+        "features/viewer/EntryDetailsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "diagnostics.line",
+      "sources": [
+        "features/diagnostics/DiagnosticsScreen.tsx list base ``diagnostics.line.${position}``"
+      ]
+    },
+    {
+      "tag": "diagnostics.runVectors",
+      "sources": [
+        "DiagnosticsScreen testID={action.key}"
+      ]
+    },
+    {
+      "tag": "diagnostics.screen",
+      "sources": [
+        "features/diagnostics/DiagnosticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.addFromDevice",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.addNote",
+      "sources": [
+        "features/entries/note-section.tsx testId()"
+      ]
+    },
+    {
+      "tag": "edit.caption",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.captionField",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.captionSave",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.captionSheet",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.captionText",
+      "sources": [
+        "features/entries/EditPage.tsx list base ``edit.captionText.${position}``"
+      ]
+    },
+    {
+      "tag": "edit.creating",
+      "sources": [
+        "features/entries/NewEntryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.creatingSpinner",
+      "sources": [
+        "features/entries/NewEntryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.crop",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.dot",
+      "sources": [
+        "features/entries/page-dots.tsx list base ``edit.dot.${index}``"
+      ]
+    },
+    {
+      "tag": "edit.dots",
+      "sources": [
+        "features/entries/page-dots.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.editNote",
+      "sources": [
+        "features/entries/note-section.tsx testId()"
+      ]
+    },
+    {
+      "tag": "edit.failed",
+      "sources": [
+        "features/entries/EditPage.tsx testId()"
+      ]
+    },
+    {
+      "tag": "edit.favorite",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.inlineVideo",
+      "sources": [
+        "features/entries/EditPage.tsx list base ``edit.inlineVideo.${position}``"
+      ]
+    },
+    {
+      "tag": "edit.loading",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.mediaMenu",
+      "sources": [
+        "features/entries/EditPage.tsx list base ``edit.mediaMenu.${position}``",
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.noteDone",
+      "sources": [
+        "features/entries/note-section.tsx testId()"
+      ]
+    },
+    {
+      "tag": "edit.page",
+      "sources": [
+        "features/entries/EditPage.tsx EDIT_PAGE_IDS.page"
+      ]
+    },
+    {
+      "tag": "edit.pager",
+      "sources": [
+        "features/entries/EditPage.tsx EDIT_PAGE_IDS.pager"
+      ]
+    },
+    {
+      "tag": "edit.paste",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.play",
+      "sources": [
+        "features/entries/EditPage.tsx list base ``edit.play.${position}``"
+      ]
+    },
+    {
+      "tag": "edit.recordVideo",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.recordVoice",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.removeConfirm",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.removeSheet",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.saveToDevice",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.screen",
+      "sources": [
+        "features/entries/EditPage.tsx EDIT_PAGE_IDS.screen"
+      ]
+    },
+    {
+      "tag": "edit.setCover",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.share",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.shareItem",
+      "sources": [
+        "features/entries/media-menus.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.shareSheet",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.takePhoto",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.trash",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "edit.view",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "entry.saved",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.savedBanner"
+      ]
+    },
+    {
+      "tag": "entryView.back",
+      "sources": [
+        "features/gallery/EntryPlaceholderScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "entryView.screen",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.entryScreen"
+      ]
+    },
+    {
+      "tag": "entryView.title",
+      "sources": [
+        "features/gallery/EntryPlaceholderScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "errors.generic",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.invalidCredentials",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.inviteInvalid",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.kdfUnavailable",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.notHttps",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.notKodakiko",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.rateLimited",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.recoveryWordsInvalid",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)",
+        "features/auth/error-text.ts testID"
+      ]
+    },
+    {
+      "tag": "errors.unreachable",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.unsafeServer",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.usernameInvalid",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.usernameTaken",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "errors.wrongPassword",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "export.cancel",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.encrypt",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.message",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.passphrase",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.passphraseConfirm",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.progress",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.skipped",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.start",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "export.summary",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "filter.apply",
+      "sources": [
+        "features/gallery/filter-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "filter.from",
+      "sources": [
+        "features/gallery/filter-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "filter.reset",
+      "sources": [
+        "features/gallery/filter-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "filter.sheet",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.filterSheet"
+      ]
+    },
+    {
+      "tag": "filter.to",
+      "sources": [
+        "features/gallery/filter-sheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.actions",
+      "sources": [
+        "features/calendar/DayScreen.tsx testId()",
+        "features/gallery/GalleryScreen.tsx testId()",
+        "features/gallery/TrashScreen.tsx testId()",
+        "features/sharing/CollectionScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.actionsSheet",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.actionsSheet"
+      ]
+    },
+    {
+      "tag": "gallery.cancelSelection",
+      "sources": [
+        "features/calendar/DayScreen.tsx testId()",
+        "features/gallery/GalleryScreen.tsx testId()",
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.capture",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.galleryFab"
+      ]
+    },
+    {
+      "tag": "gallery.clearAll",
+      "sources": [
+        "features/gallery/filter-chips.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.clearFilters",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.count",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.dayHeader",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.dayHeader"
+      ]
+    },
+    {
+      "tag": "gallery.empty",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()",
+        "features/sharing/CollectionScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.filter",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.filterChip",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.filterChip"
+      ]
+    },
+    {
+      "tag": "gallery.filterChipRemove",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.filterChipRemove"
+      ]
+    },
+    {
+      "tag": "gallery.more",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.noMatches",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.noticeGone",
+      "sources": [
+        "features/entries/notice-snackbars.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.noticeTrashed",
+      "sources": [
+        "features/entries/notice-snackbars.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.noticeUndo",
+      "sources": [
+        "features/entries/notice-snackbars.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.opening",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()",
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.opening.busy",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID",
+        "features/gallery/TrashScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.random",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.screen",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.screen"
+      ]
+    },
+    {
+      "tag": "gallery.search",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.searchField",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.selectAll",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.selected",
+      "sources": [
+        "features/calendar/DayScreen.tsx testId()",
+        "features/gallery/GalleryScreen.tsx testId()",
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.tagTab",
+      "sources": [
+        "features/gallery/tag-tabs.tsx list base ``gallery.tagTab.${position}``"
+      ]
+    },
+    {
+      "tag": "gallery.tagTab.all",
+      "sources": [
+        "features/gallery/tag-tabs.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.tagTab.favorites",
+      "sources": [
+        "features/gallery/tag-tabs.tsx testID"
+      ]
+    },
+    {
+      "tag": "gallery.thumbnailPlaceholder",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.thumbnailPlaceholder"
+      ]
+    },
+    {
+      "tag": "gallery.tile",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.galleryTile"
+      ]
+    },
+    {
+      "tag": "gallery.tileCheckbox",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.tileCheckbox"
+      ]
+    },
+    {
+      "tag": "gallery.tilePending",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.galleryTilePending"
+      ]
+    },
+    {
+      "tag": "gallery.tileUnreadable",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.tileUnreadable"
+      ]
+    },
+    {
+      "tag": "gallery.title",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "gallery.trash",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "home.signOut",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "home.signedInAs",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.error",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.failed",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.passphrase",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.progress",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.screen",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.start",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "import.summary",
+      "sources": [
+        "features/settings/ImportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "invite.screen",
+      "sources": [
+        "features/auth/InviteScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "invite.title",
+      "sources": [
+        "features/auth/InviteScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "links.cancel",
+      "sources": [
+        "features/links/LinkCreateScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "links.copyRow",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.copyRow"
+      ]
+    },
+    {
+      "tag": "links.create",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.create"
+      ]
+    },
+    {
+      "tag": "links.createScreen",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.createScreen"
+      ]
+    },
+    {
+      "tag": "links.done",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.done"
+      ]
+    },
+    {
+      "tag": "links.entryAll",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.entryAll"
+      ]
+    },
+    {
+      "tag": "links.entryNone",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.entryNone"
+      ]
+    },
+    {
+      "tag": "links.error",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.error"
+      ]
+    },
+    {
+      "tag": "links.expiry",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.expiry"
+      ]
+    },
+    {
+      "tag": "links.includeNotes",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.includeNotes"
+      ]
+    },
+    {
+      "tag": "links.listEmpty",
+      "sources": [
+        "features/links/LinksListScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "links.listScreen",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.listScreen"
+      ]
+    },
+    {
+      "tag": "links.mediaToggle",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.mediaToggle"
+      ]
+    },
+    {
+      "tag": "links.offHint",
+      "sources": [
+        "features/sharing/ShareEntriesSheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "links.progress",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.progress"
+      ]
+    },
+    {
+      "tag": "links.revokeConfirm",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.revokeConfirm"
+      ]
+    },
+    {
+      "tag": "links.revokeRow",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.revokeRow"
+      ]
+    },
+    {
+      "tag": "links.revokeSheet",
+      "sources": [
+        "features/links/LinksListScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "links.row",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.row"
+      ]
+    },
+    {
+      "tag": "links.selectAll",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.selectAll"
+      ]
+    },
+    {
+      "tag": "links.selectNone",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.selectNone"
+      ]
+    },
+    {
+      "tag": "links.share",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.share"
+      ]
+    },
+    {
+      "tag": "links.title",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.title"
+      ]
+    },
+    {
+      "tag": "links.url",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.url"
+      ]
+    },
+    {
+      "tag": "links.warning",
+      "sources": [
+        "features/links/LinkCreateScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.confirm",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.create",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.password",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.screen",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.title",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.understand",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.username",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "localSetup.warning",
+      "sources": [
+        "features/auth/LocalSetupScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "location.coordinates",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.locationCoordinates"
+      ]
+    },
+    {
+      "tag": "location.open",
+      "sources": [
+        "features/entries/location-row.tsx testId()",
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "location.remove",
+      "sources": [
+        "features/entries/location-row.tsx testId()"
+      ]
+    },
+    {
+      "tag": "location.source",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.locationSource"
+      ]
+    },
+    {
+      "tag": "lock.cancel",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.forgot",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.lockNow",
+      "sources": [
+        "features/gallery/GalleryScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "lock.lockedAs",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.password",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.screen",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.signOut",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.signOutConfirm",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.signOutSheet",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.title",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.unlockDevice",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "lock.unlockPassword",
+      "sources": [
+        "features/auth/LockScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "markdown.cancel",
+      "sources": [
+        "features/markdown/markdown-view.tsx testId()"
+      ]
+    },
+    {
+      "tag": "markdown.link",
+      "sources": [
+        "features/markdown/markdown-view.tsx MARKDOWN_IDS.link"
+      ]
+    },
+    {
+      "tag": "markdown.linkSheet",
+      "sources": [
+        "features/markdown/markdown-view.tsx MARKDOWN_IDS.linkSheet"
+      ]
+    },
+    {
+      "tag": "markdown.linkUrl",
+      "sources": [
+        "features/markdown/markdown-view.tsx MARKDOWN_IDS.linkUrl"
+      ]
+    },
+    {
+      "tag": "markdown.openLink",
+      "sources": [
+        "features/markdown/markdown-view.tsx testId()"
+      ]
+    },
+    {
+      "tag": "markdown.view",
+      "sources": [
+        "features/markdown/markdown-view.tsx MARKDOWN_IDS.view"
+      ]
+    },
+    {
+      "tag": "more.about",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.dataStorage",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.help",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.hideShared",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.lockNow",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.pauseSync",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.screen",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.settings",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.statistics",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.tags",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "more.trash",
+      "sources": [
+        "features/more/MoreScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "onThisDay.card",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.onThisDayCard"
+      ]
+    },
+    {
+      "tag": "onThisDay.group",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.onThisDayGroup"
+      ]
+    },
+    {
+      "tag": "onThisDay.tile",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.onThisDayTile"
+      ]
+    },
+    {
+      "tag": "onThisDay.title",
+      "sources": [
+        "features/gallery/on-this-day-card.tsx testId()"
+      ]
+    },
+    {
+      "tag": "password.equalsUsername",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "password.mismatch",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID",
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "password.singleRepeatedCharacter",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "password.tooShort",
+      "sources": [
+        "features/auth/error-text.ts (error banner testID = text key)"
+      ]
+    },
+    {
+      "tag": "pullToSync",
+      "sources": [
+        "features/sync/use-pull-to-sync.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.confirm",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.newPassword",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.screen",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.submit",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.title",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.username",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recover.words",
+      "sources": [
+        "features/auth/RecoverScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.body",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.confirmField",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.recoveryKeyConfirmField"
+      ]
+    },
+    {
+      "tag": "recoveryKey.confirmLabel",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.recoveryKeyConfirmLabel"
+      ]
+    },
+    {
+      "tag": "recoveryKey.confirmSubmit",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.confirmTitle",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.confirmWrong",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.done",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.screen",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.title",
+      "sources": [
+        "features/auth/RecoveryKeyScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "recoveryKey.word",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.recoveryKeyWord"
+      ]
+    },
+    {
+      "tag": "server.screen",
+      "sources": [
+        "features/settings/ServerKeysScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.aboutScreen",
+      "sources": [
+        "features/settings/AboutScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.accountScreen",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.appVersion",
+      "sources": [
+        "features/settings/AboutScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.appearanceScreen",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.autoLock",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.autoplay",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.autoplayMobile",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.badge",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx list base ``settings.badge.${key}``",
+        "features/settings/GallerySettingsScreen.tsx list base ``settings.badge.${key}``"
+      ]
+    },
+    {
+      "tag": "settings.biometric",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.cacheCap",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.cameraApp",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.cancel",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID",
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.captureScreen",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.changeServer",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.changeServerConfirm",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.changeServerSheet",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.clearConfirm",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.clearOriginals",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.clearSheet",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.columnsLandscape",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.columnsPortrait",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.confirmPassword",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.confirmTrash",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.currentPassword",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.dateFormat",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.deleteConfirm",
+      "sources": [
+        "features/settings/DeleteAccountScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.deletePassword",
+      "sources": [
+        "features/settings/DeleteAccountScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.deleteScreen",
+      "sources": [
+        "features/settings/DeleteAccountScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.deleteUsername",
+      "sources": [
+        "features/settings/DeleteAccountScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.displayMode",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx list base ``settings.displayMode.${mode.key}``",
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.dynamicColor",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.encryptThumbnails",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.error",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID",
+        "features/settings/DeleteAccountScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.exportScreen",
+      "sources": [
+        "features/settings/ExportScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.failedCount",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.fullScreen",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.galleryScreen",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.groupByDay",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.haptics",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.hideBarsOnScroll",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.hideNotePreviews",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.hideShared",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.holdMax",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.holdToRecord",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.keepScreenOn",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.largeThreshold",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.lastSynced",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.licensesEmpty",
+      "sources": [
+        "features/settings/AboutScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.localOnly",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.location",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.locationDenied",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.newPassword",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.onThisDay",
+      "sources": [
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.passwordResult",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.passwordScreen",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.passwordSecuring",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.passwordSubmit",
+      "sources": [
+        "features/settings/PasswordScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.pureBlack",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.recoveryDone",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.recoveryPassword",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.recoverySheet",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.recoveryShow",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.recoveryWords",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.relativeDates",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.result",
+      "sources": [
+        "features/settings/SettingsScreen.tsx list base ``settings.result.${position}``"
+      ]
+    },
+    {
+      "tag": "settings.retryFailed",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.about",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.account",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.admin",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.advanced",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.appearance",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.capture",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.connect",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.deleteAccount",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.export",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.gallery",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.import",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.links",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.lockNow",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.password",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.recovery",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.security",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.server",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.signOut",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.storage",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.sync",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.row.tags",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.screen",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.search",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.searchField",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.secureScreen",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.securityCode",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.securityCodeOwn"
+      ]
+    },
+    {
+      "tag": "settings.securityScreen",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.server",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.serverVersion",
+      "sources": [
+        "features/settings/AboutScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.showCounts",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx testID",
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.showTagTabs",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx testID",
+        "features/settings/GallerySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.signOutConfirm",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.signOutSheet",
+      "sources": [
+        "features/settings/SettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.startCamera",
+      "sources": [
+        "features/settings/CaptureSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.startScreen",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.storageScreen",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.storageUse",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.syncConnect",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.syncLocalOnly",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.syncNow",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.syncScreen",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.technicalDetails",
+      "sources": [
+        "features/settings/AdvancedSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.theme",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.thumbnailConfirm",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.thumbnailProgress",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.thumbnailSheet",
+      "sources": [
+        "features/settings/SecuritySettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.timeFormat",
+      "sources": [
+        "features/settings/AppearanceSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.usageOriginals",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.usagePending",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.usagePinned",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.usageThumbnails",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.username",
+      "sources": [
+        "features/settings/AccountSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.waiting",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.waitingWifi",
+      "sources": [
+        "features/settings/SyncSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "settings.wifiOnly",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.cancel",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.cancelShare"
+      ]
+    },
+    {
+      "tag": "share.confirm",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.confirmShare"
+      ]
+    },
+    {
+      "tag": "share.failed",
+      "sources": [
+        "features/sharing/ShareSheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.find",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.find"
+      ]
+    },
+    {
+      "tag": "share.item",
+      "sources": [
+        "features/sharing/ShareSheet.tsx list base ``share.item.${index}``"
+      ]
+    },
+    {
+      "tag": "share.leavesEncryption",
+      "sources": [
+        "features/sharing/ShareSheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.picker",
+      "sources": [
+        "features/sharing/ShareSheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.recipientRow",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.recipientRow"
+      ]
+    },
+    {
+      "tag": "share.remove",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.removeRecipient"
+      ]
+    },
+    {
+      "tag": "share.screen",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.shareScreen"
+      ]
+    },
+    {
+      "tag": "share.securityCode",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.securityCode"
+      ]
+    },
+    {
+      "tag": "share.send",
+      "sources": [
+        "features/sharing/ShareSheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.stopConfirm",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.stopConfirm"
+      ]
+    },
+    {
+      "tag": "share.text",
+      "sources": [
+        "features/sharing/ShareSheet.tsx list base ``share.text.${choice.key}``"
+      ]
+    },
+    {
+      "tag": "share.tooBig",
+      "sources": [
+        "features/sharing/ShareSheet.tsx testID"
+      ]
+    },
+    {
+      "tag": "share.username",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.username"
+      ]
+    },
+    {
+      "tag": "shareEntries.addTo",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.addTo"
+      ]
+    },
+    {
+      "tag": "shareEntries.createLink",
+      "sources": [
+        "features/links/links-ids.ts LINK_IDS.createFromSheet"
+      ]
+    },
+    {
+      "tag": "shareEntries.journal",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.journalRow"
+      ]
+    },
+    {
+      "tag": "shareEntries.newJournal",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.newJournal"
+      ]
+    },
+    {
+      "tag": "shareEntries.result",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.shareResult"
+      ]
+    },
+    {
+      "tag": "shareEntries.sheet",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.shareSheet"
+      ]
+    },
+    {
+      "tag": "shared.back",
+      "sources": [
+        "features/admin/AdminScreen.tsx testID",
+        "features/links/LinksListScreen.tsx testID",
+        "features/sharing/CollectionScreen.tsx testId()",
+        "features/sharing/ShareScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "shared.cancel",
+      "sources": [
+        "features/sharing/SharedScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.create",
+      "sources": [
+        "features/sharing/ShareEntriesSheet.tsx testId()",
+        "features/sharing/SharedScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.emptyMine",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.emptyMine"
+      ]
+    },
+    {
+      "tag": "shared.emptyWithMe",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.emptyWithMe"
+      ]
+    },
+    {
+      "tag": "shared.error",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.error"
+      ]
+    },
+    {
+      "tag": "shared.flagOff",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.flagOff"
+      ]
+    },
+    {
+      "tag": "shared.mineRow",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.mineRow"
+      ]
+    },
+    {
+      "tag": "shared.nameField",
+      "sources": [
+        "features/sharing/CollectionScreen.tsx testId()",
+        "features/sharing/ShareEntriesSheet.tsx testId()",
+        "features/sharing/SharedScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.new",
+      "sources": [
+        "features/sharing/SharedScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.newSheet",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.newSheet"
+      ]
+    },
+    {
+      "tag": "shared.save",
+      "sources": [
+        "features/sharing/CollectionScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.screen",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.screen"
+      ]
+    },
+    {
+      "tag": "shared.sharingOffHint",
+      "sources": [
+        "features/sharing/ShareEntriesSheet.tsx testId()"
+      ]
+    },
+    {
+      "tag": "shared.withMeRow",
+      "sources": [
+        "features/sharing/sharing-ids.ts SHARING_IDS.withMeRow"
+      ]
+    },
+    {
+      "tag": "sheet.columns",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx list base ``sheet.columns.${step}``"
+      ]
+    },
+    {
+      "tag": "sheet.filter",
+      "sources": [
+        "features/gallery/filter-sheet.tsx list base ``sheet.filter.${row.key}``"
+      ]
+    },
+    {
+      "tag": "sheet.group",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx list base ``sheet.group.${group.key}``"
+      ]
+    },
+    {
+      "tag": "sheet.sort",
+      "sources": [
+        "features/gallery/filter-sheet.tsx list base ``sheet.sort.${row.key}``"
+      ]
+    },
+    {
+      "tag": "sheet.tab",
+      "sources": [
+        "features/gallery/sheet-tabs.tsx list base ``sheet.tab.${tab.key}``"
+      ]
+    },
+    {
+      "tag": "signIn.deletionScheduled",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.forgot",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.password",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.screen",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.submit",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.title",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signIn.username",
+      "sources": [
+        "features/auth/SignInScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.confirm",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.invite",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.password",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.screen",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.securing",
+      "sources": [
+        "features/auth/SecuringScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.securing.screen",
+      "sources": [
+        "features/auth/SecuringScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.securingDetail",
+      "sources": [
+        "features/auth/SecuringScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.submit",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.title",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "signUp.username",
+      "sources": [
+        "features/auth/SignUpScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.deviceCard",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.journalCard",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.mediaCard",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.overview",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.perMonth",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.perYear",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.screen",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.serverCard",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "stats.syncCard",
+      "sources": [
+        "features/more/StatisticsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "storage.device",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "storage.location",
+      "sources": [
+        "features/settings/StorageSettingsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "sync.allowNotifications",
+      "sources": [
+        "features/sync/sync-status-banner.tsx testId()"
+      ]
+    },
+    {
+      "tag": "sync.dead",
+      "sources": [
+        "sync-status-banner testID `sync.${model.id}` (SyncBannerId)"
+      ]
+    },
+    {
+      "tag": "sync.offline",
+      "sources": [
+        "sync-status-banner testID `sync.${model.id}` (SyncBannerId)"
+      ]
+    },
+    {
+      "tag": "sync.retry",
+      "sources": [
+        "features/sync/sync-status-banner.tsx testId()"
+      ]
+    },
+    {
+      "tag": "sync.waitingForWifi",
+      "sources": [
+        "sync-status-banner testID `sync.${model.id}` (SyncBannerId)"
+      ]
+    },
+    {
+      "tag": "tabs.calendar",
+      "sources": [
+        "features/navigation/material-tab-bar.tsx testId()"
+      ]
+    },
+    {
+      "tag": "tabs.gallery",
+      "sources": [
+        "features/navigation/material-tab-bar.tsx testId()"
+      ]
+    },
+    {
+      "tag": "tabs.more",
+      "sources": [
+        "features/navigation/material-tab-bar.tsx testID"
+      ]
+    },
+    {
+      "tag": "tabs.shared",
+      "sources": [
+        "features/navigation/material-tab-bar.tsx testId()"
+      ]
+    },
+    {
+      "tag": "tags.add",
+      "sources": [
+        "features/tags/TagsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.chip",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.tagChip"
+      ]
+    },
+    {
+      "tag": "tags.choose",
+      "sources": [
+        "features/tags/tag-picker.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.confirmDelete",
+      "sources": [
+        "features/tags/TagsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.delete",
+      "sources": [
+        "features/tags/TagsScreen.tsx list base ``tags.delete.${position}``"
+      ]
+    },
+    {
+      "tag": "tags.done",
+      "sources": [
+        "features/tags/tag-picker.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.down",
+      "sources": [
+        "features/tags/TagsScreen.tsx list base ``tags.down.${position}``"
+      ]
+    },
+    {
+      "tag": "tags.editTags",
+      "sources": [
+        "features/tags/tag-picker.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.nameField",
+      "sources": [
+        "features/tags/TagsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.option",
+      "sources": [
+        "features/tags/tag-picker.tsx list base ``tags.option.${tag}``"
+      ]
+    },
+    {
+      "tag": "tags.picker",
+      "sources": [
+        "features/tags/tag-picker.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.remove",
+      "sources": [
+        "keys/entry-ids.ts ENTRY_IDS.tagRemove"
+      ]
+    },
+    {
+      "tag": "tags.rename",
+      "sources": [
+        "features/tags/TagsScreen.tsx list base ``tags.rename.${position}``"
+      ]
+    },
+    {
+      "tag": "tags.row",
+      "sources": [
+        "features/tags/TagsScreen.tsx list base ``tags.row.${position}``"
+      ]
+    },
+    {
+      "tag": "tags.save",
+      "sources": [
+        "features/tags/TagsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.screen",
+      "sources": [
+        "features/tags/TagsScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "tags.up",
+      "sources": [
+        "features/tags/TagsScreen.tsx list base ``tags.up.${position}``"
+      ]
+    },
+    {
+      "tag": "timeEditor.date",
+      "sources": [
+        "features/entries/time-editor.tsx testId()"
+      ]
+    },
+    {
+      "tag": "timeEditor.done",
+      "sources": [
+        "features/entries/time-editor.tsx testId()"
+      ]
+    },
+    {
+      "tag": "timeEditor.invalid",
+      "sources": [
+        "features/entries/time-editor.tsx testId()"
+      ]
+    },
+    {
+      "tag": "timeEditor.reset",
+      "sources": [
+        "features/entries/time-editor.tsx testId()"
+      ]
+    },
+    {
+      "tag": "timeEditor.time",
+      "sources": [
+        "features/entries/time-editor.tsx testId()"
+      ]
+    },
+    {
+      "tag": "trash.back",
+      "sources": [
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "trash.empty",
+      "sources": [
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "trash.retention",
+      "sources": [
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "trash.screen",
+      "sources": [
+        "keys/gallery-ids.ts GALLERY_IDS.trashScreen"
+      ]
+    },
+    {
+      "tag": "trash.title",
+      "sources": [
+        "features/gallery/TrashScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "video.close",
+      "sources": [
+        "features/video/VideoPlayerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "video.player",
+      "sources": [
+        "constants/video-ui.ts VIDEO_IDS.view"
+      ]
+    },
+    {
+      "tag": "video.preparing",
+      "sources": [
+        "constants/video-ui.ts VIDEO_IDS.preparing"
+      ]
+    },
+    {
+      "tag": "video.problem",
+      "sources": [
+        "constants/video-ui.ts VIDEO_IDS.problem"
+      ]
+    },
+    {
+      "tag": "video.retry",
+      "sources": [
+        "features/video/VideoPlayerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "video.screen",
+      "sources": [
+        "constants/video-ui.ts VIDEO_IDS.screen"
+      ]
+    },
+    {
+      "tag": "viewer.addMedia",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.back",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.caption",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "viewer.confirmSheet",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.confirmSheet"
+      ]
+    },
+    {
+      "tag": "viewer.deletePermanently",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.detailsAction",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "viewer.downloadFailed",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.downloadFailed"
+      ]
+    },
+    {
+      "tag": "viewer.downloading",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.downloading"
+      ]
+    },
+    {
+      "tag": "viewer.edit",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.favorite",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "viewer.inTrash",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.inlineVideo",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx list base ``viewer.inlineVideo.${position}``"
+      ]
+    },
+    {
+      "tag": "viewer.more",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.moreSheet",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.moreSheet"
+      ]
+    },
+    {
+      "tag": "viewer.page",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.viewerPage"
+      ]
+    },
+    {
+      "tag": "viewer.pageIndicator",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.viewerPageIndicator"
+      ]
+    },
+    {
+      "tag": "viewer.play",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.restore",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.retry",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.screen",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.screen"
+      ]
+    },
+    {
+      "tag": "viewer.share",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.shareAction",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "viewer.sharedBy",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.sharedBy"
+      ]
+    },
+    {
+      "tag": "viewer.sharingOff",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.showingPreview",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.previewLabel"
+      ]
+    },
+    {
+      "tag": "viewer.tagChip",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.tagChip"
+      ]
+    },
+    {
+      "tag": "viewer.time",
+      "sources": [
+        "features/viewer/constants.ts VIEWER_IDS.time"
+      ]
+    },
+    {
+      "tag": "viewer.trash",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.unreadable",
+      "sources": [
+        "features/viewer/EntryViewerScreen.tsx testId()"
+      ]
+    },
+    {
+      "tag": "viewer.zoomable",
+      "sources": [
+        "keys/test-ids.ts TEST_IDS.viewerZoomable"
+      ]
+    },
+    {
+      "tag": "voice.duration",
+      "sources": [
+        "features/voice/voice-notes.tsx list base ``voice.duration.${position}``"
+      ]
+    },
+    {
+      "tag": "voice.elapsed",
+      "sources": [
+        "features/voice/voice-notes.tsx testID"
+      ]
+    },
+    {
+      "tag": "voice.failed",
+      "sources": [
+        "features/entries/EditPage.tsx testID"
+      ]
+    },
+    {
+      "tag": "voice.list",
+      "sources": [
+        "features/voice/voice-notes.tsx testID"
+      ]
+    },
+    {
+      "tag": "voice.play",
+      "sources": [
+        "features/voice/voice-notes.tsx list base ``voice.play.${position}``"
+      ]
+    },
+    {
+      "tag": "voice.recordingTile",
+      "sources": [
+        "features/voice/voice-notes.tsx testID"
+      ]
+    },
+    {
+      "tag": "voice.remove",
+      "sources": [
+        "features/voice/voice-notes.tsx list base ``voice.remove.${position}``"
+      ]
+    },
+    {
+      "tag": "voice.stop",
+      "sources": [
+        "features/voice/voice-notes.tsx testID"
+      ]
+    },
+    {
+      "tag": "voice.tile",
+      "sources": [
+        "features/voice/voice-notes.tsx list base ``voice.tile.${position}``"
+      ]
+    },
+    {
+      "tag": "welcome.continue",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "welcome.local",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "welcome.screen",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "welcome.serverLabel",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "welcome.subtitle",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    },
+    {
+      "tag": "welcome.title",
+      "sources": [
+        "features/auth/WelcomeScreen.tsx testID"
+      ]
+    }
+  ]
+}

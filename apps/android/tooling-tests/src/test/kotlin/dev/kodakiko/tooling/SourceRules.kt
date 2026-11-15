@@ -46,6 +46,51 @@ object SourceRules {
             !path.contains("/build-logic/") &&
             !path.substringAfterLast('/').endsWith("Constants.kt")
 
+    private const val PROPERTY_LOOKBEHIND = 200
+
+    private val uiTextCalls = setOf("Text", "BasicText", "testTag")
+
+    private val uiTextProperties = Regex("""\b(contentDescription|testTag)\s*=\s*$""")
+
+    fun uiLiteralScope(path: String): Boolean =
+        path.endsWith(".kt") && Regex("""^apps/android/ui/.+/src/main/""").containsMatchIn(path)
+
+    private fun masked(text: String, strings: List<StringLiteral>): String {
+        val chars = text.toCharArray()
+        for (literal in strings.filterNot { it.nested }) {
+            for (offset in literal.start until literal.end) if (chars[offset] != '\n') chars[offset] = '_'
+        }
+        return String(chars)
+    }
+
+    private fun enclosingCall(code: String, from: Int): String? {
+        var depth = 0
+        var index = from - 1
+        while (index >= 0) {
+            when (code[index]) {
+                ')', ']', '}' -> depth++
+                '[', '{' -> if (depth == 0) return null else depth--
+                '(' -> if (depth == 0) {
+                    val before = code.substring(0, index).trimEnd()
+                    return Regex("""([A-Za-z_][A-Za-z0-9_]*)$""").find(before)?.groupValues?.get(1)
+                } else {
+                    depth--
+                }
+            }
+            index--
+        }
+        return null
+    }
+
+    fun uiLiterals(path: String, text: String): List<Violation> {
+        if (!uiLiteralScope(path)) return emptyList()
+        val strings = KotlinLexer.lex(text).strings
+        val code = masked(text, strings)
+        return strings.filterNot { it.nested }.filter { literal ->
+            uiTextProperties.containsMatchIn(code.substring(maxOf(0, literal.start - PROPERTY_LOOKBEHIND), literal.start)) || enclosingCall(code, literal.start) in uiTextCalls
+        }.map { Violation(path, it.line, "UiLiteral", text.substring(it.start, it.end).lineSequence().first().take(80)) }
+    }
+
     fun magicNumbers(path: String, text: String): List<Violation> =
         if (!magicNumberScope(path)) {
             emptyList()

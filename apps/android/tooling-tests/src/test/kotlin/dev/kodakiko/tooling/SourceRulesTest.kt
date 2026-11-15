@@ -20,6 +20,69 @@ class SourceRulesTest {
         violations.map { it.toString() }.shouldBeEmpty()
     }
 
+    private val ui = "apps/android/ui/feature/gallery/src/main/kotlin/dev/kodakiko/ui/feature/gallery/GalleryContent.kt"
+
+    @Test
+    fun repositoryHasNoLiteralUiTextInUiSources() {
+        val violations = Repo.kotlinFiles().flatMap { SourceRules.uiLiterals(Repo.relative(it), it.readText()) }
+        violations.map { it.toString() }.shouldBeEmpty()
+    }
+
+    @Test
+    fun literalTextDescriptionsAndTagsAreFlaggedInUiSources() {
+        val code = listOf(
+            "Text(\"Hello\")",
+            "Text(text = \"Hello\")",
+            "Text(modifier = Modifier.padding(4.dp), text = \"Hi\")",
+            "Text(\n    \"Wrapped\",\n)",
+            "Text(\"Count: \$count\")",
+            "Text(\"Total \" + total)",
+            "Text(\"\"\"raw\"\"\")",
+            "Text(if (on) \"On\" else stringResource(R.string.off))",
+            "BasicText(\"basic\")",
+            "Icon(Icons.Default.Close, contentDescription = \"Close\")",
+            "Box(Modifier.semantics { contentDescription = \"Photo\" })",
+            "Box(Modifier.testTag(\"gallery.tile\"))",
+            "Box(Modifier.semantics { testTag = \"gallery.screen\" })",
+            "Text(stringResource(R.string.ok), modifier = Modifier.testTag(\"ok\"))",
+        ).joinToString("\n")
+        SourceRules.uiLiterals(ui, code).map { it.line } shouldBe listOf(1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+        SourceRules.uiLiterals(ui, code).map { it.text } shouldBe listOf(
+            "\"Hello\"", "\"Hello\"", "\"Hi\"", "\"Wrapped\"", "\"Count: \$count\"", "\"Total \"", "\"\"\"raw\"\"\"", "\"On\"",
+            "\"basic\"", "\"Close\"", "\"Photo\"", "\"gallery.tile\"", "\"gallery.screen\"", "\"ok\"",
+        )
+    }
+
+    @Test
+    fun resourcesTestTagsAndOtherLiteralsAreAllowedInUiSources() {
+        val code = listOf(
+            "Text(stringResource(R.string.app_loading))",
+            "Text(text = pluralStringResource(R.plurals.shared_entry_count, count, count))",
+            "Text(stringResource(R.string.gallery_search_chip, \"x\"))",
+            "Text(text = name, modifier = Modifier.testTag(TestTags.GALLERY_TILE))",
+            "Text(formatBytes(size))",
+            "Text(items.joinToString(\", \"))",
+            "Icon(Icons.Default.Close, contentDescription = null)",
+            "Icon(Icons.Default.Close, contentDescription = stringResource(R.string.capture_close))",
+            "Box(Modifier.testTag(TestTags.listItem(TestTags.GALLERY_TILE, index)))",
+            "val route = \"gallery\"",
+            "val shown = \"Text(\\\"x\\\") contentDescription = testTag(\"",
+            "Text(text = buildAnnotatedString { append(\"#\") })",
+            "Text(text = s, style = TextStyle(fontFeatureSettings = \"tnum\"))",
+        ).joinToString("\n")
+        SourceRules.uiLiterals(ui, code).map { it.toString() }.shouldBeEmpty()
+    }
+
+    @Test
+    fun uiLiteralRuleCoversOnlyUiMainSources() {
+        val code = "Text(\"Hello\")\nBox(Modifier.testTag(\"x\"))\n"
+        SourceRules.uiLiterals(ui, code) shouldHaveSize 2
+        SourceRules.uiLiterals("apps/android/ui/core/src/main/kotlin/dev/kodakiko/ui/core/components/AppBar.kt", code) shouldHaveSize 2
+        SourceRules.uiLiterals(ui.replace("/src/main/", "/src/test/"), code).shouldBeEmpty()
+        SourceRules.uiLiterals("apps/android/service/sync/src/main/kotlin/dev/kodakiko/service/sync/SyncBanner.kt", code).shouldBeEmpty()
+        SourceRules.uiLiterals("apps/android/ui/core/build.gradle.kts", code).shouldBeEmpty()
+    }
+
     @Test
     fun lineAndBlockAndDocCommentsAreFound() {
         val code = """

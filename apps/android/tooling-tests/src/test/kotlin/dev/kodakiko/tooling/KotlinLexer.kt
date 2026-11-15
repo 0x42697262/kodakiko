@@ -4,16 +4,19 @@ data class Comment(val line: Int, val text: String)
 
 data class NumberLiteral(val line: Int, val text: String)
 
-data class Lexed(val comments: List<Comment>, val numbers: List<NumberLiteral>)
+data class StringLiteral(val line: Int, val start: Int, val end: Int, val nested: Boolean)
+
+data class Lexed(val comments: List<Comment>, val numbers: List<NumberLiteral>, val strings: List<StringLiteral> = emptyList())
 
 object KotlinLexer {
     private enum class Mode { CODE, TEMPLATE, STRING, RAW_STRING }
 
-    private class Frame(val mode: Mode, var braces: Int = 0)
+    private class Frame(val mode: Mode, var braces: Int = 0, val start: Int = 0, val startLine: Int = 0, val nested: Boolean = false)
 
     fun lex(text: String): Lexed {
         val comments = mutableListOf<Comment>()
         val numbers = mutableListOf<NumberLiteral>()
+        val strings = mutableListOf<StringLiteral>()
         val stack = ArrayDeque<Frame>().apply { addLast(Frame(Mode.CODE)) }
         var index = 0
         var line = 1
@@ -56,12 +59,12 @@ object KotlinLexer {
                         comments += Comment(startLine, text.substring(start, index))
                     }
                     c == '"' && at(1) == '"' && at(2) == '"' -> {
+                        stack.addLast(Frame(Mode.RAW_STRING, start = index, startLine = line, nested = stack.size > 1))
                         advance(3)
-                        stack.addLast(Frame(Mode.RAW_STRING))
                     }
                     c == '"' -> {
+                        stack.addLast(Frame(Mode.STRING, start = index, startLine = line, nested = stack.size > 1))
                         advance()
-                        stack.addLast(Frame(Mode.STRING))
                     }
                     c == '\'' -> {
                         advance()
@@ -115,6 +118,7 @@ object KotlinLexer {
                     c == '"' -> {
                         advance()
                         stack.removeLast()
+                        strings += StringLiteral(frame.startLine, frame.start, index, frame.nested)
                     }
                     else -> advance()
                 }
@@ -127,12 +131,13 @@ object KotlinLexer {
                         advance(3)
                         while (at(0) == '"') advance()
                         stack.removeLast()
+                        strings += StringLiteral(frame.startLine, frame.start, index, frame.nested)
                     }
                     else -> advance()
                 }
             }
         }
-        return Lexed(comments, numbers)
+        return Lexed(comments, numbers, strings)
     }
 
     fun numericValueIsTrivial(literal: String): Boolean {
