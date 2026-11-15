@@ -47,6 +47,7 @@ tasks.register("verify") {
         ":data:net:testDebugUnitTest",
         ":platform:device:testDebugUnitTest",
         ":platform:location:testDebugUnitTest",
+        ":platform:camera:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
