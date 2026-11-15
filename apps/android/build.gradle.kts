@@ -42,6 +42,7 @@ tasks.register("verify") {
         ":data:db:testDebugUnitTest",
         ":data:files:testDebugUnitTest",
         ":data:migration:testDebugUnitTest",
+        ":data:upload:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
