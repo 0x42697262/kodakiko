@@ -29,12 +29,22 @@ object GoldenReplay {
 
     val goldenDirectory: File get() = File(repoRoot, "tests/fixtures/golden")
 
-    fun cases(path: String): List<JsonObject> =
-        Json.parseToJsonElement(File(goldenDirectory, path).readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject }
+    val clientDirectory: File get() = File(repoRoot, "tests/fixtures/golden-client")
+
+    fun cases(path: String): List<JsonObject> = casesIn(goldenDirectory, path)
+
+    fun clientCases(path: String): List<JsonObject> = casesIn(clientDirectory, path)
+
+    private fun casesIn(root: File, path: String): List<JsonObject> =
+        Json.parseToJsonElement(File(root, path).readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject }
 
     fun undefined(): JsonElement = JsonObject(mapOf("\$undefined" to JsonPrimitive(true)))
 
-    fun bytes(reference: JsonElement): ByteArray {
+    fun bytes(reference: JsonElement): ByteArray = bytesIn(goldenDirectory, reference)
+
+    fun clientBytes(reference: JsonElement): ByteArray = bytesIn(clientDirectory, reference)
+
+    private fun bytesIn(goldenDirectory: File, reference: JsonElement): ByteArray {
         val obj = reference.jsonObject
         val content = obj["file"]?.let { File(goldenDirectory, it.jsonPrimitive.content).readBytes() }
             ?: obj.getValue("segments").jsonArray.fold(ByteArray(0)) { acc, segment ->
@@ -79,12 +89,17 @@ object GoldenReplay {
 
     fun functions(path: String): Set<String> = cases(path).map { it.getValue("fn").jsonPrimitive.content }.toSet()
 
-    fun run(path: String, adapter: GoldenAdapter) = replay(path, adapter, null)
+    fun clientFunctions(path: String): Set<String> = clientCases(path).map { it.getValue("fn").jsonPrimitive.content }.toSet()
 
-    fun run(path: String, adapter: GoldenAdapter, only: Set<String>) = replay(path, adapter, only)
+    fun run(path: String, adapter: GoldenAdapter) = replay(path, cases(path), adapter, null)
 
-    private fun replay(path: String, adapter: GoldenAdapter, only: Set<String>?) {
-        val all = cases(path)
+    fun run(path: String, adapter: GoldenAdapter, only: Set<String>) = replay(path, cases(path), adapter, only)
+
+    fun runClient(path: String, adapter: GoldenAdapter) = replay("client:$path", clientCases(path), adapter, null)
+
+    fun runClient(path: String, adapter: GoldenAdapter, only: Set<String>) = replay("client:$path", clientCases(path), adapter, only)
+
+    private fun replay(path: String, all: List<JsonObject>, adapter: GoldenAdapter, only: Set<String>?) {
         val cases = if (only == null) all else all.filter { it.getValue("fn").jsonPrimitive.content in only }
         check(cases.isNotEmpty()) { "$path has no cases" }
         if (only != null) {
