@@ -9,24 +9,8 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 class FileStore private constructor(val paths: AccountPaths) {
-    fun writeObject(objectId: String, chunks: Sequence<ByteArray>): Long {
-        val partial = paths.partialFile(objectId)
-        try {
-            var total = 0L
-            FileOutputStream(partial).use { output ->
-                for (chunk in chunks) {
-                    output.write(chunk)
-                    total += chunk.size
-                }
-                output.fd.sync()
-            }
-            Files.move(partial.toPath(), paths.objectFile(objectId).toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-            return total
-        } catch (failure: Throwable) {
-            partial.delete()
-            throw failure
-        }
-    }
+    fun writeObject(objectId: String, chunks: Sequence<ByteArray>): Long =
+        writeAtomically(paths.partialFile(objectId), paths.objectFile(objectId), chunks)
 
     fun readRange(objectId: String, offset: Long, length: Int): ByteArray =
         RandomAccessFile(paths.objectFile(objectId), FilesConstants.READ_ONLY_MODE).use { file ->
@@ -51,7 +35,7 @@ class FileStore private constructor(val paths: AccountPaths) {
     fun plainThumbnailFile(mediaId: String): File? = paths.plainThumbnailFile(mediaId).takeIf { it.isFile }
 
     fun writePlainThumbnail(mediaId: String, bytes: ByteArray) {
-        paths.plainThumbnailFile(mediaId).writeBytes(bytes)
+        writeAtomically(paths.partialPlainThumbnailFile(mediaId), paths.plainThumbnailFile(mediaId), sequenceOf(bytes))
     }
 
     fun deletePlainThumbnail(mediaId: String) {
@@ -72,6 +56,24 @@ class FileStore private constructor(val paths: AccountPaths) {
         }
     }
 
+    private fun writeAtomically(partial: File, target: File, chunks: Sequence<ByteArray>): Long {
+        try {
+            var total = 0L
+            FileOutputStream(partial).use { output ->
+                for (chunk in chunks) {
+                    output.write(chunk)
+                    total += chunk.size
+                }
+                output.fd.sync()
+            }
+            Files.move(partial.toPath(), target.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+            return total
+        } catch (failure: Throwable) {
+            partial.delete()
+            throw failure
+        }
+    }
+
     fun destroy() {
         paths.root.deleteRecursively()
     }
@@ -81,7 +83,7 @@ class FileStore private constructor(val paths: AccountPaths) {
             val paths = AccountPaths(context, accountHash)
             ensureDirectory(paths.objectsDirectory)
             ensureDirectory(paths.plainThumbnailsDirectory)
-            for (file in files(paths.objectsDirectory)) {
+            for (file in files(paths.objectsDirectory) + files(paths.plainThumbnailsDirectory)) {
                 if (file.name.endsWith(FilesConstants.PARTIAL_EXTENSION)) file.delete()
             }
             return FileStore(paths)

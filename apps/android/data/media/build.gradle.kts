@@ -37,6 +37,7 @@ dependencies {
     api(projects.data.files)
     api(projects.data.net)
     api(libs.media3.exoplayer)
+    api(libs.coil3.coil)
     testImplementation(libs.junit4)
     testImplementation(libs.mockwebserver3)
     testImplementation(libs.robolectric)

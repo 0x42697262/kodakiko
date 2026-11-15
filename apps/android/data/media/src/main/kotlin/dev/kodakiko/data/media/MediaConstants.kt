@@ -14,11 +14,14 @@ internal object MediaConstants {
     const val HTTP_SERVER_ERROR_MIN = 500
     const val END_OF_STREAM = -1
     const val THUMBNAIL_MEMORY_CACHE_ITEMS = 300
+    const val IMAGE_READ_BYTES = 65_536
 }
 
 internal object MediaKeys {
     const val DOWNLOAD_THREAD_NAME = "kodakiko-download"
     const val THUMBNAIL_PREFETCH_THREAD_NAME = "kodakiko-thumbnail-prefetch"
+    const val THUMBNAIL_IMAGE_KEY_PREFIX = "kodakiko-thumbnail:"
+    const val ORIGINAL_IMAGE_KEY_PREFIX = "kodakiko-original:"
 }
 
 internal object MediaText {
@@ -26,8 +29,15 @@ internal object MediaText {
     const val SOURCE_CLOSED = "The ciphertext source is closed."
     const val DOWNLOAD_CANCELLED = "Download cancelled."
     const val OBJECT_UNAVAILABLE = "Object is no longer available."
+    const val MEDIA_UNAVAILABLE = "Media is not available on this device."
 
     fun sizeMismatch(expected: Long, actual: Long): String = "Downloaded $actual bytes, expected $expected."
 
     fun downloadHttpStatus(status: Int): String = "HTTP $status"
+
+    fun negativeByteCount(byteCount: Long): String = "Negative byte count: $byteCount"
+
+    fun imageWriteRefused(path: String): String = "The image pipeline never writes files: $path"
+
+    fun unsupportedImageData(type: String?): String = "Unsupported image data: $type"
 }

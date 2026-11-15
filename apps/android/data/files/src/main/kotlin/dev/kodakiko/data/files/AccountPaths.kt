@@ -23,6 +23,9 @@ class AccountPaths(context: Context, val accountHash: String) {
 
     fun plainThumbnailFile(mediaId: String): File = File(plainThumbnailsDirectory, requireId(mediaId) + FilesConstants.PLAIN_THUMBNAIL_EXTENSION)
 
+    fun partialPlainThumbnailFile(mediaId: String): File =
+        File(plainThumbnailsDirectory, requireId(mediaId) + FilesConstants.PLAIN_THUMBNAIL_EXTENSION + FilesConstants.PARTIAL_EXTENSION)
+
     private fun requireId(id: String): String {
         require(ID.matches(id)) { FilesText.INVALID_OBJECT_ID }
         return id
