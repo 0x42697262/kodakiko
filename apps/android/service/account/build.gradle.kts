@@ -12,6 +12,8 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.serialization.json)
     implementation(projects.data.files)
+    implementation(projects.shared.js)
+    implementation(projects.platform.device)
     testImplementation(libs.junit4)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.ext.junit)

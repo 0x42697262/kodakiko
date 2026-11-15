@@ -49,6 +49,7 @@ tasks.register("verify") {
         ":platform:location:testDebugUnitTest",
         ":platform:camera:testDebugUnitTest",
         ":platform:picker:testDebugUnitTest",
+        ":service:account:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
