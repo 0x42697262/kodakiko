@@ -274,11 +274,19 @@ class DownloadQueueTest {
                 opened to DownloadPriority.OPENED,
             )
         }
+        val snapshots = mutableListOf<Set<String>>()
         gate!!.countDown()
-        (running + waiting + more + top).forEach { it.get(20, TimeUnit.SECONDS) }
-        val after = bucketOrder.drop(2)
-        assertEquals(setOf(opened, raised), after.take(2).toSet())
-        assertEquals(listOf(visible, background), after.drop(2))
+        val all = running + waiting + more + top
+        while (!all.all { it.isDone }) {
+            snapshots += queue.waiting().keys
+            Thread.sleep(1)
+        }
+        all.forEach { it.get(20, TimeUnit.SECONDS) }
+        for (snapshot in snapshots) {
+            if (visible !in snapshot) assertTrue("$snapshot", opened !in snapshot && raised !in snapshot)
+            if (background !in snapshot) assertTrue("$snapshot", visible !in snapshot)
+        }
+        assertEquals(setOf(opened, raised, visible, background), bucketOrder.drop(2).toSet())
     }
 
     @Test

@@ -57,16 +57,16 @@ class PickerTest {
 
     @Test
     fun mediaPickingUsesThePhotoPickerWithTheRemainingSlots() {
-        val many = MediaPicking.request(remainingSlots = 7)
+        val many = MediaPicking.request(remainingSlots = 7)!!
         val manyIntent = many.contract.createIntent(context, many.input)
         assertEquals(MediaStore.ACTION_PICK_IMAGES, manyIntent.action)
         assertEquals(7, manyIntent.getIntExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, -1))
-        val one = MediaPicking.request(remainingSlots = 1)
+        val one = MediaPicking.request(remainingSlots = 1)!!
         val oneIntent = one.contract.createIntent(context, one.input)
         assertEquals(MediaStore.ACTION_PICK_IMAGES, oneIntent.action)
         assertTrue(!oneIntent.hasExtra(MediaStore.EXTRA_PICK_IMAGES_MAX))
         assertNull(MediaPicking.request(remainingSlots = 0))
-        val capped = MediaPicking.request(remainingSlots = 500)
+        val capped = MediaPicking.request(remainingSlots = 500)!!
         assertEquals(MediaStore.getPickImagesMaxLimit(), capped.contract.createIntent(context, capped.input).getIntExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, -1))
         assertEquals(ActivityResultContracts.PickVisualMedia.ImageAndVideo, (many.input).mediaType)
     }
@@ -115,7 +115,10 @@ class PickerTest {
 
     @Test
     fun sharingOneFileSendsItWithItsTypeAndManyFilesSendMultiple() {
-        val first = File(context.cacheDir, "share/a.jpg").apply { parentFile!!.mkdirs(); writeBytes(byteArrayOf(1)) }
+        val first = File(context.cacheDir, "share/a.jpg").apply {
+            parentFile!!.mkdirs()
+            writeBytes(byteArrayOf(1))
+        }
         val second = File(context.cacheDir, "share/b.mp4").apply { writeBytes(byteArrayOf(2)) }
         val single = Sharing.chooser(context, authority, listOf(SharedFile(first, "a.jpg", "image/jpeg")), text = null)
         assertEquals(Intent.ACTION_CHOOSER, single.action)
