@@ -50,7 +50,10 @@ class LegacyDatabaseTest {
     }
 
     private fun referenceSchema(account: String, hash: String): List<String> {
-        val copy = File(context.cacheDir, "reference-$account").apply { deleteRecursively(); mkdirs() }
+        val copy = File(context.cacheDir, "reference-$account").apply {
+            deleteRecursively()
+            mkdirs()
+        }
         for (suffix in listOf("", "-wal", "-shm")) {
             File(fixture(account), "files/SQLite/kodakiko-$hash.db$suffix").copyTo(File(copy, "r.db$suffix"))
         }

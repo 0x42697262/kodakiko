@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as contract from '@kodakiko/contract';
 import { describe, expect, it } from 'vitest';
@@ -19,6 +19,7 @@ import { createNodeSodium } from './sodium-node.ts';
 
 const DEFAULT_DIRECTORY = fileURLToPath(new URL('../../../apps/android/build/kotlin-artifacts/', import.meta.url));
 const ARTIFACT_SUFFIX = '.artifact.json';
+const CLIENT_VERIFIED_DIRECTORY = 'zip';
 const STREAM_EXPONENT = 20;
 const TAG_BYTES = 16;
 const KDKX_PREFIX_AND_HEADER_BYTES = 53;
@@ -90,6 +91,7 @@ export async function verifyArtifacts(directory: string): Promise<readonly Artif
   const entries = await readdir(directory, { recursive: true, withFileTypes: true });
   const files = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(ARTIFACT_SUFFIX))
+    .filter((entry) => !entry.parentPath.split(sep).includes(CLIENT_VERIFIED_DIRECTORY))
     .map((entry) => join(entry.parentPath, entry.name))
     .sort();
   const results: ArtifactResult[] = [];
