@@ -1,0 +1,4614 @@
+{
+  "format": 1,
+  "generator": "apps/client/scripts/generate-golden-client.ts",
+  "cases": [
+    {
+      "name": "groupSections: groups by month and by year, newest first (month)",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a"
+            ]
+          },
+          {
+            "localDate": "2026-10-02",
+            "entryIds": [
+              "b"
+            ]
+          },
+          {
+            "localDate": "2025-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "month",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "m:2026-11",
+          "entryIds": [
+            "a"
+          ]
+        },
+        {
+          "localDate": "m:2026-10",
+          "entryIds": [
+            "b"
+          ]
+        },
+        {
+          "localDate": "m:2025-11",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: groups by month and by year, newest first (year)",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a"
+            ]
+          },
+          {
+            "localDate": "2026-10-02",
+            "entryIds": [
+              "b"
+            ]
+          },
+          {
+            "localDate": "2025-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "year",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "y:2026",
+          "entryIds": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "localDate": "y:2025",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: groups by tag alphabetically, lists an entry under each of its tags, and puts untagged entries last",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a"
+            ]
+          },
+          {
+            "localDate": "2026-10-02",
+            "entryIds": [
+              "b"
+            ]
+          },
+          {
+            "localDate": "2025-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "t:beach",
+          "entryIds": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "localDate": "t:city",
+          "entryIds": [
+            "b"
+          ]
+        },
+        {
+          "localDate": "n:",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: keeps day sections for day grouping and one section for none (day)",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a"
+            ]
+          },
+          {
+            "localDate": "2026-10-02",
+            "entryIds": [
+              "b"
+            ]
+          },
+          {
+            "localDate": "2025-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "day",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "a"
+          ]
+        },
+        {
+          "localDate": "2026-10-02",
+          "entryIds": [
+            "b"
+          ]
+        },
+        {
+          "localDate": "2025-11-01",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: keeps day sections for day grouping and one section for none (none)",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a"
+            ]
+          },
+          {
+            "localDate": "2026-10-02",
+            "entryIds": [
+              "b"
+            ]
+          },
+          {
+            "localDate": "2025-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "none",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "a",
+            "b",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: month groups oldest first",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupBy": "month",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "m:2024-02",
+          "entryIds": [
+            "e6"
+          ]
+        },
+        {
+          "localDate": "m:2025-01",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "m:2025-12",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "m:2026-06",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "m:2026-12",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "m:2027-01",
+          "entryIds": [
+            "e2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: year groups oldest first",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupBy": "year",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "y:2024",
+          "entryIds": [
+            "e6"
+          ]
+        },
+        {
+          "localDate": "y:2025",
+          "entryIds": [
+            "e5",
+            "e4"
+          ]
+        },
+        {
+          "localDate": "y:2026",
+          "entryIds": [
+            "e3",
+            "e1"
+          ]
+        },
+        {
+          "localDate": "y:2027",
+          "entryIds": [
+            "e2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: month groups use the local date, not the UTC date",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "month",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "m:2027-01",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "m:2026-12",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "m:2026-06",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "m:2025-12",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "m:2025-01",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "m:2024-02",
+          "entryIds": [
+            "e6"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: year groups follow first appearance for media count order",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "mediaCount",
+          "descending": true
+        },
+        "groupBy": "year",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "y:2027",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "y:2025",
+          "entryIds": [
+            "e4",
+            "e5"
+          ]
+        },
+        {
+          "localDate": "y:2026",
+          "entryIds": [
+            "e1",
+            "e3"
+          ]
+        },
+        {
+          "localDate": "y:2024",
+          "entryIds": [
+            "e6"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: month groups follow first appearance for random order",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "random",
+          "descending": true
+        },
+        "groupBy": "month",
+        "seed": 7
+      },
+      "result": [
+        {
+          "localDate": "m:2026-12",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "m:2025-01",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "m:2024-02",
+          "entryIds": [
+            "e6"
+          ]
+        },
+        {
+          "localDate": "m:2026-06",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "m:2027-01",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "m:2025-12",
+          "entryIds": [
+            "e4"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: tag groups use locale collation",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "t:10",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "t:9",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "t:Apfel",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "t:apple",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "t:b c",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "t:b-c",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "t:beach",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "t:eclair",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "t:éclair",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "t:Zebra",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "n:",
+          "entryIds": [
+            "e6"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: tag groups keep the oldest-first entry order",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "t:10",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "t:9",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "t:Apfel",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "t:apple",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "t:b c",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "t:b-c",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "t:beach",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "t:eclair",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "t:éclair",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "t:Zebra",
+          "entryIds": [
+            "e1"
+          ]
+        },
+        {
+          "localDate": "n:",
+          "entryIds": [
+            "e6"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: day grouping with a non-date sort is one ungrouped section",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "noteLength",
+          "descending": false
+        },
+        "groupBy": "day",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "e2",
+            "e6",
+            "e5",
+            "e4",
+            "e1",
+            "e3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: day grouping oldest first",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupBy": "day",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2024-02-29",
+          "entryIds": [
+            "e6"
+          ]
+        },
+        {
+          "localDate": "2025-01-01",
+          "entryIds": [
+            "e5"
+          ]
+        },
+        {
+          "localDate": "2025-12-31",
+          "entryIds": [
+            "e4"
+          ]
+        },
+        {
+          "localDate": "2026-06-15",
+          "entryIds": [
+            "e3"
+          ]
+        },
+        {
+          "localDate": "2027-01-01",
+          "entryIds": [
+            "e2"
+          ]
+        },
+        {
+          "localDate": "2026-12-31",
+          "entryIds": [
+            "e1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: only untagged entries",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "n:",
+          "entryIds": [
+            "a",
+            "b",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: an id without an entry is untagged",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "ghost"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "t:beach",
+          "entryIds": [
+            "a"
+          ]
+        },
+        {
+          "localDate": "n:",
+          "entryIds": [
+            "c",
+            "ghost"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: an id without an entry groups under the bare month prefix",
+      "fn": "groupSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "ghost"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-10-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-10-02",
+            "monthDay": "10-02",
+            "tags": [
+              "beach",
+              "city"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "month",
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "m:2026-11",
+          "entryIds": [
+            "a"
+          ]
+        },
+        {
+          "localDate": "m:2025-11",
+          "entryIds": [
+            "c"
+          ]
+        },
+        {
+          "localDate": "m:",
+          "entryIds": [
+            "ghost"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "groupSections: edge: no sections grouped by tag",
+      "fn": "groupSections",
+      "args": {
+        "sections": [],
+        "entries": [],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "tag",
+        "seed": 0
+      },
+      "result": []
+    },
+    {
+      "name": "groupSections: edge: no sections grouped by none",
+      "fn": "groupSections",
+      "args": {
+        "sections": [],
+        "entries": [],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupBy": "none",
+        "seed": 0
+      },
+      "result": []
+    },
+    {
+      "name": "arrangeSections: keeps day sections for newest-first date order",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "localDate": "2026-11-01",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: reverses days and entries for oldest-first date order",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2026-11-01",
+          "entryIds": [
+            "c"
+          ]
+        },
+        {
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "b",
+            "a"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: returns one ungrouped section for other sorts or when grouping is off (media count)",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "mediaCount",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "a",
+            "c",
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: returns one ungrouped section for other sorts or when grouping is off (grouping off)",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupByDay": false,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "a",
+            "b",
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: no sections and grouping off",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [],
+        "entries": [],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupByDay": false,
+        "seed": 0
+      },
+      "result": []
+    },
+    {
+      "name": "arrangeSections: edge: no sections, day grouping, newest first",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [],
+        "entries": [],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": []
+    },
+    {
+      "name": "arrangeSections: edge: empty day sections are kept newest first and dropped otherwise (newest)",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": []
+          },
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2026-11-02",
+          "entryIds": []
+        },
+        {
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "localDate": "2026-11-01",
+          "entryIds": [
+            "c"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: empty day sections are kept newest first and dropped otherwise (oldest)",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-03",
+            "entryIds": []
+          },
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "2026-11-01",
+          "entryIds": [
+            "c"
+          ]
+        },
+        {
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "b",
+            "a"
+          ]
+        },
+        {
+          "localDate": "2026-11-03",
+          "entryIds": []
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: oldest first without day grouping",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "takenAt",
+          "descending": false
+        },
+        "groupByDay": false,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "e6",
+            "e5",
+            "e4",
+            "e3",
+            "e2",
+            "e1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: shortest note first",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "noteLength",
+          "descending": false
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "e2",
+            "e6",
+            "e5",
+            "e4",
+            "e1",
+            "e3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: random order with seed 7",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-12-31",
+            "entryIds": [
+              "e1"
+            ]
+          },
+          {
+            "localDate": "2027-01-01",
+            "entryIds": [
+              "e2"
+            ]
+          },
+          {
+            "localDate": "2026-06-15",
+            "entryIds": [
+              "e3"
+            ]
+          },
+          {
+            "localDate": "2025-12-31",
+            "entryIds": [
+              "e4"
+            ]
+          },
+          {
+            "localDate": "2025-01-01",
+            "entryIds": [
+              "e5"
+            ]
+          },
+          {
+            "localDate": "2024-02-29",
+            "entryIds": [
+              "e6"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "e1",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T23:30:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "Zebra",
+              "apple"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "new year",
+            "pending": false
+          },
+          {
+            "id": "e2",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-12-31T22:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "localDate": "2027-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "éclair",
+              "10"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "e3",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-06-15T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-06-15",
+            "monthDay": "06-15",
+            "tags": [
+              "Apfel",
+              "eclair"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "a much longer note",
+            "pending": false
+          },
+          {
+            "id": "e4",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-12-31T12:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-12-31",
+            "monthDay": "12-31",
+            "tags": [
+              "9",
+              "b c"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 5,
+            "hasVideo": false,
+            "notePreview": "mid",
+            "pending": false
+          },
+          {
+            "id": "e5",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2025-01-01T00:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2025-01-01",
+            "monthDay": "01-01",
+            "tags": [
+              "b-c",
+              "beach"
+            ],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "🌸",
+            "pending": false
+          },
+          {
+            "id": "e6",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2024-02-29T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2024-02-29",
+            "monthDay": "02-29",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "x",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "random",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 7
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "e1",
+            "e5",
+            "e6",
+            "e3",
+            "e2",
+            "e4"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrangeSections: edge: an id without an entry sorts last",
+      "fn": "arrangeSections",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "ghost"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "c"
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "id": "a",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T10:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 3,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "b",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-02",
+            "monthDay": "11-02",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 1,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          },
+          {
+            "id": "c",
+            "isOwn": true,
+            "collectionIds": [
+              "home"
+            ],
+            "trashed": false,
+            "unreadable": false,
+            "takenAtUtc": "2026-11-01T09:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "localDate": "2026-11-01",
+            "monthDay": "11-01",
+            "tags": [],
+            "coverMediaId": null,
+            "mediaCount": 2,
+            "hasVideo": false,
+            "notePreview": "",
+            "pending": false
+          }
+        ],
+        "sort": {
+          "key": "mediaCount",
+          "descending": true
+        },
+        "groupByDay": true,
+        "seed": 0
+      },
+      "result": [
+        {
+          "localDate": "",
+          "entryIds": [
+            "a",
+            "c",
+            "ghost"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "galleryAttributes: maps the tri-state settings and hides shared journals on request (video include)",
+      "fn": "galleryAttributes",
+      "args": {
+        "filters": {
+          "video": "include",
+          "note": "off",
+          "multiple": "off",
+          "shared": "off",
+          "pending": "off",
+          "keptOffline": "off",
+          "favorite": "off"
+        },
+        "hideShared": false
+      },
+      "result": {
+        "video": "include",
+        "note": "off",
+        "multiple": "off",
+        "shared": "off",
+        "pending": "off",
+        "favorite": "off"
+      }
+    },
+    {
+      "name": "galleryAttributes: maps the tri-state settings and hides shared journals on request (hide shared)",
+      "fn": "galleryAttributes",
+      "args": {
+        "filters": {
+          "video": "off",
+          "note": "off",
+          "multiple": "off",
+          "shared": "off",
+          "pending": "off",
+          "keptOffline": "off",
+          "favorite": "off"
+        },
+        "hideShared": true
+      },
+      "result": {
+        "video": "off",
+        "note": "off",
+        "multiple": "off",
+        "shared": "exclude",
+        "pending": "off",
+        "favorite": "off"
+      }
+    },
+    {
+      "name": "galleryAttributes: edge: hide shared overrides an included shared filter",
+      "fn": "galleryAttributes",
+      "args": {
+        "filters": {
+          "video": "off",
+          "note": "off",
+          "multiple": "off",
+          "shared": "include",
+          "pending": "off",
+          "keptOffline": "off",
+          "favorite": "off"
+        },
+        "hideShared": true
+      },
+      "result": {
+        "video": "off",
+        "note": "off",
+        "multiple": "off",
+        "shared": "exclude",
+        "pending": "off",
+        "favorite": "off"
+      }
+    },
+    {
+      "name": "galleryAttributes: edge: every attribute set, kept offline is dropped",
+      "fn": "galleryAttributes",
+      "args": {
+        "filters": {
+          "video": "exclude",
+          "note": "include",
+          "multiple": "include",
+          "shared": "exclude",
+          "pending": "include",
+          "keptOffline": "include",
+          "favorite": "exclude"
+        },
+        "hideShared": false
+      },
+      "result": {
+        "video": "exclude",
+        "note": "include",
+        "multiple": "include",
+        "shared": "exclude",
+        "pending": "include",
+        "favorite": "exclude"
+      }
+    },
+    {
+      "name": "columnsFor: uses the portrait or landscape setting and falls back to the automatic count (portrait)",
+      "fn": "columnsFor",
+      "args": {
+        "width": 400,
+        "height": 800,
+        "portrait": 3,
+        "landscape": 6
+      },
+      "result": 3
+    },
+    {
+      "name": "columnsFor: uses the portrait or landscape setting and falls back to the automatic count (landscape)",
+      "fn": "columnsFor",
+      "args": {
+        "width": 800,
+        "height": 400,
+        "portrait": 3,
+        "landscape": 6
+      },
+      "result": 6
+    },
+    {
+      "name": "columnsFor: uses the portrait or landscape setting and falls back to the automatic count (automatic)",
+      "fn": "columnsFor",
+      "args": {
+        "width": 400,
+        "height": 800,
+        "portrait": 0,
+        "landscape": 6
+      },
+      "result": 3
+    },
+    {
+      "name": "columnsFor: edge: a square screen counts as portrait",
+      "fn": "columnsFor",
+      "args": {
+        "width": 500,
+        "height": 500,
+        "portrait": 2,
+        "landscape": 7
+      },
+      "result": 2
+    },
+    {
+      "name": "columnsFor: edge: automatic landscape count",
+      "fn": "columnsFor",
+      "args": {
+        "width": 1280,
+        "height": 720,
+        "portrait": 4,
+        "landscape": 0
+      },
+      "result": 11
+    },
+    {
+      "name": "columnsFor: edge: automatic count never goes below the minimum",
+      "fn": "columnsFor",
+      "args": {
+        "width": 100,
+        "height": 800,
+        "portrait": 0,
+        "landscape": 0
+      },
+      "result": 3
+    },
+    {
+      "name": "columnsFor: edge: automatic count with a zero width",
+      "fn": "columnsFor",
+      "args": {
+        "width": 0,
+        "height": 0,
+        "portrait": 0,
+        "landscape": 0
+      },
+      "result": 3
+    },
+    {
+      "name": "columnsFor: edge: automatic count floors fractional widths",
+      "fn": "columnsFor",
+      "args": {
+        "width": 439.9,
+        "height": 900,
+        "portrait": 0,
+        "landscape": 0
+      },
+      "result": 3
+    },
+    {
+      "name": "columnsFor: edge: automatic count at an exact tile multiple",
+      "fn": "columnsFor",
+      "args": {
+        "width": 440,
+        "height": 900,
+        "portrait": 0,
+        "landscape": 0
+      },
+      "result": 4
+    },
+    {
+      "name": "columnsFor: edge: automatic count on a wide tablet",
+      "fn": "columnsFor",
+      "args": {
+        "width": 2560,
+        "height": 1600,
+        "portrait": 0,
+        "landscape": 0
+      },
+      "result": 23
+    },
+    {
+      "name": "columnsFor: edge: explicit maximum",
+      "fn": "columnsFor",
+      "args": {
+        "width": 2560,
+        "height": 1600,
+        "portrait": 0,
+        "landscape": 10
+      },
+      "result": 10
+    },
+    {
+      "name": "buildGalleryItems: builds no day header for the ungrouped section",
+      "fn": "buildGalleryItems",
+      "args": {
+        "sections": [
+          {
+            "localDate": "",
+            "entryIds": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "columns": 2,
+        "showOnThisDay": false
+      },
+      "result": [
+        {
+          "type": "row",
+          "localDate": "",
+          "entryIds": [
+            "a",
+            "b"
+          ],
+          "firstPosition": 0
+        }
+      ]
+    },
+    {
+      "name": "buildGalleryItems: edge: day headers, rows of 3 and the on-this-day item",
+      "fn": "buildGalleryItems",
+      "args": {
+        "sections": [
+          {
+            "localDate": "2026-11-02",
+            "entryIds": [
+              "a",
+              "b",
+              "c",
+              "d",
+              "e",
+              "f",
+              "g"
+            ]
+          },
+          {
+            "localDate": "2026-11-01",
+            "entryIds": [
+              "h"
+            ]
+          }
+        ],
+        "columns": 3,
+        "showOnThisDay": true
+      },
+      "result": [
+        {
+          "type": "onThisDay"
+        },
+        {
+          "type": "header",
+          "localDate": "2026-11-02"
+        },
+        {
+          "type": "row",
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "a",
+            "b",
+            "c"
+          ],
+          "firstPosition": 0
+        },
+        {
+          "type": "row",
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "d",
+            "e",
+            "f"
+          ],
+          "firstPosition": 3
+        },
+        {
+          "type": "row",
+          "localDate": "2026-11-02",
+          "entryIds": [
+            "g"
+          ],
+          "firstPosition": 6
+        },
+        {
+          "type": "header",
+          "localDate": "2026-11-01"
+        },
+        {
+          "type": "row",
+          "localDate": "2026-11-01",
+          "entryIds": [
+            "h"
+          ],
+          "firstPosition": 7
+        }
+      ]
+    },
+    {
+      "name": "buildGalleryItems: edge: group headers and an empty section",
+      "fn": "buildGalleryItems",
+      "args": {
+        "sections": [
+          {
+            "localDate": "t:beach",
+            "entryIds": []
+          },
+          {
+            "localDate": "n:",
+            "entryIds": [
+              "a",
+              "b",
+              "c"
+            ]
+          }
+        ],
+        "columns": 3,
+        "showOnThisDay": false
+      },
+      "result": [
+        {
+          "type": "header",
+          "localDate": "t:beach"
+        },
+        {
+          "type": "header",
+          "localDate": "n:"
+        },
+        {
+          "type": "row",
+          "localDate": "n:",
+          "entryIds": [
+            "a",
+            "b",
+            "c"
+          ],
+          "firstPosition": 0
+        }
+      ]
+    },
+    {
+      "name": "buildGalleryItems: edge: nothing to show",
+      "fn": "buildGalleryItems",
+      "args": {
+        "sections": [],
+        "columns": 4,
+        "showOnThisDay": true
+      },
+      "result": [
+        {
+          "type": "onThisDay"
+        }
+      ]
+    },
+    {
+      "name": "constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "UNGROUPED_DATE": "",
+        "MONTH_GROUP_PREFIX": "m:",
+        "YEAR_GROUP_PREFIX": "y:",
+        "TAG_GROUP_PREFIX": "t:",
+        "UNTAGGED_GROUP": "n:",
+        "GALLERY_COLUMNS_AUTO": 0,
+        "GRID_MIN_COLUMNS": 3,
+        "GRID_TILE_MIN_PX": 110
+      }
+    }
+  ]
+}

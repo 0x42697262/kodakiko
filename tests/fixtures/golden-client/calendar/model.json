@@ -1,0 +1,863 @@
+{
+  "format": 1,
+  "generator": "apps/client/scripts/generate-golden-client.ts",
+  "cases": [
+    {
+      "name": "canShowMonth: allows jumping to a month when it is not in the future or has entries (2020-01)",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2020-01",
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": true
+    },
+    {
+      "name": "canShowMonth: allows jumping to a month when it is not in the future or has entries (2026-06)",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2026-06",
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": true
+    },
+    {
+      "name": "canShowMonth: allows jumping to a month when it is not in the future or has entries (2026-08)",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2026-08",
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": true
+    },
+    {
+      "name": "canShowMonth: allows jumping to a month when it is not in the future or has entries (2026-07)",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2026-07",
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": false
+    },
+    {
+      "name": "canShowMonth: edge: next year without entries",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2027-01",
+        "currentYearMonth": "2026-12",
+        "monthsWithEntries": []
+      },
+      "result": false
+    },
+    {
+      "name": "canShowMonth: edge: months compare as strings",
+      "fn": "canShowMonth",
+      "args": {
+        "yearMonth": "2026-6",
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": false
+    },
+    {
+      "name": "monthTarget: moves freely into past months and up to the current month (back one)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-03",
+        "delta": -1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-02"
+    },
+    {
+      "name": "monthTarget: moves freely into past months and up to the current month (forward to current)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-05",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-06"
+    },
+    {
+      "name": "monthTarget: moves freely into past months and up to the current month (from a month with entries)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2025-01",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2025-02"
+    },
+    {
+      "name": "monthTarget: beyond the current month, jumps over empty months to the next month with entries (to 2026-08)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-06",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-08"
+    },
+    {
+      "name": "monthTarget: beyond the current month, jumps over empty months to the next month with entries (to 2026-12)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-08",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-12"
+    },
+    {
+      "name": "monthTarget: refuses to move past the last future month with entries (after 2026-12)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-12",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": null
+    },
+    {
+      "name": "monthTarget: refuses to move past the last future month with entries (no entries)",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-06",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": null
+    },
+    {
+      "name": "monthTarget: edge: delta 0 on the current month",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-06",
+        "delta": 0,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": "2026-06"
+    },
+    {
+      "name": "monthTarget: edge: delta 0 on an empty future month jumps to the next month with entries",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-07",
+        "delta": 0,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-08"
+    },
+    {
+      "name": "monthTarget: edge: backwards across a year boundary",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-01",
+        "delta": -1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": "2025-12"
+    },
+    {
+      "name": "monthTarget: edge: backwards by 13 months",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-02",
+        "delta": -13,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": "2025-01"
+    },
+    {
+      "name": "monthTarget: edge: backwards from an empty future month",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-10",
+        "delta": -1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-09"
+    },
+    {
+      "name": "monthTarget: edge: forward by 2 lands on a future month with entries",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-06",
+        "delta": 2,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2025-01",
+          "2026-08",
+          "2026-12"
+        ]
+      },
+      "result": "2026-08"
+    },
+    {
+      "name": "monthTarget: edge: forward by 12 from the past",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2025-06",
+        "delta": 12,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": []
+      },
+      "result": "2026-06"
+    },
+    {
+      "name": "monthTarget: edge: forward across a year boundary into a month with entries",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-11",
+        "delta": 2,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2027-01",
+          "2027-03"
+        ]
+      },
+      "result": "2027-01"
+    },
+    {
+      "name": "monthTarget: edge: forward past the current month skips to a later year",
+      "fn": "monthTarget",
+      "args": {
+        "from": "2026-06",
+        "delta": 1,
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2028-02",
+          "2030-05"
+        ]
+      },
+      "result": "2028-02"
+    },
+    {
+      "name": "pagerMonths: lists every month from a year before the earliest entry to now, then only future months with entries",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2026-02",
+          "2026-08",
+          "2026-12"
+        ],
+        "shownYearMonth": "2026-06"
+      },
+      "result": [
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-08",
+        "2026-12"
+      ]
+    },
+    {
+      "name": "pagerMonths: starts a year before the shown month when that is earlier, and works without entries (shown 2020-05)",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [],
+        "shownYearMonth": "2020-05"
+      },
+      "result": [
+        "2019-05",
+        "2019-06",
+        "2019-07",
+        "2019-08",
+        "2019-09",
+        "2019-10",
+        "2019-11",
+        "2019-12",
+        "2020-01",
+        "2020-02",
+        "2020-03",
+        "2020-04",
+        "2020-05",
+        "2020-06",
+        "2020-07",
+        "2020-08",
+        "2020-09",
+        "2020-10",
+        "2020-11",
+        "2020-12",
+        "2021-01",
+        "2021-02",
+        "2021-03",
+        "2021-04",
+        "2021-05",
+        "2021-06",
+        "2021-07",
+        "2021-08",
+        "2021-09",
+        "2021-10",
+        "2021-11",
+        "2021-12",
+        "2022-01",
+        "2022-02",
+        "2022-03",
+        "2022-04",
+        "2022-05",
+        "2022-06",
+        "2022-07",
+        "2022-08",
+        "2022-09",
+        "2022-10",
+        "2022-11",
+        "2022-12",
+        "2023-01",
+        "2023-02",
+        "2023-03",
+        "2023-04",
+        "2023-05",
+        "2023-06",
+        "2023-07",
+        "2023-08",
+        "2023-09",
+        "2023-10",
+        "2023-11",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-04",
+        "2024-05",
+        "2024-06",
+        "2024-07",
+        "2024-08",
+        "2024-09",
+        "2024-10",
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06"
+      ]
+    },
+    {
+      "name": "pagerMonths: starts a year before the shown month when that is earlier, and works without entries (13 months)",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [],
+        "shownYearMonth": "2026-06"
+      },
+      "result": [
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06"
+      ]
+    },
+    {
+      "name": "pagerMonths: edge: a shown future month without entries is not listed",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [],
+        "shownYearMonth": "2026-09"
+      },
+      "result": [
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06"
+      ]
+    },
+    {
+      "name": "pagerMonths: edge: entries only in the past across a year boundary",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-02",
+        "monthsWithEntries": [
+          "2025-11"
+        ],
+        "shownYearMonth": "2026-02"
+      },
+      "result": [
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02"
+      ]
+    },
+    {
+      "name": "pagerMonths: edge: future entries in later years",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-06",
+        "monthsWithEntries": [
+          "2026-07",
+          "2027-12",
+          "2028-01"
+        ],
+        "shownYearMonth": "2026-07"
+      },
+      "result": [
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2027-12",
+        "2028-01"
+      ]
+    },
+    {
+      "name": "pagerMonths: edge: current month in January",
+      "fn": "pagerMonths",
+      "args": {
+        "currentYearMonth": "2026-01",
+        "monthsWithEntries": [],
+        "shownYearMonth": "2026-01"
+      },
+      "result": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01"
+      ]
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2024-02-29)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2024-02-29"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2026-11-09)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-11-09"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2026-02-29)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-02-29"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2026-13-01)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-13-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2026-11-31)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-11-31"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (2026-1-1)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-1-1"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (today)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "today"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: accepts real dates only (empty)",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": ""
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: 1900-02-29 is not a leap day",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "1900-02-29"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: 2000-02-29 is a leap day",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2000-02-29"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: edge: year 0000",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "0000-01-01"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: edge: year 0099 is not shifted to 1999",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "0099-12-31"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: edge: year 9999",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "9999-12-31"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: edge: month 00",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-00-10"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: day 00",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-02-00"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: day 32",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-01-32"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: April 31",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-04-31"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: December 31",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-12-31"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidLocalDate: edge: leading space",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": " 2026-01-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: trailing newline",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-01-01\n"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: fullwidth digits",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "２０２６-01-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: Arabic-Indic digits",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "٢٠٢٦-01-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: extended year",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "+02026-01-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: date with a time",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026-01-01T00:00"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidLocalDate: edge: slashes",
+      "fn": "isValidLocalDate",
+      "args": {
+        "value": "2026/01/01"
+      },
+      "result": false
+    },
+    {
+      "name": "formatMonthTitle: formats the month title in English (2026-11)",
+      "fn": "formatMonthTitle",
+      "args": {
+        "yearMonth": "2026-11"
+      },
+      "result": "November 2026"
+    },
+    {
+      "name": "formatMonthTitle: formats the month title in English (2024-02)",
+      "fn": "formatMonthTitle",
+      "args": {
+        "yearMonth": "2024-02"
+      },
+      "result": "February 2024"
+    },
+    {
+      "name": "formatMonthTitle: edge: January of year 0999",
+      "fn": "formatMonthTitle",
+      "args": {
+        "yearMonth": "0999-01"
+      },
+      "result": "January 999"
+    },
+    {
+      "name": "weekdayNames: lists short weekday names starting on Monday or Sunday (Monday)",
+      "fn": "weekdayNames",
+      "args": {
+        "weekStartsOn": 1
+      },
+      "result": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ]
+    },
+    {
+      "name": "weekdayNames: lists short weekday names starting on Monday or Sunday (Sunday)",
+      "fn": "weekdayNames",
+      "args": {
+        "weekStartsOn": 0
+      },
+      "result": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ]
+    },
+    {
+      "name": "cellLabel: labels cells with the date and the entry count (3 entries)",
+      "fn": "cellLabel",
+      "args": {
+        "localDate": "2026-11-09",
+        "count": 3
+      },
+      "result": "November 9, 2026, 3 entries"
+    },
+    {
+      "name": "cellLabel: labels cells with the date and the entry count (1 entry)",
+      "fn": "cellLabel",
+      "args": {
+        "localDate": "2026-11-09",
+        "count": 1
+      },
+      "result": "November 9, 2026, 1 entry"
+    },
+    {
+      "name": "cellLabel: labels cells with the date and the entry count (no entries)",
+      "fn": "cellLabel",
+      "args": {
+        "localDate": "2026-11-09",
+        "count": 0
+      },
+      "result": "November 9, 2026, no entries"
+    },
+    {
+      "name": "cellLabel: edge: 1000 entries",
+      "fn": "cellLabel",
+      "args": {
+        "localDate": "2026-01-01",
+        "count": 1000
+      },
+      "result": "January 1, 2026, 1000 entries"
+    },
+    {
+      "name": "constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "PAGER_LEAD_MONTHS": 12
+      }
+    }
+  ]
+}
