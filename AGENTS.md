@@ -53,7 +53,8 @@ a web app from one Expo codebase, with a self-hosted server. It is implemented a
   `// Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, Apache-2.0`.
 - No magic values: tuning in `*Constants.kt` objects, UI strings in `strings.xml` (English), test
   ids in `TestTags` (same strings as the Expo app's ids).
-- Secrets are `ByteArray` only (never `String`), wiped after use; no I/O on the main thread.
+- Secrets are `ByteArray`, wiped after use; a password or passphrase may arrive as `String` from a
+  text field (Compose) and is converted once at the core API boundary. No I/O on the main thread.
 - Dependencies only from `apps/android/gradle/libs.versions.toml`, listed in `docs/dependencies.md`.
 - `./gradlew verify` (in `apps/android`) must pass next to `pnpm verify`.
 - Never print, log or commit secrets. American English everywhere.
