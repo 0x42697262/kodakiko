@@ -11,6 +11,7 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +26,8 @@ class DeviceSettingsGoldenTest {
 
     private fun storeRaw(database: KodakikoDatabase, raw: JsonElement) {
         if (raw is JsonObject && raw["\$absent"] != null) return
-        database.kvSet(StorageKeys.SETTINGS_DEVICE, raw.toString().toByteArray())
+        val bytes = (raw as? JsonObject)?.get("\$bytes")?.jsonPrimitive?.content?.chunked(2)?.map { it.toInt(16).toByte() }?.toByteArray()
+        database.kvSet(StorageKeys.SETTINGS_DEVICE, bytes ?: raw.toString().toByteArray())
     }
 
     private fun storedJson(database: KodakikoDatabase): JsonElement =
@@ -58,15 +60,15 @@ class DeviceSettingsGoldenTest {
                     val store = DeviceSettingsStore.open(database, DeviceSettingsDefaults.ANDROID) { }
                     var notified = 0
                     store.subscribe { notified++ }
-                    val outcome = try {
+                    val rejected = try {
                         store.update(args.getValue("partial").jsonObject)
-                        null
-                    } catch (error: Throwable) {
-                        GoldenReplay.error(error)
+                        false
+                    } catch (error: IllegalArgumentException) {
+                        true
                     }
                     JsonObject(
                         mapOf(
-                            "error" to (outcome?.jsonObject?.get("error") ?: JsonNull),
+                            "rejected" to JsonPrimitive(rejected),
                             "value" to DeviceSettingsJson.encode(store.get()),
                             "stored" to storedJson(database),
                             "notified" to JsonPrimitive(notified),
