@@ -1,11 +1,16 @@
 package dev.kodakiko.js
 
-import dev.kodakiko.crypto.passwordToBytes
-import dev.kodakiko.crypto.wipe
-
 fun isJsWhitespace(char: Char): Boolean = char in JS_WHITESPACE
 
 fun jsTrim(text: String): String = text.trim { isJsWhitespace(it) }
+
+fun jsSlice(text: String, start: Int, end: Int = text.length): String {
+    val from = jsSliceIndex(start, text.length)
+    val to = jsSliceIndex(end, text.length)
+    return if (from >= to) "" else text.substring(from, to)
+}
+
+private fun jsSliceIndex(index: Int, length: Int): Int = if (index < 0) maxOf(length + index, 0) else minOf(index, length)
 
 fun collapseJsWhitespace(text: String, replacement: String): String {
     val builder = StringBuilder(text.length)
@@ -36,15 +41,9 @@ fun codePointsOf(text: String): List<String> {
 
 private fun isLoneSurrogate(codePoint: String): Boolean = codePoint.length == 1 && codePoint[0].isSurrogate()
 
-private fun normalizeWellFormed(segment: String): String {
-    if (segment.isEmpty()) return segment
-    val bytes = passwordToBytes(segment)
-    try {
-        return bytes.decodeToString()
-    } finally {
-        wipe(bytes)
-    }
-}
+internal expect fun platformNormalizeNfkc(text: String): String
+
+private fun normalizeWellFormed(segment: String): String = if (segment.isEmpty()) segment else platformNormalizeNfkc(segment)
 
 fun normalizeNfkc(text: String): String {
     if (text.none { it.isSurrogate() }) return normalizeWellFormed(text)

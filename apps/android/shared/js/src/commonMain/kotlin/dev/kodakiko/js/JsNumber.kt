@@ -129,3 +129,69 @@ private fun formatJsNumber(digits: String, pointPosition: Int): String {
         }
     }
 }
+
+fun jsToFixed(value: Double, fractionDigits: Int): String {
+    if (fractionDigits !in 0..JsNumberConstants.FIXED_DIGITS_MAX) throw RangeError(JsNumberConstants.TO_FIXED_RANGE)
+    return when {
+        value.isNaN() -> JsNumberConstants.NAN
+        value == Double.POSITIVE_INFINITY -> JsNumberConstants.INFINITY
+        value == Double.NEGATIVE_INFINITY -> JsNumberConstants.NEGATIVE_INFINITY
+        abs(value) >= JsNumberConstants.FIXED_PLAIN_LIMIT -> jsonStringifyNumber(value)
+        value < 0 -> MINUS + fixedMagnitude(-value, fractionDigits)
+        else -> fixedMagnitude(value, fractionDigits)
+    }
+}
+
+private fun fixedMagnitude(value: Double, fractionDigits: Int): String {
+    val (digits, scale) = exactDecimal(value)
+    val scaled = roundToScale(digits, scale, fractionDigits).padStart(fractionDigits + 1, ZERO)
+    if (fractionDigits == 0) return scaled
+    val pointPosition = scaled.length - fractionDigits
+    return scaled.substring(0, pointPosition) + DECIMAL_POINT + scaled.substring(pointPosition)
+}
+
+private fun exactDecimal(value: Double): Pair<String, Int> {
+    val bits = value.toRawBits()
+    val exponentBits = (bits shr JsNumberConstants.DOUBLE_FRACTION_BITS).toInt() and JsNumberConstants.DOUBLE_EXPONENT_MASK
+    val fraction = bits and ((1L shl JsNumberConstants.DOUBLE_FRACTION_BITS) - 1)
+    val mantissa = if (exponentBits == 0) fraction else fraction or (1L shl JsNumberConstants.DOUBLE_FRACTION_BITS)
+    val exponent = if (exponentBits == 0) JsNumberConstants.DOUBLE_SUBNORMAL_EXPONENT else exponentBits - JsNumberConstants.DOUBLE_EXPONENT_BIAS
+    val digits = mantissa.toString().reversed().map { it - ZERO }.toMutableList()
+    val factor = if (exponent >= 0) JsNumberConstants.DOUBLING_FACTOR else JsNumberConstants.HALVING_FACTOR
+    repeat(abs(exponent)) { multiplyDigits(digits, factor) }
+    return digits.asReversed().joinToString("") to maxOf(-exponent, 0)
+}
+
+private fun multiplyDigits(digits: MutableList<Int>, factor: Int) {
+    var carry = 0
+    for (index in digits.indices) {
+        val product = digits[index] * factor + carry
+        digits[index] = product % JsNumberConstants.DECIMAL_RADIX
+        carry = product / JsNumberConstants.DECIMAL_RADIX
+    }
+    while (carry > 0) {
+        digits.add(carry % JsNumberConstants.DECIMAL_RADIX)
+        carry /= JsNumberConstants.DECIMAL_RADIX
+    }
+}
+
+private fun roundToScale(digits: String, scale: Int, fractionDigits: Int): String {
+    if (scale <= fractionDigits) return (digits + ZERO.toString().repeat(fractionDigits - scale)).trimStart(ZERO).ifEmpty { ZERO.toString() }
+    val dropped = scale - fractionDigits
+    val padded = digits.padStart(dropped + 1, ZERO)
+    val kept = padded.substring(0, padded.length - dropped)
+    val roundsUp = padded[padded.length - dropped] >= JsNumberConstants.ROUND_UP_DIGIT
+    return (if (roundsUp) incrementDecimal(kept) else kept).trimStart(ZERO).ifEmpty { ZERO.toString() }
+}
+
+private fun incrementDecimal(digits: String): String {
+    val chars = digits.toCharArray()
+    var index = chars.size - 1
+    while (index >= 0 && chars[index] == JsNumberConstants.DIGIT_NINE) {
+        chars[index] = ZERO
+        index -= 1
+    }
+    if (index < 0) return JsNumberConstants.ONE_DIGIT + chars.concatToString()
+    chars[index] = chars[index] + 1
+    return chars.concatToString()
+}

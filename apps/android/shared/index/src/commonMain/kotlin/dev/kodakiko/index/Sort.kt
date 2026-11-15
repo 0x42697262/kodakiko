@@ -3,6 +3,7 @@ package dev.kodakiko.index
 import dev.kodakiko.index.IndexConstants.RANDOM_INCREMENT
 import dev.kodakiko.index.IndexConstants.RANDOM_MODULUS
 import dev.kodakiko.index.IndexConstants.RANDOM_MULTIPLIER
+import dev.kodakiko.js.jsStableSort
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.truncate
@@ -43,5 +44,5 @@ private fun compareEntries(leftId: String, rightId: String, left: IndexedEntry?,
 
 fun sortEntryIds(ids: List<String>, get: (String) -> IndexedEntry?, sort: GallerySort, seed: Double): List<String> {
     if (sort.key == GallerySortKey.RANDOM) return shuffled(ids, seed)
-    return ids.sortedWith { leftId, rightId -> compareEntries(leftId, rightId, get(leftId), get(rightId), sort) }
+    return jsStableSort(ids) { leftId, rightId -> compareEntries(leftId, rightId, get(leftId), get(rightId), sort) }
 }

@@ -4,6 +4,7 @@ import dev.kodakiko.domain.normalizeTag
 import dev.kodakiko.index.IndexConstants.MIN_YEARS_AGO
 import dev.kodakiko.index.IndexConstants.MULTIPLE_MEDIA_MIN
 import dev.kodakiko.js.JsDate
+import dev.kodakiko.js.jsStableSort
 import dev.kodakiko.js.jsStringToNumber
 import dev.kodakiko.js.jsTrim
 import kotlin.math.max
@@ -29,7 +30,7 @@ private fun removeFrom(map: MutableMap<String, MutableSet<String>>, key: String,
 }
 
 private fun intersect(sets: List<Set<String>>): Set<String> {
-    val bySize = sets.sortedBy { it.size }
+    val bySize = jsStableSort(sets) { left, right -> left.size - right.size }
     val smallest = bySize.firstOrNull() ?: return emptySet()
     val others = bySize.drop(1)
     val result = LinkedHashSet<String>()
@@ -86,7 +87,7 @@ class GalleryIndex(private val homeCollectionId: String) {
     private var dirty = false
     private var currentVersion = 0
 
-    private val masterOrder = Comparator<String> { leftId, rightId ->
+    private val masterOrder: (String, String) -> Int = { leftId, rightId ->
         val byTime = sortResultOf((entries[rightId]?.takenAtMs ?: 0.0) - (entries[leftId]?.takenAtMs ?: 0.0))
         when {
             byTime != 0 -> byTime
@@ -98,13 +99,13 @@ class GalleryIndex(private val homeCollectionId: String) {
 
     private fun ordered(): List<String> {
         if (dirty) {
-            orderedIds = entries.keys.sortedWith(masterOrder)
+            orderedIds = jsStableSort(entries.keys, masterOrder)
             dirty = false
         }
         return orderedIds
     }
 
-    private fun wordKeys(): List<String> = sortedWords ?: words.keys.sorted().also { sortedWords = it }
+    private fun wordKeys(): List<String> = sortedWords ?: jsStableSort(words.keys, String::compareTo).also { sortedWords = it }
 
     private fun inScope(entry: IndexedEntry, scope: GalleryScope): Boolean {
         val collectionId = when (scope) {
@@ -214,29 +215,25 @@ class GalleryIndex(private val homeCollectionId: String) {
     }
 
     fun allTags(): List<TagCount> =
-        tagCounts.entries
-            .filter { it.value > 0 }
-            .sortedWith { left, right -> if (left.key < right.key) SORT_BEFORE else SORT_AFTER }
+        jsStableSort(tagCounts.entries.filter { it.value > 0 }) { left, right -> if (left.key < right.key) SORT_BEFORE else SORT_AFTER }
             .map { TagCount(it.key, it.value) }
 
     fun tagSuggestions(prefix: String, limit: Int): List<String> {
         val normalized = normalizedPrefix(prefix) ?: return emptyList()
-        val ranked = tagCounts.entries
-            .filter { it.key.startsWith(normalized) }
-            .sortedWith { left, right ->
-                when {
-                    left.value != right.value -> right.value - left.value
-                    left.key < right.key -> SORT_BEFORE
-                    else -> SORT_AFTER
-                }
+        val ranked = jsStableSort(tagCounts.entries.filter { it.key.startsWith(normalized) }) { left, right ->
+            when {
+                left.value != right.value -> right.value - left.value
+                left.key < right.key -> SORT_BEFORE
+                else -> SORT_AFTER
             }
+        }
         return ranked.subList(0, sliceEnd(ranked.size, limit)).map { it.key }
     }
 
     fun onThisDay(todayLocalDate: String, scope: GalleryScope): List<OnThisDayGroup> {
         val todayYear = yearOf(todayLocalDate)
         val groups = LinkedHashMap<Double, MutableList<String>>()
-        val ids = byMonthDay[todayLocalDate.drop(MONTH_DAY_START)].orEmpty().sortedWith(masterOrder)
+        val ids = jsStableSort(byMonthDay[todayLocalDate.drop(MONTH_DAY_START)].orEmpty(), masterOrder)
         for (id in ids) {
             val entry = entries[id]?.entry
             if (entry == null || entry.trashed || !inScope(entry, scope)) continue
@@ -244,8 +241,7 @@ class GalleryIndex(private val homeCollectionId: String) {
             if (yearsAgo < MIN_YEARS_AGO) continue
             groups.getOrPut(yearsAgo) { mutableListOf() }.add(id)
         }
-        return groups.entries
-            .sortedWith { left, right -> sortResultOf(left.key - right.key) }
+        return jsStableSort(groups.entries) { left, right -> sortResultOf(left.key - right.key) }
             .map { OnThisDayGroup(it.key, it.value.toList()) }
     }
 

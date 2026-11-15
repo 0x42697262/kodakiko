@@ -17,6 +17,7 @@ val jna = libs.jna.get()
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.shared.js)
             implementation(libs.kotlinx.serialization.json)
         }
         jvmMain.dependencies {

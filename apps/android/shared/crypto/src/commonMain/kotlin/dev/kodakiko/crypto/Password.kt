@@ -1,5 +1,5 @@
 package dev.kodakiko.crypto
 
-internal expect fun normalizeNfkc(text: String): String
+import dev.kodakiko.js.normalizeNfkc
 
 fun passwordToBytes(password: String): ByteArray = utf8Encode(normalizeNfkc(password))

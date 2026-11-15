@@ -35,6 +35,8 @@ tasks.register("verify") {
         ":shared:index:testAndroidHostTest",
         ":shared:sync:jvmTest",
         ":shared:sync:testAndroidHostTest",
+        ":shared:export:jvmTest",
+        ":shared:export:testAndroidHostTest",
         ":data:db:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",

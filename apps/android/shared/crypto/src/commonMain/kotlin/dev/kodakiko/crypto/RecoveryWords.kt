@@ -1,5 +1,7 @@
 package dev.kodakiko.crypto
 
+import dev.kodakiko.js.normalizeNfkc
+
 private val WORD_INDEX: Map<String, Int> by lazy { WORDLIST_EN.withIndex().associate { (index, word) -> word to index } }
 
 private const val RECOVERY_BYTES = KEY_BYTES + RECOVERY_CHECKSUM_BITS / BYTE_BITS

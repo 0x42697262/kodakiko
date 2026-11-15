@@ -89,8 +89,22 @@ internal object JsNumberConstants {
     const val FIXED_EXPONENT_MAX = 21
     const val FIXED_EXPONENT_MIN = -6
     const val ROUND_HALF = 0.5
+    const val FIXED_DIGITS_MAX = 100
+    const val FIXED_PLAIN_LIMIT = 1e21
+    const val DOUBLE_FRACTION_BITS = 52
+    const val DOUBLE_EXPONENT_MASK = 0x7FF
+    const val DOUBLE_EXPONENT_BIAS = 1075
+    const val DOUBLE_SUBNORMAL_EXPONENT = -1074
+    const val HALVING_FACTOR = 5
+    const val DOUBLING_FACTOR = 2
+    const val TO_FIXED_RANGE = "toFixed() digits argument must be between 0 and 100"
     val DECIMAL = Regex("^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$")
     val INFINITY_PATTERN = Regex("^[+-]?Infinity$")
+}
+
+internal object JsSortConstants {
+    const val MIN_MERGE = 64
+    const val PAIR = 2
 }
 
 internal const val SURROGATE_PAIR_LENGTH = 2
