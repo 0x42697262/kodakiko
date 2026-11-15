@@ -26,6 +26,7 @@ $RUN -f lavfi -i testsrc2=size=1280x720:rate=30 -f lavfi -i sine=frequency=440 -
 $RUN -f lavfi -i testsrc2=size=640x480:rate=30 -t 3 -c:v libx264 -pix_fmt yuv420p -f mov \
   -metadata location=+48.8584+002.2945/ -metadata creation_time=2026-05-01T08:00:00Z video-gps.mov
 $RUN -f lavfi -i testsrc2=size=320x240:rate=30 -t 2 -c:v libvpx-vp9 -b:v 300k video-short.webm
+$RUN -f lavfi -i sine=frequency=330 -t 2 -c:a libopus -b:a 48k voice-opus.webm
 
 sha256sum photo-gps-base.jpg photo-portrait.jpg screenshot.png video-20s.mp4 video-gps.mov \
-  video-short.webm > SHA256SUMS
+  video-short.webm voice-opus.webm > SHA256SUMS
