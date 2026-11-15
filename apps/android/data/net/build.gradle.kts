@@ -13,4 +13,6 @@ dependencies {
     }
     testImplementation(libs.junit4)
     testImplementation(libs.mockwebserver3)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.ext.junit)
 }
