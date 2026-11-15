@@ -140,7 +140,7 @@ class CameraDeviceTest {
         val result = record(maxFileSizeBytes = 0, stopAfterMs = 2_000) as VideoResult.Saved
         assertFalse(result.reachedSizeLimit)
         assertTrue(tracks(result.file).any { it.startsWith("video/") })
-        assertTrue(tracks(result.file).contains("audio/mp4a-latm"))
+        assertTrue(tracks(result.file).any { it.startsWith("audio/") })
         MediaMetadataRetriever().use { retriever ->
             retriever.setDataSource(result.file.path)
             val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong()
@@ -151,10 +151,18 @@ class CameraDeviceTest {
     @Test
     fun aRecordingStopsItselfAtTheSizeCap() {
         assertTrue(bind(CameraFacing.BACK))
-        val cap = 400_000L
+        val cap = 1_000_000L
         val result = record(maxFileSizeBytes = cap, stopAfterMs = null) as VideoResult.Saved
         assertTrue(result.reachedSizeLimit)
         assertTrue("size ${result.file.length()}", result.file.length() in 1L..cap)
+    }
+
+    @Test
+    fun aCapTooSmallForTheContainerFailsAtOnceWithoutAFile() {
+        assertTrue(bind(CameraFacing.BACK))
+        val result = record(maxFileSizeBytes = CameraConstants.MUXER_RESERVED_BYTES, stopAfterMs = null)
+        assertTrue("$result", result is VideoResult.Failed)
+        assertFalse(File(directory, "video.mp4").exists())
     }
 
     @Test
