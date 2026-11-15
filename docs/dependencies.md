@@ -371,6 +371,7 @@ hash truncated (F-KT-15), and its JVM jar bundles libsodium 1.0.19 against 1.0.2
 | `androidx.profileinstaller:profileinstaller` | 1.4.1 | 2024-10-02 | Apache-2.0 | Installs baseline profiles |
 | `androidx.media3:media3-exoplayer`, `media3-ui-compose`, `media3-ui` | 1.11.1 | 2026-09-11 | Apache-2.0 | Video and voice playback, decrypting DataSource |
 | `androidx.camera:camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-video`, `camera-compose` | 1.6.2 | 2026-08-26 | Apache-2.0 (camera-core also BSD-3-Clause) | Built-in camera |
+| transitive: `androidx.media3:media3-muxer`/`-common`/`-container` 1.9.0, `com.google.guava:guava` 32.0.1-android, `com.google.dagger:dagger` 2.59, `androidx.camera:camera-camera2-pipe`, `org.jetbrains.kotlinx:atomicfu` | as resolved | — | Apache-2.0 | Accepted as CameraX's own dependencies (pinned by the lockfiles and verification metadata) |
 | `cafe.adriel.voyager:voyager-navigator`, `voyager-tab-navigator`, `voyager-transitions` | 2.2.21-1.10.3 | 2026-06-08 | MIT | Navigation (D-107, as Mihon; Maven Central) |
 | `dev.zacsweers.metro:runtime`, `metrox-viewmodel-compose` | 1.5.2 | 2026-11-03 | Apache-2.0 | DI runtime + ViewModel factory (as Mihon) |
 | `com.squareup.okhttp3:okhttp` | 5.5.1 | 2026-10-22 | Apache-2.0 | HTTP (API, presigned PUT/GET, uploads) |
