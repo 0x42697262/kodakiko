@@ -40,6 +40,7 @@ tasks.register("verify") {
         ":shared:markdown:jvmTest",
         ":shared:markdown:testAndroidHostTest",
         ":data:db:testDebugUnitTest",
+        ":data:files:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",

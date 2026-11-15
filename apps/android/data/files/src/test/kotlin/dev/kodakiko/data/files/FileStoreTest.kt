@@ -77,10 +77,13 @@ class FileStoreTest {
         assertEquals(3L, written)
         assertArrayEquals(byteArrayOf(2, 3), store.readRange(validId, 1, 2))
         assertThrows(IOException::class.java) {
-            store.writeObject(otherId, sequence {
-                yield(byteArrayOf(9))
-                throw IOException("source failed")
-            })
+            store.writeObject(
+                otherId,
+                sequence {
+                    yield(byteArrayOf(9))
+                    throw IOException("source failed")
+                },
+            )
         }
         assertNull(store.size(otherId))
         assertFalse(store.paths.partialFile(otherId).exists())
@@ -107,7 +110,10 @@ class FileStoreTest {
             store.paths.objectFile(id).setLastModified(old)
             store.paths.plainThumbnailFile(id).setLastModified(old)
         }
-        File(store.paths.objectFile(ids[0]).parentFile, "notes.txt").apply { writeText("x"); setLastModified(old) }
+        File(store.paths.objectFile(ids[0]).parentFile, "notes.txt").apply {
+            writeText("x")
+            setLastModified(old)
+        }
         store.sweepOrphans(knownObjectIds = setOf(ids[0]), olderThanMs = 60_000, knownMediaIds = setOf(ids[1]))
         assertEquals(setOf(ids[0], ids[2]), store.listSizes().keys)
         assertTrue(File(store.paths.objectFile(ids[0]).parentFile, "notes.txt").exists())
