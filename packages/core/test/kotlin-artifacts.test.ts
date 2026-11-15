@@ -11,6 +11,7 @@ import { bytesToHex, hexToBytes, utf8Decode } from '../src/crypto/bytes.ts';
 import { openBlob } from '../src/crypto/sealed-blob.ts';
 import { unpadIso7816 } from '../src/crypto/padding.ts';
 import { createStreamDecryptor, layoutFromCiphertextSize } from '../src/crypto/stream.ts';
+import { decryptKdkx, deriveKdkxKey, readKdkxParams } from '../src/export/kdkx.ts';
 import { PADDING_BLOCK_BYTES, STREAM_HEADER_BYTES } from '../src/crypto/constants.ts';
 import type { AdContext } from '../src/crypto/constants.ts';
 import type { Sodium } from '../src/crypto/sodium.ts';
@@ -20,6 +21,8 @@ const DEFAULT_DIRECTORY = fileURLToPath(new URL('../../../apps/android/build/kot
 const ARTIFACT_SUFFIX = '.artifact.json';
 const STREAM_EXPONENT = 20;
 const TAG_BYTES = 16;
+const KDKX_PREFIX_AND_HEADER_BYTES = 53;
+const KDKX_CHUNK = 1_048_576;
 
 type Artifact = Record<string, unknown> & { readonly kind: string };
 export type ArtifactResult = { readonly file: string; readonly ok: boolean; readonly message: string };
@@ -60,6 +63,18 @@ const CHECKS: Record<string, (sodium: Sodium, artifact: Artifact, directory: str
     const plaintext = decryptStream(sodium, hexToBytes(artifact['key'] as string), object, size);
     const expected = counterBytes(artifact['plaintextSeed'] as number, size);
     return bytesToHex(plaintext) === bytesToHex(expected) ? null : 'plaintext differs';
+  },
+  kdkx: async (sodium, artifact, directory) => {
+    const file = new Uint8Array(await readFile(join(directory, artifact['file'] as string)));
+    const params = readKdkxParams(file);
+    if (params.opsLimit !== artifact['opsLimit'] || params.memLimitBytes !== artifact['memLimitBytes']) return 'KDKX params differ';
+    if (bytesToHex(params.salt) !== artifact['salt']) return 'KDKX salt differs';
+    const size = artifact['plaintextSize'] as number;
+    const expectedSize = KDKX_PREFIX_AND_HEADER_BYTES + size + TAG_BYTES * Math.max(1, Math.ceil(size / KDKX_CHUNK));
+    if (file.length !== expectedSize) return `KDKX size ${file.length}, expected ${expectedSize}`;
+    const key = await deriveKdkxKey(sodium, artifact['passphrase'] as string, params);
+    const plaintext = decryptKdkx(sodium, key, file);
+    return bytesToHex(plaintext) === bytesToHex(counterBytes(artifact['plaintextSeed'] as number, size)) ? null : 'KDKX plaintext differs';
   },
   dto: async (_sodium, artifact) => {
     const schema = (contract as Record<string, unknown>)[artifact['schema'] as string];

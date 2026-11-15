@@ -1,18 +1,23 @@
 package dev.kodakiko.exporting
 
+import dev.kodakiko.testing.GoldenAdapter
 import dev.kodakiko.testing.GoldenReplay
 import kotlin.test.Test
 
 class ExportGoldenTest {
-    @Test
-    fun layout() = GoldenReplay.run("export/layout.json", ExportGoldenAdapter)
+    private fun scoped(area: String) = GoldenAdapter { fn, args ->
+        ExportGoldenAdapter.call(if (fn == "constants") "$area.constants" else fn, args)
+    }
 
     @Test
-    fun parseEntry() = GoldenReplay.run("export/parse-entry.json", ExportGoldenAdapter)
+    fun layout() = GoldenReplay.run("export/layout.json", scoped("layout"))
 
     @Test
-    fun kdkx() = GoldenReplay.run("export/kdkx.json", ExportGoldenAdapter)
+    fun parseEntry() = GoldenReplay.run("export/parse-entry.json", scoped("parse"))
 
     @Test
-    fun zip() = GoldenReplay.run("export/zip.json", ExportGoldenAdapter)
+    fun kdkx() = GoldenReplay.run("export/kdkx.json", scoped("kdkx"))
+
+    @Test
+    fun zip() = GoldenReplay.run("export/zip.json", scoped("zip"))
 }
