@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeApiCallGoldens } from './golden-client/api-calls';
 import { writeArchiveGoldens } from './golden-client/archive';
 import { writeCalendarGoldens } from './golden-client/calendar';
 import { writeGalleryGoldens } from './golden-client/gallery';
@@ -16,6 +17,7 @@ export async function generateClientGoldens(outputDirectory: string): Promise<re
   await writeGalleryGoldens(writer);
   await writeArchiveGoldens(writer);
   await writeSettingsGoldens(writer);
+  await writeApiCallGoldens(writer);
   return writer.written;
 }
 

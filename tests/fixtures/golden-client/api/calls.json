@@ -1,0 +1,1729 @@
+{
+  "format": 1,
+  "generator": "apps/client/scripts/generate-golden-client.ts",
+  "cases": [
+    {
+      "name": "AUTH.params#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "params",
+        "args": [
+          {
+            "username": "alice"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/params",
+        "auth": "none",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "username": "alice"
+        },
+        "responseSchema": "paramsResponse"
+      }
+    },
+    {
+      "name": "AUTH.params#2",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "params",
+        "args": [
+          {
+            "username": "Ünïcødé User 🌸"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/params",
+        "auth": "none",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "username": "Ünïcødé User 🌸"
+        },
+        "responseSchema": "paramsResponse"
+      }
+    },
+    {
+      "name": "AUTH.signUp#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "signUp",
+        "args": [
+          {
+            "userId": "u7Hq2LmX9pR4sT1vW8yZ0a",
+            "username": "alice",
+            "inviteToken": null,
+            "deviceLabel": "Pixel 9",
+            "salt": "c2FsdC1ieXRlcy0xNg",
+            "opsLimit": 3,
+            "memLimitBytes": 268435456,
+            "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "publicKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "masterKeyByKek": "YmxvYi1ieXRlcw",
+            "masterKeyByRecovery": "YmxvYi1ieXRlcw",
+            "recoveryKeyByMaster": "YmxvYi1ieXRlcw",
+            "privateKeyByMaster": "YmxvYi1ieXRlcw",
+            "homeCollection": {
+              "id": "hOmE_cOlLeCtIoN-00000b",
+              "keyByOwner": "YmxvYi1ieXRlcw",
+              "metadataBlob": "YmxvYi1ieXRlcw"
+            }
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/sign-up",
+        "auth": "none",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "userId": "u7Hq2LmX9pR4sT1vW8yZ0a",
+          "username": "alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 9",
+          "salt": "c2FsdC1ieXRlcy0xNg",
+          "opsLimit": 3,
+          "memLimitBytes": 268435456,
+          "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "publicKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "masterKeyByKek": "YmxvYi1ieXRlcw",
+          "masterKeyByRecovery": "YmxvYi1ieXRlcw",
+          "recoveryKeyByMaster": "YmxvYi1ieXRlcw",
+          "privateKeyByMaster": "YmxvYi1ieXRlcw",
+          "homeCollection": {
+            "id": "hOmE_cOlLeCtIoN-00000b",
+            "keyByOwner": "YmxvYi1ieXRlcw",
+            "metadataBlob": "YmxvYi1ieXRlcw"
+          }
+        },
+        "responseSchema": "signUpResponse"
+      }
+    },
+    {
+      "name": "AUTH.signUp#2",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "signUp",
+        "args": [
+          {
+            "userId": "u7Hq2LmX9pR4sT1vW8yZ0a",
+            "username": "alice",
+            "inviteToken": "kdk_i_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789-_abcde",
+            "deviceLabel": "Pixel 9",
+            "salt": "c2FsdC1ieXRlcy0xNg",
+            "opsLimit": 3,
+            "memLimitBytes": 268435456,
+            "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "publicKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "masterKeyByKek": "YmxvYi1ieXRlcw",
+            "masterKeyByRecovery": "YmxvYi1ieXRlcw",
+            "recoveryKeyByMaster": "YmxvYi1ieXRlcw",
+            "privateKeyByMaster": "YmxvYi1ieXRlcw",
+            "homeCollection": {
+              "id": "hOmE_cOlLeCtIoN-00000b",
+              "keyByOwner": "YmxvYi1ieXRlcw",
+              "metadataBlob": "YmxvYi1ieXRlcw"
+            }
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/sign-up",
+        "auth": "none",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "userId": "u7Hq2LmX9pR4sT1vW8yZ0a",
+          "username": "alice",
+          "inviteToken": "kdk_i_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789-_abcde",
+          "deviceLabel": "Pixel 9",
+          "salt": "c2FsdC1ieXRlcy0xNg",
+          "opsLimit": 3,
+          "memLimitBytes": 268435456,
+          "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "publicKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "masterKeyByKek": "YmxvYi1ieXRlcw",
+          "masterKeyByRecovery": "YmxvYi1ieXRlcw",
+          "recoveryKeyByMaster": "YmxvYi1ieXRlcw",
+          "privateKeyByMaster": "YmxvYi1ieXRlcw",
+          "homeCollection": {
+            "id": "hOmE_cOlLeCtIoN-00000b",
+            "keyByOwner": "YmxvYi1ieXRlcw",
+            "metadataBlob": "YmxvYi1ieXRlcw"
+          }
+        },
+        "responseSchema": "signUpResponse"
+      }
+    },
+    {
+      "name": "AUTH.signIn#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "signIn",
+        "args": [
+          {
+            "username": "alice",
+            "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "deviceLabel": "Pixel 9"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/sign-in",
+        "auth": "none",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "username": "alice",
+          "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "deviceLabel": "Pixel 9"
+        },
+        "responseSchema": "signInResponse"
+      }
+    },
+    {
+      "name": "AUTH.session#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "session",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/auth/session",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": 5000,
+        "body": null,
+        "responseSchema": "sessionResponse"
+      }
+    },
+    {
+      "name": "AUTH.keyBundle#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "keyBundle",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/auth/key-bundle",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "keyBundleDto"
+      }
+    },
+    {
+      "name": "AUTH.recoveryStart#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "recoveryStart",
+        "args": [
+          {
+            "username": "alice"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/recovery/start",
+        "auth": "none",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "username": "alice"
+        },
+        "responseSchema": "recoveryStartResponse"
+      }
+    },
+    {
+      "name": "AUTH.recoveryComplete#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "recoveryComplete",
+        "args": [
+          {
+            "username": "alice",
+            "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "deviceLabel": "Pixel 9",
+            "salt": "c2FsdC1ieXRlcy0xNg",
+            "opsLimit": 2147483647,
+            "memLimitBytes": 9007199254740991,
+            "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "masterKeyByKek": "YmxvYi1ieXRlcw"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/recovery/complete",
+        "auth": "none",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "username": "alice",
+          "recoveryLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "deviceLabel": "Pixel 9",
+          "salt": "c2FsdC1ieXRlcy0xNg",
+          "opsLimit": 2147483647,
+          "memLimitBytes": 9007199254740991,
+          "loginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "masterKeyByKek": "YmxvYi1ieXRlcw"
+        },
+        "responseSchema": "signInResponse"
+      }
+    },
+    {
+      "name": "AUTH.signOut#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "signOut",
+        "args": []
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/sign-out",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": 5000,
+        "body": null,
+        "responseSchema": "void"
+      }
+    },
+    {
+      "name": "AUTH.changePassword#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "changePassword",
+        "args": [
+          {
+            "currentLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "salt": "c2FsdC1ieXRlcy0xNg",
+            "opsLimit": 3,
+            "memLimitBytes": 268435456,
+            "loginKey": "YWNjZXNzLXRva2Vu",
+            "masterKeyByKek": "YmxvYi1ieXRlcw"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/auth/password",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "currentLoginKey": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "salt": "c2FsdC1ieXRlcy0xNg",
+          "opsLimit": 3,
+          "memLimitBytes": 268435456,
+          "loginKey": "YWNjZXNzLXRva2Vu",
+          "masterKeyByKek": "YmxvYi1ieXRlcw"
+        },
+        "responseSchema": "passwordChangeResponse"
+      }
+    },
+    {
+      "name": "AUTH.requestDeletion#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "requestDeletion",
+        "args": []
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/users/me/delete",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "deletionRequestResponse"
+      }
+    },
+    {
+      "name": "AUTH.cancelDeletion#1",
+      "fn": "call",
+      "args": {
+        "group": "AUTH",
+        "call": "cancelDeletion",
+        "args": []
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/users/me/delete/cancel",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "userDto"
+      }
+    },
+    {
+      "name": "SYNC.syncState#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "syncState",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/sync/state",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "syncStateResponse"
+      }
+    },
+    {
+      "name": "SYNC.collection#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "collection",
+        "args": [
+          "hOmE_cOlLeCtIoN-00000b"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/hOmE_cOlLeCtIoN-00000b",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "collectionDto"
+      }
+    },
+    {
+      "name": "SYNC.collection#2",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "collection",
+        "args": [
+          "c0LlEcTiOn_Id-00000001"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "collectionDto"
+      }
+    },
+    {
+      "name": "SYNC.diff#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "diff",
+        "args": [
+          "hOmE_cOlLeCtIoN-00000b",
+          0,
+          500
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/hOmE_cOlLeCtIoN-00000b/diff?since=0&limit=500",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "diffPage"
+      }
+    },
+    {
+      "name": "SYNC.diff#2",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "diff",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          12345,
+          1
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/diff?since=12345&limit=1",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "diffPage"
+      }
+    },
+    {
+      "name": "SYNC.diff#3",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "diff",
+        "args": [
+          "hOmE_cOlLeCtIoN-00000b",
+          9007199254740991,
+          1000
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/hOmE_cOlLeCtIoN-00000b/diff?since=9007199254740991&limit=1000",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "diffPage"
+      }
+    },
+    {
+      "name": "SYNC.createEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "createEntry",
+        "args": [
+          {
+            "id": "eNtRy_Id-000000000000a",
+            "purpose": "journal",
+            "metadataBlob": "YmxvYi1ieXRlcw",
+            "memberships": [
+              {
+                "collectionId": "hOmE_cOlLeCtIoN-00000b",
+                "entryKeyByCollection": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+              }
+            ],
+            "media": [
+              {
+                "mediaId": "mEdIa_Id-0000000000000",
+                "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/entries",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "eNtRy_Id-000000000000a",
+          "purpose": "journal",
+          "metadataBlob": "YmxvYi1ieXRlcw",
+          "memberships": [
+            {
+              "collectionId": "hOmE_cOlLeCtIoN-00000b",
+              "entryKeyByCollection": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+            }
+          ],
+          "media": [
+            {
+              "mediaId": "mEdIa_Id-0000000000000",
+              "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+            }
+          ]
+        },
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.createEntry#2",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "createEntry",
+        "args": [
+          {
+            "id": "eNtRy_Id-000000000000a",
+            "purpose": "link_copy",
+            "metadataBlob": "YmxvYi1ieXRlcw",
+            "memberships": [
+              {
+                "collectionId": "hOmE_cOlLeCtIoN-00000b",
+                "entryKeyByCollection": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+              }
+            ],
+            "media": [
+              {
+                "mediaId": "mEdIa_Id-0000000000000",
+                "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+              },
+              {
+                "mediaId": "mEdIa_Id-0000000000001",
+                "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+              },
+              {
+                "mediaId": "mEdIa_Id-0000000000002",
+                "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+              }
+            ]
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/entries",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "eNtRy_Id-000000000000a",
+          "purpose": "link_copy",
+          "metadataBlob": "YmxvYi1ieXRlcw",
+          "memberships": [
+            {
+              "collectionId": "hOmE_cOlLeCtIoN-00000b",
+              "entryKeyByCollection": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+            }
+          ],
+          "media": [
+            {
+              "mediaId": "mEdIa_Id-0000000000000",
+              "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+            },
+            {
+              "mediaId": "mEdIa_Id-0000000000001",
+              "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+            },
+            {
+              "mediaId": "mEdIa_Id-0000000000002",
+              "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+            }
+          ]
+        },
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.getEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "getEntry",
+        "args": [
+          "eNtRy_Id-000000000000a"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.patchEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "patchEntry",
+        "args": [
+          "eNtRy_Id-000000000000a",
+          {
+            "metadataBlob": "YmxvYi1ieXRlcw",
+            "baseRevision": 1
+          }
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "metadataBlob": "YmxvYi1ieXRlcw",
+          "baseRevision": 1
+        },
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.patchEntry#2",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "patchEntry",
+        "args": [
+          "eNtRy_Id-000000000000a",
+          {
+            "metadataBlob": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5",
+            "baseRevision": 42
+          }
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "metadataBlob": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5",
+          "baseRevision": 42
+        },
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.trashEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "trashEntry",
+        "args": [
+          "eNtRy_Id-000000000000a"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a/trash",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.restoreEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "restoreEntry",
+        "args": [
+          "eNtRy_Id-000000000000a"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a/restore",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "entryDto"
+      }
+    },
+    {
+      "name": "SYNC.deleteEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "deleteEntry",
+        "args": [
+          "eNtRy_Id-000000000000a"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SYNC.addMedia#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "addMedia",
+        "args": [
+          "eNtRy_Id-000000000000a",
+          {
+            "mediaId": "mEdIa_Id-000000000000b",
+            "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/entries/eNtRy_Id-000000000000a/media",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "mediaId": "mEdIa_Id-000000000000b",
+          "mediaKeyByEntry": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw"
+        },
+        "responseSchema": "mediaDto"
+      }
+    },
+    {
+      "name": "SYNC.removeMedia#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "removeMedia",
+        "args": [
+          "mEdIa_Id-000000000000b"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/media/mEdIa_Id-000000000000b",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SYNC.presign#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "presign",
+        "args": [
+          {
+            "id": "oBjEcT_Id-00000000000c",
+            "mediaId": "mEdIa_Id-000000000000b",
+            "variant": "original",
+            "sizeBytes": 5368709120
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/objects/presign",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "oBjEcT_Id-00000000000c",
+          "mediaId": "mEdIa_Id-000000000000b",
+          "variant": "original",
+          "sizeBytes": 5368709120
+        },
+        "responseSchema": "presignResponse"
+      }
+    },
+    {
+      "name": "SYNC.presign#2",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "presign",
+        "args": [
+          {
+            "id": "oBjEcT_Id-00000000000c",
+            "mediaId": "mEdIa_Id-000000000000b",
+            "variant": "thumbnail",
+            "sizeBytes": 40
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/objects/presign",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "oBjEcT_Id-00000000000c",
+          "mediaId": "mEdIa_Id-000000000000b",
+          "variant": "thumbnail",
+          "sizeBytes": 40
+        },
+        "responseSchema": "presignResponse"
+      }
+    },
+    {
+      "name": "SYNC.parts#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "parts",
+        "args": [
+          "oBjEcT_Id-00000000000c"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/objects/oBjEcT_Id-00000000000c/parts",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "partsResponse"
+      }
+    },
+    {
+      "name": "SYNC.confirm#1",
+      "fn": "call",
+      "args": {
+        "group": "SYNC",
+        "call": "confirm",
+        "args": [
+          "oBjEcT_Id-00000000000c"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/objects/oBjEcT_Id-00000000000c/confirm",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "objectDto"
+      }
+    },
+    {
+      "name": "OBJECT.download#1",
+      "fn": "call",
+      "args": {
+        "group": "OBJECT",
+        "call": "download",
+        "args": [
+          "oBjEcT_Id-00000000000c"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/objects/oBjEcT_Id-00000000000c/download",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "downloadResponse"
+      }
+    },
+    {
+      "name": "SHARING.create#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "create",
+        "args": [
+          {
+            "id": "c0LlEcTiOn_Id-00000001",
+            "kind": "shared",
+            "keyByOwner": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "metadataBlob": "YmxvYi1ieXRlcw"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/collections",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "c0LlEcTiOn_Id-00000001",
+          "kind": "shared",
+          "keyByOwner": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "metadataBlob": "YmxvYi1ieXRlcw"
+        },
+        "responseSchema": "collectionDto"
+      }
+    },
+    {
+      "name": "SHARING.create#2",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "create",
+        "args": [
+          {
+            "id": "c0LlEcTiOn_Id-00000001",
+            "kind": "link",
+            "keyByOwner": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+            "metadataBlob": "YmxvYi1ieXRlcw"
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/collections",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "id": "c0LlEcTiOn_Id-00000001",
+          "kind": "link",
+          "keyByOwner": "a2V5LWJ5dGVzLTMyLWxvbmctZW5vdWdoLXRvLWJlLXJlYWw",
+          "metadataBlob": "YmxvYi1ieXRlcw"
+        },
+        "responseSchema": "collectionDto"
+      }
+    },
+    {
+      "name": "SHARING.rename#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "rename",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YmxvYi1ieXRlcw"
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "metadataBlob": "YmxvYi1ieXRlcw"
+        },
+        "responseSchema": "collectionDto"
+      }
+    },
+    {
+      "name": "SHARING.remove#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "remove",
+        "args": [
+          "c0LlEcTiOn_Id-00000001"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SHARING.addEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "addEntry",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "eNtRy_Id-000000000000a",
+          "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/entries",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "entryId": "eNtRy_Id-000000000000a",
+          "entryKeyByCollection": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+        },
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SHARING.removeEntry#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "removeEntry",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "eNtRy_Id-000000000000a"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/entries/eNtRy_Id-000000000000a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SHARING.publicKey#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "publicKey",
+        "args": [
+          "bob"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/users/bob/public-key",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "publicKeyResponse"
+      }
+    },
+    {
+      "name": "SHARING.publicKey#2",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "publicKey",
+        "args": [
+          "Bob Smith/ä?#"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/users/Bob Smith/ä?#/public-key",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "publicKeyResponse"
+      }
+    },
+    {
+      "name": "SHARING.share#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "share",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "Rk3_9xQ2mT7vL0pR8sW4-b",
+          "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/shares",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "recipientUserId": "Rk3_9xQ2mT7vL0pR8sW4-b",
+          "sealedCollectionKey": "c2VhbGVkLWNvbGxlY3Rpb24ta2V5"
+        },
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "SHARING.listShares#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "listShares",
+        "args": [
+          "c0LlEcTiOn_Id-00000001"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/shares",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "shareListResponse"
+      }
+    },
+    {
+      "name": "SHARING.unshare#1",
+      "fn": "call",
+      "args": {
+        "group": "SHARING",
+        "call": "unshare",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "Rk3_9xQ2mT7vL0pR8sW4-b"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/collections/c0LlEcTiOn_Id-00000001/shares/Rk3_9xQ2mT7vL0pR8sW4-b",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "CONFIG.get#1",
+      "fn": "call",
+      "args": {
+        "group": "CONFIG",
+        "call": "get",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/config",
+        "auth": "none",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "publicConfigSchema"
+      }
+    },
+    {
+      "name": "LINK.create#1",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "1h"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "1h"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#2",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "1d"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "1d"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#3",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "7d"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "7d"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#4",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "14d"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "14d"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#5",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "30d"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "30d"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#6",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "never"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "never"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.create#7",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "create",
+        "args": [
+          "c0LlEcTiOn_Id-00000001",
+          "YWNjZXNzLXRva2Vu",
+          "one_view"
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "collectionId": "c0LlEcTiOn_Id-00000001",
+          "accessToken": "YWNjZXNzLXRva2Vu",
+          "expiry": "one_view"
+        },
+        "responseSchema": "publicLinkDto"
+      }
+    },
+    {
+      "name": "LINK.list#1",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "list",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/public-links",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "publicLinkListResponse"
+      }
+    },
+    {
+      "name": "LINK.revoke#1",
+      "fn": "call",
+      "args": {
+        "group": "LINK",
+        "call": "revoke",
+        "args": [
+          "lInK_Id-0000000000000d"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/public-links/lInK_Id-0000000000000d",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "ACCOUNT.me#1",
+      "fn": "call",
+      "args": {
+        "group": "ACCOUNT",
+        "call": "me",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/users/me",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "userDto"
+      }
+    },
+    {
+      "name": "ADMIN.listUsers#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listUsers",
+        "args": [
+          null
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/users",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminUserListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.listUsers#2",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listUsers",
+        "args": [
+          "eyJpZCI6IjEyMyJ9"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/users?cursor=eyJpZCI6IjEyMyJ9",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminUserListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.listUsers#3",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listUsers",
+        "args": [
+          "a b/c?d=e&f#g%h+i"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/users?cursor=a%20b%2Fc%3Fd%3De%26f%23g%25h%2Bi",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminUserListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.listUsers#4",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listUsers",
+        "args": [
+          "-_.!~*'()"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/users?cursor=-_.!~*'()",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminUserListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.listUsers#5",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listUsers",
+        "args": [
+          "äöü €😀  \n"
+        ]
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/users?cursor=%C3%A4%C3%B6%C3%BC%20%E2%82%AC%F0%9F%98%80%20%C2%A0%0A",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminUserListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.patchUser#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "patchUser",
+        "args": [
+          "u7Hq2LmX9pR4sT1vW8yZ0a",
+          {
+            "role": "admin"
+          }
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/admin/users/u7Hq2LmX9pR4sT1vW8yZ0a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "role": "admin"
+        },
+        "responseSchema": "adminUserDto"
+      }
+    },
+    {
+      "name": "ADMIN.patchUser#2",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "patchUser",
+        "args": [
+          "u7Hq2LmX9pR4sT1vW8yZ0a",
+          {
+            "quotaBytes": null
+          }
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/admin/users/u7Hq2LmX9pR4sT1vW8yZ0a",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "quotaBytes": null
+        },
+        "responseSchema": "adminUserDto"
+      }
+    },
+    {
+      "name": "ADMIN.patchUser#3",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "patchUser",
+        "args": [
+          "Rk3_9xQ2mT7vL0pR8sW4-b",
+          {
+            "quotaBytes": 1073741824,
+            "role": "member"
+          }
+        ]
+      },
+      "result": {
+        "method": "PATCH",
+        "path": "/api/v1/admin/users/Rk3_9xQ2mT7vL0pR8sW4-b",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": {
+          "quotaBytes": 1073741824,
+          "role": "member"
+        },
+        "responseSchema": "adminUserDto"
+      }
+    },
+    {
+      "name": "ADMIN.createInvite#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "createInvite",
+        "args": [
+          {
+            "role": "member",
+            "expiresInDays": 7
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/admin/invites",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "role": "member",
+          "expiresInDays": 7
+        },
+        "responseSchema": "adminInviteCreateResponse"
+      }
+    },
+    {
+      "name": "ADMIN.createInvite#2",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "createInvite",
+        "args": [
+          {
+            "role": "admin",
+            "expiresInDays": 1
+          }
+        ]
+      },
+      "result": {
+        "method": "POST",
+        "path": "/api/v1/admin/invites",
+        "auth": "session",
+        "idempotent": false,
+        "timeoutMs": null,
+        "body": {
+          "role": "admin",
+          "expiresInDays": 1
+        },
+        "responseSchema": "adminInviteCreateResponse"
+      }
+    },
+    {
+      "name": "ADMIN.listInvites#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "listInvites",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/invites",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "inviteListResponse"
+      }
+    },
+    {
+      "name": "ADMIN.revokeInvite#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "revokeInvite",
+        "args": [
+          "iNvItE_Id-00000000000e"
+        ]
+      },
+      "result": {
+        "method": "DELETE",
+        "path": "/api/v1/admin/invites/iNvItE_Id-00000000000e",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "unknown"
+      }
+    },
+    {
+      "name": "ADMIN.stats#1",
+      "fn": "call",
+      "args": {
+        "group": "ADMIN",
+        "call": "stats",
+        "args": []
+      },
+      "result": {
+        "method": "GET",
+        "path": "/api/v1/admin/stats",
+        "auth": "session",
+        "idempotent": true,
+        "timeoutMs": null,
+        "body": null,
+        "responseSchema": "adminStatsResponse"
+      }
+    }
+  ]
+}

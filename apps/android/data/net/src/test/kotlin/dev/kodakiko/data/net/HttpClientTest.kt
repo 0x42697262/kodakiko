@@ -51,7 +51,12 @@ class HttpClientTest {
     private val postCall = ApiCall("POST", "/api/v1/entries", buildJsonObject { put("a", 1) }, OkSchema, ApiAuth.Session, idempotent = false)
 
     private fun json(status: Int, body: String, headers: Map<String, String> = emptyMap()) =
-        MockResponse.Builder().code(status).headers(Headers.Builder().apply { add("content-type", "application/json"); headers.forEach { (k, v) -> add(k, v) } }.build()).body(body).build()
+        MockResponse.Builder().code(status).headers(
+            Headers.Builder().apply {
+                add("content-type", "application/json")
+                headers.forEach { (k, v) -> add(k, v) }
+            }.build(),
+        ).body(body).build()
 
     private fun errorBody(code: String, requestId: String = "req-1", details: String = "null") =
         "{\"error\":{\"code\":\"$code\",\"message\":\"message\",\"requestId\":\"$requestId\",\"details\":$details}}"

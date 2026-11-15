@@ -2,7 +2,8 @@
 
 Deterministic outputs of the Expo client's TypeScript code (`apps/client`) that the Kotlin client
 must reproduce: the markdown parser and toolbar, the calendar model, the gallery arrangement,
-the export ZIP container and the v0.3.1 device settings (`settings.device`). Everything except `manifest.json` (the judge's list of required files and
+the export ZIP container, the v0.3.1 device settings (`settings.device`) and the v0.3.1 API call
+table (`api/calls.json`). Everything except `manifest.json` (the judge's list of required files and
 fields) and this README is generated:
 
 ```sh
@@ -33,9 +34,11 @@ Same conventions as `tests/fixtures/golden/README.md` ("Function-case files"):
 - `name` is unique within its file: `<fn>: <TS test title>` (the `it(...)` text), with a
   parenthesized suffix when one TS test holds several assertions, or `<fn>: edge: <what>` for extra
   cases with no TS test of their own. The archive cases have no TS unit test, so their names only
-  describe the scenario. Every file except `markdown/toolbar.json` (whose constants are private
-  to the module and spelled out below) and `settings/device.json` (whose constants are spelled
-  out in its section, because the Kotlin judge replays every case of that file) ends with one case named `constants` (`fn: "constants"`,
+  describe the scenario; `api/calls.json` uses `<GROUP>.<call>#<n>`. Every file except
+  `markdown/toolbar.json` (whose constants are private to the module and spelled out below),
+  `settings/device.json` (whose constants are spelled
+  out in its section, because the Kotlin judge replays every case of that file) and `api/calls.json` (whose Kotlin judge
+  requires every case to be `fn: "call"`; its constants are spelled out in its section) ends with one case named `constants` (`fn: "constants"`,
   `args: {}`), whose `result` lists the TS constants the file depends on, so the Kotlin
   `*Constants` objects can be checked against them.
 - `args` is an object keyed by the TS parameter names; the call passes them in the order given
@@ -616,6 +619,78 @@ byte for byte), `schemaVersion` 1 and 2 in the partial, `null`, updates over unr
 over invalid fields, over a newer version and over a non-object value, the largest and an
 unsafe cache cap, and strings that `JSON.stringify` escapes.
 
+## `api/calls.json`
+
+The v0.3.1 API call table: every `ApiCall` builder of the Expo client, invoked with fixed
+arguments, and the call it builds (method, path, auth, retry flag, timeout, JSON body, response
+schema). The Kotlin client (`:data:net`) must build the same calls; its `HttpClient` then sends
+them like `apps/client/src/adapters/http/http.ts`. 69 cases, all `fn: "call"`.
+
+### Case shape
+
+```
+{ "name": "<GROUP>.<call>#<n>",          n = 1, 2, ... per builder, in file order
+  "fn": "call",
+  "args": { "group": "<GROUP>", "call": "<call>", "args": [ ...positional arguments as JSON... ] },
+  "result": { "method": "GET"|"POST"|"PATCH"|"DELETE",
+              "path": string,              relative to the server base URL, query string included
+              "auth": "session" | "none" | { "linkToken": string, "viewToken": string|null },
+              "idempotent": bool,          true = HttpClient may retry it
+              "timeoutMs": number|null,    null = the default HTTP_TIMEOUT_MS (20000)
+              "body": JSON|null,           null = no body (TS `body` undefined)
+              "responseSchema": string } }
+```
+
+`responseSchema` is the name under which the zod schema is exported from `@kodakiko/contract`
+(found by identity over the module's exports; the Kotlin `ContractSchemas.<name>` has the same
+`name`), or one of two local schemas: `unknown` (`z.unknown()`: any JSON or an empty body; the
+Kotlin `UnknownResponse`) and `void` (`z.undefined()`: only an empty body; the Kotlin
+`VoidResponse`).
+
+Every request-body argument is parsed with its contract request schema in the generator, so a
+Kotlin replay can decode it with `ContractSchemas.<schema>`; ids match `idSchema` and byte strings
+`bytesSchema`.
+
+### Groups
+
+| Group | v0.3.1 source | Calls (cases) | How the generator reaches it |
+|---|---|---|---|
+| `AUTH` | `services/auth-calls.ts` `AUTH_CALLS` | `params` 2, `signUp` 2, `signIn`, `session`, `keyBundle`, `recoveryStart`, `recoveryComplete`, `signOut`, `changePassword`, `requestDeletion`, `cancelDeletion` | direct call |
+| `SYNC` | `services/sync/sync-calls.ts` `SYNC_CALLS` | `syncState`, `collection` 2, `diff` 3, `createEntry` 2, `getEntry`, `patchEntry` 2, `trashEntry`, `restoreEntry`, `deleteEntry`, `addMedia`, `removeMedia`, `presign` 2, `parts`, `confirm` | direct call |
+| `OBJECT` | `services/downloads/object-calls.ts` `OBJECT_CALLS` | `download` | direct call |
+| `SHARING` | `services/sharing/sharing-calls.ts` `SHARING_CALLS` | `create` 2, `rename`, `remove`, `addEntry`, `removeEntry`, `publicKey` 2, `share`, `listShares`, `unshare` | direct call |
+| `CONFIG` | `services/config/config-service.ts`, inline call in `refresh` | `get` | `createConfigService` with a capturing `HttpClient` (it refreshes once on creation) |
+| `LINK` | `services/links/public-links-service.ts` `LINK_CALLS` (not exported) | `create` 7 (one per `LINK_EXPIRIES` value), `list`, `revoke` | the `const LINK_CALLS = Object.freeze({ ... });` block is read from the source file, its types are removed with `node:module` `stripTypeScriptTypes` and it is evaluated with the real `ROUTES`, `publicLinkDto`, `publicLinkListResponse` and `z` (`create` cannot be reached through the service without a full link upload) |
+| `ACCOUNT` | `services/account/account-service.ts` `ME_CALL` (not exported) | `me` | `createAccountService(...).refreshMe()` with a capturing `HttpClient` |
+| `ADMIN` | `services/admin/admin-service.ts` `createAdminClient` (inline `call` helper) | `listUsers` 5, `patchUser` 3, `createInvite` 2, `listInvites`, `revokeInvite`, `stats` | each `createAdminClient` method with a capturing `HttpClient` |
+
+The capturing `HttpClient` records the `ApiCall` passed to `request` and rejects; the generator
+fails if a service makes other than exactly one request, if a builder of a group has no case, or if
+a schema is neither a contract export nor one of the two local schemas.
+
+**Not included: the link viewer** (`features/link-viewer/link-session.ts`: `openCall`
+`POST /public-links/:linkId/open` with `{ linkToken }`, `entriesCall` `GET
+/public-links/:linkId/entries[?cursor=]` with `{ linkToken, viewToken }`). In v0.4.0 the public
+link viewer is a standalone web page (`apps/link-viewer`, D-108) that keeps the TypeScript
+link-session logic; the Android app never opens a link, so the Kotlin client has no link-viewer
+calls.
+
+### Behaviors pinned by the cases
+
+- Path ids are inserted **unencoded** (`ROUTES` does no escaping); `SHARING.publicKey#2` uses
+  `Bob Smith/ä?#` to show it. Only the admin user-list cursor is escaped, with JS
+  `encodeURIComponent` (unreserved `A-Z a-z 0-9 - _ . ! ~ * ' ( )`, everything else as UTF-8
+  `%XX` with uppercase hex): `ADMIN.listUsers#2`-`#5` (plain, reserved characters, the unreserved
+  set, non-ASCII with an astral character, NBSP and a newline). A `null` cursor adds no query.
+- `SYNC.diff` builds `?since=<since>&limit=<limit>` with JS number formatting (integers in
+  decimal; `9007199254740991` in `#3`).
+- `idempotent`: as written in each table; admin calls are idempotent unless `POST`.
+- Timeouts: only `AUTH.session` (`RESTORE_TIMEOUT_MS`) and `AUTH.signOut`
+  (`SIGN_OUT_TIMEOUT_MS`) set one, 5000 each.
+- Bodies built inline (`SHARING.rename`, `addEntry`, `share`, `LINK.create`) are the
+  `collectionPatchRequest`, `collectionEntryAddRequest`, `shareCreateRequest` and
+  `publicLinkCreateRequest` objects; `ADMIN.patchUser` keeps an explicit `quotaBytes: null`.
+
 ## Files
 
 | File | Cases | `fn`s |
@@ -626,6 +701,7 @@ unsafe cache cap, and strings that `JSON.stringify` escapes.
 | `gallery/arrange.json` | 51 | `groupSections` 19, `arrangeSections` 12, `galleryAttributes` 4, `columnsFor` 11, `buildGalleryItems` 4, `constants` |
 | `archive/zips.json` | 20 | `writeArchive` 8, `readArchive` 11, `constants` |
 | `settings/device.json` | 140 | `nativeDefaults` 1, `resolveStored` 84, `update` 55 |
+| `api/calls.json` | 69 | `call` 69 (`AUTH` 13, `SYNC` 20, `OBJECT` 1, `SHARING` 11, `CONFIG` 1, `LINK` 9, `ACCOUNT` 1, `ADMIN` 13) |
 
 Total size about 2.0 MB (`settings/device.json` about 0.4 MB, because every case lists the full
 settings value), of which `archive/files/large.bin` is 1 MiB.
