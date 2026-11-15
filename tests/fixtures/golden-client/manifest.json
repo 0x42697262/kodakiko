@@ -22,6 +22,15 @@
       "caseFields": ["name", "fn", "args", "result"],
       "minCases": 15
     },
-    { "path": "archive/zips.json", "caseFields": ["name", "fn", "args", "result"], "minCases": 6 }
+    {
+      "path": "archive/zips.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 6
+    },
+    {
+      "path": "settings/device.json",
+      "caseFields": ["name", "fn", "args", "result"],
+      "minCases": 25
+    }
   ]
 }

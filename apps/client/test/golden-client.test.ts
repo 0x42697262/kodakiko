@@ -58,6 +58,7 @@ const REQUIRED_FUNCTIONS: Readonly<Record<string, readonly string[]>> = {
   'calendar/model.json': ['canShowMonth', 'monthTarget', 'pagerMonths', 'isValidLocalDate'],
   'gallery/arrange.json': ['groupSections', 'arrangeSections', 'galleryAttributes', 'columnsFor'],
   'archive/zips.json': ['writeArchive', 'readArchive'],
+  'settings/device.json': ['nativeDefaults', 'resolveStored', 'update'],
 };
 
 describe('client golden fixtures for the Kotlin port', () => {
