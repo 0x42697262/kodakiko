@@ -1,0 +1,694 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "planCollections: does nothing when everything is current",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 4,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 4,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: ignores remote link collections entirely",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "l",
+            "kind": "link",
+            "role": "owner",
+            "lastSeq": 9,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": []
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: refetches and pulls a remote collection that is absent locally",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 3,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": []
+      },
+      "result": {
+        "refetch": [
+          "a"
+        ],
+        "pull": [
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: refetches but does not pull a new empty collection",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": []
+      },
+      "result": {
+        "refetch": [
+          "a"
+        ],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: refetches when metaUpdatedAt differs",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-13T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [
+          "a"
+        ],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: drops local collections that are absent remotely",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "gone",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": [
+          "gone"
+        ]
+      }
+    },
+    {
+      "name": "planCollections: drops a local collection whose remote counterpart is a link collection",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "x",
+            "kind": "link",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "x",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": [
+          "x"
+        ]
+      }
+    },
+    {
+      "name": "planCollections: pulls when lastSeq is ahead of the cursor",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 8,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 5,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: resyncs when 0 < cursor < tombstonesPrunedThroughSeq",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 20,
+            "tombstonesPrunedThroughSeq": 10,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 4,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [
+          "a"
+        ],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: never resyncs a cursor of 0",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 20,
+            "tombstonesPrunedThroughSeq": 10,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: does not resync a cursor equal to the pruned seq",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 20,
+            "tombstonesPrunedThroughSeq": 10,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 10,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: keeps remote order in the result lists",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "b",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 1,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 1,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": []
+      },
+      "result": {
+        "refetch": [
+          "b",
+          "a"
+        ],
+        "pull": [
+          "b",
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: everything empty",
+      "fn": "planCollections",
+      "args": {
+        "remote": [],
+        "local": []
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: a cursor ahead of lastSeq does not pull",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 3,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 7,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: refetch and resync are independent",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 20,
+            "tombstonesPrunedThroughSeq": 10,
+            "metaUpdatedAt": "2026-11-13T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 1,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [
+          "a"
+        ],
+        "pull": [],
+        "resync": [
+          "a"
+        ],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: an unknown collection is never resynced, even with pruned tombstones",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 20,
+            "tombstonesPrunedThroughSeq": 10,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "b",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 5,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": []
+      },
+      "result": {
+        "refetch": [
+          "a",
+          "b"
+        ],
+        "pull": [
+          "a"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: metaUpdatedAt is compared as a string, not as an instant",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "a",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "a",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [
+          "a"
+        ],
+        "pull": [],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: shared collections behave like home collections whatever the role",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "s",
+            "kind": "shared",
+            "role": "viewer",
+            "lastSeq": 2,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "o",
+            "kind": "shared",
+            "role": "owner",
+            "lastSeq": 1,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "s",
+            "cursorSeq": 1,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [
+          "o"
+        ],
+        "pull": [
+          "s",
+          "o"
+        ],
+        "resync": [],
+        "drop": []
+      }
+    },
+    {
+      "name": "planCollections: edge: drop keeps local order",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "m",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 0,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "z",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "m",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "b",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "a",
+            "cursorSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [],
+        "pull": [],
+        "resync": [],
+        "drop": [
+          "z",
+          "b",
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "planCollections: edge: a mixed plan",
+      "fn": "planCollections",
+      "args": {
+        "remote": [
+          {
+            "id": "home",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 12,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-13T10:00:00.000Z"
+          },
+          {
+            "id": "link1",
+            "kind": "link",
+            "role": "owner",
+            "lastSeq": 4,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "new",
+            "kind": "shared",
+            "role": "viewer",
+            "lastSeq": 2,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "old",
+            "kind": "shared",
+            "role": "owner",
+            "lastSeq": 40,
+            "tombstonesPrunedThroughSeq": 30,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "same",
+            "kind": "home",
+            "role": "owner",
+            "lastSeq": 6,
+            "tombstonesPrunedThroughSeq": 0,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ],
+        "local": [
+          {
+            "id": "same",
+            "cursorSeq": 6,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "link1",
+            "cursorSeq": 4,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "old",
+            "cursorSeq": 29,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "home",
+            "cursorSeq": 11,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          },
+          {
+            "id": "removed",
+            "cursorSeq": 3,
+            "metaUpdatedAt": "2026-11-12T10:00:00.000Z"
+          }
+        ]
+      },
+      "result": {
+        "refetch": [
+          "home",
+          "new"
+        ],
+        "pull": [
+          "home",
+          "new"
+        ],
+        "resync": [
+          "old"
+        ],
+        "drop": [
+          "link1",
+          "removed"
+        ]
+      }
+    }
+  ]
+}

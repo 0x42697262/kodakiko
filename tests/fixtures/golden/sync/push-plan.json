@@ -1,0 +1,719 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "planPushBatch: returns due queued items in ascending id order",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "planPushBatch: skips items that are not due yet",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 1001
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 1000
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: skips dead items",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "dead",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: blocks a later item of the same entry while the earlier one is queued",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1,
+        3
+      ]
+    },
+    {
+      "name": "planPushBatch: blocks a later item of the same entry while the earlier one is dead",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "dead",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: blocks a later item of the same entry while the earlier one is not due yet",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 1005
+          },
+          {
+            "id": 2,
+            "kind": "trashEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: skips entries that are in flight",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [
+          "a"
+        ],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: never blocks items without an entry id on each other",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: returns at most capacity ids (capacity 2)",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 2
+      },
+      "result": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: returns at most capacity ids (capacity 0)",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 0
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: does not mutate its input",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: an empty outbox",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: edge: order is by id, not by input position, when blocking",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 5,
+            "kind": "trashEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 2000
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: edge: an in-flight entry blocks all its items",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 4,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [
+          "a",
+          "z"
+        ],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: items over capacity still block later items of their entry",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 4,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 1
+      },
+      "result": [
+        1
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: a negative capacity selects nothing",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": -1
+      },
+      "result": []
+    },
+    {
+      "name": "planPushBatch: edge: nextAttemptAt equal to now is due and fractional values compare exactly",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 1000
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 1000.0000001
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 999.5
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1,
+        3
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: null entry ids are never blocked and never in flight",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": null,
+            "state": "dead",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "deleteEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 5000
+          }
+        ],
+        "inFlightEntryIds": [
+          ""
+        ],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        2
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: an empty-string entry id is a normal entry id",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "updateEntryMeta",
+            "entryId": "",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        1
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: duplicate ids keep their input order (stable sort)",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 7,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 5000
+          },
+          {
+            "id": 3,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 7,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [],
+        "now": 1000,
+        "capacity": 10
+      },
+      "result": [
+        3
+      ]
+    },
+    {
+      "name": "planPushBatch: edge: a mixed outbox",
+      "fn": "planPushBatch",
+      "args": {
+        "items": [
+          {
+            "id": 9,
+            "kind": "addMedia",
+            "entryId": "d",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 4,
+            "kind": "updateEntryMeta",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 1500
+          },
+          {
+            "id": 6,
+            "kind": "trashEntry",
+            "entryId": "b",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 1,
+            "kind": "createEntry",
+            "entryId": "a",
+            "state": "dead",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 8,
+            "kind": "deleteEntry",
+            "entryId": null,
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 2,
+            "kind": "createEntry",
+            "entryId": "c",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 3,
+            "kind": "updateEntryMeta",
+            "entryId": "a",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 10,
+            "kind": "removeMedia",
+            "entryId": "e",
+            "state": "queued",
+            "nextAttemptAt": 0
+          },
+          {
+            "id": 5,
+            "kind": "restoreEntry",
+            "entryId": "f",
+            "state": "queued",
+            "nextAttemptAt": 0
+          }
+        ],
+        "inFlightEntryIds": [
+          "d"
+        ],
+        "now": 1000,
+        "capacity": 3
+      },
+      "result": [
+        2,
+        5,
+        8
+      ]
+    }
+  ]
+}

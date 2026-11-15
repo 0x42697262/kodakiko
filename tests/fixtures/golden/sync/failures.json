@@ -1,0 +1,1188 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "nextAttemptAt: multiplies the random fraction by the exponential ceiling (attempts 0)",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": 5001000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: multiplies the random fraction by the exponential ceiling (attempts 3)",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 3,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": 5008000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: multiplies the random fraction by the exponential ceiling (random 0)",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 2,
+        "now": 5000000,
+        "randomValues": [
+          0
+        ]
+      },
+      "result": 5000000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: caps the ceiling",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 20,
+        "now": 5000000,
+        "randomValues": [
+          1
+        ]
+      },
+      "result": 5900000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: attempts 8 is still under the cap",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 8,
+        "now": 5000000,
+        "randomValues": [
+          1
+        ]
+      },
+      "result": 5512000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: attempts 9 hits the cap",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 9,
+        "now": 5000000,
+        "randomValues": [
+          1
+        ]
+      },
+      "result": 5900000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: a fraction is not rounded",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.123456789
+        ]
+      },
+      "result": 5000246.913578,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: an inexact double product is not rounded",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 9,
+        "now": 0,
+        "randomValues": [
+          0.29
+        ]
+      },
+      "result": 260999.99999999997,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: the double sum rounds the inexact product",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 9,
+        "now": 5000000,
+        "randomValues": [
+          0.29
+        ]
+      },
+      "result": 5261000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: a large now rounds as a double sum",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 9,
+        "now": 1700000000000,
+        "randomValues": [
+          0.123456789
+        ]
+      },
+      "result": 1700000111111.11,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: a huge attempt count overflows to the cap",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 2000,
+        "now": 5000000,
+        "randomValues": [
+          0.75
+        ]
+      },
+      "result": 5675000,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: a negative attempt count halves the base",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": -1,
+        "now": 5000000,
+        "randomValues": [
+          0.7
+        ]
+      },
+      "result": 5000700,
+      "randomCalls": 1
+    },
+    {
+      "name": "nextAttemptAt: edge: only the first random value is consumed",
+      "fn": "nextAttemptAt",
+      "args": {
+        "attempts": 1,
+        "now": 0,
+        "randomValues": [
+          0.25,
+          0.9
+        ]
+      },
+      "result": 1000,
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: retries network failures with backoff",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "network"
+        },
+        "attempts": 2,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5004000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: retries 5xx and STORAGE_UNAVAILABLE with backoff (503 INTERNAL)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 503,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 1,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5002000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: retries 5xx and STORAGE_UNAVAILABLE with backoff (502 STORAGE_UNAVAILABLE)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 502,
+          "code": "STORAGE_UNAVAILABLE",
+          "retryAfterSeconds": null
+        },
+        "attempts": 1,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5002000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: goes dead once attempts reach MAX_ATTEMPTS (network)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "network"
+        },
+        "attempts": 8,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: goes dead once attempts reach MAX_ATTEMPTS (500)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 500,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 8,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: goes dead once attempts reach MAX_ATTEMPTS (network one below retries)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "network"
+        },
+        "attempts": 7,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5128000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: waits for Retry-After on 429",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": 30
+        },
+        "attempts": 1,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5030000
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: falls back to backoff on 429 without Retry-After",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 1,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5002000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: never dead-letters a 429, even beyond MAX_ATTEMPTS (Retry-After 5)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": 5
+        },
+        "attempts": 11,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5005000
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: never dead-letters a 429, even beyond MAX_ATTEMPTS (no Retry-After)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 11,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5450000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: maps REVISION_CONFLICT to conflict",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "updateEntryMeta",
+        "failure": {
+          "kind": "http",
+          "status": 409,
+          "code": "REVISION_CONFLICT",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "conflict"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: drops 404 for update-like kinds (updateEntryMeta)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "updateEntryMeta",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: drops 404 for update-like kinds (trashEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "trashEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: drops 404 for update-like kinds (restoreEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "restoreEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: drops 404 for update-like kinds (removeMedia)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "removeMedia",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: drops 404 for update-like kinds (deleteEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "deleteEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters 404 for createEntry and addMedia (createEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters 404 for createEntry and addMedia (addMedia)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "NOT_FOUND",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (createEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (updateEntryMeta)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "updateEntryMeta",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (addMedia)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (removeMedia)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "removeMedia",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (trashEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "trashEntry",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (restoreEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "restoreEntry",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: signs out on 401 (deleteEntry)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "deleteEntry",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "UNAUTHENTICATED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (403 QUOTA_EXCEEDED)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 403,
+          "code": "QUOTA_EXCEEDED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (403 FEATURE_DISABLED)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 403,
+          "code": "FEATURE_DISABLED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (413 PAYLOAD_TOO_LARGE)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 413,
+          "code": "PAYLOAD_TOO_LARGE",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (422 VALIDATION_FAILED)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 422,
+          "code": "VALIDATION_FAILED",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (409 ID_CONFLICT)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 409,
+          "code": "ID_CONFLICT",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: dead-letters quota, disabled feature, 413, 422 and other 4xx immediately (400 MALFORMED_REQUEST)",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 400,
+          "code": "MALFORMED_REQUEST",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: 401 wins over REVISION_CONFLICT",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "updateEntryMeta",
+        "failure": {
+          "kind": "http",
+          "status": 401,
+          "code": "REVISION_CONFLICT",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "signedOut"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: REVISION_CONFLICT wins over a 5xx status",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "updateEntryMeta",
+        "failure": {
+          "kind": "http",
+          "status": 500,
+          "code": "REVISION_CONFLICT",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "conflict"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: REVISION_CONFLICT wins over 404",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "REVISION_CONFLICT",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "conflict"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: 404 is decided by status whatever the code",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "trashEntry",
+        "failure": {
+          "kind": "http",
+          "status": 404,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "drop"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: 429 is decided by status whatever the code",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "INTERNAL",
+          "retryAfterSeconds": 2
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5002000
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: RATE_LIMITED with status 503 uses backoff",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 503,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": 30
+        },
+        "attempts": 2,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5004000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: STORAGE_UNAVAILABLE with a 4xx status retries",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 400,
+          "code": "STORAGE_UNAVAILABLE",
+          "retryAfterSeconds": null
+        },
+        "attempts": 3,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5008000
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: STORAGE_UNAVAILABLE at MAX_ATTEMPTS is dead",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "addMedia",
+        "failure": {
+          "kind": "http",
+          "status": 400,
+          "code": "STORAGE_UNAVAILABLE",
+          "retryAfterSeconds": null
+        },
+        "attempts": 8,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: a dead 5xx still consumes one random value",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 599,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 9,
+        "now": 5000000,
+        "randomValues": [
+          0.3
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: status 499 is dead",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 499,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: status 500 with a fractional backoff",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "removeMedia",
+        "failure": {
+          "kind": "http",
+          "status": 500,
+          "code": "INTERNAL",
+          "retryAfterSeconds": null
+        },
+        "attempts": 4,
+        "now": 1700000000000,
+        "randomValues": [
+          0.123456789
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 1700000003950.6172
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: Retry-After 0 retries now",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": 0
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5000000
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: fractional Retry-After is not rounded",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "http",
+          "status": 429,
+          "code": "RATE_LIMITED",
+          "retryAfterSeconds": 1.5
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.5
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5001500
+      },
+      "randomCalls": 0
+    },
+    {
+      "name": "classifyPushFailure: edge: a network failure ignores the outbox kind",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "deleteEntry",
+        "failure": {
+          "kind": "network"
+        },
+        "attempts": 0,
+        "now": 5000000,
+        "randomValues": [
+          0.999
+        ]
+      },
+      "result": {
+        "action": "retry",
+        "at": 5001998
+      },
+      "randomCalls": 1
+    },
+    {
+      "name": "classifyPushFailure: edge: a network failure with a huge attempt count is dead",
+      "fn": "classifyPushFailure",
+      "args": {
+        "kind": "createEntry",
+        "failure": {
+          "kind": "network"
+        },
+        "attempts": 2000,
+        "now": 5000000,
+        "randomValues": [
+          0.75
+        ]
+      },
+      "result": {
+        "action": "dead"
+      },
+      "randomCalls": 1
+    }
+  ]
+}

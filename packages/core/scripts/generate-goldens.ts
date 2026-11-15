@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import libsodium from 'libsodium-wrappers-sumo';
 import * as contract from '@kodakiko/contract';
@@ -43,11 +42,14 @@ import {
 } from '../src/account/index.ts';
 import { counterBytes, createCounterRandom } from '../src/crypto/deterministic-bytes.ts';
 import { createNodeSodium } from '../test/sodium-node.ts';
+import { GoldenWriter, type GoldenCase, type Json } from './goldens/shared.ts';
+import { writeDomainGoldens } from './goldens/domain.ts';
+import { writeMediaGoldens } from './goldens/media.ts';
+import { writeIndexGoldens } from './goldens/index.ts';
+import { writeSyncGoldens } from './goldens/sync.ts';
+import { writeExportGoldens } from './goldens/export.ts';
 
 const GOLDEN_DIRECTORY = fileURLToPath(new URL('../../../tests/fixtures/golden/', import.meta.url));
-const GOLDEN_FORMAT = 1;
-const GENERATOR = 'packages/core/scripts/generate-goldens.ts';
-const JSON_INDENT = 2;
 const KEY_BYTES = 32;
 const ID_BYTES = 16;
 const BOX_SEED_BYTES = 32;
@@ -72,9 +74,6 @@ const PATHS = Object.freeze({
   localAccount: 'account/local-account.json',
   dtoSamples: 'contract/dto-samples.json',
 });
-
-type Json = null | boolean | number | string | readonly Json[] | { readonly [key: string]: Json };
-type GoldenCase = { readonly [key: string]: Json };
 
 type GoldenSodium = {
   readonly sodium: Sodium;
@@ -125,28 +124,6 @@ function requireFirst<T>(values: readonly T[], what: string): T {
   const first = values[0];
   if (first === undefined) throw new Error(`golden self-check failed: ${what}`);
   return first;
-}
-
-class GoldenWriter {
-  readonly written: string[] = [];
-  private readonly directory: string;
-
-  constructor(directory: string) {
-    this.directory = directory;
-  }
-
-  async bytes(relativePath: string, content: Uint8Array): Promise<void> {
-    const target = join(this.directory, relativePath);
-    await mkdir(dirname(target), { recursive: true });
-    await writeFile(target, content);
-    this.written.push(relativePath);
-  }
-
-  async cases(relativePath: string, cases: readonly GoldenCase[]): Promise<void> {
-    const document = { format: GOLDEN_FORMAT, generator: GENERATOR, cases };
-    const text = `${JSON.stringify(document, null, JSON_INDENT)}\n`;
-    await this.bytes(relativePath, new TextEncoder().encode(text));
-  }
 }
 
 const TIMES = Object.freeze({
@@ -1207,6 +1184,12 @@ export async function generateGoldens(outputDirectory: string): Promise<readonly
     passwordChange: [outputsOf(change.goldenCase)],
   });
   await writer.cases(PATHS.dtoSamples, dtoSampleCases(samples));
+
+  await writeDomainGoldens(writer);
+  await writeMediaGoldens(writer);
+  await writeIndexGoldens(writer);
+  await writeSyncGoldens(writer);
+  await writeExportGoldens(writer, base);
 
   return writer.written;
 }

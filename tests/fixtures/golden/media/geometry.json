@@ -1,0 +1,331 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "fitWithin: fits 4000 x 3000 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 384
+      }
+    },
+    {
+      "name": "fitWithin: fits 3000 x 4000 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 3000,
+        "height": 4000,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 384,
+        "height": 512
+      }
+    },
+    {
+      "name": "fitWithin: fits 4032 x 3024 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 4032,
+        "height": 3024,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 384
+      }
+    },
+    {
+      "name": "fitWithin: fits 1000 x 333 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 1000,
+        "height": 333,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 170
+      }
+    },
+    {
+      "name": "fitWithin: fits 512 x 512 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 512,
+        "height": 512,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "name": "fitWithin: fits 300 x 200 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 300,
+        "height": 200,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 300,
+        "height": 200
+      }
+    },
+    {
+      "name": "fitWithin: fits 1 x 1 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 1,
+        "height": 1,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 1,
+        "height": 1
+      }
+    },
+    {
+      "name": "fitWithin: fits 1 x 10000 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 1,
+        "height": 10000,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 1,
+        "height": 512
+      }
+    },
+    {
+      "name": "fitWithin: fits 10000 x 1 within the maximum edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 10000,
+        "height": 1,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 1
+      }
+    },
+    {
+      "name": "fitWithin: never upscales",
+      "fn": "fitWithin",
+      "args": {
+        "width": 100,
+        "height": 50,
+        "maxEdge": 1024
+      },
+      "result": {
+        "width": 100,
+        "height": 50
+      }
+    },
+    {
+      "name": "fitWithin: edge: a .5 product rounds up",
+      "fn": "fitWithin",
+      "args": {
+        "width": 1000,
+        "height": 3,
+        "maxEdge": 500
+      },
+      "result": {
+        "width": 500,
+        "height": 2
+      }
+    },
+    {
+      "name": "fitWithin: edge: 2.5 rounds up to 3",
+      "fn": "fitWithin",
+      "args": {
+        "width": 2000,
+        "height": 5,
+        "maxEdge": 1000
+      },
+      "result": {
+        "width": 1000,
+        "height": 3
+      }
+    },
+    {
+      "name": "fitWithin: edge: a product just under .5 rounds down",
+      "fn": "fitWithin",
+      "args": {
+        "width": 1025,
+        "height": 3,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 1
+      }
+    },
+    {
+      "name": "fitWithin: edge: one pixel over the edge",
+      "fn": "fitWithin",
+      "args": {
+        "width": 513,
+        "height": 512,
+        "maxEdge": 512
+      },
+      "result": {
+        "width": 512,
+        "height": 511
+      }
+    },
+    {
+      "name": "displaySize: keeps the size for orientation 1",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 1
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: keeps the size for orientation 2",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 2
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: keeps the size for orientation 3",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 3
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: keeps the size for orientation 4",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 4
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: swaps width and height for orientation 5",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 5
+      },
+      "result": {
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    {
+      "name": "displaySize: swaps width and height for orientation 6",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 6
+      },
+      "result": {
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    {
+      "name": "displaySize: swaps width and height for orientation 7",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 7
+      },
+      "result": {
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    {
+      "name": "displaySize: swaps width and height for orientation 8",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 8
+      },
+      "result": {
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    {
+      "name": "displaySize: keeps the size when there is no orientation",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": null
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: edge: orientation 0 keeps the size",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 0
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    },
+    {
+      "name": "displaySize: edge: orientation 9 keeps the size",
+      "fn": "displaySize",
+      "args": {
+        "width": 4000,
+        "height": 3000,
+        "orientation": 9
+      },
+      "result": {
+        "width": 4000,
+        "height": 3000
+      }
+    }
+  ]
+}
