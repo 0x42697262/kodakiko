@@ -22,3 +22,8 @@ configurations
     .configureEach {
         attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, lazysodiumBytecode)
     }
+
+tasks.withType<Test>().configureEach {
+    systemProperty("user.language", "en")
+    systemProperty("user.country", "US")
+}

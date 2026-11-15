@@ -1,0 +1,66 @@
+package dev.kodakiko.exporting
+
+const val ZIP_DEFLATE_LEVEL = 6
+
+internal object ZipConstants {
+    const val LOCAL_HEADER_SIGNATURE = 0x04034B50L
+    const val DATA_DESCRIPTOR_SIGNATURE = 0x08074B50L
+    const val CENTRAL_HEADER_SIGNATURE = 0x02014B50L
+    const val END_SIGNATURE = 0x06054B50L
+    const val ZIP64_LOCATOR_SIGNATURE = 0x07064B50L
+    const val VERSION = 20
+    const val FLAG_DATA_DESCRIPTOR = 0x0008
+    const val FLAG_UTF8 = 0x0800
+    const val METHOD_STORED = 0
+    const val METHOD_DEFLATE = 8
+    const val LOCAL_HEADER_BYTES = 30
+    const val CENTRAL_HEADER_BYTES = 46
+    const val END_BYTES = 22
+    const val DATA_DESCRIPTOR_BYTES = 16
+    const val END_SEARCH_LIMIT = 65_558
+    const val ZIP64_LOCATOR_DISTANCE = 20
+    const val U16_MAX = 0xFFFF
+    const val U32_MAX = 0xFFFF_FFFFL
+    const val BYTE_BITS = 8
+    const val BYTE_MASK = 0xFF
+    const val U16_BYTES = 2
+    const val U32_BYTES = 4
+    const val DOS_YEAR_BASE = 1980.0
+    const val DOS_YEAR_MAX = 119.0
+    const val DOS_YEAR_SHIFT = 9
+    const val DOS_MONTH_SHIFT = 5
+    const val DOS_HOUR_SHIFT = 11
+    const val DOS_MINUTE_SHIFT = 5
+    const val DOS_SECOND_SHIFT = 1
+    const val CRC_POLYNOMIAL = 0xEDB88320L
+    const val CRC_TABLE_SIZE = 256
+    const val CRC_BITS = 8
+    const val READ_FLAGS = 8
+    const val READ_METHOD = 10
+    const val READ_COMPRESSED_SIZE = 20
+    const val READ_SIZE = 24
+    const val READ_NAME_LENGTH = 28
+    const val READ_EXTRA_LENGTH = 30
+    const val READ_COMMENT_LENGTH = 32
+    const val READ_LOCAL_OFFSET = 42
+    const val READ_LOCAL_NAME_LENGTH = 26
+    const val READ_LOCAL_EXTRA_LENGTH = 28
+    const val READ_END_ENTRIES = 8
+    const val READ_END_OFFSET = 16
+    const val UTF8_ONE_BYTE_MAX = 0x7F
+    const val UTF8_TWO_BYTE_MAX = 0x7FF
+    const val UTF8_THREE_BYTE_MAX = 0xFFFF
+    const val UTF8_TWO_BYTE_LEAD = 0xC0
+    const val UTF8_THREE_BYTE_LEAD = 0xE0
+    const val UTF8_FOUR_BYTE_LEAD = 0xF0
+    const val UTF8_CONTINUATION = 0x80
+    const val UTF8_SHIFT_ONE = 6
+    const val UTF8_SHIFT_TWO = 12
+    const val UTF8_SHIFT_THREE = 18
+    const val SURROGATE_PAIR_LENGTH = 2
+    const val SURROGATE_SHIFT = 10
+    const val SUPPLEMENTARY_BASE = 0x10000
+    const val UTF8_CONTINUATION_MASK = 0x3F
+    const val REPLACEMENT_CHARACTER = '\uFFFD'
+    const val INFLATE_BUFFER_BYTES = 65_536
+}

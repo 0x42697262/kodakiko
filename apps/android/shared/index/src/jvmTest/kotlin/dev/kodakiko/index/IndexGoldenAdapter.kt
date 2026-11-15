@@ -35,8 +35,81 @@ object IndexGoldenAdapter : GoldenAdapter {
         fn == "attributesMatch" -> JsonPrimitive(
             attributesMatch(attributeEntry(args.getValue("entry").jsonObject), filters(args.getValue("filters").jsonObject), args.string("homeCollectionId")),
         )
+        fn == "arrangeSections" -> JsonArray(
+            arrangeSections(sections(args), getter(args), sort(args.getValue("sort").jsonObject), args.getValue("groupByDay").jsonPrimitive.boolean, seed(args))
+                .map(::section),
+        )
+        fn == "groupSections" -> JsonArray(
+            groupSections(sections(args), getter(args), sort(args.getValue("sort").jsonObject), wire(GroupBy.entries, args.string("groupBy")), seed(args))
+                .map(::section),
+        )
+        fn == "galleryAttributes" -> attributesJson(galleryAttributes(filterSettings(args.getValue("filters").jsonObject), args.getValue("hideShared").jsonPrimitive.boolean))
+        fn == "columnsFor" -> JsonPrimitive(
+            columnsFor(
+                args.getValue("width").jsonPrimitive.double,
+                args.getValue("height").jsonPrimitive.double,
+                args.getValue("portrait").jsonPrimitive.int,
+                args.getValue("landscape").jsonPrimitive.int,
+            ),
+        )
+        fn == "buildGalleryItems" -> JsonArray(
+            buildGalleryItems(sections(args), args.getValue("columns").jsonPrimitive.int, args.getValue("showOnThisDay").jsonPrimitive.boolean).map(::galleryItem),
+        )
+        fn == "arrange.constants" -> JsonObject(
+            linkedMapOf(
+                "UNGROUPED_DATE" to JsonPrimitive(UNGROUPED_DATE),
+                "MONTH_GROUP_PREFIX" to JsonPrimitive(MONTH_GROUP_PREFIX),
+                "YEAR_GROUP_PREFIX" to JsonPrimitive(YEAR_GROUP_PREFIX),
+                "TAG_GROUP_PREFIX" to JsonPrimitive(TAG_GROUP_PREFIX),
+                "UNTAGGED_GROUP" to JsonPrimitive(UNTAGGED_GROUP),
+                "GALLERY_COLUMNS_AUTO" to JsonPrimitive(GALLERY_COLUMNS_AUTO),
+                "GRID_MIN_COLUMNS" to JsonPrimitive(GRID_MIN_COLUMNS),
+                "GRID_TILE_MIN_PX" to JsonPrimitive(GRID_TILE_MIN_PX),
+            ),
+        )
         fn.startsWith(GALLERY_INDEX_PREFIX) && fn.removePrefix(GALLERY_INDEX_PREFIX) in galleryIndexMethods -> driveGalleryIndex(args)
         else -> throw UnsupportedGoldenFunction(fn)
+    }
+
+    private fun sections(args: JsonObject): List<DaySection> = args.getValue("sections").jsonArray.map {
+        val section = it.jsonObject
+        DaySection(section.string("localDate"), section.strings("entryIds"))
+    }
+
+    private fun getter(args: JsonObject): (String) -> IndexedEntry? {
+        val entries = args.getValue("entries").jsonArray.map { entry(it.jsonObject) }
+        return { id -> entries.firstOrNull { it.id == id } }
+    }
+
+    private fun seed(args: JsonObject): Double = args.getValue("seed").jsonPrimitive.double
+
+    private fun filterSettings(json: JsonObject): GalleryFilterSettings {
+        fun state(key: String): TriState = wire(TriState.entries, json.string(key))
+        return GalleryFilterSettings(
+            video = state("video"),
+            note = state("note"),
+            multiple = state("multiple"),
+            shared = state("shared"),
+            pending = state("pending"),
+            keptOffline = state("keptOffline"),
+            favorite = state("favorite"),
+        )
+    }
+
+    private fun attributesJson(filters: AttributeFilters): JsonElement =
+        JsonObject(filters.entries.associate { (key, state) -> key.wire to JsonPrimitive(state.wire) })
+
+    private fun galleryItem(item: GalleryItem): JsonElement = when (item) {
+        GalleryItem.OnThisDay -> JsonObject(mapOf("type" to JsonPrimitive("onThisDay")))
+        is GalleryItem.Header -> JsonObject(mapOf("type" to JsonPrimitive("header"), "localDate" to JsonPrimitive(item.localDate)))
+        is GalleryItem.Row -> JsonObject(
+            mapOf(
+                "type" to JsonPrimitive("row"),
+                "localDate" to JsonPrimitive(item.localDate),
+                "entryIds" to strings(item.entryIds),
+                "firstPosition" to JsonPrimitive(item.firstPosition),
+            ),
+        )
     }
 
     private fun driveGalleryIndex(args: JsonObject): JsonElement {

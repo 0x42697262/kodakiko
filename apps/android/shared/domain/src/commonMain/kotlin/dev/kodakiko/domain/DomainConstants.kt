@@ -22,3 +22,7 @@ const val YEAR_MONTH_LENGTH = 7
 const val DATE_PART_SEPARATOR = "-"
 const val FIRST_DAY_OF_MONTH = 1.0
 const val MS_PER_DAY = 86_400_000.0
+const val PAGER_LEAD_MONTHS = 12L
+const val LOCAL_DATE_YEAR_GROUP = 1
+const val LOCAL_DATE_MONTH_GROUP = 2
+const val LOCAL_DATE_DAY_GROUP = 3

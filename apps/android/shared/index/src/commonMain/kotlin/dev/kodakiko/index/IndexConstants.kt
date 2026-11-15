@@ -18,3 +18,17 @@ internal object IndexConstants {
     const val RANDOM_INCREMENT = 12_345.0
     const val RANDOM_MODULUS = 2_147_483_648.0
 }
+
+const val UNGROUPED_DATE = ""
+const val MONTH_GROUP_PREFIX = "m:"
+const val YEAR_GROUP_PREFIX = "y:"
+const val TAG_GROUP_PREFIX = "t:"
+const val UNTAGGED_GROUP = "n:"
+const val GALLERY_COLUMNS_AUTO = 0
+const val GRID_MIN_COLUMNS = 3
+const val GRID_TILE_MIN_PX = 110.0
+
+internal object ArrangeConstants {
+    const val MONTH_CHARS = 7
+    const val YEAR_CHARS = 4
+}

@@ -54,6 +54,13 @@ object DomainGoldenAdapter : GoldenAdapter {
                 args.string("nowUtc"),
             ),
         )
+        "canShowMonth" -> JsonPrimitive(canShowMonth(args.string("yearMonth"), args.string("currentYearMonth"), args.stringSet("monthsWithEntries")))
+        "monthTarget" -> JsonPrimitive(
+            monthTarget(args.string("from"), args.long("delta"), args.string("currentYearMonth"), args.stringSet("monthsWithEntries")),
+        )
+        "pagerMonths" -> strings(pagerMonths(args.string("currentYearMonth"), args.stringSet("monthsWithEntries"), args.string("shownYearMonth")))
+        "isValidLocalDate" -> JsonPrimitive(isValidLocalDate(args.string("value")))
+        "calendar.constants" -> JsonObject(mapOf("PAGER_LEAD_MONTHS" to JsonPrimitive(PAGER_LEAD_MONTHS)))
         "MIN_OBJECT_BYTES" -> JsonObject(
             mapOf("MIN_OBJECT_BYTES" to JsonPrimitive(MIN_OBJECT_BYTES), "STREAM_MIN_OBJECT_BYTES" to JsonPrimitive(STREAM_MIN_OBJECT_BYTES)),
         )
@@ -65,6 +72,8 @@ object DomainGoldenAdapter : GoldenAdapter {
     private fun JsonObject.long(key: String): Long = getValue(key).jsonPrimitive.long
 
     private fun JsonObject.strings(key: String): List<String> = getValue(key).jsonArray.map { it.jsonPrimitive.content }
+
+    private fun JsonObject.stringSet(key: String): Set<String> = strings(key).toSet()
 
     private fun <E : WireEnum> wire(entries: List<E>, value: String): E = entries.first { it.wire == value }
 
