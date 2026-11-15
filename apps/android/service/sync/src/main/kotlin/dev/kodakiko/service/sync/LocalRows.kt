@@ -27,7 +27,7 @@ internal fun removeMediaRows(tx: RowStoreTx, mediaId: String): List<String> {
     return objects.map { it.id }
 }
 
-internal fun removeEntryRows(tx: RowStoreTx, entryId: String): List<String> {
+fun removeEntryRows(tx: RowStoreTx, entryId: String): List<String> {
     val objectIds = tx.media.byEntry(entryId).flatMap { removeMediaRows(tx, it.id) }
     tx.memberships.byEntry(entryId).forEach { tx.memberships.delete(it.collectionId, it.entryId) }
     tx.pins.delete(entryId)
@@ -36,13 +36,13 @@ internal fun removeEntryRows(tx: RowStoreTx, entryId: String): List<String> {
     return objectIds
 }
 
-internal fun deleteFiles(files: EntryFiles, objectIds: List<String>) {
+fun deleteFiles(files: EntryFiles, objectIds: List<String>) {
     objectIds.forEach(files::delete)
 }
 
-internal class DroppedCollection(val changed: List<String>, val files: List<String>)
+class DroppedCollection(val changed: List<String>, val files: List<String>)
 
-internal fun dropLocalCollection(rowStore: RowStorePort, collectionId: String): DroppedCollection {
+fun dropLocalCollection(rowStore: RowStorePort, collectionId: String): DroppedCollection {
     val changed = LinkedHashSet<String>()
     val files = mutableListOf<String>()
     rowStore.transaction { tx ->

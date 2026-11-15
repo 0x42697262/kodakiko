@@ -57,7 +57,7 @@ private fun partFromNumber(partNumber: Long, url: String, partSizeBytes: Long, s
     return UploadPart(partNumber.toInt(), url, offset, min(partSizeBytes, sizeBytes - offset))
 }
 
-internal fun partsFromPresign(response: PresignResponse, sizeBytes: Long): List<UploadPart> = when (response) {
+fun partsFromPresign(response: PresignResponse, sizeBytes: Long): List<UploadPart> = when (response) {
     is PresignResponse.Single -> listOf(UploadPart(SyncServiceConstants.SINGLE_PART_NUMBER, response.url, 0, sizeBytes))
     is PresignResponse.Multipart -> response.partUrls.map { partFromNumber(it.partNumber, it.url, response.partSizeBytes, sizeBytes) }
 }

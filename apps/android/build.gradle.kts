@@ -54,6 +54,8 @@ tasks.register("verify") {
         ":service:index:testDebugUnitTest",
         ":service:entries:testDebugUnitTest",
         ":service:sync:testDebugUnitTest",
+        ":service:sharing:testDebugUnitTest",
+        ":service:links:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
