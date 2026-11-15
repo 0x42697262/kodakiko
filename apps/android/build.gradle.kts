@@ -43,6 +43,7 @@ tasks.register("verify") {
         ":data:files:testDebugUnitTest",
         ":data:migration:testDebugUnitTest",
         ":data:upload:testDebugUnitTest",
+        ":data:media:testDebugUnitTest",
         ":data:net:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
