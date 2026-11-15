@@ -66,3 +66,9 @@ tasks.register("verify") {
         ":app:lintRelease",
     )
 }
+
+tasks.register("e2e") {
+    group = "verification"
+    description = "Runs the end-to-end tests of the Kotlin services against the docker test stack."
+    dependsOn(":e2e:testDebugUnitTest")
+}
