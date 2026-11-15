@@ -50,6 +50,8 @@ tasks.register("verify") {
         ":platform:camera:testDebugUnitTest",
         ":platform:picker:testDebugUnitTest",
         ":service:account:testDebugUnitTest",
+        ":service:lock:testDebugUnitTest",
+        ":service:index:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
