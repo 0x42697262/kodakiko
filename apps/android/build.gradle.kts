@@ -48,6 +48,7 @@ tasks.register("verify") {
         ":platform:device:testDebugUnitTest",
         ":platform:location:testDebugUnitTest",
         ":platform:camera:testDebugUnitTest",
+        ":platform:picker:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
