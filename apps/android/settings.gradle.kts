@@ -22,4 +22,5 @@ rootProject.name = "kodakiko"
 include(":app")
 include(":tooling-tests")
 include(":shared:crypto")
+include(":shared:contract")
 include(":data:db")
