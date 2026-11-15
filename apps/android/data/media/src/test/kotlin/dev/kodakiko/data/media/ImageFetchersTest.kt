@@ -92,6 +92,13 @@ class ImageFetchersTest {
         return entryId to mediaId
     }
 
+    private fun noisyImage(width: Int, height: Int): ByteArray {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val random = java.util.Random(7)
+        bitmap.setPixels(IntArray(width * height) { random.nextInt() or (0xFF shl 24) }, 0, width, 0, 0, width, height)
+        return ByteArrayOutputStream().also { bitmap.compress(Bitmap.CompressFormat.JPEG, 95, it) }.toByteArray()
+    }
+
     private fun writeOriginal(plain: ByteArray) {
         val mediaId = id("m", 50)
         originalFile = File(files.paths.objectFile(id("o", 50)).path).also { it.writeBytes(encrypted(mediaId, plain)) }
@@ -183,7 +190,9 @@ class ImageFetchersTest {
 
     @Test
     fun aTamperedOriginalFailsAndStillReleasesTheHandle() {
-        writeOriginal(image(400, 300, Bitmap.CompressFormat.JPEG))
+        val plain = noisyImage(1600, 1200)
+        assertTrue("the tampered chunk must not be the final one", plain.size > (1 shl 20) + 1)
+        writeOriginal(plain)
         RandomAccessFile(originalFile!!, "rw").use {
             it.seek(STREAM_HEADER_BYTES + 5L)
             val byte = it.read()

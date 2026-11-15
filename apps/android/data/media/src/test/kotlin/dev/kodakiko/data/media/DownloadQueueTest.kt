@@ -42,6 +42,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @RunWith(RobolectricTestRunner::class)
 class DownloadQueueTest {
+    private companion object {
+        const val QUEUE_SETTLE_MS = 400L
+    }
+
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val hash = "00112233445566bb"
     private val server = MockWebServer()
@@ -254,11 +258,11 @@ class DownloadQueueTest {
             async { queue.fetch(background, DownloadPriority.BACKGROUND) },
             async { queue.fetch(raised, DownloadPriority.BACKGROUND) },
         )
-        Thread.sleep(100)
+        Thread.sleep(QUEUE_SETTLE_MS)
         val more = listOf(async { queue.fetch(visible, DownloadPriority.VISIBLE) })
-        Thread.sleep(100)
+        Thread.sleep(QUEUE_SETTLE_MS)
         val top = listOf(async { queue.fetch(opened, DownloadPriority.OPENED) }, async { queue.fetch(raised, DownloadPriority.OPENED) })
-        Thread.sleep(100)
+        Thread.sleep(QUEUE_SETTLE_MS)
         gate!!.countDown()
         (running + waiting + more + top).forEach { it.get(20, TimeUnit.SECONDS) }
         val after = bucketOrder.drop(2)
