@@ -9,6 +9,8 @@ internal object BuildLogicConstants {
     const val KOTLIN_SOURCES = "src/**/*.kt"
     const val GRADLE_SCRIPTS = "*.gradle.kts"
     const val JVM_TEST_TASK = "jvmTest"
+    const val ANDROID_DEVICE_TEST_SOURCE_SET = "androidDeviceTest"
+    const val INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
     val LINT_VERSION_CHECKS = setOf("NewerVersionAvailable", "GradleDependency", "AndroidGradlePluginVersion")
     val ROBOLECTRIC_JVM_ARGS = listOf("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED")
 }

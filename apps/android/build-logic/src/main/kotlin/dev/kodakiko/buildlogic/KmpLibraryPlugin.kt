@@ -20,6 +20,9 @@ class KmpLibraryPlugin : Plugin<Project> {
                 compileSdk = compileSdkVersion
                 minSdk = minSdkVersion
                 withHostTest { }
+                withDeviceTest {
+                    instrumentationRunner = BuildLogicConstants.INSTRUMENTATION_RUNNER
+                }
             }
             sourceSets.getByName("commonTest").dependencies {
                 implementation(libs.kotlin.test)
@@ -27,6 +30,11 @@ class KmpLibraryPlugin : Plugin<Project> {
             sourceSets.getByName("jvmTest").dependencies {
                 implementation(libs.junit.jupiter)
                 runtimeOnly(libs.junit.platform.launcher)
+            }
+            sourceSets.getByName(BuildLogicConstants.ANDROID_DEVICE_TEST_SOURCE_SET).dependencies {
+                implementation(libs.junit4)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.androidx.test.ext.junit)
             }
         }
         tasks.named(BuildLogicConstants.JVM_TEST_TASK, Test::class.java) { it.useJUnitPlatform() }
