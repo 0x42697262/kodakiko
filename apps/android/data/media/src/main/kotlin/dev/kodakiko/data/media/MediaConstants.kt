@@ -13,10 +13,12 @@ internal object MediaConstants {
     const val HTTP_NOT_FOUND = 404
     const val HTTP_SERVER_ERROR_MIN = 500
     const val END_OF_STREAM = -1
+    const val THUMBNAIL_MEMORY_CACHE_ITEMS = 300
 }
 
 internal object MediaKeys {
     const val DOWNLOAD_THREAD_NAME = "kodakiko-download"
+    const val THUMBNAIL_PREFETCH_THREAD_NAME = "kodakiko-thumbnail-prefetch"
 }
 
 internal object MediaText {
