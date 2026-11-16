@@ -84,3 +84,6 @@ no v0.3.1 source file produces (`tags.field` in U-10 is stale since D-87).
 (869 strings, 21 plurals). Run `node tests/fixtures/ui-strings/emit-android.ts` after regenerating
 the fixture, and `--check` to verify the XML is current. Numbers use `%N$s` so digits stay ASCII on
 every device locale, like v0.3.1.
+
+Strings that v0.3.1 did not have (new in v0.4.0) go to `strings_v040.xml` next to the generated
+file, so regenerating `strings.xml` never drops them.
