@@ -13,6 +13,7 @@ dependencies {
     api(projects.service.stats)
     api(projects.service.sync)
     api(projects.service.sharing)
+    api(projects.service.account)
     api(libs.compose.ui)
     api(libs.compose.foundation)
     api(libs.compose.material3)

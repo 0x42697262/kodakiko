@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="prefs_none">None</string>
+    <string name="lock_updated">Kodakiko was updated. Enter your password to unlock.</string>
+    <string name="lock_unreadable">Your journal could not be opened.</string>
+    <string name="placeholder_coming_soon">This screen is coming soon.</string>
 </resources>

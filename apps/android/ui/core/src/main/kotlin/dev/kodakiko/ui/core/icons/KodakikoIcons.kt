@@ -15,6 +15,7 @@ object KodakikoIcons {
     val Close: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_close)
     val DisabledByDefault: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_disabled_by_default)
     val Info: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_info)
+    val Lock: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_lock)
     val MoreHoriz: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_more_horiz)
     val MoreVert: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_more_vert)
     val People: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_people)

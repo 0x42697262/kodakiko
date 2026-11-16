@@ -149,6 +149,7 @@ object TestTags {
 
     object Connect {
         const val ACTION = "connect.action"
+        const val BACK = "connect.back"
         const val DONE = "connect.done"
         const val INVITE = "connect.invite"
         const val PASSWORD = "connect.password"
@@ -388,6 +389,9 @@ object TestTags {
         const val TITLE = "lock.title"
         const val UNLOCK_DEVICE = "lock.unlockDevice"
         const val UNLOCK_PASSWORD = "lock.unlockPassword"
+        const val UNREADABLE = "lock.unreadable"
+        const val UPDATED = "lock.updated"
+        const val WRONG_PASSWORD = "lock.wrongPassword"
     }
 
     object Markdown {

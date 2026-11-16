@@ -4,6 +4,7 @@ package dev.kodakiko.app.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -72,7 +73,10 @@ fun AppNavigation(
                 }
             }
             BackHandler(enabled = navigator.canGoBack) { navigator.pop() }
-            ScreenTransition(navigator = navigator, voyager = voyager, modifier = modifier)
+            Box(modifier = modifier) {
+                ScreenTransition(navigator = navigator, voyager = voyager)
+                if (navigator.securing) content(Route.Securing)
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 package dev.kodakiko.data.migration
 
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import dev.kodakiko.contract.decodeBytes
 import dev.kodakiko.contract.isDecodableBase64Url
 import dev.kodakiko.crypto.AdContext
@@ -40,7 +42,7 @@ interface AdoptionTarget {
     fun saveMasterKey(accountHash: String, masterKey: ByteArray): Boolean
 }
 
-enum class AdoptionStatus { ADOPTED, ALREADY_ADOPTED, FRESH_INSTALL, NEWER_DATABASE, DATABASE_MISSING }
+enum class AdoptionStatus { ADOPTED, ALREADY_ADOPTED, FRESH_INSTALL, NEWER_DATABASE, DATABASE_MISSING, CORRUPT_DATABASE }
 
 data class AdoptionResult(val status: AdoptionStatus, val accountHash: String?, val masterKeyCarried: Boolean, val needsPassword: Boolean)
 
@@ -51,11 +53,15 @@ class LegacyAdoption(
     private val target: AdoptionTarget,
     private val clock: () -> Instant = { Instant.now() },
 ) {
+    fun pendingAccount(): ActiveAccount? = (legacy.read(LegacyKeys.ACTIVE_ACCOUNT) as? LegacyRead.Value)?.text?.let(ActiveAccount::parse)
+
     fun run(): AdoptionResult {
-        val account = (legacy.read(LegacyKeys.ACTIVE_ACCOUNT) as? LegacyRead.Value)?.text?.let(ActiveAccount::parse)
+        val account = pendingAccount()
             ?: return AdoptionResult(AdoptionStatus.FRESH_INSTALL, null, masterKeyCarried = false, needsPassword = false)
         val hash = accountHash(sodium, account.accountKey)
-        if (!KodakikoDatabase.databaseFile(context, hash).isFile) return stopped(AdoptionStatus.DATABASE_MISSING, hash)
+        val file = KodakikoDatabase.databaseFile(context, hash)
+        if (!file.isFile) return stopped(AdoptionStatus.DATABASE_MISSING, hash)
+        if (!passesIntegrityCheck(file.path)) return stopped(AdoptionStatus.CORRUPT_DATABASE, hash)
         val database = try {
             KodakikoDatabase.open(context, hash)
         } catch (failure: NewerSchemaError) {
@@ -69,6 +75,17 @@ class LegacyAdoption(
             AdoptionResult(AdoptionStatus.ADOPTED, hash, masterKeyCarried = carried, needsPassword = !carried)
         }
     }
+
+    private fun passesIntegrityCheck(path: String): Boolean =
+        try {
+            SQLiteDatabase.openDatabase(path, null, READ_ONLY_FLAGS) { }.use { database ->
+                database.rawQuery(MigrationConstants.INTEGRITY_CHECK, null).use { cursor ->
+                    cursor.count == 1 && cursor.moveToFirst() && cursor.getString(0) == MigrationConstants.INTEGRITY_OK
+                }
+            }
+        } catch (failure: SQLiteException) {
+            false
+        }
 
     private fun stopped(status: AdoptionStatus, hash: String) = AdoptionResult(status, hash, masterKeyCarried = false, needsPassword = false)
 
@@ -122,6 +139,7 @@ class LegacyAdoption(
     }
 
     private companion object {
+        const val READ_ONLY_FLAGS = SQLiteDatabase.OPEN_READONLY or SQLiteDatabase.NO_LOCALIZED_COLLATORS
         val ISO_TIME: DateTimeFormatter = DateTimeFormatter.ofPattern(MigrationConstants.ISO_TIME_PATTERN).withZone(ZoneOffset.UTC)
         val JOURNAL_WRAPS = listOf(
             StorageKeys.ACCOUNT_PRIVATE_KEY_BY_MASTER to AdContext.PRIVATE_KEY_BY_MASTER,

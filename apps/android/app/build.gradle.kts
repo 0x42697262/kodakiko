@@ -29,6 +29,7 @@ dependencies {
     implementation(projects.data.migration)
     implementation(projects.platform.device)
     implementation(projects.shared.crypto)
+    implementation(projects.shared.contract)
     implementation(libs.activity.compose)
     implementation(libs.compose.ui)
     implementation(libs.compose.foundation)

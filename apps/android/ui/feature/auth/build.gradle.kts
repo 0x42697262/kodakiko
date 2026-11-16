@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.shared.contract)
     implementation(projects.shared.js)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.activity.compose)
     implementation(libs.metrox.viewmodel.compose)
     testImplementation(libs.junit4)
     testImplementation(libs.robolectric)

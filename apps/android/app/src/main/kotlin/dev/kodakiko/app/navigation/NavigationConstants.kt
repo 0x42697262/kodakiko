@@ -15,4 +15,5 @@ object NavigationConstants {
     const val TRANSITION_STATE_KEY = "transition"
     const val TRANSITION_LABEL = "transition"
     const val TAB_CONTENT_LABEL = "tabContent"
+    const val STATE_SUBSCRIPTION_MS = 5_000L
 }

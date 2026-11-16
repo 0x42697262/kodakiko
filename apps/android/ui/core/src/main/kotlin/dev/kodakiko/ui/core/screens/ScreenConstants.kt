@@ -11,4 +11,5 @@ internal object ScreenConstants {
     val INFO_SCREEN_TOP_PADDING = 48.dp
     val INFO_SCREEN_ICON_SIZE = 48.dp
     const val INFO_SCREEN_SCRIM_Z_INDEX = 2f
+    val FORM_SCREEN_TOP_PADDING = 32.dp
 }

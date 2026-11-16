@@ -35,6 +35,9 @@ class AppNavigator(
     var lastTransition: RouteTransition? by mutableStateOf(null)
         private set
 
+    var securing: Boolean by mutableStateOf(false)
+        private set
+
     override val routes: List<Route>
         get() = (voyager?.items ?: initialScreens()).map { routeOf(it) }
 
@@ -102,6 +105,7 @@ class AppNavigator(
         val target = RouteGuards.resolve(route, startScreen())
         if (!allowed(target)) return
         val navigator = voyager ?: return
+        securing = false
         if (target is Route.Tab) {
             showTab(navigator, target)
             return
@@ -114,6 +118,7 @@ class AppNavigator(
         val target = RouteGuards.resolve(route, startScreen())
         if (!allowed(target)) return
         val navigator = voyager ?: return
+        securing = false
         lastTransition = RouteTransition(RouteTransitions.kindOf(target), forward = true)
         if (target is Route.Tab) {
             currentTab = target
@@ -121,6 +126,14 @@ class AppNavigator(
         } else {
             navigator.replaceAll(RouteScreen(target))
         }
+    }
+
+    fun showSecuring() {
+        securing = true
+    }
+
+    fun dismissSecuring() {
+        securing = false
     }
 
     fun selectTab(tab: Route.Tab) {
@@ -152,8 +165,21 @@ class AppNavigator(
     }
 
     private fun reconcile(state: AccountState) {
-        if (state is AccountState.Unlocked) return
-        if (routes.any(RouteGuards::requiresUnlock)) showStateRoute(state)
+        val current = routes
+        if (state is AccountState.Unlocked) {
+            if (current.size == 1 && current.single() in STATE_ROUTES) showHome()
+            return
+        }
+        if (current.firstOrNull() != RouteGuards.routeForState(state, startScreen()) || current.any(RouteGuards::requiresUnlock)) showStateRoute(state)
+    }
+
+    private fun showHome() {
+        val navigator = voyager ?: return
+        securing = false
+        val tab = startTab()
+        lastTransition = RouteTransition(RouteTransitions.kindOf(tab), forward = true)
+        currentTab = tab
+        navigator.replaceAll(HomeScreen)
     }
 
     private fun onStateChanged(previous: AccountState, next: AccountState, scope: CoroutineScope) {
@@ -170,6 +196,7 @@ class AppNavigator(
 
     private fun showStateRoute(state: AccountState) {
         val navigator = voyager ?: return
+        securing = false
         val target = RouteGuards.routeForState(state, startScreen())
         lastTransition = RouteTransition(RouteTransitions.kindOf(target), forward = true)
         navigator.replaceAll(RouteScreen(target))
@@ -197,6 +224,7 @@ class AppNavigator(
     private fun applyRestore(remembered: String?, entryExists: Boolean) {
         if (accountState.value !is AccountState.Unlocked) return
         val navigator = voyager ?: return
+        securing = false
         val next = ReturnTo.nextRouteAfterUnlock(remembered, entryExists)
         val restored = if (next == remembered) Route.fromPath(next) else null
         val start = startTab()
@@ -210,5 +238,9 @@ class AppNavigator(
             currentTab = start
             navigator.replaceAll(listOf(HomeScreen, RouteScreen(restored)))
         }
+    }
+
+    private companion object {
+        val STATE_ROUTES: Set<Route> = setOf(Route.Welcome, Route.Lock, Route.CancelDeletion)
     }
 }

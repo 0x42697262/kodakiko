@@ -12,5 +12,7 @@ internal object MigrationConstants {
     const val MARKER_SCHEMA_VERSION = 1
     const val MARKER_SCHEMA_VERSION_FIELD = "schemaVersion"
     const val MARKER_AT_FIELD = "at"
+    const val INTEGRITY_CHECK = "PRAGMA integrity_check"
+    const val INTEGRITY_OK = "ok"
     const val ISO_TIME_PATTERN = "uuuu-MM-dd'T'HH:mm:ss.SSS'Z'"
 }

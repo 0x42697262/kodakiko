@@ -46,6 +46,13 @@ internal object ComponentConstants {
     val BADGE_PADDING_VERTICAL = 1.dp
     const val BADGE_ICON_PLACEHOLDER = "[icon]"
 
+    val BANNER_PADDING = 12.dp
+    val FIELD_ERROR_SPACING = 4.dp
+    val BANNER_ICON_SPACING = 12.dp
+    val BUTTON_PROGRESS_SIZE = 18.dp
+    val BUTTON_PROGRESS_STROKE = 2.dp
+    val BUTTON_PROGRESS_SPACING = 8.dp
+
     val PILL_PADDING_START = 4.dp
     val PILL_PADDING_HORIZONTAL = 6.dp
     val PILL_PADDING_VERTICAL = 1.dp
