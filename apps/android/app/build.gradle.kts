@@ -23,6 +23,7 @@ dependencies {
     implementation(projects.ui.feature.gallery)
     implementation(projects.ui.feature.calendar)
     implementation(projects.ui.feature.viewer)
+    implementation(projects.ui.feature.edit)
     implementation(projects.service.account)
     implementation(projects.service.lock)
     implementation(projects.service.index)

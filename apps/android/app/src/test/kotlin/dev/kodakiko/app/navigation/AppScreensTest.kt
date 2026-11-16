@@ -33,13 +33,18 @@ class AppScreensTest {
         Route.Play("entry-1", "media-1") to AppScreen.PLAY,
     )
 
+    private val edit: Map<Route, AppScreen> = mapOf(
+        Route.EntryEdit("entry-1") to AppScreen.ENTRY_EDIT,
+        Route.EntryEdit("entry-1", isNew = true) to AppScreen.ENTRY_EDIT,
+        Route.EntryNew to AppScreen.ENTRY_NEW,
+        Route.EntryCrop("entry-1", "media-1") to AppScreen.ENTRY_CROP,
+    )
+
     private val notYetBuilt: List<Route> = listOf(
         Route.Home,
         Route.Invite,
         Route.Shared,
         Route.More,
-        Route.EntryEdit("entry-1"),
-        Route.EntryNew,
         Route.Capture(),
         Route.Tags,
         Route.Collection("collection-1"),
@@ -83,18 +88,36 @@ class AppScreensTest {
     }
 
     @Test
+    fun theEditNewEntryAndCropRoutesMapToTheEditScreens() {
+        for ((route, screen) in edit) assertEquals(route.path, screen, AppScreens.of(route))
+    }
+
+    @Test
+    fun aNewEntryRouteRemembersItIsNewAndTheCropRouteNamesItsItem() {
+        assertEquals(false, Route.EntryEdit("entry-1").isNew)
+        assertEquals(true, Route.EntryEdit("entry-1", isNew = true).isNew)
+        assertEquals("media-1", Route.EntryCrop("entry-1", "media-1").mediaId)
+        assertEquals("entry-1", Route.EntryCrop("entry-1", "media-1").entryId)
+    }
+
+    @Test
     fun everyOtherRouteMapsToThePlaceholderUntilItsTask() {
         for (route in notYetBuilt) assertEquals(route.path, AppScreen.PLACEHOLDER, AppScreens.of(route))
     }
 
     @Test
     fun theTableCoversEveryScreenOnce() {
-        assertEquals(AppScreen.entries.toSet() - AppScreen.PLACEHOLDER, authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet())
+        assertEquals(
+            AppScreen.entries.toSet() - AppScreen.PLACEHOLDER,
+            authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet(),
+        )
         assertEquals(authAndLock.size, authAndLock.values.toSet().size)
         assertEquals(emptySet<AppScreen>(), authAndLock.values.toSet() intersect gallery.values.toSet())
         assertEquals(setOf(AppScreen.GALLERY, AppScreen.TRASH, AppScreen.DAY), gallery.values.toSet())
         assertEquals(setOf(AppScreen.CALENDAR, AppScreen.ENTRY, AppScreen.ENTRY_DETAILS, AppScreen.PLAY), calendarAndViewer.values.toSet())
         assertEquals(emptySet<AppScreen>(), (authAndLock.values.toSet() + gallery.values.toSet()) intersect calendarAndViewer.values.toSet())
+        assertEquals(setOf(AppScreen.ENTRY_EDIT, AppScreen.ENTRY_NEW, AppScreen.ENTRY_CROP), edit.values.toSet())
+        assertEquals(emptySet<AppScreen>(), (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet()) intersect edit.values.toSet())
     }
 
     @Test
@@ -103,7 +126,7 @@ class AppScreensTest {
             .filter { Route::class.java.isAssignableFrom(it) && !it.isInterface }
             .map { it.name }
             .toSet()
-        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + notYetBuilt).map { it.javaClass.name }.toSet()
+        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + notYetBuilt).map { it.javaClass.name }.toSet()
         assertEquals(declared, listed)
     }
 }
