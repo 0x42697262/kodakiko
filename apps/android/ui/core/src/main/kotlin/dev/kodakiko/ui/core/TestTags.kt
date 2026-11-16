@@ -259,6 +259,10 @@ object TestTags {
         const val SUMMARY = "export.summary"
     }
 
+    object FastScroller {
+        const val THUMB = "fastScroller.thumb"
+    }
+
     object Filter {
         const val APPLY = "filter.apply"
         const val FROM = "filter.from"
