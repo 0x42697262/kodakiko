@@ -42,7 +42,7 @@ class VideoPlayerDeviceTest {
     private lateinit var encrypted: File
 
     private fun snapshot(): Set<String> =
-        listOf(target.filesDir, target.cacheDir).flatMap { root -> root.walkTopDown().filter { it.isFile }.map { it.path }.toList() }.toSet()
+        listOf(target.filesDir, target.cacheDir).flatMap { root -> root.walkTopDown().filter { it.isFile && it.name != PROFILE_INSTALLER_MARKER }.map { it.path }.toList() }.toSet()
 
     @Before
     fun encryptFixture() {
@@ -113,6 +113,7 @@ class VideoPlayerDeviceTest {
 
     private companion object {
         const val KEY_BYTES = 32
+        const val PROFILE_INSTALLER_MARKER = "profileInstalled"
         const val PLAY_WAIT_MS = 15_000L
         const val SETTLE_MS = 3_000L
         const val MIN_BYTES_READ = 256L * 1024L
