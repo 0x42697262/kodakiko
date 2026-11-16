@@ -23,6 +23,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.dp
+import dev.kodakiko.app.RegisterComponentActivity
 import dev.kodakiko.data.db.StartScreen
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
@@ -33,13 +34,16 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class HomeScaffoldTest {
-    @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @get:Rule
+    val rules: RuleChain = RuleChain.outerRule(RegisterComponentActivity()).around(compose)
 
     private val tabTags = listOf(TestTags.Tabs.GALLERY, TestTags.Tabs.CALENDAR, TestTags.Tabs.SHARED, TestTags.Tabs.MORE)
 

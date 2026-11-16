@@ -12,6 +12,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import dev.kodakiko.app.RegisterComponentActivity
 import dev.kodakiko.data.db.StartScreen
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.ui.core.TestTags
@@ -25,13 +26,16 @@ import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class AppNavigationTest {
-    @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @get:Rule
+    val rules: RuleChain = RuleChain.outerRule(RegisterComponentActivity()).around(compose)
 
     private fun host(initial: AccountState, startScreen: StartScreen = StartScreen.GALLERY, entryExists: Boolean = true): ShellHost =
         ShellHost(compose, initial, startScreen, entryExists)

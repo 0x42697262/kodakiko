@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import dev.kodakiko.app.MainActivity
+import dev.kodakiko.app.RegisterComponentActivity
 import dev.kodakiko.data.db.DeviceSettingsDefaults
 import dev.kodakiko.ui.core.util.LocalFullScreen
 import org.junit.Assert.assertEquals
@@ -17,6 +18,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
@@ -24,8 +26,10 @@ import org.robolectric.util.ReflectionHelpers
 
 @RunWith(RobolectricTestRunner::class)
 class SystemUiTest {
-    @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @get:Rule
+    val rules: RuleChain = RuleChain.outerRule(RegisterComponentActivity()).around(compose)
 
     private fun secureFlag(): Boolean = compose.runOnIdle {
         compose.activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SECURE != 0
