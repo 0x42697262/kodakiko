@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.ui.core)
     implementation(projects.ui.feature.auth)
     implementation(projects.ui.feature.lock)
+    implementation(projects.ui.feature.gallery)
     implementation(projects.service.account)
     implementation(projects.service.lock)
     implementation(projects.data.db)

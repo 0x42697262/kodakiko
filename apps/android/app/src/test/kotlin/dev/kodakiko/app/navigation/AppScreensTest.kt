@@ -18,15 +18,19 @@ class AppScreensTest {
         Route.Lock to AppScreen.LOCK,
     )
 
+    private val gallery: Map<Route, AppScreen> = mapOf(
+        Route.Gallery to AppScreen.GALLERY,
+        Route.Trash to AppScreen.TRASH,
+        Route.Day("2026-11-21") to AppScreen.DAY,
+        Route.Day("2024-02-29") to AppScreen.DAY,
+    )
+
     private val notYetBuilt: List<Route> = listOf(
         Route.Home,
         Route.Invite,
-        Route.Gallery,
         Route.Calendar,
         Route.Shared,
         Route.More,
-        Route.Trash,
-        Route.Day("2026-11-21"),
         Route.Entry("entry-1"),
         Route.EntryDetails("entry-1"),
         Route.EntryEdit("entry-1"),
@@ -65,14 +69,21 @@ class AppScreensTest {
     }
 
     @Test
+    fun theGalleryTrashAndDayRoutesMapToTheGalleryScreens() {
+        for ((route, screen) in gallery) assertEquals(route.path, screen, AppScreens.of(route))
+    }
+
+    @Test
     fun everyOtherRouteMapsToThePlaceholderUntilItsTask() {
         for (route in notYetBuilt) assertEquals(route.path, AppScreen.PLACEHOLDER, AppScreens.of(route))
     }
 
     @Test
     fun theTableCoversEveryScreenOnce() {
-        assertEquals(AppScreen.entries.toSet() - AppScreen.PLACEHOLDER, authAndLock.values.toSet())
+        assertEquals(AppScreen.entries.toSet() - AppScreen.PLACEHOLDER, authAndLock.values.toSet() + gallery.values.toSet())
         assertEquals(authAndLock.size, authAndLock.values.toSet().size)
+        assertEquals(emptySet<AppScreen>(), authAndLock.values.toSet() intersect gallery.values.toSet())
+        assertEquals(setOf(AppScreen.GALLERY, AppScreen.TRASH, AppScreen.DAY), gallery.values.toSet())
     }
 
     @Test
@@ -81,7 +92,7 @@ class AppScreensTest {
             .filter { Route::class.java.isAssignableFrom(it) && !it.isInterface }
             .map { it.name }
             .toSet()
-        val listed = (authAndLock.keys + notYetBuilt).map { it.javaClass.name }.toSet()
+        val listed = (authAndLock.keys + gallery.keys + notYetBuilt).map { it.javaClass.name }.toSet()
         assertEquals(declared, listed)
     }
 }

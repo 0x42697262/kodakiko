@@ -143,7 +143,8 @@ class AppStartTest {
         compose.onNodeWithTag(TestTags.Lock.PASSWORD).performImeAction()
         awaitTag(TestTags.Home.SIGNED_IN_AS, UNLOCK_WAIT_MS)
         compose.onNodeWithTag(TestTags.Home.SIGNED_IN_AS).assertTextEquals("Signed in as ${V031Fixture.USERNAME}")
-        assertTrue(shown(AppTestTags.APP_PLACEHOLDER))
+        assertTrue(shown(TestTags.Gallery.SCREEN))
+        assertFalse(shown(AppTestTags.APP_PLACEHOLDER))
         assertTrue(app.graph.accountState.value is AccountState.Unlocked)
         awaitGone(TestTags.Lock.TITLE)
     }
