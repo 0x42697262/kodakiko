@@ -27,6 +27,7 @@ import dev.kodakiko.ui.core.AppLocale
 import dev.kodakiko.ui.core.screens.LoadingScreen
 import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import dev.kodakiko.ui.core.theme.KodakikoTheme
+import dev.kodakiko.ui.feature.gallery.LocalGalleryThumbnails
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.kodakiko.ui.core.TestTags as CoreTestTags
 
@@ -47,7 +48,10 @@ class MainActivity : FragmentActivity() {
             KodakikoTheme {
                 SystemUi(settings = SystemUiSettings.STARTUP, darkTheme = isSystemInDarkTheme()) {
                     Box(Modifier.testTag(TestTags.APP_ROOT).testTagsAsResourceIdRoot().fillMaxSize()) {
-                        CompositionLocalProvider(LocalMetroViewModelFactory provides graph.metroViewModelFactory) {
+                        CompositionLocalProvider(
+                            LocalMetroViewModelFactory provides graph.metroViewModelFactory,
+                            LocalGalleryThumbnails provides graph.galleryThumbnails,
+                        ) {
                             AppContent(graph)
                         }
                     }

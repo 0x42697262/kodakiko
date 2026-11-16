@@ -11,6 +11,9 @@ import dev.kodakiko.ui.feature.auth.SecuringScreen
 import dev.kodakiko.ui.feature.auth.SignInScreen
 import dev.kodakiko.ui.feature.auth.SignUpScreen
 import dev.kodakiko.ui.feature.auth.WelcomeScreen
+import dev.kodakiko.ui.feature.gallery.DayScreen
+import dev.kodakiko.ui.feature.gallery.GalleryScreen
+import dev.kodakiko.ui.feature.gallery.TrashScreen
 import dev.kodakiko.ui.feature.lock.LockScreen
 
 enum class AppScreen {
@@ -24,6 +27,9 @@ enum class AppScreen {
     LOCAL_SETUP,
     CONNECT_SERVER,
     LOCK,
+    GALLERY,
+    TRASH,
+    DAY,
     PLACEHOLDER,
 }
 
@@ -39,6 +45,9 @@ object AppScreens {
         Route.LocalSetup -> AppScreen.LOCAL_SETUP
         Route.SettingsConnect -> AppScreen.CONNECT_SERVER
         Route.Lock -> AppScreen.LOCK
+        Route.Gallery -> AppScreen.GALLERY
+        Route.Trash -> AppScreen.TRASH
+        is Route.Day -> AppScreen.DAY
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -55,6 +64,9 @@ object AppScreens {
             AppScreen.LOCAL_SETUP -> LocalSetupScreen()
             AppScreen.CONNECT_SERVER -> ConnectServerScreen()
             AppScreen.LOCK -> LockScreen()
+            AppScreen.GALLERY -> GalleryScreen()
+            AppScreen.TRASH -> TrashScreen()
+            AppScreen.DAY -> DayScreen((route as Route.Day).date)
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

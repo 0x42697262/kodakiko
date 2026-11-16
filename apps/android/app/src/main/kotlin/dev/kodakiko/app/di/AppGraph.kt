@@ -9,13 +9,15 @@ import dev.kodakiko.data.secure.DeviceGate
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.service.account.Observable
+import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LockControl
+import dev.kodakiko.ui.feature.gallery.GalleryThumbnails
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 
-@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, ViewModelBindings::class])
+@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, GalleryBindings::class, ViewModelBindings::class])
 interface AppGraph : ViewModelGraph {
     val authService: AuthService
 
@@ -32,6 +34,10 @@ interface AppGraph : ViewModelGraph {
     val startup: AppStartup
 
     val activityHolder: ActivityHolder
+
+    val indexService: IndexService
+
+    val galleryThumbnails: GalleryThumbnails
 
     @DependencyGraph.Factory
     fun interface Factory {

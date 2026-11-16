@@ -124,6 +124,7 @@ fun AppBar(
     actions: @Composable RowScope.() -> Unit = {},
     isActionMode: Boolean = false,
     onCancelActionMode: () -> Unit = {},
+    cancelActionModeTestTag: String? = null,
 
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
@@ -133,7 +134,10 @@ fun AppBar(
         TopAppBar(
             navigationIcon = {
                 if (isActionMode) {
-                    IconButton(onClick = onCancelActionMode) {
+                    IconButton(
+                        onClick = onCancelActionMode,
+                        modifier = Modifier.optionalTestTag(cancelActionModeTestTag),
+                    ) {
                         Icon(
                             imageVector = KodakikoIcons.Close,
                             contentDescription = stringResource(R.string.gallery_cancel_selection),

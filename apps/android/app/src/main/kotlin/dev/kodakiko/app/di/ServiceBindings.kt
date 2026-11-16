@@ -5,6 +5,7 @@ import android.os.SystemClock
 import android.util.Log
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.BuildConfig
+import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.RandomSource
@@ -83,12 +84,13 @@ object ServiceBindings {
     @SingleIn(AppScope::class)
     fun lockService(
         accountState: Observable<AccountState>,
+        steps: LifecycleSteps,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): LockService = DefaultLockService(
         LockServiceDeps(
-            lockSteps = emptyList(),
-            unlockSteps = emptyList(),
+            lockSteps = steps.lock,
+            unlockSteps = steps.unlock,
             accountState = accountState,
             log = { event, step -> Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step) },
             scope = scope,

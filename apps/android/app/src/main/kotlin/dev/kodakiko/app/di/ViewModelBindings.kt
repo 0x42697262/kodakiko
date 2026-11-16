@@ -18,11 +18,18 @@ import dev.kodakiko.ui.feature.auth.RecoveryKeyViewModel
 import dev.kodakiko.ui.feature.auth.SignInViewModel
 import dev.kodakiko.ui.feature.auth.SignUpViewModel
 import dev.kodakiko.ui.feature.auth.WelcomeViewModel
+import dev.kodakiko.ui.feature.gallery.DayViewModel
+import dev.kodakiko.ui.feature.gallery.DayViewModelFactory
+import dev.kodakiko.ui.feature.gallery.GalleryDeps
+import dev.kodakiko.ui.feature.gallery.GalleryViewModel
+import dev.kodakiko.ui.feature.gallery.TrashViewModel
 import dev.kodakiko.ui.feature.lock.LockViewModel
 import dev.kodakiko.ui.feature.lock.PendingChanges
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.IntoMap
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CoroutineDispatcher
@@ -87,6 +94,21 @@ object ViewModelBindings {
         pendingChanges: PendingChanges,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): ViewModel = LockViewModel(auth = auth, lock = lockControl, adoption = adoption, pendingChanges = pendingChanges, ioDispatcher = ioDispatcher)
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GalleryViewModel::class)
+    fun gallery(deps: GalleryDeps): ViewModel = GalleryViewModel(deps)
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(TrashViewModel::class)
+    fun trash(deps: GalleryDeps): ViewModel = TrashViewModel(deps)
+
+    @Provides
+    @IntoMap
+    @ManualViewModelAssistedFactoryKey(DayViewModelFactory::class)
+    fun day(deps: GalleryDeps): ManualViewModelAssistedFactory = DayViewModelFactory { date -> DayViewModel(deps, date) }
 
     @Provides
     @IntoMap

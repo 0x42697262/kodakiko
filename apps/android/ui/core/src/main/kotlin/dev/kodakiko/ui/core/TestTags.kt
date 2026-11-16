@@ -53,7 +53,9 @@ object TestTags {
     object Bulk {
         const val ADD_TAG = "bulk.addTag"
         const val CANCEL = "bulk.cancel"
+        const val CONFIRM_ADD = "bulk.confirmAdd"
         const val CONFIRM_DELETE = "bulk.confirmDelete"
+        const val CONFIRM_REMOVE = "bulk.confirmRemove"
         const val DELETE_PANEL = "bulk.deletePanel"
         const val DELETE_PERMANENTLY = "bulk.deletePermanently"
         const val FAVORITE = "bulk.favorite"
@@ -267,8 +269,10 @@ object TestTags {
     object Filter {
         const val APPLY = "filter.apply"
         const val FROM = "filter.from"
+        const val INVALID_DATE = "filter.invalidDate"
         const val RESET = "filter.reset"
         const val SHEET = "filter.sheet"
+        const val START_AFTER_END = "filter.startAfterEnd"
         const val TO = "filter.to"
     }
 
@@ -298,6 +302,7 @@ object TestTags {
         const val SEARCH_FIELD = "gallery.searchField"
         const val SELECTED = "gallery.selected"
         const val SELECT_ALL = "gallery.selectAll"
+        const val SELECT_INVERSE = "gallery.selectInverse"
         const val TAG_TAB = "gallery.tagTab"
         const val TAG_TAB_ALL = "gallery.tagTab.all"
         const val TAG_TAB_FAVORITES = "gallery.tagTab.favorites"

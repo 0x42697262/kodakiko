@@ -4,4 +4,5 @@
     <string name="lock_updated">Kodakiko was updated. Enter your password to unlock.</string>
     <string name="lock_unreadable">Your journal could not be opened.</string>
     <string name="placeholder_coming_soon">This screen is coming soon.</string>
+    <string name="gallery_select_inverse">Select inverse</string>
 </resources>
