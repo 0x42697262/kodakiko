@@ -121,7 +121,6 @@ class EntryDetailsViewModelTest {
         vm.onAction(EntryDetailsAction.Back)
         assertEquals(listOf<EntryDetailsEvent>(EntryDetailsEvent.Back), screen.events)
     }
-
 }
 
 @RunWith(RobolectricTestRunner::class)

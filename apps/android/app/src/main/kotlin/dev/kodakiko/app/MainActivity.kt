@@ -27,7 +27,9 @@ import dev.kodakiko.ui.core.AppLocale
 import dev.kodakiko.ui.core.screens.LoadingScreen
 import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import dev.kodakiko.ui.core.theme.KodakikoTheme
+import dev.kodakiko.ui.feature.calendar.LocalCalendarThumbnails
 import dev.kodakiko.ui.feature.gallery.LocalGalleryThumbnails
+import dev.kodakiko.ui.feature.viewer.LocalViewerImages
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.kodakiko.ui.core.TestTags as CoreTestTags
 
@@ -51,6 +53,8 @@ class MainActivity : FragmentActivity() {
                         CompositionLocalProvider(
                             LocalMetroViewModelFactory provides graph.metroViewModelFactory,
                             LocalGalleryThumbnails provides graph.galleryThumbnails,
+                            LocalCalendarThumbnails provides graph.calendarThumbnails,
+                            LocalViewerImages provides graph.viewerImages,
                         ) {
                             AppContent(graph)
                         }

@@ -11,10 +11,14 @@ import dev.kodakiko.ui.feature.auth.SecuringScreen
 import dev.kodakiko.ui.feature.auth.SignInScreen
 import dev.kodakiko.ui.feature.auth.SignUpScreen
 import dev.kodakiko.ui.feature.auth.WelcomeScreen
+import dev.kodakiko.ui.feature.calendar.CalendarScreen
 import dev.kodakiko.ui.feature.gallery.DayScreen
 import dev.kodakiko.ui.feature.gallery.GalleryScreen
 import dev.kodakiko.ui.feature.gallery.TrashScreen
 import dev.kodakiko.ui.feature.lock.LockScreen
+import dev.kodakiko.ui.feature.viewer.EntryDetailsScreen
+import dev.kodakiko.ui.feature.viewer.EntryViewerScreen
+import dev.kodakiko.ui.feature.viewer.VideoPlayerScreen
 
 enum class AppScreen {
     WELCOME,
@@ -30,6 +34,10 @@ enum class AppScreen {
     GALLERY,
     TRASH,
     DAY,
+    CALENDAR,
+    ENTRY,
+    ENTRY_DETAILS,
+    PLAY,
     PLACEHOLDER,
 }
 
@@ -48,6 +56,10 @@ object AppScreens {
         Route.Gallery -> AppScreen.GALLERY
         Route.Trash -> AppScreen.TRASH
         is Route.Day -> AppScreen.DAY
+        Route.Calendar -> AppScreen.CALENDAR
+        is Route.Entry -> AppScreen.ENTRY
+        is Route.EntryDetails -> AppScreen.ENTRY_DETAILS
+        is Route.Play -> AppScreen.PLAY
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -67,6 +79,10 @@ object AppScreens {
             AppScreen.GALLERY -> GalleryScreen()
             AppScreen.TRASH -> TrashScreen()
             AppScreen.DAY -> DayScreen((route as Route.Day).date)
+            AppScreen.CALENDAR -> CalendarScreen()
+            AppScreen.ENTRY -> EntryViewerScreen((route as Route.Entry).entryId)
+            AppScreen.ENTRY_DETAILS -> EntryDetailsScreen((route as Route.EntryDetails).entryId)
+            AppScreen.PLAY -> (route as Route.Play).let { VideoPlayerScreen(it.entryId, it.mediaId) }
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

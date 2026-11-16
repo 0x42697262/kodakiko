@@ -12,10 +12,12 @@ import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.gallery.SystemGalleryClock
 import dev.kodakiko.app.gallery.UnwiredEntriesSync
 import dev.kodakiko.app.gallery.UnwiredGallerySync
+import dev.kodakiko.app.viewer.AppVideoSource
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.accountHash
+import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.platform.device.Haptics
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
@@ -146,7 +148,10 @@ object GalleryBindings {
         entryKeys: EntryKeys,
         settings: AppDeviceSettings,
         accountState: Observable<AccountState>,
-    ): AccountMedia = AccountMedia(context, rowStore, fileStore, sodium, entryKeys, settings) { accountState.value is AccountState.Unlocked }
+        accountMode: Observable<AccountMode>,
+    ): AccountMedia = AccountMedia(context, rowStore, fileStore, sodium, entryKeys, settings, { accountMode.value == AccountMode.LOCAL }) {
+        accountState.value is AccountState.Unlocked
+    }
 
     @Provides
     @SingleIn(AppScope::class)
@@ -168,7 +173,8 @@ object GalleryBindings {
         notices: Observable<GalleryNotice?>,
         settings: AppDeviceSettings,
         entryKeys: EntryKeys,
-    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys)
+        videos: AppVideoSource,
+    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos)
 
     @Provides
     @SingleIn(AppScope::class)

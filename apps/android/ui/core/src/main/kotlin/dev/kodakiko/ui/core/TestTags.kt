@@ -400,6 +400,7 @@ object TestTags {
     }
 
     object Markdown {
+        const val BLOCK = "markdown.block"
         const val CANCEL = "markdown.cancel"
         const val LINK = "markdown.link"
         const val LINK_SHEET = "markdown.linkSheet"
@@ -753,12 +754,15 @@ object TestTags {
         const val EDIT = "viewer.edit"
         const val FAVORITE = "viewer.favorite"
         const val INLINE_VIDEO = "viewer.inlineVideo"
+        const val INLINE_VIDEO_MUTE_SUFFIX = ".mute"
         const val IN_TRASH = "viewer.inTrash"
+        const val KEEP_OFFLINE = "viewer.keepOffline"
         const val MORE = "viewer.more"
         const val MORE_SHEET = "viewer.moreSheet"
         const val PAGE = "viewer.page"
         const val PAGE_INDICATOR = "viewer.pageIndicator"
         const val PLAY = "viewer.play"
+        const val REMOVE_OFFLINE = "viewer.removeOffline"
         const val RESTORE = "viewer.restore"
         const val RETRY = "viewer.retry"
         const val SCREEN = "viewer.screen"

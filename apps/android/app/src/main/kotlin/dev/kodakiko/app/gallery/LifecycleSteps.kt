@@ -1,5 +1,6 @@
 package dev.kodakiko.app.gallery
 
+import dev.kodakiko.app.viewer.AppVideoSource
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.service.account.Observable
 import dev.kodakiko.service.entries.EntryKeys
@@ -17,12 +18,13 @@ class LifecycleSteps(
     private val notices: Observable<GalleryNotice?>,
     private val settings: AppDeviceSettings,
     private val entryKeys: EntryKeys,
+    private val videos: AppVideoSource,
 ) {
     val lock: List<LifecycleStep> = listOf(
         unwired(LockStepNames.CANCEL_EXPORT),
         unwired(LockStepNames.STOP_SYNC),
         unwired(LockStepNames.CANCEL_DOWNLOADS),
-        unwired(LockStepNames.RELEASE_VIDEO),
+        LifecycleStep(LockStepNames.RELEASE_VIDEO) { videos.releaseAll() },
         unwired(LockStepNames.RELEASE_ORIGINALS),
         LifecycleStep(LockStepNames.CLEAR_THUMBNAILS) { media.clear() },
         unwired(LockStepNames.CLEAR_TRAY),

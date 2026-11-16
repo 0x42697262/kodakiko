@@ -34,6 +34,7 @@ dependencies {
     implementation(projects.data.net)
     implementation(projects.data.migration)
     implementation(projects.platform.device)
+    implementation(projects.platform.audio)
     implementation(projects.shared.crypto)
     implementation(projects.shared.contract)
     implementation(libs.activity.compose)

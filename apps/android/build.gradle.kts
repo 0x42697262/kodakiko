@@ -65,6 +65,8 @@ tasks.register("verify") {
         ":ui:feature:auth:testDebugUnitTest",
         ":ui:feature:lock:testDebugUnitTest",
         ":ui:feature:gallery:testDebugUnitTest",
+        ":ui:feature:calendar:testDebugUnitTest",
+        ":ui:feature:viewer:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",
