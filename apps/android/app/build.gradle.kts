@@ -21,6 +21,8 @@ dependencies {
     implementation(projects.ui.feature.auth)
     implementation(projects.ui.feature.lock)
     implementation(projects.ui.feature.gallery)
+    implementation(projects.ui.feature.calendar)
+    implementation(projects.ui.feature.viewer)
     implementation(projects.service.account)
     implementation(projects.service.lock)
     implementation(projects.service.index)
