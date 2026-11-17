@@ -58,7 +58,7 @@ internal object JsRegexConstants {
     const val JS_INPUT_END = "\\z"
     const val JS_LINE_END = "(?=$LINE_TERMINATORS|\\z)"
     const val JS_LINE_START = "(?:\\A|(?<=$LINE_TERMINATORS))"
-    val QUANTIFIER_PATTERN = Regex("\\{[0-9]+(?:,[0-9]*)?}")
+    val QUANTIFIER_PATTERN = Regex("\\{[0-9]+(?:,[0-9]*)?\\}")
     val ESCAPES: Map<Char, String> = mapOf(
         's' to "[$WHITESPACE]",
         'S' to "[^$WHITESPACE]",
