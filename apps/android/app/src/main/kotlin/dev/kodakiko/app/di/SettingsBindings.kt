@@ -23,7 +23,9 @@ import dev.kodakiko.app.settings.RawLicenses
 import dev.kodakiko.app.settings.SnapshotRestoreService
 import dev.kodakiko.app.settings.exportEntryIds
 import dev.kodakiko.app.sync.AppSyncState
+import dev.kodakiko.app.system.SystemUiSettings
 import dev.kodakiko.crypto.Sodium
+import dev.kodakiko.data.db.DeviceSettings
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
@@ -116,6 +118,17 @@ object SettingsBindings {
         config.subscribe { configs.value = it }
         return combine(settings.settings, accountMode.flow, configs) { current, mode, known -> HomeSettings.of(current, mode, known) }
             .stateIn(scope, SharingStarted.Eagerly, HomeSettings.of(settings.settings.value, accountMode.value, configs.value))
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun systemUiSettings(
+        settings: AppDeviceSettings,
+        accountState: Observable<AccountState>,
+        @ApplicationScope scope: CoroutineScope,
+    ): StateFlow<SystemUiSettings> {
+        val of = { current: DeviceSettings, state: AccountState -> SystemUiSettings.of(current, settings.loaded(), state is AccountState.Unlocked) }
+        return combine(settings.settings, accountState.flow) { current, state -> of(current, state) }.stateIn(scope, SharingStarted.Eagerly, of(settings.settings.value, accountState.value))
     }
 
     @Provides

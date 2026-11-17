@@ -43,11 +43,13 @@ import dev.kodakiko.service.entries.EntryKeys
 import dev.kodakiko.service.entries.EntryKeysDeps
 import dev.kodakiko.service.entries.FileStoreEntryFiles
 import dev.kodakiko.service.entries.SystemEntriesClock
+import dev.kodakiko.service.entries.leaseEntryKey
 import dev.kodakiko.service.index.DefaultIndexService
 import dev.kodakiko.service.index.EntryKeySource
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.index.IndexServiceDeps
 import dev.kodakiko.service.lock.LockControl
+import dev.kodakiko.service.shareout.ShareOutService
 import dev.kodakiko.service.sharing.CollectionNames
 import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.ui.core.notice.GalleryNotice
@@ -128,7 +130,11 @@ object GalleryBindings {
         IndexServiceDeps(
             sodium = sodium,
             rowStore = rowStore,
-            entryKeys = EntryKeySource { entryKeys.entryKey(it) },
+            entryKeys = object : EntryKeySource {
+                override suspend fun entryKey(entryId: String): ByteArray = entryKeys.leaseEntryKey(entryId)
+
+                override fun release(key: ByteArray) = entryKeys.release(key)
+            },
             events = bus,
             now = System::currentTimeMillis,
             userId = { (accountState.value as? AccountState.Unlocked)?.userId },
@@ -212,10 +218,11 @@ object GalleryBindings {
         tray: CaptureTray,
         collectionNames: CollectionNames,
         accounts: AccountService,
+        shareOut: Lazy<ShareOutService>,
     ): LifecycleSteps = LifecycleSteps(
         LifecycleSteps.LifecycleSync(sync, linkUploader, exporter) { accountMode.value == AccountMode.LOCAL },
         index,
-        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames, accounts,
+        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames, accounts, shareOut,
     )
 
     @Provides

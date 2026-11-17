@@ -22,6 +22,9 @@ import dev.kodakiko.data.net.ApiCall
 import dev.kodakiko.data.net.ApiError
 import dev.kodakiko.data.net.NetworkError
 import dev.kodakiko.data.net.SharingCalls
+import dev.kodakiko.service.entries.AccountLockedException
+import dev.kodakiko.service.entries.withCollectionKey
+import dev.kodakiko.service.entries.withEntryKey
 import dev.kodakiko.service.sync.deleteFiles
 import dev.kodakiko.service.sync.dropLocalCollection
 import kotlinx.coroutines.withContext
@@ -42,16 +45,21 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
 
     override suspend fun createJournal(name: String): String {
         val account = requireAccount()
+        val started = deps.entryKeys.generation()
+        val masterKey = account.keys.masterKey.copyOf()
         val id = deps.randomId()
         val collectionKey = sodium.randomBytes(KEY_BYTES)
         try {
-            val keyByOwner = wrapKey(sodium, account.keys.masterKey, collectionKey, AdContext.COLLECTION_KEY_BY_MASTER, id)
+            requireUnlocked(started)
+            val keyByOwner = wrapKey(sodium, masterKey, collectionKey, AdContext.COLLECTION_KEY_BY_MASTER, id)
             val metadataBlob = sealName(collectionKey, id, name, deps.clock.nowIso())
+            requireUnlocked(started)
             val dto = online(
                 SharingCalls.create(CollectionCreateRequest(id, WireCollectionKind.SHARED, encodeBytes(keyByOwner), encodeBytes(metadataBlob))),
             )
             io {
                 rowStore.transaction { tx ->
+                    requireUnlocked(started)
                     tx.collections.put(
                         CollectionRow(
                             id = id,
@@ -70,6 +78,7 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
             }
         } finally {
             wipe(collectionKey)
+            wipe(masterKey)
         }
         deps.afterChange(emptyList())
         return id
@@ -78,11 +87,13 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
     override suspend fun renameJournal(id: String, name: String) {
         requireAccount()
         ownedRow(id)
-        val key = deps.entryKeys.collectionKey(id)
-        val metadataBlob = sealName(key, id, name, deps.clock.nowIso())
+        val started = deps.entryKeys.generation()
+        val metadataBlob = deps.entryKeys.withCollectionKey(id) { key -> sealName(key, id, name, deps.clock.nowIso()) }
+        requireUnlocked(started)
         val dto = online(SharingCalls.rename(id, encodeBytes(metadataBlob)))
         io {
             rowStore.transaction { tx ->
+                requireUnlocked(started)
                 tx.collections.get(id)?.let { row -> tx.collections.put(row.copy(metadataBlob = metadataBlob, metaUpdatedAt = dto.metaUpdatedAt)) }
             }
         }
@@ -107,10 +118,12 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
     override suspend fun addEntries(collectionId: String, entryIds: List<String>): AddEntriesResult {
         val account = requireAccount()
         ownedRow(collectionId)
-        val collectionKey = deps.entryKeys.collectionKey(collectionId)
+        val started = deps.entryKeys.generation()
         val outcomes = AddOutcome.entries.associateWith { mutableListOf<String>() }
-        for (entryId in entryIds) {
-            outcomes.getValue(addOne(collectionId, collectionKey, entryId, account.userId)) += entryId
+        deps.entryKeys.withCollectionKey(collectionId) { collectionKey ->
+            for (entryId in entryIds) {
+                outcomes.getValue(addOne(collectionId, collectionKey, entryId, account.userId, started)) += entryId
+            }
         }
         val result = AddEntriesResult(
             added = outcomes.getValue(AddOutcome.ADDED),
@@ -147,13 +160,14 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
     override suspend fun share(collectionId: String, recipient: Recipient) {
         requireAccount()
         ownedRow(collectionId)
-        val collectionKey = deps.entryKeys.collectionKey(collectionId)
-        val payload = buildSharePayload(collectionId, collectionKey)
+        val started = deps.entryKeys.generation()
+        val payload = deps.entryKeys.withCollectionKey(collectionId) { collectionKey -> buildSharePayload(collectionId, collectionKey) }
         val sealed = try {
             sodium.boxSeal(payload, recipient.publicKey)
         } finally {
             wipe(payload)
         }
+        requireUnlocked(started)
         try {
             online(SharingCalls.share(collectionId, recipient.userId, encodeBytes(sealed)))
         } catch (error: ApiError) {
@@ -192,6 +206,15 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
         return deps.account() ?: throw SharingException(SharingErrorReason.LOCKED)
     }
 
+    private fun requireUnlocked(started: Int) {
+        if (deps.account() == null) throw SharingException(SharingErrorReason.LOCKED)
+        try {
+            deps.entryKeys.requireGeneration(started)
+        } catch (_: AccountLockedException) {
+            throw SharingException(SharingErrorReason.LOCKED)
+        }
+    }
+
     private suspend fun <T> io(work: () -> T): T = withContext(deps.ioDispatcher) { work() }
 
     private suspend fun <T> online(call: ApiCall<T>): T =
@@ -210,15 +233,17 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
         return row
     }
 
-    private suspend fun addOne(collectionId: String, collectionKey: ByteArray, entryId: String, userId: String): AddOutcome {
+    private suspend fun addOne(collectionId: String, collectionKey: ByteArray, entryId: String, userId: String, started: Int): AddOutcome {
         val (entry, membership) = io {
             rowStore.transaction { tx -> tx.entries.get(entryId) to tx.memberships.byEntry(entryId).firstOrNull { it.collectionId == collectionId } }
         }
         if (entry == null || entry.ownerId != userId) return AddOutcome.FAILED
         if (membership != null) return AddOutcome.ALREADY_IN
         if ((entry.baseRevision ?: SharingConstants.NO_REVISION) == SharingConstants.NO_REVISION) return AddOutcome.NOT_SYNCED
-        val entryKey = deps.entryKeys.entryKey(entryId)
-        val wrap = wrapKey(sodium, collectionKey, entryKey, AdContext.ENTRY_KEY_BY_COLLECTION, collectionId + SharingConstants.KEY_BINDING_SEPARATOR + entryId)
+        val wrap = deps.entryKeys.withEntryKey(entryId) { entryKey ->
+            wrapKey(sodium, collectionKey, entryKey, AdContext.ENTRY_KEY_BY_COLLECTION, collectionId + SharingConstants.KEY_BINDING_SEPARATOR + entryId)
+        }
+        requireUnlocked(started)
         try {
             online(SharingCalls.addEntry(collectionId, entryId, encodeBytes(wrap)))
         } catch (error: ApiError) {
@@ -226,7 +251,12 @@ class DefaultSharingService(private val deps: SharingServiceDeps) : SharingServi
             if (isStatus(error, SharingConstants.STATUS_NOT_FOUND)) return AddOutcome.FAILED
             throw error
         }
-        io { rowStore.transaction { tx -> tx.memberships.put(MembershipRow(collectionId, entryId, wrap, SharingConstants.NEW_MEMBERSHIP_SEQ)) } }
+        io {
+            rowStore.transaction { tx ->
+                requireUnlocked(started)
+                tx.memberships.put(MembershipRow(collectionId, entryId, wrap, SharingConstants.NEW_MEMBERSHIP_SEQ))
+            }
+        }
         return AddOutcome.ADDED
     }
 }

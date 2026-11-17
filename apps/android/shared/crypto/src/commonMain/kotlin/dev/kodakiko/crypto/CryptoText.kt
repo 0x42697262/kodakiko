@@ -8,6 +8,7 @@ object CryptoText {
     const val TRUNCATED_OBJECT = "The stored file is incomplete."
     const val INVALID_CHUNK = "The chunk has an unexpected size or position."
     const val INVALID_KEY_LENGTH = "The key has an unexpected length."
+    const val ZERO_KEY = "The key is not available."
     const val INVALID_RECOVERY_WORD_COUNT = "The recovery key must have exactly 24 words."
     const val RECOVERY_CHECKSUM_MISMATCH = "The recovery words do not match. Check them and try again."
     const val SHARE_COLLECTION_MISMATCH = "The shared key belongs to a different collection."

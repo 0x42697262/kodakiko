@@ -12,6 +12,11 @@ data class SystemUiSettings(val fullScreen: Boolean, val secureScreen: Boolean) 
             return SystemUiSettings(fullScreen = source.fullScreen, secureScreen = source.secureScreen)
         }
 
+        fun of(settings: DeviceSettings, loaded: Boolean, unlocked: Boolean): SystemUiSettings {
+            val applied = of(settings, loaded)
+            return if (unlocked) applied else applied.copy(secureScreen = true)
+        }
+
         val STARTUP: SystemUiSettings = of(DeviceSettingsDefaults.ANDROID, loaded = false)
     }
 }

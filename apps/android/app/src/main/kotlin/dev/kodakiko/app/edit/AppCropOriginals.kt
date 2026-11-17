@@ -22,6 +22,7 @@ import dev.kodakiko.service.entries.EntriesService
 import dev.kodakiko.service.entries.MediaInput
 import dev.kodakiko.service.entries.MediaOrigin
 import dev.kodakiko.service.entries.toPixels
+import dev.kodakiko.service.lock.UnlockedWork
 import dev.kodakiko.ui.feature.edit.CropOriginal
 import dev.kodakiko.ui.feature.edit.CropOriginals
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,9 +36,12 @@ class AppCropOriginals(
     private val media: AccountMedia,
     private val entries: EntriesService,
     private val tempFiles: TempFiles,
+    private val unlockedWork: UnlockedWork,
     private val ioDispatcher: CoroutineDispatcher,
 ) : CropOriginals {
-    override suspend fun open(entryId: String, mediaId: String): CropOriginal? {
+    override suspend fun open(entryId: String, mediaId: String): CropOriginal? = unlockedWork.runUnlocked { openUnlocked(entryId, mediaId) }
+
+    private suspend fun openUnlocked(entryId: String, mediaId: String): CropOriginal? {
         val descriptor = entries.readMetadata(entryId).media.firstOrNull { it.mediaId == mediaId } ?: return null
         val handle = withContext(ioDispatcher) {
             media.openOriginal(entryId, mediaId)?.let { opened ->
@@ -79,7 +83,9 @@ class AppCropOriginals(
     ) : CropOriginal {
         private val released = AtomicBoolean(false)
 
-        override suspend fun crop(rect: CropRect): MediaInput {
+        override suspend fun crop(rect: CropRect): MediaInput = unlockedWork.runUnlocked { cropUnlocked(rect) }
+
+        private suspend fun cropUnlocked(rect: CropRect): MediaInput {
             val full = decode(entryId, descriptor, EditAdapterConstants.CROP_MAX_PX) ?: throw IOException(descriptor.mediaId)
             return withContext(ioDispatcher) {
                 val pixels = toPixels(rect, full.width, full.height)

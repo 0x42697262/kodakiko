@@ -50,7 +50,8 @@ class MainActivity : FragmentActivity() {
         graph.startup.start()
         setContent {
             KodakikoTheme {
-                SystemUi(settings = SystemUiSettings.STARTUP, darkTheme = isSystemInDarkTheme()) {
+                val systemUiSettings by graph.systemUiSettings.collectAsStateWithLifecycle()
+                SystemUi(settings = systemUiSettings, darkTheme = isSystemInDarkTheme()) {
                     Box(Modifier.testTag(TestTags.APP_ROOT).testTagsAsResourceIdRoot().fillMaxSize()) {
                         CompositionLocalProvider(
                             LocalMetroViewModelFactory provides graph.metroViewModelFactory,

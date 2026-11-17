@@ -15,6 +15,10 @@ sealed interface LegacyRead {
         override fun toString(): String = SecureText.REDACTED_VALUE
     }
 
+    class Bytes(val bytes: ByteArray) : LegacyRead {
+        override fun toString(): String = SecureText.REDACTED_BYTES
+    }
+
     data object Missing : LegacyRead
 
     data object NeedsAuthentication : LegacyRead
@@ -25,7 +29,15 @@ sealed interface LegacyRead {
 class LegacySecureStore(private val context: Context) {
     private val preferences: SharedPreferences get() = context.getSharedPreferences(LegacyConstants.PREFERENCES_FILE, Context.MODE_PRIVATE)
 
-    fun read(name: String): LegacyRead {
+    fun read(name: String): LegacyRead = read(name, asBytes = false)
+
+    fun readBytes(name: String): LegacyRead = read(name, asBytes = true)
+
+    fun readAuthenticated(name: String, authenticate: (Cipher) -> Cipher?): LegacyRead = readAuthenticated(name, authenticate, asBytes = false)
+
+    fun readAuthenticatedBytes(name: String, authenticate: (Cipher) -> Cipher?): LegacyRead = readAuthenticated(name, authenticate, asBytes = true)
+
+    private fun read(name: String, asBytes: Boolean): LegacyRead {
         val item = when (val parsed = item(name)) {
             is ParsedItem.Done -> return parsed.read
             is ParsedItem.Found -> parsed
@@ -40,15 +52,15 @@ class LegacySecureStore(private val context: Context) {
         } catch (failure: ProviderException) {
             return LegacyRead.Unreadable(SecureText.DECRYPTION_FAILED)
         }
-        return finish(cipher, item)
+        return finish(cipher, item, asBytes)
     }
 
-    fun readAuthenticated(name: String, authenticate: (Cipher) -> Cipher?): LegacyRead {
+    private fun readAuthenticated(name: String, authenticate: (Cipher) -> Cipher?, asBytes: Boolean): LegacyRead {
         val item = when (val parsed = item(name)) {
             is ParsedItem.Done -> return parsed.read
             is ParsedItem.Found -> parsed
         }
-        if (!item.requireAuthentication) return read(name)
+        if (!item.requireAuthentication) return read(name, asBytes)
         val key = keystoreOrNull { Keystore.existingKey(LegacyConstants.AUTHENTICATED_ALIAS) }
             ?: return LegacyRead.Unreadable(SecureText.NO_KEYSTORE_KEY)
         val cipher = try {
@@ -61,7 +73,7 @@ class LegacySecureStore(private val context: Context) {
             return LegacyRead.Unreadable(SecureText.DECRYPTION_FAILED)
         }
         val unlocked = authenticate(cipher) ?: return LegacyRead.NeedsAuthentication
-        return finish(unlocked, item)
+        return finish(unlocked, item, asBytes)
     }
 
     fun forgetAll() {
@@ -70,8 +82,9 @@ class LegacySecureStore(private val context: Context) {
         for (alias in LegacyConstants.ALL_ALIASES) Keystore.delete(alias)
     }
 
-    private fun finish(cipher: Cipher, item: ParsedItem.Found): LegacyRead {
+    private fun finish(cipher: Cipher, item: ParsedItem.Found, asBytes: Boolean): LegacyRead {
         val plaintext = keystoreOrNull { cipher.doFinal(item.ciphertext) } ?: return LegacyRead.Unreadable(SecureText.DECRYPTION_FAILED)
+        if (asBytes) return LegacyRead.Bytes(plaintext)
         return LegacyRead.Value(String(plaintext, Charsets.UTF_8))
     }
 

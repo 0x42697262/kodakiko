@@ -31,6 +31,8 @@ typealias MetadataOpener = suspend (EntryRow) -> EntryMetadataV1
 
 fun interface EntryKeySource {
     suspend fun entryKey(entryId: String): ByteArray
+
+    fun release(key: ByteArray) = Unit
 }
 
 fun interface EntriesChangedSource {

@@ -6,9 +6,11 @@ import dev.kodakiko.crypto.AdContext
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.crypto.bytesEqual
 import dev.kodakiko.data.db.EntryLocalState
+import dev.kodakiko.data.db.EntryRow
 import dev.kodakiko.domain.openEntryMetadata
 import dev.kodakiko.service.account.RowStorePort
 import dev.kodakiko.service.entries.EntryKeys
+import dev.kodakiko.service.entries.leaseEntryKey
 import dev.kodakiko.sync.mergeMetadata
 import dev.kodakiko.sync.metadataEquivalent
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,10 +51,19 @@ class DefaultConflictResolver(private val deps: ConflictResolverDeps) : Conflict
     }
 
     private suspend fun attempt(entryId: String, server: ServerEntryVersion): ResolveAttempt {
-        val sodium = deps.sodium
         val entry = withContext(deps.ioDispatcher) { deps.rowStore.transaction { tx -> tx.entries.get(entryId) } }
             ?: return ResolveAttempt.Resolved(ConflictOutcome.ADOPTED)
-        val entryKey = deps.entryKeys.entryKey(entryId)
+        val started = deps.entryKeys.generation()
+        val entryKey = deps.entryKeys.leaseEntryKey(entryId)
+        try {
+            return attemptWith(entryId, server, entry, entryKey, started)
+        } finally {
+            deps.entryKeys.release(entryKey)
+        }
+    }
+
+    private suspend fun attemptWith(entryId: String, server: ServerEntryVersion, entry: EntryRow, entryKey: ByteArray, started: Int): ResolveAttempt {
+        val sodium = deps.sodium
         val serverMetadata = openEntryMetadata(sodium, entryKey, entryId, server.metadataBlob)
         val localMetadata = openEntryMetadata(sodium, entryKey, entryId, entry.metadataBlob)
         val ancestor = entry.baseMetadataBlob?.let { openEntryMetadata(sodium, entryKey, entryId, it) } ?: serverMetadata
@@ -65,6 +76,7 @@ class DefaultConflictResolver(private val deps: ConflictResolverDeps) : Conflict
         }
         val stored = withContext(deps.ioDispatcher) {
             deps.rowStore.transaction { tx ->
+                deps.entryKeys.requireGeneration(started)
                 val current = tx.entries.get(entryId) ?: return@transaction true
                 if (!bytesEqual(current.metadataBlob, entry.metadataBlob) || current.baseRevision != entry.baseRevision) return@transaction false
                 tx.entries.put(

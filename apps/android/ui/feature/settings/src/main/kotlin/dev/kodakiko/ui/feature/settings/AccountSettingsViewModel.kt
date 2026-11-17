@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.URI
+import java.util.concurrent.atomic.AtomicInteger
 
 @Immutable
 data class AccountStorageUse(val usedBytes: Long, val quotaBytes: Long, val asOf: String?)
@@ -88,6 +89,7 @@ class AccountSettingsViewModel(private val deps: AccountSettingsDeps) : ViewMode
     private val profile = deps.profile
     private val screen = MutableStateFlow(Screen())
     private val channel = Channel<SettingsEvent>(Channel.BUFFERED)
+    private val locks = AtomicInteger(0)
 
     val highlightKey: String? = settings.highlight.take(Route.SettingsAccount)
 
@@ -101,7 +103,14 @@ class AccountSettingsViewModel(private val deps: AccountSettingsDeps) : ViewMode
         )
 
     init {
-        viewModelScope.launch { profile.unlocked.collect { unlocked -> if (!unlocked) dropWords() } }
+        viewModelScope.launch {
+            profile.unlocked.collect { unlocked ->
+                if (!unlocked) {
+                    locks.incrementAndGet()
+                    dropWords()
+                }
+            }
+        }
         viewModelScope.launch {
             if (!local()) {
                 val host = hostOf(attempt { profile.serverUrl() })
@@ -157,8 +166,13 @@ class AccountSettingsViewModel(private val deps: AccountSettingsDeps) : ViewMode
     private fun reveal() {
         val prompt = screen.value.recovery as? RecoverySheet.Prompt ?: return
         screen.update { it.copy(recovery = prompt.copy(wrong = false)) }
+        val started = locks.get()
         viewModelScope.launch {
             val words = attempt { deps.credentials.revealRecoveryWords(prompt.password) }
+            if (started != locks.get() || !profile.unlocked.value) {
+                dropWords()
+                return@launch
+            }
             screen.update { current ->
                 val open = current.recovery as? RecoverySheet.Prompt ?: return@update current
                 current.copy(recovery = if (words == null) open.copy(wrong = true) else RecoverySheet.Words(words))
@@ -167,7 +181,7 @@ class AccountSettingsViewModel(private val deps: AccountSettingsDeps) : ViewMode
     }
 
     private fun dropWords() {
-        screen.update { if (it.recovery is RecoverySheet.Words) it.copy(recovery = RecoverySheet.Prompt(password = "", wrong = false)) else it }
+        screen.update { if (it.recovery == null) it else it.copy(recovery = RecoverySheet.Prompt(password = "", wrong = false)) }
     }
 
     private fun stateOf(username: String, mode: AccountMode, user: UserDto?, sync: SyncStatus, current: Screen): AccountSettingsState {

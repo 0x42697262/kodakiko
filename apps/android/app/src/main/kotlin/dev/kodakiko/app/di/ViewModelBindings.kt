@@ -55,6 +55,7 @@ import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.map
 import java.time.ZoneId
 
 @BindingContainer
@@ -77,7 +78,8 @@ object ViewModelBindings {
     @Provides
     @IntoMap
     @ViewModelKey(RecoveryKeyViewModel::class)
-    fun recoveryKey(auth: AuthService, random: RandomSource): ViewModel = RecoveryKeyViewModel(auth = auth, random = random)
+    fun recoveryKey(auth: AuthService, random: RandomSource, accountState: Observable<AccountState>): ViewModel =
+        RecoveryKeyViewModel(auth = auth, random = random, unlocked = accountState.flow.map { it is AccountState.Unlocked })
 
     @Provides
     @IntoMap

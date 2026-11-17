@@ -54,6 +54,8 @@ class AccountMedia(private val deps: AccountMediaDeps) {
         val stopModeSwitch: () -> Unit,
     )
 
+    private class KnownFiles(val objectIds: Set<String>, val mediaIds: Set<String>)
+
     class OpenedReader(val reader: StreamFileReader, val handle: OriginalHandle)
 
     private val lock = Any()
@@ -97,6 +99,20 @@ class AccountMedia(private val deps: AccountMediaDeps) {
         val stopModeSwitch = thumbnails.subscribeModeSwitch { modeSwitchState.value = it }
         val loader = ImageLoaders.create(deps.context, thumbnails) { request -> openImage(database, files, originals, request) }
         Opened(database, files, thumbnails, originals, downloads, loader, stopModeSwitch).also { opened = it }
+    }
+
+    fun releaseOriginals() {
+        synchronized(lock) { opened?.originals?.releaseAll() }
+    }
+
+    fun sweepOrphans() {
+        val media = current() ?: return
+        val known = media.database.transaction { tx -> KnownFiles(tx.objects.all().mapTo(HashSet()) { it.id }, tx.media.all().mapTo(HashSet()) { it.id }) }
+        media.files.sweepOrphans(known.objectIds, MediaAdapterConstants.ORPHAN_AGE_MS, known.mediaIds)
+    }
+
+    fun enforceCache() {
+        current()?.originals?.enforceCap()
     }
 
     fun abortDownloads() {

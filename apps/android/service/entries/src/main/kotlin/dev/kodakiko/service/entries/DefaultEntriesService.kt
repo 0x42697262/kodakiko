@@ -49,7 +49,7 @@ private sealed interface Attempt<out T> {
     data object Stale : Attempt<Nothing>
 }
 
-private class Loaded(val row: EntryRow, val entryKey: ByteArray, val current: EntryMetadataV1)
+private class Loaded(val row: EntryRow, val entryKey: ByteArray, val current: EntryMetadataV1, val started: Int)
 
 private class MediaRows(val media: List<MediaRow>, val objects: List<ObjectRow>)
 
@@ -99,8 +99,7 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
         loadOwnedEntry(entryId, userId)
         if (items.isEmpty()) throw InvalidEditError(EntriesText.NO_MEDIA_TO_ADD)
         val limit = deps.config()?.maxMediaPerEntry ?: EntriesConstants.FALLBACK_MAX_MEDIA_PER_ENTRY
-        withRetries {
-            val loaded = loadForEdit(entryId, userId)
+        withLoadedRetries(entryId, userId) { loaded ->
             if (loaded.current.media.size + items.size > limit) throw InvalidEditError(EntriesText.tooManyMedia(limit))
             val now = deps.clock.nowIso()
             val next = applyEntryEdit(loaded.current, EntryEdit(addMedia = items.map { it.descriptor }), now)
@@ -120,8 +119,7 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
 
     override suspend fun removeMedia(entryId: String, mediaId: String) {
         val userId = requireUserId()
-        val objectIds = withRetries {
-            val loaded = loadForEdit(entryId, userId)
+        val objectIds = withLoadedRetries(entryId, userId) { loaded ->
             val now = deps.clock.nowIso()
             val next = applyEntryEdit(loaded.current, EntryEdit(removeMediaId = mediaId), now)
             val blob = sealMetadata(loaded.entryKey, entryId, next)
@@ -191,8 +189,7 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
 
     override suspend fun readMetadata(entryId: String): EntryMetadataV1 {
         val row = io { rowStore.transaction { tx -> tx.entries.get(entryId) } } ?: throw EntryNotFoundException()
-        val entryKey = deps.entryKeys.entryKey(entryId)
-        return openEntryMetadata(deps.sodium, entryKey, entryId, row.metadataBlob)
+        return deps.entryKeys.withEntryKey(entryId) { entryKey -> openEntryMetadata(deps.sodium, entryKey, entryId, row.metadataBlob) }
     }
 
     private suspend fun <T> io(work: () -> T): T = withContext(deps.ioDispatcher) { work() }
@@ -250,15 +247,19 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
         if (!queued) enqueue(tx, OutboxKind.UPDATE_ENTRY_META, entryOutboxPayload(entryId))
     }
 
-    private suspend fun loadForEdit(entryId: String, userId: String): Loaded {
-        val row = loadOwnedEntry(entryId, userId)
-        val entryKey = deps.entryKeys.entryKey(entryId)
-        return Loaded(row, entryKey, openEntryMetadata(deps.sodium, entryKey, entryId, row.metadataBlob))
-    }
+    private suspend fun <T> withLoadedRetries(entryId: String, userId: String, attempt: suspend (Loaded) -> Attempt<T>): T =
+        withRetries {
+            val started = deps.entryKeys.generation()
+            val row = loadOwnedEntry(entryId, userId)
+            deps.entryKeys.withEntryKey(entryId) { entryKey ->
+                attempt(Loaded(row, entryKey, openEntryMetadata(deps.sodium, entryKey, entryId, row.metadataBlob), started))
+            }
+        }
 
     private suspend fun <T> writeIfUnchanged(loaded: Loaded, write: (RowStoreTx, EntryRow) -> T): Attempt<T> =
         io {
             rowStore.transaction { tx ->
+                deps.entryKeys.requireGeneration(loaded.started)
                 val fresh = tx.entries.get(loaded.row.id) ?: throw EntryNotFoundException()
                 val unchanged = bytesEqual(fresh.metadataBlob, loaded.row.metadataBlob) && fresh.baseRevision == loaded.row.baseRevision
                 if (unchanged) Attempt.Done(write(tx, fresh)) else Attempt.Stale
@@ -274,12 +275,11 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
     }
 
     private suspend fun mutate(entryId: String, userId: String, build: (EntryMetadataV1) -> EntryEdit?): Mutation =
-        withRetries {
-            val loaded = loadForEdit(entryId, userId)
-            val edit = build(loaded.current) ?: return@withRetries Attempt.Done(Mutation.SKIPPED)
+        withLoadedRetries(entryId, userId) { loaded ->
+            val edit = build(loaded.current) ?: return@withLoadedRetries Attempt.Done(Mutation.SKIPPED)
             val now = deps.clock.nowIso()
             val next = applyEntryEdit(loaded.current, edit, now)
-            if (metadataEquivalent(loaded.current, next)) return@withRetries Attempt.Done(Mutation.UNCHANGED)
+            if (metadataEquivalent(loaded.current, next)) return@withLoadedRetries Attempt.Done(Mutation.UNCHANGED)
             val blob = sealMetadata(loaded.entryKey, entryId, next)
             writeIfUnchanged(loaded) { tx, fresh ->
                 tx.entries.put(metadataRowFor(fresh, blob, now))
@@ -344,18 +344,21 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
     }
 
     private suspend fun insertEntry(userId: String, input: CreateEntryInput, items: List<ImportedMedia>, beforeWrite: () -> Unit): String {
+        val started = deps.entryKeys.generation()
         val homeId = homeCollectionId(userId)
-        val collectionKey = deps.entryKeys.collectionKey(homeId)
-        beforeWrite()
+        val collectionKey = deps.entryKeys.leaseCollectionKey(homeId)
         val entryId = deps.randomId()
         val entryKey = deps.sodium.randomBytes(KEY_BYTES)
         try {
+            beforeWrite()
+            deps.entryKeys.requireGeneration(started)
             val now = deps.clock.nowIso()
             val metadataBlob = sealMetadata(entryKey, entryId, newEntryMetadata(input, items, now))
             val entryKeyWrap = wrapKey(deps.sodium, collectionKey, entryKey, AdContext.ENTRY_KEY_BY_COLLECTION, bindingOf(homeId, entryId))
             val rows = mediaRowsFor(entryId, entryKey, items, deps.clock.now())
             io {
                 rowStore.transaction { tx ->
+                    deps.entryKeys.requireGeneration(started)
                     tx.entries.put(newEntryRow(entryId, userId, metadataBlob, now))
                     tx.memberships.put(MembershipRow(homeId, entryId, entryKeyWrap, EntriesConstants.NOT_STARTED_SEQ))
                     rows.media.forEach(tx.media::put)
@@ -365,6 +368,7 @@ class DefaultEntriesService(private val deps: EntriesServiceDeps) : EntriesServi
             }
         } finally {
             wipe(entryKey)
+            deps.entryKeys.release(collectionKey)
         }
         return entryId
     }

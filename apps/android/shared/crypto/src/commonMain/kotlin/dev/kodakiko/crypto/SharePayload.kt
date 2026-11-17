@@ -3,6 +3,7 @@ package dev.kodakiko.crypto
 fun buildSharePayload(collectionId: String, collectionKey: ByteArray): ByteArray {
     if (!ID_PATTERN.matches(collectionId)) throw MalformedPayloadError(CryptoText.MALFORMED_PAYLOAD)
     if (collectionKey.size != KEY_BYTES) throw InvalidKeyLengthError(CryptoText.INVALID_KEY_LENGTH)
+    requireNonZeroKey(collectionKey)
     val idBytes = utf8Encode(collectionId)
     return concatBytes(byteArrayOf(FORMAT_VERSION_SHARE_PAYLOAD.toByte(), idBytes.size.toByte()), idBytes, collectionKey)
 }

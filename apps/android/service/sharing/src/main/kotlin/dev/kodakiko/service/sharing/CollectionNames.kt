@@ -7,6 +7,7 @@ import dev.kodakiko.crypto.AdContext
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.service.account.RowStorePort
 import dev.kodakiko.service.entries.EntryKeys
+import dev.kodakiko.service.entries.withCollectionKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -61,17 +62,18 @@ class DefaultCollectionNames(private val deps: CollectionNamesDeps) : Collection
             if (row == null) {
                 CollectionName.Unnamed
             } else {
-                val key = deps.entryKeys.collectionKey(collectionId)
-                val metadata = openPayload(
-                    deps.sodium,
-                    key,
-                    row.metadataBlob,
-                    ContractSchemas.collectionMetadataV1,
-                    COLLECTION_METADATA_SCHEMA_VERSION,
-                    emptyMap(),
-                    AdContext.COLLECTION_METADATA,
-                    collectionId,
-                )
+                val metadata = deps.entryKeys.withCollectionKey(collectionId) { key ->
+                    openPayload(
+                        deps.sodium,
+                        key,
+                        row.metadataBlob,
+                        ContractSchemas.collectionMetadataV1,
+                        COLLECTION_METADATA_SCHEMA_VERSION,
+                        emptyMap(),
+                        AdContext.COLLECTION_METADATA,
+                        collectionId,
+                    )
+                }
                 CollectionName.Named(metadata.name)
             }
         } catch (failure: CancellationException) {

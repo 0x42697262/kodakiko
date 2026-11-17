@@ -2,6 +2,7 @@ package dev.kodakiko.app
 
 import dev.kodakiko.app.di.ApplicationScope
 import dev.kodakiko.app.di.IoDispatcher
+import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
@@ -26,6 +27,7 @@ class AppStartup(
     private val accountState: Observable<AccountState>,
     private val lockControl: LockControl,
     private val adoption: LegacyAdoption,
+    private val tempFiles: TempFiles,
     @param:ApplicationScope private val scope: CoroutineScope,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
@@ -39,6 +41,7 @@ class AppStartup(
         started = true
         lockControl.bind()
         scope.launch {
+            withContext(ioDispatcher) { tempFiles.wipe() }
             val pending = try {
                 withContext(ioDispatcher) { adoption.pendingAccount() }
             } catch (cancelled: CancellationException) {

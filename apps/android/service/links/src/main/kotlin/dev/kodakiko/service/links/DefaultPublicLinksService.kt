@@ -37,6 +37,7 @@ import dev.kodakiko.data.net.SharingCalls
 import dev.kodakiko.data.net.SyncCalls
 import dev.kodakiko.js.jsTrim
 import dev.kodakiko.media.UnsupportedVideoError
+import dev.kodakiko.service.entries.AccountLockedException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -73,13 +74,17 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
 
     override suspend fun create(input: CreateLinkInput, onProgress: (CreateLinkProgress) -> Unit): CreateLinkResult {
         val account = requireAccount()
-        val metadata = validate(input)
+        val started = deps.entryKeys.generation()
+        val masterKey = account.masterKey.copyOf()
         val keys = deriveLinkKeys(sodium.randomBytes(LinksConstants.LINK_SECRET_BYTES))
         val collectionId = deps.randomId()
         val pendingObjects = mutableListOf<LinkObject>()
         var created = false
         try {
-            val keyByOwner = wrapKey(sodium, account.masterKey, keys.secret, AdContext.LINK_SECRET_BY_MASTER, collectionId)
+            requireUnlocked(started)
+            val metadata = lockedAsLinkInput { validate(input) }
+            val keyByOwner = wrapKey(sodium, masterKey, keys.secret, AdContext.LINK_SECRET_BY_MASTER, collectionId)
+            wipe(masterKey)
             val sealedName = sealPayload(
                 sodium,
                 keys.linkKey,
@@ -88,13 +93,14 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
                 AdContext.COLLECTION_METADATA,
                 collectionId,
             )
+            requireUnlocked(started)
             request(SharingCalls.create(CollectionCreateRequest(collectionId, CollectionKind.LINK, encodeBytes(keyByOwner), encodeBytes(sealedName))))
             created = true
             val skips = SkipCounts()
             for ((done, entryId) in input.entryIds.withIndex()) {
                 currentCoroutineContext().ensureActive()
                 onProgress(CreateLinkProgress(CreateLinkStep.PREPARING, done, input.entryIds.size, LinksConstants.NO_BYTES, LinksConstants.NO_BYTES))
-                pendingObjects += copyEntry(input, metadata[entryId], entryId, collectionId, keys.linkKey, skips)
+                pendingObjects += lockedAsLinkInput { copyEntry(input, metadata[entryId], entryId, collectionId, keys.linkKey, skips, started) }
             }
             if (pendingObjects.isEmpty()) throw LinkInputException(LinkInputReason.NOTHING)
             val bytesTotal = pendingObjects.sumOf { it.sizeBytes }
@@ -102,8 +108,10 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
                 onProgress(CreateLinkProgress(CreateLinkStep.UPLOADING, LinksConstants.FIRST_STEP, pendingObjects.size, bytesDone, bytesTotal))
             }
             uploading(LinksConstants.NO_BYTES)
+            requireUnlocked(started)
             uploadAll(LinkUploadDeps(deps.http, deps.uploader, files, deps.ioDispatcher), pendingObjects, uploading)
             onProgress(CreateLinkProgress(CreateLinkStep.REGISTERING, LinksConstants.FIRST_STEP, LinksConstants.REGISTERING_TOTAL, bytesTotal, bytesTotal))
+            requireUnlocked(started)
             val link = request(LinkCalls.create(collectionId, encodeBytes(keys.accessToken), input.expiry))
             return CreateLinkResult(
                 url = buildLinkUrl(deps.baseUrl(), link.linkId, keys.secret),
@@ -119,6 +127,7 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
             }
             throw failure
         } finally {
+            wipe(masterKey)
             keys.wipeAll()
         }
     }
@@ -166,6 +175,18 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
 
     private fun requireAccount(): AccountKeys = deps.account() ?: throw LinkInputException(LinkInputReason.LOCKED)
 
+    private fun requireUnlocked(started: Int) {
+        if (deps.account() == null) throw LinkInputException(LinkInputReason.LOCKED)
+        lockedAsLinkInput { deps.entryKeys.requireGeneration(started) }
+    }
+
+    private inline fun <T> lockedAsLinkInput(work: () -> T): T =
+        try {
+            work()
+        } catch (_: AccountLockedException) {
+            throw LinkInputException(LinkInputReason.LOCKED)
+        }
+
     private suspend fun <T> io(work: suspend () -> T): T = withContext(deps.ioDispatcher) { work() }
 
     private suspend fun <T> request(call: ApiCall<T>): T = io { deps.http.request(call) }
@@ -210,6 +231,7 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
         collectionId: String,
         linkKey: ByteArray,
         skips: SkipCounts,
+        started: Int,
     ): List<LinkObject> {
         val selected = meta?.media?.filter { it.mediaId in input.mediaIds }.orEmpty()
         if (meta == null || selected.isEmpty()) return emptyList()
@@ -228,6 +250,7 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
                 skips.entries += 1
                 return emptyList()
             }
+            requireUnlocked(started)
             registerCopy(input, meta, collectionId, linkKey, copies)
             return copies.flatMap { it.objects }
         } finally {
@@ -289,7 +312,12 @@ class DefaultPublicLinksService(private val deps: PublicLinksServiceDeps) : Publ
         deps.fetchObject(objects.original.id)
         deps.fetchObject(objects.thumbnail.id)
         val originalKey = deps.entryKeys.variantKey(entryId, source.mediaId, ObjectVariant.ORIGINAL)
-        val thumbnailKey = deps.entryKeys.variantKey(entryId, source.mediaId, ObjectVariant.THUMBNAIL)
+        val thumbnailKey = try {
+            deps.entryKeys.variantKey(entryId, source.mediaId, ObjectVariant.THUMBNAIL)
+        } catch (failure: Throwable) {
+            wipe(originalKey)
+            throw failure
+        }
         val mediaId = deps.randomId()
         val mediaKey = sodium.randomBytes(KEY_BYTES)
         val newOriginalKey = sodium.kdfDerive(KEY_BYTES, KdfSubkeyIds.MEDIA_ORIGINAL, KdfContext.MEDIA.value, mediaKey)

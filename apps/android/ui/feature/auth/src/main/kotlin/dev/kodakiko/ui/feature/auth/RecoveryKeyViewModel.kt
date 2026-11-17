@@ -9,6 +9,10 @@ import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.ui.core.format.BannerMessage
 import dev.kodakiko.ui.core.format.errorBanner
 import dev.kodakiko.ui.core.navigation.Route
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Immutable
@@ -25,12 +29,26 @@ data class RecoveryKeyState(
 class RecoveryKeyViewModel(
     private val auth: AuthService,
     private val random: RandomSource,
+    unlocked: Flow<Boolean> = flowOf(true),
 ) : FormViewModel<RecoveryKeyState>(RecoveryKeyState()) {
     init {
         viewModelScope.launch {
-            val words = attempt { auth.pendingRecoveryWords() }.getOrNull()
-            if (words == null) emit(AuthEvent.ReplaceAll(Route.Home)) else update { it.copy(words = words) }
+            unlocked.distinctUntilChanged().collectLatest { open -> if (open) load() else dropWords() }
         }
+    }
+
+    override fun onCleared() {
+        dropWords()
+        super.onCleared()
+    }
+
+    private suspend fun load() {
+        val words = attempt { auth.pendingRecoveryWords() }.getOrNull()
+        if (words == null) emit(AuthEvent.ReplaceAll(Route.Home)) else update { it.copy(words = words) }
+    }
+
+    private fun dropWords() {
+        update { it.copy(words = null, confirming = false, positions = emptyList(), typed = emptyList(), mismatch = false) }
     }
 
     fun onWrittenDown() {
@@ -55,7 +73,10 @@ class RecoveryKeyViewModel(
         update { it.copy(busy = true, error = null) }
         viewModelScope.launch {
             attempt { auth.confirmRecoveryKeySaved() }
-                .onSuccess { emit(AuthEvent.ReplaceAll(Route.Home)) }
+                .onSuccess {
+                    dropWords()
+                    emit(AuthEvent.ReplaceAll(Route.Home))
+                }
                 .onFailure { failure -> update { it.copy(error = errorBanner(failure)) } }
             update { it.copy(busy = false) }
         }

@@ -12,11 +12,17 @@ object PhoneCamera {
 
     fun videoIntent(context: Context, authority: String, output: File): Intent = captureIntent(MediaStore.ACTION_VIDEO_CAPTURE, context, authority, output)
 
+    fun revokeGrant(context: Context, authority: String, output: File) {
+        context.revokeUriPermission(FileProvider.getUriForFile(context, authority, output), GRANT_FLAGS)
+    }
+
     private fun captureIntent(action: String, context: Context, authority: String, output: File): Intent {
         val uri = FileProvider.getUriForFile(context, authority, output)
         return Intent(action)
             .putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            .addFlags(GRANT_FLAGS)
             .apply { clipData = ClipData.newRawUri(output.name, uri) }
     }
+
+    private const val GRANT_FLAGS = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 }

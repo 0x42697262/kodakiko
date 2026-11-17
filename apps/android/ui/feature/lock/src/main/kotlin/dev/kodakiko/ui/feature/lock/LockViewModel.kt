@@ -85,7 +85,7 @@ class LockViewModel(
         mutableState.update { it.copy(busy = true, error = null) }
         viewModelScope.launch {
             val result = attempt { auth.unlockWithDevice() }
-                .onSuccess { unlocked -> if (!unlocked) mutableState.update { it.copy(passwordShown = true) } }
+                .onSuccess { unlocked -> mutableState.update { if (unlocked) it.copy(password = "") else it.copy(passwordShown = true) } }
                 .onFailure { failure -> mutableState.update { it.copy(error = errorBanner(failure)) } }
             mutableState.update { it.copy(busy = false) }
             submitQueuedPassword(unlocked = result.getOrDefault(false))
@@ -107,7 +107,9 @@ class LockViewModel(
         passwordUnlocking = true
         mutableState.update { it.copy(busy = true, wrongPassword = false, error = null) }
         viewModelScope.launch {
-            attempt { auth.unlockWithPassword(password) }.onFailure { failure ->
+            attempt { auth.unlockWithPassword(password) }.onSuccess {
+                mutableState.update { it.copy(password = "") }
+            }.onFailure { failure ->
                 val wrong = failure is AuthError && failure.reason == AuthFailure.WRONG_PASSWORD
                 mutableState.update {
                     it.copy(password = "", wrongPassword = wrong, error = if (wrong) null else errorBanner(failure))
@@ -150,7 +152,7 @@ class LockViewModel(
     private suspend fun promptOnce() {
         mutableState.update { it.copy(busy = true) }
         val unlocked = attempt { auth.unlockWithDevice() }.getOrDefault(false)
-        mutableState.update { it.copy(busy = false, passwordShown = it.passwordShown || !unlocked) }
+        mutableState.update { it.copy(busy = false, passwordShown = it.passwordShown || !unlocked, password = if (unlocked) "" else it.password) }
         submitQueuedPassword(unlocked)
     }
 

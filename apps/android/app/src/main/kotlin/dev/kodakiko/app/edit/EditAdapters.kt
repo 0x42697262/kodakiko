@@ -11,6 +11,7 @@ import dev.kodakiko.platform.audio.VoiceRecorder
 import dev.kodakiko.platform.device.ClipboardImages
 import dev.kodakiko.service.entries.MediaInput
 import dev.kodakiko.service.entries.MediaOrigin
+import dev.kodakiko.service.lock.UnlockedWork
 import dev.kodakiko.service.shareout.ShareLauncher
 import dev.kodakiko.service.shareout.ShareOutService
 import dev.kodakiko.service.sharing.ShareTextOption
@@ -37,13 +38,20 @@ class AppEditImages(private val thumbnails: GalleryThumbnails) : EditImages {
     override suspend fun thumbnail(entryId: String, mediaId: String) = thumbnails.load(entryId, mediaId)
 }
 
-class AppEditClipboard(context: Context, private val tempFiles: TempFiles, private val ioDispatcher: CoroutineDispatcher) : EditClipboard {
+class AppEditClipboard(
+    context: Context,
+    private val tempFiles: TempFiles,
+    private val unlockedWork: UnlockedWork,
+    private val ioDispatcher: CoroutineDispatcher,
+) : EditClipboard {
     private val images by lazy { ClipboardImages(context) }
 
     override suspend fun hasImage(): Boolean = withContext(ioDispatcher) { images.hasImage() }
 
-    override suspend fun readImage(): MediaInput? = withContext(ioDispatcher) {
-        val bytes = images.readJpeg() ?: return@withContext null
+    override suspend fun readImage(): MediaInput? = unlockedWork.runUnlocked { withContext(ioDispatcher) { readOnIo() } }
+
+    private fun readOnIo(): MediaInput? {
+        val bytes = images.readJpeg() ?: return null
         val temp = tempFiles.create(TempPurpose.IMPORT, EditAdapterConstants.JPEG_EXTENSION)
         try {
             temp.use { it.write(bytes) }
@@ -53,7 +61,7 @@ class AppEditClipboard(context: Context, private val tempFiles: TempFiles, priva
         } finally {
             bytes.fill(0)
         }
-        MediaInput(MediaOrigin.PASTE, temp.file, null, null)
+        return MediaInput(MediaOrigin.PASTE, temp.file, null, null)
     }
 }
 

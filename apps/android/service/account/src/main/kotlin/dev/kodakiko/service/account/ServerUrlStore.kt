@@ -76,7 +76,11 @@ class HttpServerUrlStore(
     private val allowLocalHttp: Boolean,
     private val ioDispatcher: CoroutineDispatcher,
 ) : ServerUrlStore {
-    private val client: OkHttpClient = okHttpClient.newBuilder().callTimeout(timeoutMs, TimeUnit.MILLISECONDS).build()
+    private val client: OkHttpClient = okHttpClient.newBuilder()
+        .callTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+        .followRedirects(false)
+        .followSslRedirects(false)
+        .build()
 
     override suspend fun current(): String? = withContext(ioDispatcher) { globalStore.serverUrl() }
 

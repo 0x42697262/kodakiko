@@ -16,6 +16,12 @@ class LegacySecureStoreSecrets(private val store: LegacySecureStore, private val
         return store.readAuthenticated(name) { cipher -> gate.authenticateCipher(DeviceGateReason.LEGACY_UNLOCK, cipher) }
     }
 
+    override fun readBytes(name: String): LegacyRead {
+        val read = store.readBytes(name)
+        if (read != LegacyRead.NeedsAuthentication || gate == null) return read
+        return store.readAuthenticatedBytes(name) { cipher -> gate.authenticateCipher(DeviceGateReason.LEGACY_UNLOCK, cipher) }
+    }
+
     override fun forgetAll() {
         store.forgetAll()
     }

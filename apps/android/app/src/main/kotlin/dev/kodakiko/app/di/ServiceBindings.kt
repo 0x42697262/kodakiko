@@ -50,6 +50,7 @@ import dev.kodakiko.service.lock.LockReason
 import dev.kodakiko.service.lock.LockService
 import dev.kodakiko.service.lock.LockServiceDeps
 import dev.kodakiko.service.lock.SystemWallClock
+import dev.kodakiko.service.lock.UnlockedWork
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.feature.auth.DeletionDueAt
 import dev.kodakiko.ui.feature.edit.EditFlushes
@@ -91,10 +92,15 @@ object ServiceBindings {
 
     @Provides
     @SingleIn(AppScope::class)
+    fun unlockedWork(@IoDispatcher ioDispatcher: CoroutineDispatcher): UnlockedWork = UnlockedWork(ioDispatcher)
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun lockService(
         accountState: Observable<AccountState>,
         steps: LifecycleSteps,
         flushes: EditFlushes,
+        unlockedWork: UnlockedWork,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): LockService = EditFlushingLockService(
@@ -106,6 +112,7 @@ object ServiceBindings {
                 log = { event, step -> Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step) },
                 scope = scope,
                 ioDispatcher = ioDispatcher,
+                unlockedWork = unlockedWork,
             ),
         ),
         flushes = flushes,

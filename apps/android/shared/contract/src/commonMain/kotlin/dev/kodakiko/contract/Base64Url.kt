@@ -43,6 +43,38 @@ fun decodeBytes(text: String): ByteArray {
     return output.toByteArray()
 }
 
+fun decodeAsciiBytes(ascii: ByteArray): ByteArray? {
+    if (ascii.isEmpty() || ascii.size % CHARS_PER_GROUP == ORPHAN_CHARS_LENGTH_REMAINDER) return null
+    val values = IntArray(ascii.size)
+    for (index in ascii.indices) {
+        val value = CHAR_VALUES[(ascii[index].toInt() and BYTE_MASK).toChar()]
+        if (value == null) {
+            values.fill(0)
+            return null
+        }
+        values[index] = value
+    }
+    val groups = (ascii.size + CHARS_PER_GROUP - 1) / CHARS_PER_GROUP
+    val lastGroupChars = ascii.size - (groups - 1) * CHARS_PER_GROUP
+    val output = ByteArray((groups - 1) * BYTES_PER_GROUP + bytesInGroup(lastGroupChars))
+    var written = 0
+    for (group in 0 until groups) {
+        var bits = 0
+        for (position in 0 until CHARS_PER_GROUP) {
+            val index = group * CHARS_PER_GROUP + position
+            bits = (bits shl BITS_PER_CHAR) or (if (index < values.size) values[index] else 0)
+        }
+        val count = if (group == groups - 1) bytesInGroup(lastGroupChars) else BYTES_PER_GROUP
+        for (index in 0 until count) {
+            val shift = BITS_PER_BYTE * (BYTES_PER_GROUP - 1 - index)
+            output[written] = ((bits shr shift) and BYTE_MASK).toByte()
+            written += 1
+        }
+    }
+    values.fill(0)
+    return output
+}
+
 private fun bytesInGroup(characters: Int): Int =
     when (characters) {
         CHARS_PER_GROUP -> BYTES_PER_GROUP

@@ -3,8 +3,7 @@ package dev.kodakiko.data.migration
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
-import dev.kodakiko.contract.decodeBytes
-import dev.kodakiko.contract.isDecodableBase64Url
+import dev.kodakiko.contract.decodeAsciiBytes
 import dev.kodakiko.crypto.AdContext
 import dev.kodakiko.crypto.CryptoException
 import dev.kodakiko.crypto.KEY_BYTES
@@ -26,6 +25,12 @@ import java.time.format.DateTimeFormatter
 
 interface LegacySecrets {
     fun read(name: String): LegacyRead
+
+    fun readBytes(name: String): LegacyRead =
+        when (val read = read(name)) {
+            is LegacyRead.Value -> LegacyRead.Bytes(read.text.encodeToByteArray())
+            else -> read
+        }
 
     fun forgetAll()
 }
@@ -109,7 +114,7 @@ class LegacyAdoption(
     private fun valueOf(name: String): String? = (legacy.read(name) as? LegacyRead.Value)?.text
 
     private fun carryMasterKey(database: KodakikoDatabase, hash: String): Boolean {
-        val masterKey = valueOf(LegacyKeys.MASTER_KEY_PREFIX + hash)?.let(::decodeMasterKey) ?: return false
+        val masterKey = (legacy.readBytes(LegacyKeys.MASTER_KEY_PREFIX + hash) as? LegacyRead.Bytes)?.let(::decodeMasterKey) ?: return false
         try {
             return opensJournal(database, masterKey) && target.saveMasterKey(hash, masterKey)
         } finally {
@@ -117,9 +122,12 @@ class LegacyAdoption(
         }
     }
 
-    private fun decodeMasterKey(text: String): ByteArray? {
-        if (!isDecodableBase64Url(text)) return null
-        val bytes = decodeBytes(text)
+    private fun decodeMasterKey(read: LegacyRead.Bytes): ByteArray? {
+        val bytes = try {
+            decodeAsciiBytes(read.bytes)
+        } finally {
+            wipe(read.bytes)
+        } ?: return null
         if (bytes.size == KEY_BYTES) return bytes
         wipe(bytes)
         return null

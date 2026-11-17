@@ -6,6 +6,7 @@ import dev.kodakiko.crypto.KEY_BYTES
 import dev.kodakiko.crypto.KdfContext
 import dev.kodakiko.crypto.KdfSubkeyIds
 import dev.kodakiko.crypto.Sodium
+import dev.kodakiko.crypto.isAllZero
 import dev.kodakiko.crypto.openSharePayload
 import dev.kodakiko.crypto.unwrapKey
 import dev.kodakiko.crypto.wipe
@@ -28,9 +29,45 @@ interface EntryKeys {
 
     suspend fun variantKey(entryId: String, mediaId: String, variant: ObjectVariant): ByteArray
 
+    fun lease(started: Int, key: ByteArray): ByteArray
+
+    fun release(key: ByteArray)
+
+    fun generation(): Int
+
+    fun requireGeneration(started: Int)
+
     fun forget(entryId: String, mediaId: String? = null)
 
     fun clear()
+}
+
+suspend fun EntryKeys.leaseCollectionKey(collectionId: String): ByteArray {
+    val started = generation()
+    return lease(started, collectionKey(collectionId))
+}
+
+suspend fun EntryKeys.leaseEntryKey(entryId: String): ByteArray {
+    val started = generation()
+    return lease(started, entryKey(entryId))
+}
+
+suspend inline fun <T> EntryKeys.withCollectionKey(collectionId: String, block: (ByteArray) -> T): T {
+    val key = leaseCollectionKey(collectionId)
+    try {
+        return block(key)
+    } finally {
+        release(key)
+    }
+}
+
+suspend inline fun <T> EntryKeys.withEntryKey(entryId: String, block: (ByteArray) -> T): T {
+    val key = leaseEntryKey(entryId)
+    try {
+        return block(key)
+    } finally {
+        release(key)
+    }
 }
 
 class EntryKeysDeps(
@@ -93,8 +130,32 @@ class EntryKeyCache(private val deps: EntryKeysDeps) : EntryKeys {
     }
 
     override suspend fun variantKey(entryId: String, mediaId: String, variant: ObjectVariant): ByteArray {
-        val parent = mediaKey(entryId, mediaId)
-        return deps.sodium.kdfDerive(KEY_BYTES, subkeyIdOf(variant), KdfContext.MEDIA.value, parent)
+        val started = generation
+        val parent = lease(started, mediaKey(entryId, mediaId))
+        try {
+            val derived = deps.sodium.kdfDerive(KEY_BYTES, subkeyIdOf(variant), KdfContext.MEDIA.value, parent)
+            requireGeneration(started, derived)
+            return derived
+        } finally {
+            release(parent)
+        }
+    }
+
+    override fun lease(started: Int, key: ByteArray): ByteArray =
+        synchronized(lock) {
+            requireGeneration(started, null)
+            if (isAllZero(key)) throw EntryKeyUnavailableException()
+            key.copyOf()
+        }
+
+    override fun release(key: ByteArray) {
+        wipe(key)
+    }
+
+    override fun generation(): Int = generation
+
+    override fun requireGeneration(started: Int) {
+        requireGeneration(started, null)
     }
 
     override fun forget(entryId: String, mediaId: String?) {
@@ -150,7 +211,7 @@ class EntryKeyCache(private val deps: EntryKeysDeps) : EntryKeys {
     private fun requireAccount(): AccountKeys = deps.account() ?: throw AccountLockedException()
 
     private fun requireGeneration(started: Int, key: ByteArray?) {
-        if (started == generation) return
+        if (started == generation && deps.account() != null) return
         key?.let(::wipe)
         throw AccountLockedException()
     }

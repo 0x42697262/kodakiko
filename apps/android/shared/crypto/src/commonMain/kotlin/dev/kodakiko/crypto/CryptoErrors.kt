@@ -14,6 +14,8 @@ class TruncatedObjectError(message: String = CryptoText.TRUNCATED_OBJECT) : Cryp
 
 class InvalidChunkError(message: String = CryptoText.INVALID_CHUNK) : CryptoException(message)
 
+class ZeroKeyError(message: String = CryptoText.ZERO_KEY) : CryptoException(message)
+
 class InvalidKeyLengthError(message: String = CryptoText.INVALID_KEY_LENGTH) : CryptoException(message)
 
 class InvalidRecoveryWordsError(val wordPosition: Int?, message: String) : CryptoException(message)

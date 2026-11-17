@@ -12,6 +12,7 @@ import dev.kodakiko.service.entries.EntryKeys
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LifecycleStep
 import dev.kodakiko.service.lock.LockStepNames
+import dev.kodakiko.service.shareout.ShareOutService
 import dev.kodakiko.service.sharing.CollectionNames
 import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.service.sync.Uploader
@@ -34,6 +35,7 @@ class LifecycleSteps(
     private val tray: CaptureTray,
     private val collectionNames: CollectionNames,
     private val accounts: AccountService,
+    private val shareOut: Lazy<ShareOutService>,
 ) {
     val lock: List<LifecycleStep> = listOf(
         LifecycleStep(LockStepNames.CANCEL_EXPORT) { sync.exporter.cancel() },
@@ -43,7 +45,7 @@ class LifecycleSteps(
         },
         LifecycleStep(LockStepNames.CANCEL_DOWNLOADS) { media.abortDownloads() },
         LifecycleStep(LockStepNames.RELEASE_VIDEO) { videos.releaseAll() },
-        unwired(LockStepNames.RELEASE_ORIGINALS),
+        LifecycleStep(LockStepNames.RELEASE_ORIGINALS) { media.releaseOriginals() },
         LifecycleStep(LockStepNames.CLEAR_THUMBNAILS) { media.clear() },
         LifecycleStep(LockStepNames.CLEAR_TRAY) { tray.clear(true) },
         LifecycleStep(LockStepNames.WIPE_TEMP) { tempFiles.wipe() },
@@ -59,15 +61,22 @@ class LifecycleSteps(
             recorder.abandon()
             flushes.flushAll()
         },
-        LifecycleStep(LockStepNames.WIPE_KEYS) { entryKeys.clear() },
+        LifecycleStep(LockStepNames.WIPE_KEYS) {
+            entryKeys.clear()
+            tempFiles.wipe()
+            shareOut.value.releaseAll()
+        },
     )
 
     val unlock: List<LifecycleStep> = listOf(
-        LifecycleStep(LockStepNames.LOAD_SETTINGS) { settings.load() },
+        LifecycleStep(LockStepNames.LOAD_SETTINGS) {
+            tempFiles.wipe()
+            settings.load()
+        },
         LifecycleStep(LockStepNames.START_SYNC) { if (!sync.localOnly()) sync.service.start() },
         LifecycleStep(LockStepNames.BUILD_INDEX) { index.build() },
-        unwired(LockStepNames.SWEEP_ORPHANS),
-        unwired(LockStepNames.ENFORCE_CACHE),
+        LifecycleStep(LockStepNames.SWEEP_ORPHANS) { media.sweepOrphans() },
+        LifecycleStep(LockStepNames.ENFORCE_CACHE) { media.enforceCache() },
         LifecycleStep(LockStepNames.REFRESH_ME) { if (!sync.localOnly()) accounts.refreshMe() },
     )
 
@@ -83,6 +92,4 @@ class LifecycleSteps(
 
         val exporter: ExportService get() = export.value
     }
-
-    private fun unwired(name: String): LifecycleStep = LifecycleStep(name) {}
 }

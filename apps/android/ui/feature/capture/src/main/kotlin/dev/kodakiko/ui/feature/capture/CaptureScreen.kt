@@ -35,6 +35,10 @@ private class PendingPicker {
     var request: PickerRequest<PickVisualMediaRequest, *>? = null
 }
 
+private class PendingCamera {
+    var request: CaptureEvent.OpenPhoneCamera? = null
+}
+
 private typealias ResultLauncher = ManagedActivityResultLauncher<Intent, ActivityResult>
 
 @Composable
@@ -55,7 +59,9 @@ fun CaptureScreen(viewModel: CaptureViewModel) {
         val parsed = request?.contract?.parseResult(result.resultCode, result.data)
         viewModel.onAction(CaptureAction.Picked(pickedUris(parsed)))
     }
+    val pendingCamera = remember { PendingCamera() }
     val phoneCamera = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        revokeCameraGrant(context, pendingCamera)
         viewModel.onAction(CaptureAction.PhoneCameraResult(ok = result.resultCode == Activity.RESULT_OK))
     }
     LaunchedEffect(viewModel, navigator) {
@@ -66,7 +72,7 @@ fun CaptureScreen(viewModel: CaptureViewModel) {
                 is CaptureEvent.Replace -> navigator.replace(event.route)
                 CaptureEvent.OpenAppSettings -> openAppSettings(context)
                 is CaptureEvent.PickFromGallery -> pickFromGallery(context, picker, pending, event.remainingSlots, viewModel)
-                is CaptureEvent.OpenPhoneCamera -> openPhoneCamera(context, phoneCamera, event, viewModel)
+                is CaptureEvent.OpenPhoneCamera -> openPhoneCamera(context, phoneCamera, pendingCamera, event, viewModel)
             }
         }
     }
@@ -102,7 +108,18 @@ private fun pickFromGallery(context: Context, launcher: ResultLauncher, pending:
     }
 }
 
-private fun openPhoneCamera(context: Context, launcher: ResultLauncher, event: CaptureEvent.OpenPhoneCamera, viewModel: CaptureViewModel) {
+private fun revokeCameraGrant(context: Context, pending: PendingCamera) {
+    val request = pending.request ?: return
+    pending.request = null
+    try {
+        PhoneCamera.revokeGrant(context, request.authority, request.output)
+    } catch (_: IllegalArgumentException) {
+    }
+}
+
+private fun openPhoneCamera(context: Context, launcher: ResultLauncher, pending: PendingCamera, event: CaptureEvent.OpenPhoneCamera, viewModel: CaptureViewModel) {
+    revokeCameraGrant(context, pending)
+    pending.request = event
     try {
         val intent = if (event.video) {
             PhoneCamera.videoIntent(context, event.authority, event.output)
@@ -111,8 +128,10 @@ private fun openPhoneCamera(context: Context, launcher: ResultLauncher, event: C
         }
         launcher.launch(intent)
     } catch (_: ActivityNotFoundException) {
+        revokeCameraGrant(context, pending)
         viewModel.onAction(CaptureAction.PhoneCameraResult(ok = false))
     } catch (_: IllegalArgumentException) {
+        revokeCameraGrant(context, pending)
         viewModel.onAction(CaptureAction.PhoneCameraResult(ok = false))
     }
 }

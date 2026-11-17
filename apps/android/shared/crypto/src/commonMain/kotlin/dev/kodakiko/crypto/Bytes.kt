@@ -60,6 +60,18 @@ fun writeUint56BigEndian(target: ByteArray, offset: Int, value: Long) {
     }
 }
 
+fun isAllZero(bytes: ByteArray): Boolean {
+    var accumulated = 0
+    for (byte in bytes) {
+        accumulated = accumulated or byte.toInt()
+    }
+    return accumulated == 0
+}
+
+fun requireNonZeroKey(key: ByteArray) {
+    if (isAllZero(key)) throw ZeroKeyError(CryptoText.ZERO_KEY)
+}
+
 fun wipe(bytes: ByteArray) {
     bytes.fill(0)
 }

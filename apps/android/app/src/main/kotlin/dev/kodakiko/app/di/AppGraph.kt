@@ -5,6 +5,7 @@ import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppStartup
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.HomeSettings
+import dev.kodakiko.app.system.SystemUiSettings
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.data.secure.DeviceGate
 import dev.kodakiko.service.account.AccountState
@@ -13,6 +14,7 @@ import dev.kodakiko.service.account.Observable
 import dev.kodakiko.service.entries.CaptureTray
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LockControl
+import dev.kodakiko.service.lock.UnlockedWork
 import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.ui.feature.calendar.CalendarThumbnails
 import dev.kodakiko.ui.feature.capture.CameraPreview
@@ -66,6 +68,10 @@ interface AppGraph : ViewModelGraph {
     val homeSettings: StateFlow<HomeSettings>
 
     val syncService: SyncService
+
+    val unlockedWork: UnlockedWork
+
+    val systemUiSettings: StateFlow<SystemUiSettings>
 
     @DependencyGraph.Factory
     fun interface Factory {

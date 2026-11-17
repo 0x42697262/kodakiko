@@ -14,6 +14,8 @@ import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.edit.SystemEditClock
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
+import dev.kodakiko.app.gallery.UnlockedImportPipeline
+import dev.kodakiko.app.gallery.UnlockedShareOut
 import dev.kodakiko.app.viewer.AppViewerVoice
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
@@ -34,6 +36,7 @@ import dev.kodakiko.service.entries.ImportPipeline
 import dev.kodakiko.service.entries.ImportPipelineDeps
 import dev.kodakiko.service.entries.SystemEntriesClock
 import dev.kodakiko.service.index.IndexService
+import dev.kodakiko.service.lock.UnlockedWork
 import dev.kodakiko.service.shareout.DefaultShareOutService
 import dev.kodakiko.service.shareout.FileStoreOriginalFiles
 import dev.kodakiko.service.shareout.ShareOutDeps
@@ -98,22 +101,26 @@ object EditBindings {
         files: EntryFiles,
         config: ConfigService,
         settings: AppDeviceSettings,
+        unlockedWork: UnlockedWork,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): ImportPipeline = DefaultImportPipeline(
-        ImportPipelineDeps(
-            sodium = sodium,
-            files = files,
-            toolkit = FileMediaToolkit(DevicePlatformMedia(context)),
-            clock = SystemEntriesClock,
-            config = config::current,
-            deviceSettings = object : DeviceSettingsSource {
-                override fun loaded(): Boolean = settings.loaded()
+    ): ImportPipeline = UnlockedImportPipeline(
+        DefaultImportPipeline(
+            ImportPipelineDeps(
+                sodium = sodium,
+                files = files,
+                toolkit = FileMediaToolkit(DevicePlatformMedia(context)),
+                clock = SystemEntriesClock,
+                config = config::current,
+                deviceSettings = object : DeviceSettingsSource {
+                    override fun loaded(): Boolean = settings.loaded()
 
-                override fun get() = settings.settings.value
-            },
-            randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
-            ioDispatcher = ioDispatcher,
+                    override fun get() = settings.settings.value
+                },
+                randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
+                ioDispatcher = ioDispatcher,
+            ),
         ),
+        unlockedWork,
     )
 
     @Provides
@@ -126,29 +133,33 @@ object EditBindings {
         entryKeys: EntryKeys,
         entries: EntriesService,
         holder: ActivityHolder,
+        unlockedWork: UnlockedWork,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): ShareOutService = DefaultShareOutService(
-        ShareOutDeps(
-            context = context,
-            authority = context.packageName + EditAdapterConstants.FILE_PROVIDER_SUFFIX,
-            sodium = sodium,
-            rowStore = rowStore,
-            files = FileStoreOriginalFiles { fileStore.require() },
-            entryKeys = entryKeys,
-            readMetadata = entries::readMetadata,
-            fetchOriginal = {},
-            launcher = ActivityShareLauncher(context, holder),
-            now = System::currentTimeMillis,
-            scope = scope,
-            ioDispatcher = ioDispatcher,
+    ): ShareOutService = UnlockedShareOut(
+        DefaultShareOutService(
+            ShareOutDeps(
+                context = context,
+                authority = context.packageName + EditAdapterConstants.FILE_PROVIDER_SUFFIX,
+                sodium = sodium,
+                rowStore = rowStore,
+                files = FileStoreOriginalFiles { fileStore.require() },
+                entryKeys = entryKeys,
+                readMetadata = entries::readMetadata,
+                fetchOriginal = {},
+                launcher = ActivityShareLauncher(context, holder),
+                now = System::currentTimeMillis,
+                scope = scope,
+                ioDispatcher = ioDispatcher,
+            ),
         ),
+        unlockedWork,
     )
 
     @Provides
     @SingleIn(AppScope::class)
-    fun editClipboard(context: Context, tempFiles: TempFiles, @IoDispatcher ioDispatcher: CoroutineDispatcher): AppEditClipboard =
-        AppEditClipboard(context, tempFiles, ioDispatcher)
+    fun editClipboard(context: Context, tempFiles: TempFiles, unlockedWork: UnlockedWork, @IoDispatcher ioDispatcher: CoroutineDispatcher): AppEditClipboard =
+        AppEditClipboard(context, tempFiles, unlockedWork, ioDispatcher)
 
     @Provides
     @SingleIn(AppScope::class)
@@ -170,8 +181,9 @@ object EditBindings {
         media: AccountMedia,
         entries: EntriesService,
         tempFiles: TempFiles,
+        unlockedWork: UnlockedWork,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): CropOriginals = AppCropOriginals(context, media, entries, tempFiles, ioDispatcher)
+    ): CropOriginals = AppCropOriginals(context, media, entries, tempFiles, unlockedWork, ioDispatcher)
 
     @Provides
     fun editDepsFactory(

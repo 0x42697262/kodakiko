@@ -69,6 +69,7 @@ private fun requireChunkSizeExponent(chunkSizeExponent: Int) {
 
 private fun requireVariantKeyLength(variantKey: ByteArray) {
     if (variantKey.size != KEY_BYTES) throw InvalidKeyLengthError(CryptoText.INVALID_KEY_LENGTH)
+    requireNonZeroKey(variantKey)
 }
 
 private fun chunkSizeOf(chunkSizeExponent: Int): Int = 1 shl chunkSizeExponent
@@ -140,6 +141,7 @@ private fun chunkPlaintextSize(layout: StreamLayout, index: Long): Long = if (in
 }
 
 fun createStreamEncryptor(sodium: Sodium, variantKey: ByteArray, plaintextSize: Long): StreamEncryptor {
+    requireVariantKeyLength(variantKey)
     val privateHeader = createStreamHeader(sodium)
     val objectLayout = streamLayout(plaintextSize, parseStreamHeader(privateHeader).chunkSizeExponent)
     return object : StreamEncryptor {
@@ -163,6 +165,7 @@ fun createStreamEncryptor(sodium: Sodium, variantKey: ByteArray, plaintextSize: 
 }
 
 fun createStreamDecryptor(sodium: Sodium, variantKey: ByteArray, header: ByteArray, expectedPlaintextSize: Long): StreamDecryptor {
+    requireVariantKeyLength(variantKey)
     val privateHeader = header.copyOf()
     val objectLayout = streamLayout(expectedPlaintextSize, parseStreamHeader(privateHeader).chunkSizeExponent)
     return object : StreamDecryptor {

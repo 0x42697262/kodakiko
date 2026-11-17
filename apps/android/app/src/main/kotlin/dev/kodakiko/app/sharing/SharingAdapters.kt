@@ -1,9 +1,12 @@
 package dev.kodakiko.app.sharing
 
 import android.content.ClipData
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.os.PersistableBundle
 import dev.kodakiko.data.db.CollectionKind
 import dev.kodakiko.data.files.FileStore
 import dev.kodakiko.data.net.ApiCall
@@ -59,8 +62,13 @@ class RowStoreJournalRows(private val rowStore: RowStorePort, private val ioDisp
 
 class AppLinkSharing(private val context: Context, private val launcher: ShareLauncher) : LinkSharing {
     override fun copy(text: String) {
-        context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText(SharingAdapterConstants.CLIP_LABEL, text))
+        val clip = ClipData.newPlainText(SharingAdapterConstants.CLIP_LABEL, text)
+        clip.description.extras = PersistableBundle().apply { putBoolean(sensitiveExtra(), true) }
+        context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(clip)
     }
+
+    private fun sensitiveExtra(): String =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ClipDescription.EXTRA_IS_SENSITIVE else SharingAdapterConstants.LEGACY_IS_SENSITIVE
 
     override fun share(text: String) {
         val send = Intent(Intent.ACTION_SEND).setType(SharingAdapterConstants.TEXT_MIME).putExtra(Intent.EXTRA_TEXT, text)

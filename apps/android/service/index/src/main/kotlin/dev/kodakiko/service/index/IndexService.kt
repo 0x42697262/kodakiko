@@ -79,7 +79,14 @@ class DefaultIndexService(private val deps: IndexServiceDeps) : IndexService {
     private var generation = 0
     private var timer: Job? = null
 
-    private val open: MetadataOpener = { row -> openEntryMetadata(deps.sodium, deps.entryKeys.entryKey(row.id), row.id, row.metadataBlob) }
+    private val open: MetadataOpener = { row ->
+        val key = deps.entryKeys.entryKey(row.id)
+        try {
+            openEntryMetadata(deps.sodium, key, row.id, row.metadataBlob)
+        } finally {
+            deps.entryKeys.release(key)
+        }
+    }
 
     override val version: StateFlow<IndexVersion> = versionState.asStateFlow()
 

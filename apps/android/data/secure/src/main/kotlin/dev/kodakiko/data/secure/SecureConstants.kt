@@ -66,6 +66,7 @@ internal object SecureText {
     const val NOT_JSON = "The legacy item is not JSON."
     const val BAD_ENCODING = "The legacy item has an invalid Base64 field."
     const val REDACTED_VALUE = "Value(<redacted>)"
+    const val REDACTED_BYTES = "Bytes(<redacted>)"
     const val UNKNOWN_SCHEME = "The legacy item uses an unsupported encryption scheme."
     const val NO_KEYSTORE_KEY = "The Keystore key of the legacy item is missing."
     const val SHORT_TAG = "The legacy item has a too short authentication tag."

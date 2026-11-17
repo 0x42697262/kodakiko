@@ -46,6 +46,7 @@ class LockServiceDeps(
     val log: (event: String, step: String) -> Unit,
     val scope: CoroutineScope,
     val ioDispatcher: CoroutineDispatcher,
+    val unlockedWork: UnlockedWork = UnlockedWork(ioDispatcher),
 )
 
 class DefaultLockService(private val deps: LockServiceDeps) : LockService {
@@ -96,7 +97,10 @@ class DefaultLockService(private val deps: LockServiceDeps) : LockService {
         }
         val job = deps.scope.launch(deps.ioDispatcher, start = CoroutineStart.ATOMIC) {
             try {
-                withContext(NonCancellable) { runSteps(deps.lockSteps, LockLogEvents.STEP_FAILED) }
+                withContext(NonCancellable) {
+                    deps.unlockedWork.cancelAndJoin()
+                    runSteps(deps.lockSteps, LockLogEvents.STEP_FAILED)
+                }
             } finally {
                 locking.set(false)
             }

@@ -20,11 +20,22 @@ class OriginalCache(
 ) {
     private val openCounts = HashMap<String, Int>()
     private val sweepLock = Any()
+    private var generation = 0
 
     fun retain(objectId: String): () -> Unit {
-        synchronized(openCounts) { openCounts[objectId] = (openCounts[objectId] ?: 0) + 1 }
+        val retained = synchronized(openCounts) {
+            openCounts[objectId] = (openCounts[objectId] ?: 0) + 1
+            generation
+        }
         val released = AtomicBoolean(false)
-        return { if (released.compareAndSet(false, true)) release(objectId) }
+        return { if (released.compareAndSet(false, true)) release(objectId, retained) }
+    }
+
+    fun releaseAll() {
+        synchronized(openCounts) {
+            generation += 1
+            openCounts.clear()
+        }
     }
 
     fun originalObjectId(mediaId: String): String? = originalRow(mediaId)?.id
@@ -110,8 +121,9 @@ class OriginalCache(
         for (entryId in pinnedEntryIds()) downloadEntry(entryId)
     }
 
-    private fun release(objectId: String) {
+    private fun release(objectId: String, retained: Int) {
         synchronized(openCounts) {
+            if (retained != generation) return
             val remaining = (openCounts[objectId] ?: 1) - 1
             if (remaining <= 0) openCounts.remove(objectId) else openCounts[objectId] = remaining
         }
