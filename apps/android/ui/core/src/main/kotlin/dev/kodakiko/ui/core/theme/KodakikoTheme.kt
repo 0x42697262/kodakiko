@@ -6,6 +6,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import dev.kodakiko.data.db.AppTheme
 import dev.kodakiko.data.db.DeviceSettingsDefaults
@@ -28,7 +29,8 @@ fun KodakikoTheme(
     MaterialTheme(
         colorScheme = remember(context, isDark, pureBlack, dynamicColor, preset) {
             if (dynamicColor && isDynamicColorAvailable()) {
-                KodakikoColorScheme.getColorScheme(context = context, isDark = isDark, isPureBlack = pureBlack, isDynamic = true)
+                val dynamic = KodakikoColorScheme.getColorScheme(context = context, isDark = isDark, isPureBlack = false, isDynamic = true)
+                if (isDark && pureBlack) dynamic.copy(background = Color.Black, onBackground = Color.White, surface = Color.Black, onSurface = Color.White) else dynamic
             } else {
                 ThemePresets.colorScheme(preset, isDark, pureBlack)
             }

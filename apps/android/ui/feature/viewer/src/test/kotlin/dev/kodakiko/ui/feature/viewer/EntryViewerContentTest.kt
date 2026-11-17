@@ -438,7 +438,7 @@ class EntryViewerContentTest {
     }
 
     @Test
-    fun anInlineVideoPlaysMutedWithASpeakerButton() {
+    fun anInlineVideoPlaysMutedWithASpeakerButtonAndHidesThePlayButton() {
         val surfaces = FakeVideoSurfaces()
         val video = FakePreparedVideo("m2")
         show(ViewerStates.full.copy(page = 1, video = InlineVideoUi(position = 1, mediaId = "m2", video = video, muted = true)), surfaces = surfaces)
@@ -448,7 +448,7 @@ class EntryViewerContentTest {
         mute.assert(hasContentDescription("Turn the sound on"))
         mute.performClick()
         assertEquals(listOf<ViewerAction>(ViewerAction.ToggleMute), taps())
-        assertTrue(compose.exists(TestTags.Viewer.PLAY))
+        assertFalse(compose.exists(TestTags.Viewer.PLAY))
     }
 
     @Test
