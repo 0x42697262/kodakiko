@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.ui.core.navigation.LocalRouteNavigator
+import dev.kodakiko.ui.core.navigation.Route
 import dev.kodakiko.ui.core.navigation.RouteNavigator
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
@@ -55,6 +56,6 @@ private fun handle(event: GalleryEvent, navigator: RouteNavigator) {
     when (event) {
         is GalleryEvent.Open -> navigator.push(event.route)
         GalleryEvent.Back -> navigator.pop()
-        is GalleryEvent.Share -> Unit
+        is GalleryEvent.Share -> navigator.push(Route.ShareSheet(event.entryIds, inKodakiko = true))
     }
 }

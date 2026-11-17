@@ -38,6 +38,9 @@ import dev.kodakiko.service.index.IndexBuildReport
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.index.IndexStatus
 import dev.kodakiko.service.index.IndexVersion
+import dev.kodakiko.service.shareout.ShareOutResult
+import dev.kodakiko.service.shareout.ShareOutService
+import dev.kodakiko.service.shareout.SharePickItem
 import dev.kodakiko.service.sharing.AddEntriesResult
 import dev.kodakiko.service.sharing.CollectionName
 import dev.kodakiko.service.sharing.CollectionNames
@@ -49,9 +52,6 @@ import dev.kodakiko.service.sharing.SharingErrorReason
 import dev.kodakiko.service.sharing.SharingException
 import dev.kodakiko.service.sharing.SharingService
 import dev.kodakiko.service.sharing.shareSelection
-import dev.kodakiko.service.shareout.ShareOutResult
-import dev.kodakiko.service.shareout.ShareOutService
-import dev.kodakiko.service.shareout.SharePickItem
 import dev.kodakiko.ui.core.theme.KodakikoTheme
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers

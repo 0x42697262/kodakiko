@@ -342,6 +342,8 @@ object TestTags {
 
     object Links {
         const val CANCEL = "links.cancel"
+        const val COPIED = "links.copied"
+        const val COPY = "links.copy"
         const val COPY_ROW = "links.copyRow"
         const val CREATE = "links.create"
         const val CREATE_SCREEN = "links.createScreen"
@@ -363,6 +365,7 @@ object TestTags {
         const val SELECT_ALL = "links.selectAll"
         const val SELECT_NONE = "links.selectNone"
         const val SHARE = "links.share"
+        const val SHARE_ROW = "links.shareRow"
         const val TITLE = "links.title"
         const val URL = "links.url"
         const val WARNING = "links.warning"
@@ -609,6 +612,9 @@ object TestTags {
         const val SEND = "share.send"
         const val STOP_CONFIRM = "share.stopConfirm"
         const val TEXT = "share.text"
+        const val TEXT_CAPTIONS = "share.text.captions"
+        const val TEXT_CAPTIONS_AND_NOTE = "share.text.captionsAndNote"
+        const val TEXT_NONE = "share.text.none"
         const val TOO_BIG = "share.tooBig"
         const val USERNAME = "share.username"
     }
@@ -646,6 +652,8 @@ object TestTags {
         const val GROUP = "sheet.group"
         const val SORT = "sheet.sort"
         const val TAB = "sheet.tab"
+        const val TAB_APPS = "sheet.tab.apps"
+        const val TAB_KODAKIKO = "sheet.tab.kodakiko"
     }
 
     object SignIn {

@@ -70,6 +70,8 @@ tasks.register("verify") {
         ":ui:feature:edit:testDebugUnitTest",
         ":ui:feature:capture:testDebugUnitTest",
         ":ui:feature:tags:testDebugUnitTest",
+        ":ui:feature:sharing:testDebugUnitTest",
+        ":ui:feature:links:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",

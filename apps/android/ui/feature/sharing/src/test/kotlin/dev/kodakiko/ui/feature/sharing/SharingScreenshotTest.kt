@@ -6,12 +6,12 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import dev.kodakiko.data.db.AppTheme
 import dev.kodakiko.data.db.CollectionRole
+import dev.kodakiko.service.shareout.SharePickItem
 import dev.kodakiko.service.sharing.AddEntriesResult
 import dev.kodakiko.service.sharing.CollectionName
 import dev.kodakiko.service.sharing.ShareItem
 import dev.kodakiko.service.sharing.ShareTextOption
 import dev.kodakiko.service.sharing.shareSelection
-import dev.kodakiko.service.shareout.SharePickItem
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

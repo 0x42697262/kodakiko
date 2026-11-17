@@ -10,6 +10,7 @@ import dev.kodakiko.service.entries.EntryKeys
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LifecycleStep
 import dev.kodakiko.service.lock.LockStepNames
+import dev.kodakiko.service.sharing.CollectionNames
 import dev.kodakiko.ui.core.notice.GalleryNotice
 import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.gallery.GalleryFilterStore
@@ -26,6 +27,7 @@ class LifecycleSteps(
     private val flushes: EditFlushes,
     private val recorder: AppEditRecorder,
     private val tray: CaptureTray,
+    private val collectionNames: CollectionNames,
 ) {
     val lock: List<LifecycleStep> = listOf(
         unwired(LockStepNames.CANCEL_EXPORT),
@@ -42,7 +44,7 @@ class LifecycleSteps(
             notices.value = null
             settings.unload()
         },
-        unwired(LockStepNames.CLEAR_COLLECTION_NAMES),
+        LifecycleStep(LockStepNames.CLEAR_COLLECTION_NAMES) { collectionNames.clear() },
         unwired(LockStepNames.CLEAR_ACCOUNT),
         LifecycleStep(EditAdapterConstants.FLUSH_EDITS) {
             recorder.abandon()

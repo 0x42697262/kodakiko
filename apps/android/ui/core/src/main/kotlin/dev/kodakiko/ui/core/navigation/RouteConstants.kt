@@ -29,6 +29,8 @@ object RoutePaths {
     const val TAGS = "tags"
     const val COLLECTIONS = "collections"
     const val SHARE = "share"
+    const val APPS = "apps"
+    const val LIST_SEPARATOR = ","
     const val LINKS = "links"
     const val STATISTICS = "statistics"
     const val SETTINGS = "settings"

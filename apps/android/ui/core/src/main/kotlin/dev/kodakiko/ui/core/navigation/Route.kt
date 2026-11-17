@@ -125,6 +125,18 @@ sealed interface Route : Serializable {
         override val path: String get() = of(RoutePaths.LINKS, RoutePaths.NEW)
     }
 
+    data class ShareSheet(val entryIds: List<String>, val inKodakiko: Boolean) : Route {
+        override val path: String
+            get() {
+                val segments = buildList {
+                    add(RoutePaths.SHARE)
+                    if (entryIds.isNotEmpty()) add(entryIds.joinToString(RoutePaths.LIST_SEPARATOR))
+                    if (!inKodakiko) add(RoutePaths.APPS)
+                }
+                return of(*segments.toTypedArray())
+            }
+    }
+
     data object Statistics : Route {
         override val path: String get() = of(RoutePaths.STATISTICS)
     }
@@ -229,6 +241,7 @@ sealed interface Route : Serializable {
             Trash,
             Capture(),
             Tags,
+            ShareSheet(emptyList(), true),
             Statistics,
             Settings,
         )
@@ -280,6 +293,7 @@ sealed interface Route : Serializable {
             RoutePaths.ENTRY -> if (second == RoutePaths.NEW) EntryNew else Entry(second)
             RoutePaths.COLLECTIONS -> Collection(second)
             RoutePaths.LINKS -> if (second == RoutePaths.NEW) LinkNew(emptyList()) else null
+            RoutePaths.SHARE -> if (second == RoutePaths.APPS) ShareSheet(emptyList(), false) else ShareSheet(entryIdsOf(second), true)
             RoutePaths.SETTINGS -> bySettingsSegment[second]
             else -> null
         }
@@ -296,7 +310,10 @@ sealed interface Route : Serializable {
             first == RoutePaths.ENTRY && third == RoutePaths.EDIT -> EntryEdit(second)
             first == RoutePaths.PLAY -> Play(second, third)
             first == RoutePaths.COLLECTIONS && third == RoutePaths.SHARE -> CollectionShare(second)
+            first == RoutePaths.SHARE && third == RoutePaths.APPS -> ShareSheet(entryIdsOf(second), false)
             else -> null
         }
+
+        private fun entryIdsOf(segment: String): List<String> = segment.split(RoutePaths.LIST_SEPARATOR)
     }
 }

@@ -80,7 +80,7 @@ private fun handle(event: ViewerEvent, navigator: RouteNavigator, context: Conte
         ViewerEvent.Back -> navigator.pop()
         ViewerEvent.Leave -> if (!navigator.pop()) navigator.replaceAll(Route.Gallery)
         is ViewerEvent.OpenUri -> openUri(context, event.uri)
-        is ViewerEvent.Share -> Unit
+        is ViewerEvent.Share -> navigator.push(Route.ShareSheet(event.entryIds, event.inKodakiko))
     }
 }
 

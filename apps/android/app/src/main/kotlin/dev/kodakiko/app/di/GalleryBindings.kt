@@ -42,6 +42,7 @@ import dev.kodakiko.service.index.EntryKeySource
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.index.IndexServiceDeps
 import dev.kodakiko.service.lock.LockControl
+import dev.kodakiko.service.sharing.CollectionNames
 import dev.kodakiko.ui.core.notice.GalleryNotice
 import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.gallery.GalleryDeps
@@ -179,7 +180,8 @@ object GalleryBindings {
         flushes: EditFlushes,
         recorder: AppEditRecorder,
         tray: CaptureTray,
-    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray)
+        collectionNames: CollectionNames,
+    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames)
 
     @Provides
     @SingleIn(AppScope::class)

@@ -31,6 +31,8 @@ import dev.kodakiko.ui.feature.calendar.LocalCalendarThumbnails
 import dev.kodakiko.ui.feature.capture.LocalCameraPreview
 import dev.kodakiko.ui.feature.edit.LocalEditImages
 import dev.kodakiko.ui.feature.gallery.LocalGalleryThumbnails
+import dev.kodakiko.ui.feature.links.LocalLinkThumbnails
+import dev.kodakiko.ui.feature.sharing.LocalSharingThumbnails
 import dev.kodakiko.ui.feature.viewer.LocalViewerImages
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.kodakiko.ui.core.TestTags as CoreTestTags
@@ -59,6 +61,8 @@ class MainActivity : FragmentActivity() {
                             LocalViewerImages provides graph.viewerImages,
                             LocalEditImages provides graph.editImages,
                             LocalCameraPreview provides graph.cameraPreview,
+                            LocalSharingThumbnails provides graph.sharingThumbnails,
+                            LocalLinkThumbnails provides graph.linkThumbnails,
                         ) {
                             AppContent(graph)
                         }

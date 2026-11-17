@@ -19,7 +19,13 @@ import dev.kodakiko.ui.feature.edit.EntryNewScreen
 import dev.kodakiko.ui.feature.gallery.DayScreen
 import dev.kodakiko.ui.feature.gallery.GalleryScreen
 import dev.kodakiko.ui.feature.gallery.TrashScreen
+import dev.kodakiko.ui.feature.links.LinkCreateScreen
+import dev.kodakiko.ui.feature.links.LinksListScreen
 import dev.kodakiko.ui.feature.lock.LockScreen
+import dev.kodakiko.ui.feature.sharing.CollectionScreen
+import dev.kodakiko.ui.feature.sharing.ShareSheetScreen
+import dev.kodakiko.ui.feature.sharing.ShareWithScreen
+import dev.kodakiko.ui.feature.sharing.SharedScreen
 import dev.kodakiko.ui.feature.tags.TagsScreen
 import dev.kodakiko.ui.feature.viewer.EntryDetailsScreen
 import dev.kodakiko.ui.feature.viewer.EntryViewerScreen
@@ -48,6 +54,12 @@ enum class AppScreen {
     ENTRY_CROP,
     CAPTURE,
     TAGS,
+    SHARED,
+    COLLECTION,
+    COLLECTION_SHARE,
+    SHARE_SHEET,
+    LINK_NEW,
+    SETTINGS_LINKS,
     PLACEHOLDER,
 }
 
@@ -75,6 +87,12 @@ object AppScreens {
         is Route.EntryCrop -> AppScreen.ENTRY_CROP
         is Route.Capture -> AppScreen.CAPTURE
         Route.Tags -> AppScreen.TAGS
+        Route.Shared -> AppScreen.SHARED
+        is Route.Collection -> AppScreen.COLLECTION
+        is Route.CollectionShare -> AppScreen.COLLECTION_SHARE
+        is Route.ShareSheet -> AppScreen.SHARE_SHEET
+        is Route.LinkNew -> AppScreen.LINK_NEW
+        Route.SettingsLinks -> AppScreen.SETTINGS_LINKS
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -103,6 +121,12 @@ object AppScreens {
             AppScreen.ENTRY_CROP -> (route as Route.EntryCrop).let { CropScreen(it.entryId, it.mediaId) }
             AppScreen.CAPTURE -> (route as Route.Capture).let { CaptureScreen(it.entryId, it.mode) }
             AppScreen.TAGS -> TagsScreen()
+            AppScreen.SHARED -> SharedScreen()
+            AppScreen.COLLECTION -> CollectionScreen((route as Route.Collection).collectionId)
+            AppScreen.COLLECTION_SHARE -> ShareWithScreen((route as Route.CollectionShare).collectionId)
+            AppScreen.SHARE_SHEET -> (route as Route.ShareSheet).let { ShareSheetScreen(it.entryIds, it.inKodakiko) }
+            AppScreen.LINK_NEW -> LinkCreateScreen((route as Route.LinkNew).entryIds)
+            AppScreen.SETTINGS_LINKS -> LinksListScreen()
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

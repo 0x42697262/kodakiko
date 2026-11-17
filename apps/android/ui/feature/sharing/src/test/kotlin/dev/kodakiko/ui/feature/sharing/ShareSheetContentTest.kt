@@ -17,13 +17,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextReplacement
+import dev.kodakiko.service.shareout.SharePickItem
 import dev.kodakiko.service.sharing.AddEntriesResult
 import dev.kodakiko.service.sharing.CollectionName
 import dev.kodakiko.service.sharing.ShareItem
 import dev.kodakiko.service.sharing.ShareSelection
 import dev.kodakiko.service.sharing.ShareTextOption
 import dev.kodakiko.service.sharing.shareSelection
-import dev.kodakiko.service.shareout.SharePickItem
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import org.junit.Assert.assertEquals

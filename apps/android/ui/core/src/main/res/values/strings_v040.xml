@@ -5,4 +5,13 @@
     <string name="lock_unreadable">Your journal could not be opened.</string>
     <string name="placeholder_coming_soon">This screen is coming soon.</string>
     <string name="gallery_select_inverse">Select inverse</string>
+    <string name="links_copy">Copy</string>
+    <string name="links_copied">Copied.</string>
+    <string name="links_copy_link">Copy Link</string>
+    <plurals name="links_in_days">
+        <item quantity="one">in %1$s day</item>
+        <item quantity="other">in %1$s days</item>
+    </plurals>
+    <string name="links_in_hours">in %1$s h</string>
+    <string name="links_row_detail">%1$s · %2$s</string>
 </resources>

@@ -93,7 +93,7 @@ private fun handle(event: EditEvent, navigator: RouteNavigator, context: Context
         is EditEvent.Open -> navigator.push(event.route)
         is EditEvent.Replace -> navigator.replace(event.route)
         is EditEvent.OpenUri -> openUri(context, event.uri)
-        is EditEvent.Share -> Unit
+        is EditEvent.Share -> navigator.push(Route.ShareSheet(event.entryIds, event.inKodakiko))
     }
 }
 
