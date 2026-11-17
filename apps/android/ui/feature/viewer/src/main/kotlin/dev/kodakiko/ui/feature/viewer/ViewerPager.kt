@@ -335,9 +335,11 @@ private fun VideoPage(entryId: String, page: ViewerPage, position: Int, inline: 
                 }
             }
         }
-        Button(onClick = { onAction(ViewerAction.OpenPlayer(page.mediaId)) }, modifier = Modifier.testTag(TestTags.Viewer.PLAY)) {
-            Icon(imageVector = ViewerIcons.Play, contentDescription = null)
-            Text(text = stringResource(R.string.viewer_play), modifier = Modifier.padding(start = ViewerDimens.SMALL_SPACING))
+        if (inline == null) {
+            Button(onClick = { onAction(ViewerAction.OpenPlayer(page.mediaId)) }, modifier = Modifier.testTag(TestTags.Viewer.PLAY)) {
+                Icon(imageVector = ViewerIcons.Play, contentDescription = null)
+                Text(text = stringResource(R.string.viewer_play), modifier = Modifier.padding(start = ViewerDimens.SMALL_SPACING))
+            }
         }
     }
 }
