@@ -499,6 +499,7 @@ object TestTags {
         const val CONFIRM_TRASH = "settings.confirmTrash"
         const val CURRENT_PASSWORD = "settings.currentPassword"
         const val DATE_FORMAT = "settings.dateFormat"
+        const val DEAD_ITEM = "settings.deadItem"
         const val DELETE_CONFIRM = "settings.deleteConfirm"
         const val DELETE_PASSWORD = "settings.deletePassword"
         const val DELETE_SCREEN = "settings.deleteScreen"

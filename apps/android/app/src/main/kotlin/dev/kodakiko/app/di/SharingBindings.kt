@@ -5,14 +5,14 @@ import androidx.lifecycle.ViewModel
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.edit.ActivityShareLauncher
+import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppGalleryAccount
 import dev.kodakiko.app.gallery.EntriesChangedBus
-import dev.kodakiko.app.gallery.UnwiredGallerySync
 import dev.kodakiko.app.sharing.AppLinkSharing
 import dev.kodakiko.app.sharing.InProcessUploader
 import dev.kodakiko.app.sharing.RowStoreJournalRows
 import dev.kodakiko.app.sharing.ServerSyncHttp
-import dev.kodakiko.app.sharing.UnwiredSharingSync
+import dev.kodakiko.app.sync.AppSyncState
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.net.HttpClient
@@ -42,6 +42,7 @@ import dev.kodakiko.service.sharing.SharingAccount
 import dev.kodakiko.service.sharing.SharingService
 import dev.kodakiko.service.sharing.SharingServiceDeps
 import dev.kodakiko.service.sync.SyncHttp
+import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.service.sync.SystemSyncClock
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.feature.gallery.GalleryThumbnails
@@ -70,6 +71,7 @@ import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 
@@ -96,6 +98,8 @@ object SharingBindings {
         accountMode: Observable<AccountMode>,
         config: ConfigService,
         bus: EntriesChangedBus,
+        sync: SyncService,
+        @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): SharingService = DefaultSharingService(
         SharingServiceDeps(
@@ -108,7 +112,10 @@ object SharingBindings {
             sharingEnabled = { accountMode.value == AccountMode.SERVER && config.current()?.sharingEnabled == true },
             randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
             clock = SystemSyncClock,
-            afterChange = bus::emit,
+            afterChange = { entryIds ->
+                bus.emit(entryIds)
+                scope.launch { attempt { sync.syncNow() } }
+            },
             ioDispatcher = ioDispatcher,
         ),
     )
@@ -134,6 +141,8 @@ object SharingBindings {
         shareOut: ShareOutService,
         config: ConfigService,
         account: AppGalleryAccount,
+        sync: SyncService,
+        syncState: AppSyncState,
     ): SharingDeps = SharingDeps(
         sharing = sharing,
         names = names,
@@ -142,8 +151,8 @@ object SharingBindings {
         shareOut = shareOut,
         config = config,
         accountMode = account.mode,
-        syncedAt = UnwiredSharingSync.syncedAt,
-        syncNow = UnwiredGallerySync::syncNow,
+        syncedAt = syncState.syncedAt,
+        syncNow = { sync.syncNow() },
     )
 
     @Provides
@@ -167,6 +176,7 @@ object SharingBindings {
         fileStore: DiskFileStore,
         uploader: InProcessUploader,
         globalStore: GlobalStorePort,
+        media: AccountMedia,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): PublicLinksService = DefaultPublicLinksService(
         PublicLinksServiceDeps(
@@ -177,7 +187,7 @@ object SharingBindings {
             entryKeys = entryKeys,
             rowStore = rowStore,
             files = FileStoreLinkFiles(fileStore::require),
-            fetchObject = {},
+            fetchObject = { objectId -> withContext(ioDispatcher) { media.fetchObject(objectId) } },
             stripper = DefaultLinkStripper(AndroidPhotoReencoder()),
             uploader = uploader,
             baseUrl = { withContext(ioDispatcher) { globalStore.serverUrl().orEmpty() } },

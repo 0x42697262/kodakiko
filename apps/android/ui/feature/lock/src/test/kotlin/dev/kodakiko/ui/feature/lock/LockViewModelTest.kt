@@ -24,6 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import kotlin.coroutines.CoroutineContext
 
 @RunWith(RobolectricTestRunner::class)
 class LockViewModelTest {
@@ -275,6 +276,34 @@ class LockViewModelTest {
         vm.onPasswordChange(GOOD_PASSWORD)
         vm.onUnlockWithPassword()
         assertEquals(listOf<Any?>(GOOD_PASSWORD), auth.args("unlockWithPassword"))
+    }
+
+    @Test
+    fun aPasswordSubmittedWhileTheAdoptionIsBusyIsKeptAndUnlocksOnceTheAdoptionEnds() = runTest {
+        Fixture.install()
+        val queued = ArrayDeque<Runnable>()
+        val io = object : CoroutineDispatcher() {
+            override fun dispatch(context: CoroutineContext, block: Runnable) {
+                queued.addLast(block)
+            }
+        }
+        val (vm, screen) = open(adoption = Fixture.adoption(Fixture.legacy(), FakeTarget()), io = io)
+        queued.removeFirst().run()
+        assertTrue(screen.value.busy)
+        vm.onUnlockWithPassword()
+        assertTrue(screen.value.passwordShown)
+        vm.onPasswordChange(GOOD_PASSWORD)
+        vm.onUnlockWithPassword()
+        vm.onUnlockWithPassword()
+        assertEquals(0, auth.count("unlockWithPassword"))
+        while (queued.isNotEmpty()) queued.removeFirst().run()
+        advanceUntilIdle()
+        assertEquals(1, auth.count("restore"))
+        assertEquals(1, auth.count("unlockWithPassword"))
+        assertEquals(listOf<Any?>(GOOD_PASSWORD), auth.args("unlockWithPassword"))
+        assertFalse(screen.value.busy)
+        assertFalse(screen.value.wrongPassword)
+        assertNull(screen.value.error)
     }
 
     @Test

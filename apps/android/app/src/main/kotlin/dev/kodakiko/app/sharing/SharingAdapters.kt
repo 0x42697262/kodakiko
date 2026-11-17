@@ -38,10 +38,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 
-object UnwiredSharingSync {
-    val syncedAt: StateFlow<Long?> = MutableStateFlow<Long?>(null).asStateFlow()
-}
-
 class LocalAccountException : IllegalStateException(SharingAdapterConstants.LOCAL_ACCOUNT)
 
 class ServerSyncHttp(http: HttpClient, private val accountMode: Observable<AccountMode>) : SyncHttp {

@@ -4,6 +4,7 @@ import android.app.Application
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppStartup
 import dev.kodakiko.app.navigation.AppNavigator
+import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.data.secure.DeviceGate
 import dev.kodakiko.service.account.AccountState
@@ -12,6 +13,7 @@ import dev.kodakiko.service.account.Observable
 import dev.kodakiko.service.entries.CaptureTray
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LockControl
+import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.ui.feature.calendar.CalendarThumbnails
 import dev.kodakiko.ui.feature.capture.CameraPreview
 import dev.kodakiko.ui.feature.edit.EditImages
@@ -23,8 +25,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
+import kotlinx.coroutines.flow.StateFlow
 
-@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, GalleryBindings::class, ViewerBindings::class, EditBindings::class, CaptureBindings::class, SharingBindings::class, ViewModelBindings::class])
+@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, GalleryBindings::class, ViewerBindings::class, EditBindings::class, CaptureBindings::class, SharingBindings::class, SyncBindings::class, SettingsBindings::class, ViewModelBindings::class])
 interface AppGraph : ViewModelGraph {
     val authService: AuthService
 
@@ -59,6 +62,10 @@ interface AppGraph : ViewModelGraph {
     val sharingThumbnails: SharingThumbnails
 
     val linkThumbnails: LinkThumbnails
+
+    val homeSettings: StateFlow<HomeSettings>
+
+    val syncService: SyncService
 
     @DependencyGraph.Factory
     fun interface Factory {

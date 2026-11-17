@@ -16,4 +16,5 @@ object NavigationConstants {
     const val TRANSITION_LABEL = "transition"
     const val TAB_CONTENT_LABEL = "tabContent"
     const val STATE_SUBSCRIPTION_MS = 5_000L
+    const val PREPARE_HOME_TIMEOUT_MS = 5_000L
 }

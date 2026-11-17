@@ -59,6 +59,8 @@ class LockViewModel(
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(LockState())
     private val channel = Channel<LockEvent>(Channel.BUFFERED)
+    private var submitQueued = false
+    private var passwordUnlocking = false
 
     val state: StateFlow<LockState> = mutableState.asStateFlow()
 
@@ -82,10 +84,11 @@ class LockViewModel(
         if (current.unreadable || current.busy) return
         mutableState.update { it.copy(busy = true, error = null) }
         viewModelScope.launch {
-            attempt { auth.unlockWithDevice() }
+            val result = attempt { auth.unlockWithDevice() }
                 .onSuccess { unlocked -> if (!unlocked) mutableState.update { it.copy(passwordShown = true) } }
                 .onFailure { failure -> mutableState.update { it.copy(error = errorBanner(failure)) } }
             mutableState.update { it.copy(busy = false) }
+            submitQueuedPassword(unlocked = result.getOrDefault(false))
         }
     }
 
@@ -96,8 +99,12 @@ class LockViewModel(
             mutableState.update { it.copy(passwordShown = true) }
             return
         }
-        if (current.busy) return
+        if (current.busy) {
+            if (!passwordUnlocking) submitQueued = true
+            return
+        }
         val password = current.password
+        passwordUnlocking = true
         mutableState.update { it.copy(busy = true, wrongPassword = false, error = null) }
         viewModelScope.launch {
             attempt { auth.unlockWithPassword(password) }.onFailure { failure ->
@@ -106,6 +113,8 @@ class LockViewModel(
                     it.copy(password = "", wrongPassword = wrong, error = if (wrong) null else errorBanner(failure))
                 }
             }
+            passwordUnlocking = false
+            submitQueued = false
             mutableState.update { it.copy(busy = false) }
         }
     }
@@ -142,17 +151,28 @@ class LockViewModel(
         mutableState.update { it.copy(busy = true) }
         val unlocked = attempt { auth.unlockWithDevice() }.getOrDefault(false)
         mutableState.update { it.copy(busy = false, passwordShown = it.passwordShown || !unlocked) }
+        submitQueuedPassword(unlocked)
     }
 
     private suspend fun adopt(account: ActiveAccount) {
         mutableState.update { it.copy(username = account.username, busy = true) }
         val result = attempt { withContext(ioDispatcher) { adoption.run() } }.getOrNull()
         if (result == null || result.status in UNREADABLE) {
+            submitQueued = false
             mutableState.update { it.copy(busy = false, unreadable = true, passwordShown = false) }
             return
         }
         attempt { auth.restore() }
         mutableState.update { it.copy(busy = false, passwordShown = result.needsPassword, updatedNotice = result.needsPassword) }
+        submitQueuedPassword(unlocked = !result.needsPassword)
+    }
+
+    private fun submitQueuedPassword(unlocked: Boolean) {
+        val queued = submitQueued
+        submitQueued = false
+        val current = mutableState.value
+        if (!queued || unlocked || !current.passwordShown || current.password.isEmpty()) return
+        onUnlockWithPassword()
     }
 
     private companion object {

@@ -7,6 +7,8 @@ import dev.kodakiko.data.db.KodakikoDatabase
 import dev.kodakiko.data.db.ObjectVariant
 import dev.kodakiko.data.files.FileStore
 import dev.kodakiko.data.media.CiphertextSource
+import dev.kodakiko.data.media.DownloadPriority
+import dev.kodakiko.data.media.DownloadQueue
 import dev.kodakiko.data.media.ImageLoaders
 import dev.kodakiko.data.media.MediaUnavailableException
 import dev.kodakiko.data.media.OpenedOriginal
@@ -15,59 +17,95 @@ import dev.kodakiko.data.media.OriginalHandle
 import dev.kodakiko.data.media.OriginalImageRequest
 import dev.kodakiko.data.media.StreamFileReader
 import dev.kodakiko.data.media.ThumbnailCache
+import dev.kodakiko.data.media.ThumbnailModeSwitch
+import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.service.account.DatabaseRowStore
 import dev.kodakiko.service.account.DiskFileStore
 import dev.kodakiko.service.entries.EntryKeys
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
 
-class AccountMedia(
-    private val context: Context,
-    private val rowStore: DatabaseRowStore,
-    private val fileStore: DiskFileStore,
-    private val sodium: Sodium,
-    private val entryKeys: EntryKeys,
-    private val settings: AppDeviceSettings,
-    private val localOnly: () -> Boolean,
-    private val unlocked: () -> Boolean,
-) {
+class AccountMediaDeps(
+    val context: Context,
+    val rowStore: DatabaseRowStore,
+    val fileStore: DiskFileStore,
+    val sodium: Sodium,
+    val entryKeys: EntryKeys,
+    val settings: AppDeviceSettings,
+    val http: HttpClient,
+    val okHttpClient: OkHttpClient,
+    val isOffline: () -> Boolean,
+    val isWifi: () -> Boolean,
+    val localOnly: () -> Boolean,
+    val unlocked: () -> Boolean,
+)
+
+class AccountMedia(private val deps: AccountMediaDeps) {
     class Opened(
         val database: KodakikoDatabase,
         val files: FileStore,
         val thumbnails: ThumbnailCache,
         val originals: OriginalCache,
+        val downloads: DownloadQueue,
         val loader: ImageLoader,
+        val stopModeSwitch: () -> Unit,
     )
 
     class OpenedReader(val reader: StreamFileReader, val handle: OriginalHandle)
 
     private val lock = Any()
+    private val modeSwitchState = MutableStateFlow(ThumbnailModeSwitch.IDLE)
     private var opened: Opened? = null
 
+    val modeSwitch: StateFlow<ThumbnailModeSwitch> = modeSwitchState.asStateFlow()
+
     fun current(): Opened? = synchronized(lock) {
-        if (!unlocked()) return null
-        val database = rowStore.current() ?: return null
-        val files = fileStore.current() ?: return null
+        if (!deps.unlocked()) return null
+        val database = deps.rowStore.current() ?: return null
+        val files = deps.fileStore.current() ?: return null
         opened?.takeIf { it.database === database && it.files === files }?.let { return it }
         release()
+        val downloads = DownloadQueue(
+            database = database,
+            files = files,
+            http = deps.http,
+            sleep = Thread::sleep,
+            now = System::currentTimeMillis,
+            isOffline = deps.isOffline,
+            okHttpClient = deps.okHttpClient,
+        )
         val thumbnails = ThumbnailCache(
             database = database,
             files = files,
-            sodium = sodium,
-            variantKey = { entryId, mediaId -> runBlocking { entryKeys.variantKey(entryId, mediaId, ObjectVariant.THUMBNAIL) } },
-            encryptThumbnails = { settings.settings.value.encryptThumbnails },
-            fetch = { _, _ -> throw MediaUnavailableException() },
+            sodium = deps.sodium,
+            variantKey = { entryId, mediaId -> runBlocking { deps.entryKeys.variantKey(entryId, mediaId, ObjectVariant.THUMBNAIL) } },
+            encryptThumbnails = { deps.settings.settings.value.encryptThumbnails },
+            fetch = downloads::fetch,
         )
         val originals = OriginalCache(
             database = database,
             files = files,
-            capBytes = { settings.settings.value.originalCacheCapBytes },
-            localOnly = localOnly,
-            isWifi = { false },
-            fetch = { _, _ -> },
+            capBytes = { deps.settings.settings.value.originalCacheCapBytes },
+            localOnly = deps.localOnly,
+            isWifi = deps.isWifi,
+            fetch = downloads::fetch,
             now = System::currentTimeMillis,
         )
-        val loader = ImageLoaders.create(context, thumbnails) { request -> openImage(database, files, originals, request) }
-        Opened(database, files, thumbnails, originals, loader).also { opened = it }
+        val stopModeSwitch = thumbnails.subscribeModeSwitch { modeSwitchState.value = it }
+        val loader = ImageLoaders.create(deps.context, thumbnails) { request -> openImage(database, files, originals, request) }
+        Opened(database, files, thumbnails, originals, downloads, loader, stopModeSwitch).also { opened = it }
+    }
+
+    fun abortDownloads() {
+        synchronized(lock) { opened?.downloads?.abortAll() }
+    }
+
+    fun fetchObject(objectId: String) {
+        val media = current() ?: throw MediaUnavailableException()
+        media.downloads.fetch(objectId, DownloadPriority.OPENED)
     }
 
     fun openOriginal(entryId: String, mediaId: String): OpenedReader? {
@@ -97,9 +135,9 @@ class AccountMedia(
 
     private fun reader(database: KodakikoDatabase, files: FileStore, handle: OriginalHandle, entryId: String, mediaId: String): StreamFileReader {
         val row = database.transaction { it.objects.get(handle.objectId) } ?: throw MediaUnavailableException()
-        val key = runBlocking { entryKeys.variantKey(entryId, mediaId, ObjectVariant.ORIGINAL) }
+        val key = runBlocking { deps.entryKeys.variantKey(entryId, mediaId, ObjectVariant.ORIGINAL) }
         try {
-            return StreamFileReader.open(sodium, CiphertextSource.of(files.paths.objectFile(handle.objectId)), key, row.plaintextSize)
+            return StreamFileReader.open(deps.sodium, CiphertextSource.of(files.paths.objectFile(handle.objectId)), key, row.plaintextSize)
         } finally {
             key.fill(0)
         }
@@ -108,6 +146,9 @@ class AccountMedia(
     private fun release() {
         val previous = opened ?: return
         opened = null
+        previous.downloads.abortAll()
+        previous.stopModeSwitch()
+        modeSwitchState.value = ThumbnailModeSwitch.IDLE
         previous.thumbnails.clear()
         ImageLoaders.clearMemory(previous.loader)
     }

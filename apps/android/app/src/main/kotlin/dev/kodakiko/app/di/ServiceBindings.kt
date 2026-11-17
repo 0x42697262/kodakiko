@@ -6,23 +6,29 @@ import android.util.Log
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.BuildConfig
 import dev.kodakiko.app.edit.EditFlushingLockService
+import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.navigation.AppNavigator
+import dev.kodakiko.app.navigation.NavigationConstants
+import dev.kodakiko.app.sharing.InProcessUploader
+import dev.kodakiko.app.sync.SessionInvalidation
+import dev.kodakiko.app.sync.cancelUploads
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.RandomSource
 import dev.kodakiko.crypto.Sodium
-import dev.kodakiko.data.db.DeviceSettingsDefaults
 import dev.kodakiko.data.db.OutboxState
 import dev.kodakiko.data.db.StorageKeys
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.net.HttpConstants
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.data.secure.DeviceLocks
+import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AccountStorage
 import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.service.account.AuthServiceDeps
 import dev.kodakiko.service.account.ConfigService
+import dev.kodakiko.service.account.DefaultAccountService
 import dev.kodakiko.service.account.DefaultAuthService
 import dev.kodakiko.service.account.DefaultConfigService
 import dev.kodakiko.service.account.FileStorePort
@@ -54,8 +60,9 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import okhttp3.OkHttpClient
 
 @BindingContainer
@@ -107,25 +114,33 @@ object ServiceBindings {
 
     @Provides
     @SingleIn(AppScope::class)
+    fun sessionInvalidation(
+        lockService: Lazy<LockService>,
+        accountState: Observable<AccountState>,
+        @SyncUploads syncUploader: InProcessUploader,
+        linkUploader: InProcessUploader,
+        @ApplicationScope scope: CoroutineScope,
+    ): SessionInvalidation = SessionInvalidation(lockService, accountState, scope, listOf(syncUploader, linkUploader))
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun httpClient(
         okHttpClient: OkHttpClient,
         globalStore: GlobalStorePort,
         sessionStore: SessionStorePort,
         @ActiveAccountKey activeAccountKey: Observable<String?>,
-        accountState: Observable<AccountState>,
-        lockService: LockService,
-        @ApplicationScope scope: CoroutineScope,
+        session: SessionInvalidation,
     ): HttpClient = HttpClient(
         baseUrl = { globalStore.serverUrl().orEmpty() },
         sessionToken = { activeAccountKey.value?.let(sessionStore::load) },
-        onSessionInvalid = {
-            scope.launch {
-                attempt { lockService.lock(LockReason.SESSION_INVALID) }
-                accountState.value = AccountState.SignedOut()
-            }
-        },
+        onSessionInvalid = session::invalidate,
         okHttpClient = okHttpClient,
     )
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun accountService(http: HttpClient, rowStore: RowStorePort, @IoDispatcher ioDispatcher: CoroutineDispatcher): AccountService =
+        DefaultAccountService(http, rowStore, ioDispatcher)
 
     @Provides
     @SingleIn(AppScope::class)
@@ -148,12 +163,13 @@ object ServiceBindings {
         lifecycle: LifecyclePort,
         lockService: LockService,
         accountState: Observable<AccountState>,
+        settings: AppDeviceSettings,
         @ApplicationScope scope: CoroutineScope,
     ): AutoLock = BackgroundAutoLock(
         AutoLockDeps(
             lifecycle = lifecycle,
             clock = SystemWallClock,
-            autoLockMinutes = { DeviceSettingsDefaults.ANDROID.autoLockMinutes },
+            autoLockMinutes = { settings.settings.value.autoLockMinutes },
             lock = { reason -> lockService.lock(reason) },
             accountState = accountState,
             scope = scope,
@@ -167,14 +183,24 @@ object ServiceBindings {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun appNavigator(accountState: Observable<AccountState>, lockControl: LockControl, rowStore: RowStorePort): AppNavigator =
-        AppNavigator(
-            accountState = accountState,
-            returnTo = lockControl.returnTo,
-            entryExists = { id -> rowStore.transaction { it.entries.get(id) } != null },
-            startScreen = { DeviceSettingsDefaults.ANDROID.startScreen },
-            clock = SystemClock::uptimeMillis,
-        )
+    fun appNavigator(
+        accountState: Observable<AccountState>,
+        lockControl: LockControl,
+        rowStore: RowStorePort,
+        settings: AppDeviceSettings,
+        @ApplicationScope scope: CoroutineScope,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): AppNavigator = AppNavigator(
+        accountState = accountState,
+        returnTo = lockControl.returnTo,
+        entryExists = { id -> rowStore.transaction { it.entries.get(id) } != null },
+        startScreen = { settings.settings.value.startScreen },
+        clock = SystemClock::uptimeMillis,
+        prepareHome = {
+            val loading = scope.async(ioDispatcher) { attempt { settings.load() } }
+            withTimeoutOrNull(NavigationConstants.PREPARE_HOME_TIMEOUT_MS) { loading.await() }
+        },
+    )
 
     @Provides
     @SingleIn(AppScope::class)
@@ -196,6 +222,7 @@ object ServiceBindings {
         accountMode: Observable<AccountMode>,
         navigator: AppNavigator,
         lockService: LockService,
+        @SyncUploads syncUploader: InProcessUploader,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): AuthService = DefaultAuthService(
         AuthServiceDeps(
@@ -218,7 +245,10 @@ object ServiceBindings {
             homeCollectionName = context.getString(R.string.defaults_home_collection_name),
             showSecuring = navigator::showSecuring,
             dismissSecuring = navigator::dismissSecuring,
-            beforeSignOut = { lockService.lock(LockReason.SIGN_OUT) },
+            beforeSignOut = {
+                lockService.lock(LockReason.SIGN_OUT)
+                cancelUploads(listOf(syncUploader))
+            },
             ioDispatcher = ioDispatcher,
             accountMode = accountMode,
         ),

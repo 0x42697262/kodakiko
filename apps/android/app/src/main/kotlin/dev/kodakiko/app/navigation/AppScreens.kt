@@ -22,6 +22,16 @@ import dev.kodakiko.ui.feature.gallery.TrashScreen
 import dev.kodakiko.ui.feature.links.LinkCreateScreen
 import dev.kodakiko.ui.feature.links.LinksListScreen
 import dev.kodakiko.ui.feature.lock.LockScreen
+import dev.kodakiko.ui.feature.settings.AppearanceSettingsScreen
+import dev.kodakiko.ui.feature.settings.CaptureSettingsScreen
+import dev.kodakiko.ui.feature.settings.ExportScreen
+import dev.kodakiko.ui.feature.settings.GallerySettingsScreen
+import dev.kodakiko.ui.feature.settings.ImportScreen
+import dev.kodakiko.ui.feature.settings.SecuritySettingsScreen
+import dev.kodakiko.ui.feature.settings.SettingsScreen
+import dev.kodakiko.ui.feature.settings.SettingsSearchScreen
+import dev.kodakiko.ui.feature.settings.StorageSettingsScreen
+import dev.kodakiko.ui.feature.settings.SyncSettingsScreen
 import dev.kodakiko.ui.feature.sharing.CollectionScreen
 import dev.kodakiko.ui.feature.sharing.ShareSheetScreen
 import dev.kodakiko.ui.feature.sharing.ShareWithScreen
@@ -60,6 +70,16 @@ enum class AppScreen {
     SHARE_SHEET,
     LINK_NEW,
     SETTINGS_LINKS,
+    SETTINGS,
+    SETTINGS_SEARCH,
+    SETTINGS_APPEARANCE,
+    SETTINGS_GALLERY,
+    SETTINGS_CAPTURE,
+    SETTINGS_SYNC,
+    SETTINGS_STORAGE,
+    SETTINGS_SECURITY,
+    SETTINGS_EXPORT,
+    SETTINGS_IMPORT,
     PLACEHOLDER,
 }
 
@@ -93,6 +113,16 @@ object AppScreens {
         is Route.ShareSheet -> AppScreen.SHARE_SHEET
         is Route.LinkNew -> AppScreen.LINK_NEW
         Route.SettingsLinks -> AppScreen.SETTINGS_LINKS
+        Route.Settings -> AppScreen.SETTINGS
+        Route.SettingsSearch -> AppScreen.SETTINGS_SEARCH
+        Route.SettingsAppearance -> AppScreen.SETTINGS_APPEARANCE
+        Route.SettingsGallery -> AppScreen.SETTINGS_GALLERY
+        Route.SettingsCapture -> AppScreen.SETTINGS_CAPTURE
+        Route.SettingsSync -> AppScreen.SETTINGS_SYNC
+        Route.SettingsStorage -> AppScreen.SETTINGS_STORAGE
+        Route.SettingsSecurity -> AppScreen.SETTINGS_SECURITY
+        Route.SettingsExport -> AppScreen.SETTINGS_EXPORT
+        Route.SettingsImport -> AppScreen.SETTINGS_IMPORT
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -127,6 +157,16 @@ object AppScreens {
             AppScreen.SHARE_SHEET -> (route as Route.ShareSheet).let { ShareSheetScreen(it.entryIds, it.inKodakiko) }
             AppScreen.LINK_NEW -> LinkCreateScreen((route as Route.LinkNew).entryIds)
             AppScreen.SETTINGS_LINKS -> LinksListScreen()
+            AppScreen.SETTINGS -> SettingsScreen()
+            AppScreen.SETTINGS_SEARCH -> SettingsSearchScreen()
+            AppScreen.SETTINGS_APPEARANCE -> AppearanceSettingsScreen()
+            AppScreen.SETTINGS_GALLERY -> GallerySettingsScreen()
+            AppScreen.SETTINGS_CAPTURE -> CaptureSettingsScreen()
+            AppScreen.SETTINGS_SYNC -> SyncSettingsScreen()
+            AppScreen.SETTINGS_STORAGE -> StorageSettingsScreen()
+            AppScreen.SETTINGS_SECURITY -> SecuritySettingsScreen()
+            AppScreen.SETTINGS_EXPORT -> ExportScreen()
+            AppScreen.SETTINGS_IMPORT -> ImportScreen()
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

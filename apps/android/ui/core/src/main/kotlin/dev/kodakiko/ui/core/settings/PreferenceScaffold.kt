@@ -18,6 +18,7 @@ fun PreferenceScaffold(
     actions: @Composable RowScope.() -> Unit = {},
     onBackPressed: (() -> Unit)? = null,
     highlightKey: String? = null,
+    navigateUpTestTag: String? = null,
 ) {
     Scaffold(
         modifier = modifier,
@@ -25,6 +26,7 @@ fun PreferenceScaffold(
             AppBar(
                 title = title,
                 navigateUp = onBackPressed,
+                navigateUpTestTag = navigateUpTestTag,
                 actions = actions,
                 scrollBehavior = it,
             )

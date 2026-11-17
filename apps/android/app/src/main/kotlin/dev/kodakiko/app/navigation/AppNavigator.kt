@@ -24,6 +24,7 @@ class AppNavigator(
     private val entryExists: (String) -> Boolean,
     private val startScreen: () -> StartScreen,
     clock: () -> Long,
+    private val prepareHome: (suspend () -> Unit)? = null,
 ) : RouteNavigator {
     private val guard = NavigationGuard(clock)
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
@@ -62,7 +63,7 @@ class AppNavigator(
 
     internal fun bind(scope: CoroutineScope): () -> Unit {
         var previous = accountState.value
-        reconcile(previous)
+        reconcile(previous, scope)
         val unsubscribe = accountState.subscribe { next ->
             onMain {
                 val before = previous
@@ -164,10 +165,10 @@ class AppNavigator(
         if (Looper.myLooper() == Looper.getMainLooper()) block() else mainHandler.post(block)
     }
 
-    private fun reconcile(state: AccountState) {
+    private fun reconcile(state: AccountState, scope: CoroutineScope) {
         val current = routes
         if (state is AccountState.Unlocked) {
-            if (current.size == 1 && current.single() in STATE_ROUTES) showHome()
+            if (current.size == 1 && current.single() in STATE_ROUTES) afterHomePrepared(scope) { showHome() }
             return
         }
         if (current.firstOrNull() != RouteGuards.routeForState(state, startScreen()) || current.any(RouteGuards::requiresUnlock)) showStateRoute(state)
@@ -212,12 +213,25 @@ class AppNavigator(
         returnTo.value = null
         val entryId = remembered?.let(ReturnTo::entryIdOfRoute)
         if (entryId == null) {
-            applyRestore(remembered, entryExists = false)
+            afterHomePrepared(scope) { applyRestore(remembered, entryExists = false) }
             return
         }
         scope.launch {
+            prepareHome?.invoke()
             val exists = withContext(Dispatchers.IO) { runCatching { entryExists(entryId) }.getOrDefault(false) }
             applyRestore(remembered, exists)
+        }
+    }
+
+    private fun afterHomePrepared(scope: CoroutineScope, show: () -> Unit) {
+        val prepare = prepareHome
+        if (prepare == null) {
+            show()
+            return
+        }
+        scope.launch {
+            prepare()
+            if (accountState.value is AccountState.Unlocked) show()
         }
     }
 

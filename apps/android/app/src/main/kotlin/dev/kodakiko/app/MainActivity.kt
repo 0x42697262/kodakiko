@@ -17,11 +17,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.app.di.AppGraph
 import dev.kodakiko.app.navigation.AppNavigation
 import dev.kodakiko.app.navigation.AppScreens
-import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.system.EdgeToEdge
 import dev.kodakiko.app.system.SystemUi
 import dev.kodakiko.app.system.SystemUiSettings
-import dev.kodakiko.data.db.DeviceSettingsDefaults
 import dev.kodakiko.platform.device.ScreenSecurity
 import dev.kodakiko.ui.core.AppLocale
 import dev.kodakiko.ui.core.screens.LoadingScreen
@@ -84,11 +82,10 @@ class MainActivity : FragmentActivity() {
 @Composable
 private fun AppContent(graph: AppGraph) {
     val ready by graph.startup.ready.collectAsStateWithLifecycle()
+    val homeSettings by graph.homeSettings.collectAsStateWithLifecycle()
     if (ready) {
-        AppNavigation(navigator = graph.navigator, homeSettings = HOME_SETTINGS) { route -> AppScreens.Content(route) }
+        AppNavigation(navigator = graph.navigator, homeSettings = homeSettings) { route -> AppScreens.Content(route) }
     } else {
         LoadingScreen(modifier = Modifier.testTag(CoreTestTags.App.LOADING_SCREEN), indicatorTestTag = CoreTestTags.App.LOADING)
     }
 }
-
-private val HOME_SETTINGS = HomeSettings.of(DeviceSettingsDefaults.ANDROID, sharingAvailable = true)

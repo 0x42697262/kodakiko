@@ -5,19 +5,23 @@ import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.gallery.AccountMedia
+import dev.kodakiko.app.gallery.AccountMediaDeps
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.AppGalleryAccount
+import dev.kodakiko.app.gallery.AppGallerySync
 import dev.kodakiko.app.gallery.CoilGalleryThumbnails
 import dev.kodakiko.app.gallery.EntriesChangedBus
 import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.gallery.SystemGalleryClock
-import dev.kodakiko.app.gallery.UnwiredEntriesSync
-import dev.kodakiko.app.gallery.UnwiredGallerySync
+import dev.kodakiko.app.sharing.InProcessUploader
+import dev.kodakiko.app.sync.AppSyncState
 import dev.kodakiko.app.viewer.AppVideoSource
+import dev.kodakiko.app.viewer.WifiState
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.accountHash
+import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.platform.device.Haptics
 import dev.kodakiko.service.account.AccountState
@@ -26,6 +30,7 @@ import dev.kodakiko.service.account.ConfigService
 import dev.kodakiko.service.account.DatabaseRowStore
 import dev.kodakiko.service.account.DiskFileStore
 import dev.kodakiko.service.account.Observable
+import dev.kodakiko.service.backup.ExportService
 import dev.kodakiko.service.entries.CaptureTray
 import dev.kodakiko.service.entries.CaptureTrayDeps
 import dev.kodakiko.service.entries.DefaultEntriesService
@@ -43,6 +48,7 @@ import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.index.IndexServiceDeps
 import dev.kodakiko.service.lock.LockControl
 import dev.kodakiko.service.sharing.CollectionNames
+import dev.kodakiko.service.sync.SyncService
 import dev.kodakiko.ui.core.notice.GalleryNotice
 import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.gallery.GalleryDeps
@@ -55,6 +61,7 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
 
 @BindingContainer
 object GalleryBindings {
@@ -87,6 +94,7 @@ object GalleryBindings {
         config: ConfigService,
         bus: EntriesChangedBus,
         accountState: Observable<AccountState>,
+        sync: SyncService,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): EntriesService = DefaultEntriesService(
         EntriesServiceDeps(
@@ -96,7 +104,7 @@ object GalleryBindings {
             entryKeys = entryKeys,
             captureTray = captureTray,
             config = config::current,
-            sync = UnwiredEntriesSync,
+            sync = sync,
             onEntriesChanged = bus::emit,
             clock = SystemEntriesClock,
             randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
@@ -150,11 +158,28 @@ object GalleryBindings {
         sodium: Sodium,
         entryKeys: EntryKeys,
         settings: AppDeviceSettings,
+        http: HttpClient,
+        okHttpClient: OkHttpClient,
+        syncState: AppSyncState,
+        wifi: WifiState,
         accountState: Observable<AccountState>,
         accountMode: Observable<AccountMode>,
-    ): AccountMedia = AccountMedia(context, rowStore, fileStore, sodium, entryKeys, settings, { accountMode.value == AccountMode.LOCAL }) {
-        accountState.value is AccountState.Unlocked
-    }
+    ): AccountMedia = AccountMedia(
+        AccountMediaDeps(
+            context = context,
+            rowStore = rowStore,
+            fileStore = fileStore,
+            sodium = sodium,
+            entryKeys = entryKeys,
+            settings = settings,
+            http = http,
+            okHttpClient = okHttpClient,
+            isOffline = syncState::offline,
+            isWifi = { wifi.wifi.value },
+            localOnly = { accountMode.value == AccountMode.LOCAL },
+            unlocked = { accountState.value is AccountState.Unlocked },
+        ),
+    )
 
     @Provides
     @SingleIn(AppScope::class)
@@ -169,6 +194,10 @@ object GalleryBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun lifecycleSteps(
+        sync: Lazy<SyncService>,
+        linkUploader: Lazy<InProcessUploader>,
+        exporter: Lazy<ExportService>,
+        accountMode: Observable<AccountMode>,
         index: IndexService,
         media: AccountMedia,
         tempFiles: TempFiles,
@@ -181,7 +210,11 @@ object GalleryBindings {
         recorder: AppEditRecorder,
         tray: CaptureTray,
         collectionNames: CollectionNames,
-    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames)
+    ): LifecycleSteps = LifecycleSteps(
+        LifecycleSteps.LifecycleSync(sync, linkUploader, exporter) { accountMode.value == AccountMode.LOCAL },
+        index,
+        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames,
+    )
 
     @Provides
     @SingleIn(AppScope::class)
@@ -203,6 +236,7 @@ object GalleryBindings {
         account: AppGalleryAccount,
         config: ConfigService,
         haptics: Haptics,
+        sync: SyncService,
     ): GalleryDeps = GalleryDeps(
         index = index,
         entries = entries,
@@ -210,7 +244,7 @@ object GalleryBindings {
         filter = filter,
         notices = notices,
         account = account,
-        sync = UnwiredGallerySync,
+        sync = AppGallerySync(sync),
         config = config,
         haptics = haptics::tick,
         clock = SystemGalleryClock,

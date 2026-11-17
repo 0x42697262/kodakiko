@@ -13,3 +13,6 @@ annotation class InviteToken
 
 @Qualifier
 annotation class ActiveAccountKey
+
+@Qualifier
+annotation class SyncUploads
