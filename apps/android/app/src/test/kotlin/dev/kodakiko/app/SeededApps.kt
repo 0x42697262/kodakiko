@@ -60,6 +60,10 @@ object V031Fixture {
         )
     }
 
+    fun writeLegacyItem(context: Context, name: String, value: String) {
+        writeLegacy(context, name, value)
+    }
+
     private fun writeLegacy(context: Context, name: String, value: String) {
         val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         generator.init(

@@ -73,6 +73,12 @@ class LegacyAdoptionTest {
 
         override fun read(name: String): LegacyRead = items[name] ?: LegacyRead.Missing
 
+        override fun readBytes(name: String): LegacyRead =
+            when (val item = items[name] ?: LegacyRead.Missing) {
+                is LegacyRead.Value -> LegacyRead.Bytes(item.text.toByteArray(Charsets.UTF_8))
+                else -> item
+            }
+
         override fun forgetAll() {
             forgotten++
             items.clear()

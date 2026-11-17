@@ -74,9 +74,9 @@ open class LinksTestBase : HarnessTestBase() {
             body()
         }
 
-    protected fun createService(custom: LinkStripper? = null): PublicLinksService {
+    protected fun createService(custom: LinkStripper? = null, metadata: (suspend (String) -> EntryMetadataV1)? = null): PublicLinksService {
         val account: () -> AccountKeys? = { if (signedIn) harness.fixture.keys else null }
-        val readMetadata: suspend (String) -> EntryMetadataV1 = { entryId: String -> harness.service.readMetadata(entryId) }
+        val readMetadata: suspend (String) -> EntryMetadataV1 = metadata ?: { entryId: String -> harness.service.readMetadata(entryId) }
         val fetchObject: suspend (String) -> Unit = { objectId: String -> fetched += objectId }
         val baseUrl: suspend () -> String = { BASE_URL }
         val files: LinkFiles = FileStoreLinkFiles { harness.fixture.fileStore }

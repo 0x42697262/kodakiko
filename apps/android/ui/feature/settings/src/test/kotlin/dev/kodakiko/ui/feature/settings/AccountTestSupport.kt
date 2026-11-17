@@ -139,6 +139,7 @@ class FakeSettingsCredentials : SettingsCredentials {
     var deletionFailure: Throwable? = null
     var verifyFailure: Throwable? = null
     var gate: CompletableDeferred<Unit>? = null
+    var revealGate: CompletableDeferred<Unit>? = null
 
     override suspend fun changePassword(currentPassword: String, newPassword: String) {
         calls += "$CHANGE_PASSWORD:$currentPassword:$newPassword"
@@ -150,6 +151,7 @@ class FakeSettingsCredentials : SettingsCredentials {
     override suspend fun revealRecoveryWords(password: String): List<String> {
         calls += REVEAL
         passwords += password
+        revealGate?.await()
         revealFailure?.let { throw it }
         if (password != this.password) throw AuthError(AuthFailure.WRONG_PASSWORD)
         return words
