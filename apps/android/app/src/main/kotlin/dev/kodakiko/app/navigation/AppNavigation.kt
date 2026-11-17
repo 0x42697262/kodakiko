@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +73,8 @@ fun AppNavigation(
                     navigator.detach(voyager)
                 }
             }
+            val homeInStack = voyager.items.any { it is HomeScreen }
+            LaunchedEffect(homeInStack) { if (!homeInStack) disposeTabs() }
             BackHandler(enabled = navigator.canGoBack) { navigator.pop() }
             Box(modifier = modifier) {
                 ScreenTransition(navigator = navigator, voyager = voyager)

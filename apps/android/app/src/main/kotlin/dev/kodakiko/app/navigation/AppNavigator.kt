@@ -53,6 +53,8 @@ class AppNavigator(
         return if (state is AccountState.Unlocked) listOf(HomeScreen) else listOf(RouteScreen(RouteGuards.routeForState(state, startScreen())))
     }
 
+    internal fun homeInStack(): Boolean = voyager?.items?.any { it is HomeScreen } ?: true
+
     internal fun attach(navigator: Navigator) {
         voyager = navigator
     }
@@ -92,6 +94,7 @@ class AppNavigator(
         if (navigator.canPop) {
             lastTransition = RouteTransition(RouteTransitions.kindOf(routeOf(navigator.lastItem)), forward = false)
             navigator.pop()
+            guard.reset()
             return true
         }
         val start = startTab()

@@ -18,8 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -62,7 +64,26 @@ fun ImportScreen(viewModel: ImportViewModel = metroViewModel()) {
 }
 
 @Composable
-private fun BackupPage(title: String, screenTag: String, onBack: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+internal fun FormPage(
+    title: String,
+    screenTag: String,
+    onBack: () -> Unit,
+    backTag: String = TestTags.Settings.BACK,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+        BackupPage(title = title, screenTag = screenTag, onBack = onBack, backTag = backTag, content = content)
+    }
+}
+
+@Composable
+internal fun BackupPage(
+    title: String,
+    screenTag: String,
+    onBack: () -> Unit,
+    backTag: String = TestTags.Settings.BACK,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     val scroll = rememberScrollState()
     Box(
         modifier = Modifier
@@ -79,7 +100,7 @@ private fun BackupPage(title: String, screenTag: String, onBack: () -> Unit, con
             AppBar(
                 title = title,
                 navigateUp = onBack,
-                navigateUpTestTag = TestTags.Settings.BACK,
+                navigateUpTestTag = backTag,
                 modifier = Modifier
                     .zIndex(1f)
                     .offset { IntOffset(0, scroll.value) }

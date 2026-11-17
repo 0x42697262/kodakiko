@@ -4,6 +4,7 @@ import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.viewer.AppVideoSource
 import dev.kodakiko.data.files.TempFiles
+import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.Observable
 import dev.kodakiko.service.backup.ExportService
 import dev.kodakiko.service.entries.CaptureTray
@@ -32,6 +33,7 @@ class LifecycleSteps(
     private val recorder: AppEditRecorder,
     private val tray: CaptureTray,
     private val collectionNames: CollectionNames,
+    private val accounts: AccountService,
 ) {
     val lock: List<LifecycleStep> = listOf(
         LifecycleStep(LockStepNames.CANCEL_EXPORT) { sync.exporter.cancel() },
@@ -52,7 +54,7 @@ class LifecycleSteps(
             settings.unload()
         },
         LifecycleStep(LockStepNames.CLEAR_COLLECTION_NAMES) { collectionNames.clear() },
-        unwired(LockStepNames.CLEAR_ACCOUNT),
+        LifecycleStep(LockStepNames.CLEAR_ACCOUNT) { accounts.clear() },
         LifecycleStep(EditAdapterConstants.FLUSH_EDITS) {
             recorder.abandon()
             flushes.flushAll()
@@ -66,7 +68,7 @@ class LifecycleSteps(
         LifecycleStep(LockStepNames.BUILD_INDEX) { index.build() },
         unwired(LockStepNames.SWEEP_ORPHANS),
         unwired(LockStepNames.ENFORCE_CACHE),
-        unwired(LockStepNames.REFRESH_ME),
+        LifecycleStep(LockStepNames.REFRESH_ME) { if (!sync.localOnly()) accounts.refreshMe() },
     )
 
     class LifecycleSync(

@@ -12,4 +12,9 @@ class NavigationGuard(private val now: () -> Long) {
         lastAllowed = current
         return true
     }
+
+    fun reset() {
+        lastKey = null
+        lastAllowed = null
+    }
 }

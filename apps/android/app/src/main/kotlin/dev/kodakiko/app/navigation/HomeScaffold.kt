@@ -24,6 +24,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import cafe.adriel.voyager.core.lifecycle.ScreenLifecycleStore
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
@@ -60,11 +62,20 @@ internal data class RouteTab(val route: Route.Tab) : Tab {
     }
 }
 
+internal fun disposeTabs() {
+    Route.tabs.forEach { ScreenLifecycleStore.remove(RouteTab(it)) }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScaffold(navigator: AppNavigator, settings: HomeSettings) {
     val selected = navigator.currentTab
     val wanted = remember(selected) { RouteTab(selected) }
+    DisposableEffect(navigator) {
+        onDispose {
+            if (!navigator.homeInStack()) disposeTabs()
+        }
+    }
     TabNavigator(tab = wanted, key = NavigationConstants.TAB_NAVIGATOR_KEY) { tabNavigator ->
         SideEffect {
             if (tabNavigator.current != wanted) tabNavigator.current = wanted

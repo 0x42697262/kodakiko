@@ -22,12 +22,22 @@ import dev.kodakiko.ui.feature.gallery.TrashScreen
 import dev.kodakiko.ui.feature.links.LinkCreateScreen
 import dev.kodakiko.ui.feature.links.LinksListScreen
 import dev.kodakiko.ui.feature.lock.LockScreen
+import dev.kodakiko.ui.feature.more.MoreScreen
+import dev.kodakiko.ui.feature.more.StatisticsScreen
+import dev.kodakiko.ui.feature.settings.AboutScreen
+import dev.kodakiko.ui.feature.settings.AccountSettingsScreen
+import dev.kodakiko.ui.feature.settings.AdminScreen
+import dev.kodakiko.ui.feature.settings.AdvancedSettingsScreen
 import dev.kodakiko.ui.feature.settings.AppearanceSettingsScreen
 import dev.kodakiko.ui.feature.settings.CaptureSettingsScreen
+import dev.kodakiko.ui.feature.settings.DeleteAccountScreen
+import dev.kodakiko.ui.feature.settings.DiagnosticsScreen
 import dev.kodakiko.ui.feature.settings.ExportScreen
 import dev.kodakiko.ui.feature.settings.GallerySettingsScreen
 import dev.kodakiko.ui.feature.settings.ImportScreen
+import dev.kodakiko.ui.feature.settings.PasswordScreen
 import dev.kodakiko.ui.feature.settings.SecuritySettingsScreen
+import dev.kodakiko.ui.feature.settings.ServerKeysScreen
 import dev.kodakiko.ui.feature.settings.SettingsScreen
 import dev.kodakiko.ui.feature.settings.SettingsSearchScreen
 import dev.kodakiko.ui.feature.settings.StorageSettingsScreen
@@ -80,6 +90,16 @@ enum class AppScreen {
     SETTINGS_SECURITY,
     SETTINGS_EXPORT,
     SETTINGS_IMPORT,
+    MORE,
+    STATISTICS,
+    SETTINGS_ACCOUNT,
+    SETTINGS_SERVER,
+    SETTINGS_PASSWORD,
+    SETTINGS_DELETE_ACCOUNT,
+    SETTINGS_ADMIN,
+    SETTINGS_ADVANCED,
+    SETTINGS_DIAGNOSTICS,
+    SETTINGS_ABOUT,
     PLACEHOLDER,
 }
 
@@ -123,6 +143,16 @@ object AppScreens {
         Route.SettingsSecurity -> AppScreen.SETTINGS_SECURITY
         Route.SettingsExport -> AppScreen.SETTINGS_EXPORT
         Route.SettingsImport -> AppScreen.SETTINGS_IMPORT
+        Route.More -> AppScreen.MORE
+        Route.Statistics -> AppScreen.STATISTICS
+        Route.SettingsAccount -> AppScreen.SETTINGS_ACCOUNT
+        Route.SettingsServer -> AppScreen.SETTINGS_SERVER
+        Route.SettingsPassword -> AppScreen.SETTINGS_PASSWORD
+        Route.SettingsDeleteAccount -> AppScreen.SETTINGS_DELETE_ACCOUNT
+        Route.SettingsAdmin -> AppScreen.SETTINGS_ADMIN
+        Route.SettingsAdvanced -> AppScreen.SETTINGS_ADVANCED
+        Route.SettingsDiagnostics -> AppScreen.SETTINGS_DIAGNOSTICS
+        Route.SettingsAbout -> AppScreen.SETTINGS_ABOUT
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -167,6 +197,16 @@ object AppScreens {
             AppScreen.SETTINGS_SECURITY -> SecuritySettingsScreen()
             AppScreen.SETTINGS_EXPORT -> ExportScreen()
             AppScreen.SETTINGS_IMPORT -> ImportScreen()
+            AppScreen.MORE -> MoreScreen()
+            AppScreen.STATISTICS -> StatisticsScreen()
+            AppScreen.SETTINGS_ACCOUNT -> AccountSettingsScreen()
+            AppScreen.SETTINGS_SERVER -> ServerKeysScreen()
+            AppScreen.SETTINGS_PASSWORD -> PasswordScreen()
+            AppScreen.SETTINGS_DELETE_ACCOUNT -> DeleteAccountScreen()
+            AppScreen.SETTINGS_ADMIN -> AdminScreen()
+            AppScreen.SETTINGS_ADVANCED -> AdvancedSettingsScreen()
+            AppScreen.SETTINGS_DIAGNOSTICS -> DiagnosticsScreen()
+            AppScreen.SETTINGS_ABOUT -> AboutScreen()
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

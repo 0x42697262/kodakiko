@@ -19,9 +19,11 @@ fun PreferenceScaffold(
     onBackPressed: (() -> Unit)? = null,
     highlightKey: String? = null,
     navigateUpTestTag: String? = null,
+    snackbarHost: @Composable () -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
+        snackbarHost = snackbarHost,
         topBar = {
             AppBar(
                 title = title,

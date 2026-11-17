@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "licenses": [
+    {
+      "name": "androidx.activity:activity-compose",
+      "version": "1.13.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.biometric:biometric",
+      "version": "1.1.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.camera:camera-camera2",
+      "version": "1.6.2",
+      "license": "Apache-2.0 (camera-core also BSD-3-Clause)"
+    },
+    {
+      "name": "androidx.camera:camera-camera2-pipe",
+      "version": "1.6.2",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.camera:camera-compose",
+      "version": "1.6.2",
+      "license": "Apache-2.0 (camera-core also BSD-3-Clause)"
+    },
+    {
+      "name": "androidx.camera:camera-core",
+      "version": "1.6.2",
+      "license": "Apache-2.0 (camera-core also BSD-3-Clause)"
+    },
+    {
+      "name": "androidx.camera:camera-lifecycle",
+      "version": "1.6.2",
+      "license": "Apache-2.0 (camera-core also BSD-3-Clause)"
+    },
+    {
+      "name": "androidx.camera:camera-video",
+      "version": "1.6.2",
+      "license": "Apache-2.0 (camera-core also BSD-3-Clause)"
+    },
+    {
+      "name": "androidx.compose.material3:material3",
+      "version": "1.4.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.compose:compose-bom",
+      "version": "2026.09.00",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.core:core-ktx",
+      "version": "1.19.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.documentfile:documentfile",
+      "version": "1.1.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.lifecycle:lifecycle-process",
+      "version": "2.11.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.lifecycle:lifecycle-runtime-compose",
+      "version": "2.11.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.lifecycle:lifecycle-viewmodel-compose",
+      "version": "2.11.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-common",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-container",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-exoplayer",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-muxer",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-ui",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.media3:media3-ui-compose",
+      "version": "1.11.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "androidx.profileinstaller:profileinstaller",
+      "version": "1.4.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "app.cash.sqldelight:android-driver",
+      "version": "2.4.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "cafe.adriel.voyager:voyager-navigator",
+      "version": "2.2.21-1.10.3",
+      "license": "MIT"
+    },
+    {
+      "name": "cafe.adriel.voyager:voyager-tab-navigator",
+      "version": "2.2.21-1.10.3",
+      "license": "MIT"
+    },
+    {
+      "name": "cafe.adriel.voyager:voyager-transitions",
+      "version": "2.2.21-1.10.3",
+      "license": "MIT"
+    },
+    {
+      "name": "com.google.dagger:dagger",
+      "version": "2.59",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "com.google.guava:guava",
+      "version": "33.3.1-android",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "com.goterl:lazysodium-android",
+      "version": "5.2.0",
+      "license": "MPL-2.0 (libsodium ISC)"
+    },
+    {
+      "name": "com.squareup.okhttp3:okhttp",
+      "version": "5.5.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "com.squareup.okio:okio",
+      "version": "3.18.1",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "dev.zacsweers.metro:metrox-viewmodel-compose",
+      "version": "1.5.2",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "dev.zacsweers.metro:runtime",
+      "version": "1.5.2",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "io.coil-kt.coil3:coil",
+      "version": "3.6.3",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "net.java.dev.jna:jna",
+      "version": "5.19.1",
+      "license": "Apache-2.0 (dual LGPL-2.1)"
+    },
+    {
+      "name": "org.jetbrains.kotlinx:atomicfu",
+      "version": "0.28.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+      "version": "1.11.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+      "version": "1.11.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "org.jetbrains.kotlinx:kotlinx-serialization-json",
+      "version": "1.12.0",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "sh.calvin.reorderable:reorderable",
+      "version": "3.1.0",
+      "license": "Apache-2.0"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ import dev.kodakiko.data.files.accountHash
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.platform.device.Haptics
+import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.service.account.ConfigService
@@ -210,10 +211,11 @@ object GalleryBindings {
         recorder: AppEditRecorder,
         tray: CaptureTray,
         collectionNames: CollectionNames,
+        accounts: AccountService,
     ): LifecycleSteps = LifecycleSteps(
         LifecycleSteps.LifecycleSync(sync, linkUploader, exporter) { accountMode.value == AccountMode.LOCAL },
         index,
-        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames,
+        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames, accounts,
     )
 
     @Provides

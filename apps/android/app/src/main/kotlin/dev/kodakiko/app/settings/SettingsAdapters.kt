@@ -36,7 +36,10 @@ import dev.kodakiko.ui.feature.settings.SettingsSync
 import dev.kodakiko.ui.feature.settings.SettingsThumbnails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
@@ -47,6 +50,8 @@ class AppSettingsAccount(
     private val lockControl: LockControl,
 ) : SettingsAccount {
     override val mode: StateFlow<AccountMode> = auth.mode.flow
+
+    override val roleChanges: Flow<Unit> = accounts.user.flow.drop(1).map {}
 
     override suspend fun isAdmin(): Boolean = auth.mode.value == AccountMode.SERVER && accounts.isAdmin()
 

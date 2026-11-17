@@ -27,7 +27,7 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 import kotlinx.coroutines.flow.StateFlow
 
-@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, GalleryBindings::class, ViewerBindings::class, EditBindings::class, CaptureBindings::class, SharingBindings::class, SyncBindings::class, SettingsBindings::class, ViewModelBindings::class])
+@DependencyGraph(AppScope::class, bindingContainers = [StorageBindings::class, ServiceBindings::class, GalleryBindings::class, ViewerBindings::class, EditBindings::class, CaptureBindings::class, SharingBindings::class, SyncBindings::class, SettingsBindings::class, MoreBindings::class, ViewModelBindings::class])
 interface AppGraph : ViewModelGraph {
     val authService: AuthService
 

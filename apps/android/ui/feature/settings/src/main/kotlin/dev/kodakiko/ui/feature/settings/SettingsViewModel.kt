@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -79,7 +81,9 @@ class SettingsViewModel(private val deps: SettingsDeps) : ViewModel() {
     init {
         val unsubscribe = deps.config.subscribe { config.value = it }
         addCloseable { unsubscribe() }
-        viewModelScope.launch { admin.value = attempt { deps.account.isAdmin() } ?: false }
+        viewModelScope.launch {
+            merge(flowOf(Unit), deps.account.roleChanges).collect { admin.value = attempt { deps.account.isAdmin() } ?: false }
+        }
     }
 
     fun onAction(action: SettingsAction) {

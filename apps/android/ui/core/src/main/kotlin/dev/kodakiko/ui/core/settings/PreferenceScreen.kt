@@ -2,6 +2,7 @@
 // Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, Apache-2.0
 package dev.kodakiko.ui.core.settings
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,9 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import androidx.compose.ui.zIndex
 import dev.kodakiko.ui.core.settings.widget.PreferenceGroupHeader
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -31,15 +34,16 @@ fun PreferenceScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     highlightKey: String? = null,
+    state: ScrollState = rememberScrollState(),
+    header: (@Composable () -> Unit)? = null,
 ) {
-    val state = rememberScrollState()
     val target = remember { ScrollTarget() }
     var activeKey by remember(highlightKey) { mutableStateOf(highlightKey) }
     LaunchedEffect(highlightKey) {
         val key = highlightKey ?: return@LaunchedEffect
         if (items.findHighlightedIndex(key) >= 0) {
             delay(SettingsConstants.HIGHLIGHT_SCROLL_DELAY)
-            target.top?.let { state.animateScrollTo(it) }
+            target.top?.let { state.animateScrollTo(it - target.headerHeight) }
         }
         delay(SettingsConstants.HIGHLIGHT_DURATION)
         activeKey = null
@@ -50,6 +54,7 @@ fun PreferenceScreen(
             .verticalScroll(state)
             .padding(contentPadding),
     ) {
+        if (header != null) Box(modifier = Modifier.zIndex(1f).onSizeChanged { target.headerHeight = it.height }) { header() }
         items.fastForEachIndexed { i, preference ->
             if (!preference.visible) return@fastForEachIndexed
             when (preference) {
@@ -86,6 +91,7 @@ fun PreferenceScreen(
 
 private class ScrollTarget {
     var top: Int? = null
+    var headerHeight: Int = 0
 }
 
 private fun Modifier.scrollTarget(isTarget: Boolean, target: ScrollTarget): Modifier =

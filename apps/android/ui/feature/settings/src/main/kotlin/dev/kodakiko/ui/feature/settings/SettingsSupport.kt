@@ -55,6 +55,7 @@ internal fun SettingsEventsEffect(
             when (event) {
                 is SettingsEvent.Open -> navigator.push(event.route)
                 is SettingsEvent.Replace -> navigator.replace(event.route)
+                is SettingsEvent.ReplaceAll -> navigator.replaceAll(event.route)
                 SettingsEvent.Back -> if (!navigator.pop()) navigator.replaceAll(fallback)
                 SettingsEvent.PickFolder -> pickFolder()
                 SettingsEvent.PickFiles -> pickFiles()
@@ -74,6 +75,7 @@ internal fun ConfirmSheet(
     danger: Boolean = false,
     cancelText: String? = null,
     cancelTag: String? = null,
+    warning: String? = null,
 ) {
     AdaptiveSheet(onDismissRequest = onDismiss, modifier = Modifier.testTag(sheetTag)) {
         Column(
@@ -81,6 +83,7 @@ internal fun ConfirmSheet(
             verticalArrangement = Arrangement.spacedBy(SettingsDimens.SECTION_SPACING),
         ) {
             Text(text = message, style = MaterialTheme.typography.bodyLarge)
+            if (warning != null) Text(text = warning, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
             Button(
                 onClick = onConfirm,
                 colors = if (danger) {

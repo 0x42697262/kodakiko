@@ -13,7 +13,9 @@ import dev.kodakiko.service.backup.RestoreFile
 import dev.kodakiko.service.backup.RestoreService
 import dev.kodakiko.service.sync.SyncStatus
 import dev.kodakiko.ui.core.navigation.Route
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 interface SettingsStore {
     val settings: StateFlow<DeviceSettings>
@@ -23,6 +25,8 @@ interface SettingsStore {
 
 interface SettingsAccount {
     val mode: StateFlow<AccountMode>
+
+    val roleChanges: Flow<Unit> get() = emptyFlow()
 
     suspend fun isAdmin(): Boolean
 
@@ -113,6 +117,8 @@ sealed interface SettingsEvent {
     data class Open(val route: Route) : SettingsEvent
 
     data class Replace(val route: Route) : SettingsEvent
+
+    data class ReplaceAll(val route: Route) : SettingsEvent
 
     data object Back : SettingsEvent
 

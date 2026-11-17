@@ -1,5 +1,6 @@
 package dev.kodakiko.ui.feature.settings
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 
 internal object SettingsConstants {
@@ -16,6 +17,27 @@ internal object SettingsConstants {
     const val LABEL_SEPARATOR = ": "
     const val BADGE_TAG_SEPARATOR = "."
     const val FULL_PROGRESS = 1f
+    const val DEFAULT_QUOTA_BYTES = 107_374_182_400L
+    const val DEFAULT_DELETION_GRACE_DAYS = 7L
+    const val GIB = 1_073_741_824.0
+    const val DEFAULT_INVITE_DAYS = "7"
+    const val DATE_CHARS = 10
+    const val HTTP_DEFAULT_PORT = 80
+    const val HTTPS_DEFAULT_PORT = 443
+    const val HTTPS_SCHEME = "https"
+    const val NO_PORT = -1
+    const val PORT_SEPARATOR = ":"
+    const val NOTE_OPEN = " ("
+    const val NOTE_CLOSE = ")"
+    const val WORD_NUMBER_SUFFIX = ". "
+    const val LINE_BREAK = "\n"
+    const val RECOVERY_GRID_COLUMNS = 2
+    const val UNKNOWN_VALUE = "\u2014"
+    const val LICENSE_SEPARATOR = " \u00b7 "
+    const val WORD_SEPARATOR = " "
+    const val REFUSAL_REASON = "reason"
+    const val SELF_DEMOTION = "selfDemotion"
+    const val LAST_ADMIN = "lastAdmin"
 
     val AUTO_LOCK_MINUTES: List<Int> = listOf(1, 2, 5, 10, 15, 30, 60)
     val HOLD_TO_RECORD_SECONDS: List<Int> = listOf(5, 10, 15, 30, 60, 120)
@@ -29,4 +51,12 @@ internal object SettingsDimens {
     val ITEM_SPACING = 8.dp
     val USAGE_BAR_HEIGHT = 8.dp
     val USAGE_TOP_PADDING = 8.dp
+    val VALUE_SPACING = 2.dp
+    val ROW_SPACING = 4.dp
+    val WORD_NUMBER_WIDTH = 32.dp
+    val CARD_PADDING = 12.dp
+    val BORDER_WIDTH = 1.dp
+    val BUTTON_PROGRESS_SIZE = 18.dp
+    val BUTTON_PROGRESS_STROKE = 2.dp
+    val ITEM_PADDING = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
 }
