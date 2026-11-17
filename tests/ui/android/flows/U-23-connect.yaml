@@ -1,22 +1,43 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - tapOn:
     id: tabs.more
+- scrollUntilVisible:
+    element:
+      id: more.settings
+    direction: DOWN
 - tapOn:
     id: more.settings
+- scrollUntilVisible:
+    element:
+      id: settings.row.account
+    direction: DOWN
 - tapOn:
     id: settings.row.account
+- scrollUntilVisible:
+    element:
+      id: settings.row.connect
+    direction: DOWN
 - tapOn:
     id: settings.row.connect
 - tapOn:
     id: connect.server
 - inputText: ${SERVER_INPUT}
+- hideKeyboard
 - tapOn:
     id: connect.invite
 - inputText: ${SERVER_INPUT}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: connect.password
 - tapOn:
     id: connect.password
 - inputText: ${PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: connect.action
 - tapOn:
     id: connect.action
 - extendedWaitUntil:

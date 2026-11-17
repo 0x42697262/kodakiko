@@ -1,4 +1,4 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - tapOn:
     id: signIn.username

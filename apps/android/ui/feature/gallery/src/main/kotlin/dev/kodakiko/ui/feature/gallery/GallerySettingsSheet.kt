@@ -52,6 +52,7 @@ import dev.kodakiko.ui.core.components.material.AlertDialog
 import dev.kodakiko.ui.core.components.material.DialogButton
 import dev.kodakiko.ui.core.components.material.TabText
 import dev.kodakiko.ui.core.icons.KodakikoIcons
+import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import dev.kodakiko.data.db.TriState as SettingsTriState
 
 private enum class SheetTab(val key: String, val label: Int) {
@@ -175,7 +176,7 @@ private fun FilterPage(sheet: GallerySheet.Settings, onAction: (GalleryAction) -
 private fun TagPickerDialog(choices: List<String>, picked: List<String>, onAction: (GalleryAction) -> Unit) {
     androidx.compose.material3.AlertDialog(
         onDismissRequest = { onAction(GalleryAction.TagsDone) },
-        modifier = Modifier.testTag(TestTags.Tags.PICKER),
+        modifier = Modifier.testTagsAsResourceIdRoot().testTag(TestTags.Tags.PICKER),
         title = { Text(stringResource(R.string.tags_picker_title)) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.settings.SettingsConstants
+import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import dev.kodakiko.ui.core.util.optionalTestTag
 
 @Composable
@@ -78,7 +79,7 @@ fun <T> ListPreferenceDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        modifier = Modifier.optionalTestTag(testTag?.let { dialogTag(it) }),
+        modifier = Modifier.testTagsAsResourceIdRoot().optionalTestTag(testTag?.let { dialogTag(it) }),
         title = title?.let { { Text(text = it) } },
         text = {
             Column {

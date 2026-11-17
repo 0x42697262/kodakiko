@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - runFlow: common/connect.yaml
 - runFlow: common/sign-in.yaml
@@ -11,8 +11,16 @@ appId: com.x42697262.kodakiko
     timeout: 60000
 - tapOn:
     id: tabs.more
+- scrollUntilVisible:
+    element:
+      id: more.settings
+    direction: DOWN
 - tapOn:
     id: more.settings
+- scrollUntilVisible:
+    element:
+      id: settings.row.security
+    direction: DOWN
 - tapOn:
     id: settings.row.security
 - tapOn:

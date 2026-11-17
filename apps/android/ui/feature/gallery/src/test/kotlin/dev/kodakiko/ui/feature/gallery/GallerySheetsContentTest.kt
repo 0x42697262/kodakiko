@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsPropertiesAndroid
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
@@ -17,6 +18,7 @@ import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -156,6 +158,16 @@ class GallerySheetsContentTest {
         actions.clear()
         compose.onNodeWithTag(TestTags.Tags.EDIT_TAGS).assert(hasText("Edit tags")).performClick()
         assertEquals(listOf<GalleryAction>(GalleryAction.EditTags), actions)
+    }
+
+    @Test
+    fun theTagPickerDialogExposesItsOptionsAsResourceIds() {
+        show(GalleryStates.settingsSheet(draft = FilterDraft(choosingTags = true)))
+        compose.onNode(
+            SemanticsMatcher.expectValue(SemanticsPropertiesAndroid.TestTagsAsResourceId, true) and
+                hasAnyDescendant(hasTestTag("${TestTags.Tags.OPTION}.beach")),
+            useUnmergedTree = true,
+        ).assertExists()
     }
 
     @Test

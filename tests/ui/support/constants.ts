@@ -8,24 +8,17 @@ export const SERVER_CLI = 'apps/server/dist/cli.js';
 export const SERVER_PACKAGE = '@kodakiko/server';
 export const CLIENT_PACKAGE = '@kodakiko/client';
 export const CLIENT_BUILD_SCRIPT = 'build:web';
-export const CLIENT_PREBUILD_SCRIPT = 'prebuild:android';
-export const CLIENT_METRO_SCRIPT = 'start:metro-ui';
 export const LINK_VIEWER_PACKAGE = '@kodakiko/link-viewer';
 export const LINK_VIEWER_BUILD_SCRIPT = 'build';
 export const LINK_VIEWER_CADDYFILE = './ui/link-viewer.Caddyfile';
 export const LINK_VIEWER_WEB_ROOT = '../../apps/link-viewer/dist';
 export const LINK_VIEWER_SPEC = 'U-18-link-viewer.spec.ts';
-export const CLIENT_ANDROID_DIRECTORY = 'apps/client/android';
 export const WORKSPACE_MARKER = 'pnpm-workspace.yaml';
 
 export const WEB_ORIGIN = 'http://localhost:9580';
 export const WEB_PORT = 9580;
 export const S3_PORT = 9581;
 export const API_PORT = 9582;
-export const METRO_PORT = 8081;
-export const METRO_STATUS_URL = `http://localhost:${METRO_PORT}/status`;
-export const METRO_RUNNING_STATUS = 'packager-status:running';
-export const METRO_READY_MS = 180_000;
 export const READY_URL = `${WEB_ORIGIN}/health/ready`;
 export const UI_STACK_READY_MS = 120_000;
 export const READY_POLL_MS = 500;
@@ -56,8 +49,8 @@ export const ENV_NAMES = Object.freeze({
   serverS3AccessKeyId: 'S3_ACCESS_KEY_ID',
   serverS3SecretAccessKey: 'S3_SECRET_ACCESS_KEY',
   skipBuild: 'UI_SKIP_BUILD',
-  uiTestMode: 'EXPO_PUBLIC_UI_TEST',
-  nonInteractive: 'CI',
+  appId: 'UI_APP_ID',
+  javaHome: 'JAVA_HOME',
   publicBaseUrl: 'PUBLIC_BASE_URL',
   s3PublicEndpoint: 'S3_PUBLIC_ENDPOINT',
   uiCaddyfile: 'UI_CADDYFILE',
@@ -72,6 +65,14 @@ export const ANDROID_API_ENV_OVERRIDES: Readonly<Record<string, string>> = Objec
   [ENV_NAMES.publicBaseUrl]: ANDROID_WEB_ORIGIN,
   [ENV_NAMES.s3PublicEndpoint]: ANDROID_S3_ORIGIN,
 });
+export const HOST_LOOPBACK_ADDRESS = '127.0.0.1';
+export const HTTP_DEFAULT_PORT = 80;
+export const HTTP_DEFAULT_METHOD = 'GET';
+export const HTTP_HOST_HEADER = 'host';
+export const HTTP_CONTENT_LENGTH_HEADER = 'content-length';
+export const HTTP_HEADER_LIST_SEPARATOR = ', ';
+export const HTTP_BAD_GATEWAY = 502;
+export const HTTP_NULL_BODY_STATUSES: readonly number[] = [204, 205, 304];
 export const CADDY_SERVICE = 'caddy-ui';
 export const CADDY_STOP = 'stop';
 export const CADDY_START = 'start';
@@ -80,7 +81,6 @@ export const CADDY_ACTIONS = [CADDY_STOP, CADDY_START] as const;
 export const REPORTS_DIRECTORY = 'tests/ui/reports';
 export const SERVER_LOG_FILE = 'server.log';
 export const ANDROID_REPORTS_DIRECTORY = 'android';
-export const METRO_LOG_FILE = 'metro.log';
 
 export const UI_TEST_PASSWORD = 'correct horse battery staple';
 export const UI_TEST_NEW_PASSWORD = 'a brand new passphrase here';
@@ -94,6 +94,7 @@ export const INVITE_URL_PATTERN = /https?:\/\/\S+/;
 export const INVITE_FRAGMENT_PREFIX = '#';
 
 export const FIXTURES_DIRECTORY = fileURLToPath(new URL('../../fixtures/media/', import.meta.url));
+export const FIXTURES_MEDIA_DIRECTORY = 'tests/fixtures/media';
 export const FIXTURES_SUMS_FILE = 'SHA256SUMS';
 export const FIXTURES_MAX_TOTAL_BYTES = 10 * 1024 * 1024;
 export const GENERATED_FIXTURES: readonly string[] = [
@@ -125,15 +126,27 @@ export const SEED_TIMEOUT_MS = 180_000;
 export const FLOW_ID_DASH = '-';
 export const FLOW_FILE_PATTERN = /^(U-\d\d)\.flow\.ts$/;
 
-export const APP_ID = 'com.x42697262.kodakiko';
+export const LEGACY_APP_ID = 'com.x42697262.kodakiko';
+export const APP_ID = 'com.x42697262.kodakiko.next';
+export const APP_ID_VARIABLE = 'APP_ID';
 export const MAESTRO_VERSION = '2.12.1';
-export const JAVA_MIN_MAJOR = 17;
+export const JAVA_MIN_MAJOR = 21;
 export const ANDROID_EMULATOR_HINT = 'Start the emulator: `emulator -avd kodakiko-ui`';
 export const ANDROID_BUNDLE_FILE = 'android/dist/run.mjs';
 export const ANDROID_FLOWS_SOURCE_DIRECTORY = 'tests/ui/android/flows';
 export const MAESTRO_JUNIT_FORMAT = 'junit';
+export const MAESTRO_OUTPUT_SUFFIX = '.output';
+export const ANDROID_PROJECT_DIRECTORY = 'apps/android';
+export const ANDROID_DEBUG_APK = 'apps/android/app/build/outputs/apk/debug/app-debug.apk';
+export const NICE_COMMAND = 'nice';
+export const NICE_ARGUMENTS: readonly string[] = ['-n', '19'];
 export const GRADLE_COMMAND = './gradlew';
-export const GRADLE_INSTALL_TASK = 'installDebug';
+export const GRADLE_BUILD_ARGUMENTS: readonly string[] = [
+  '--offline',
+  '--no-daemon',
+  ':app:assembleDebug',
+];
+export const ADB_INSTALL_ARGUMENTS: readonly string[] = ['install', '-r', '-t'];
 
 export const FIXTURE_MIME_TYPES: Readonly<Record<string, string>> = Object.freeze({
   '.jpg': 'image/jpeg',
@@ -159,10 +172,11 @@ export const ADB_DEVICE_STATE = 'device';
 export const ADB_DEVICES_HEADER = 'List of devices attached';
 export const MAESTRO_TIMEOUT_MS = 1_800_000;
 export const GRADLE_TIMEOUT_MS = 1_800_000;
+export const JAVA_COMMAND = 'java';
+export const JAVA_HOME_BINARY = 'bin/java';
 export const JAVA_VERSION_PATTERN = /version "(\d+)/;
 export const SIDECAR_SUFFIX = '.flow.ts';
 export const DEFAULT_SERVER_INPUT_NAME = 'SERVER_INPUT';
-export const METRO_STOP_SIGNAL = 'SIGTERM';
 export const ANDROID_PROJECT_NAME = 'android';
 export const MAESTRO_RELATIVE_BINARY = 'maestro/bin/maestro';
 export const MAESTRO_HOME_DIRECTORY = '.maestro-kodakiko';

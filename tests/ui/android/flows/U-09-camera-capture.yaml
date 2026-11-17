@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - runFlow: common/connect.yaml
 - runFlow: common/sign-in.yaml
@@ -11,8 +11,19 @@ appId: com.x42697262.kodakiko
     visible:
       id: capture.shutter
     timeout: 30000
-- tapOn:
-    id: capture.shutter
+- repeat:
+    while:
+      notVisible:
+        id: capture.trayItem.0
+    times: 6
+    commands:
+      - tapOn:
+          id: capture.shutter
+      - extendedWaitUntil:
+          visible:
+            id: capture.trayItem.0
+          timeout: 10000
+          optional: true
 - extendedWaitUntil:
     visible:
       id: capture.trayItem.0

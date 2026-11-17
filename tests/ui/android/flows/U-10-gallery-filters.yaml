@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - runFlow: common/connect.yaml
 - runFlow: common/sign-in.yaml
@@ -16,14 +16,13 @@ appId: com.x42697262.kodakiko
 - tapOn:
     id: gallery.filter
 - tapOn:
-    id: tags.field
-- inputText: a
-- pressKey: Enter
+    id: tags.choose
 - tapOn:
-    id: tags.field
-- inputText: b
-- pressKey: Enter
-- hideKeyboard
+    id: tags.option.a
+- tapOn:
+    id: tags.option.b
+- tapOn:
+    id: tags.done
 - tapOn:
     id: filter.apply
 - extendedWaitUntil:

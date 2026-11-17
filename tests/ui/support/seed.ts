@@ -1,7 +1,6 @@
 import sodiumLibrary from 'libsodium-wrappers-sumo';
 import type { Sodium } from '@kodakiko/core';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import {
   createTestAuthContext,
   createTestClientContext,
@@ -14,12 +13,14 @@ import {
   UI_TEST_PASSWORD,
   USERS_ME_DELETE_PATH,
   WEB_ORIGIN,
-  FIXTURES_DIRECTORY,
+  FIXTURES_MEDIA_DIRECTORY,
   SEED_SETTLE_DEADLINE_MS,
   SEED_SETTLE_POLL_MS,
   type FixtureName,
 } from './constants.ts';
+import { hostFetch } from './host-fetch.ts';
 import { seedInvite, type InviteRole } from './invites.ts';
+import { fromRoot } from './paths.ts';
 import { STACK_TEXT } from './text.ts';
 
 export { seedInvite, type InviteRole, type SeededInvite } from './invites.ts';
@@ -56,7 +57,7 @@ export async function seedAccount(options: SeedAccountOptions): Promise<SeededAc
   const invite = await seedInvite(options.role ?? 'member');
   const context = createTestAuthContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
   });
   const { recoveryWords } = await context.auth.signUp({
@@ -100,7 +101,7 @@ function pause(milliseconds: number): Promise<void> {
 
 async function fixtureFile(name: FixtureName) {
   try {
-    return { bytes: new Uint8Array(await readFile(join(FIXTURES_DIRECTORY, name))), fileName: name };
+    return { bytes: new Uint8Array(await readFile(fromRoot(FIXTURES_MEDIA_DIRECTORY, name))), fileName: name };
   } catch {
     throw new Error(STACK_TEXT.seedMediaMissing(name));
   }
@@ -133,7 +134,7 @@ export async function seedEntriesFromFiles(
 ): Promise<readonly { entryId: string }[]> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
     clock: SYSTEM_CLOCK,
   });
@@ -190,7 +191,7 @@ export async function seedShare(
 ): Promise<SeededShare> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
     clock: SYSTEM_CLOCK,
   });

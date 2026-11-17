@@ -7,6 +7,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import dev.kodakiko.ui.core.util.optionalTestTag
 import androidx.compose.material3.AlertDialog as MaterialAlertDialog
 
@@ -36,7 +37,7 @@ fun AlertDialog(
                 destructive = destructive,
             )
         },
-        modifier = modifier,
+        modifier = modifier.testTagsAsResourceIdRoot(),
         dismissButton = dismissButton?.let { { DialogTextButton(button = it, destructive = false) } },
         title = title?.let { { Text(it) } },
         text = text?.let { { Text(it) } },

@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - runFlow: common/connect.yaml
 - runFlow: common/sign-in.yaml
@@ -16,21 +16,21 @@ appId: com.x42697262.kodakiko
     text: 1 / 2
 - doubleTapOn:
     id: viewer.zoomable.0
+    delay: 250
 - assertVisible: Photo 1, zoomed
 - swipe:
-    from:
-      id: viewer.zoomable.0
-    direction: LEFT
+    start: 90%, 40%
+    end: 10%, 40%
 - assertVisible:
     id: viewer.pageIndicator
     text: 1 / 2
 - doubleTapOn:
     id: viewer.zoomable.0
+    delay: 250
 - assertVisible: Photo 1
 - swipe:
-    from:
-      id: viewer.zoomable.0
-    direction: LEFT
+    start: 90%, 40%
+    end: 10%, 40%
 - assertVisible:
     id: viewer.pageIndicator
     text: 2 / 2

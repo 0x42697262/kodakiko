@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
@@ -78,7 +79,7 @@ fun AdaptiveSheet(
             isTabletUi = isTabletUi,
             enableImplicitDismiss = enableImplicitDismiss,
             onDismissRequest = onDismissRequest,
-            modifier = modifier,
+            modifier = modifier.testTagsAsResourceIdRoot(),
         ) {
             content()
         }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.window.PopupProperties
+import dev.kodakiko.ui.core.testTagsAsResourceIdRoot
 import androidx.compose.material3.DropdownMenu as ComposeDropdownMenu
 
 @Composable
@@ -25,7 +26,7 @@ fun DropdownMenu(
     ComposeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.sizeIn(minWidth = ComponentConstants.MENU_WIDTH, maxWidth = ComponentConstants.MENU_WIDTH),
+        modifier = modifier.testTagsAsResourceIdRoot().sizeIn(minWidth = ComponentConstants.MENU_WIDTH, maxWidth = ComponentConstants.MENU_WIDTH),
         offset = offset,
         scrollState = scrollState,
         properties = properties,

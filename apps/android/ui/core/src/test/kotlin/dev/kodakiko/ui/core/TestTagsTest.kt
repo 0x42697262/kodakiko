@@ -2,13 +2,21 @@ package dev.kodakiko.ui.core
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsPropertiesAndroid
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
+import dev.kodakiko.ui.core.components.AdaptiveSheet
+import dev.kodakiko.ui.core.components.DropdownMenu
+import dev.kodakiko.ui.core.components.material.AlertDialog
+import dev.kodakiko.ui.core.components.material.DialogButton
+import dev.kodakiko.ui.core.settings.widget.ListPreferenceDialog
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
@@ -71,5 +79,54 @@ class TestTagsTest {
         }
         compose.onNode(SemanticsMatcher.expectValue(SemanticsPropertiesAndroid.TestTagsAsResourceId, true)).assertExists()
         compose.onNodeWithTag("gallery.tile.0").assertExists()
+    }
+
+    private fun assertPopupExposesTags(tag: String, popup: @Composable () -> Unit) {
+        compose.setContent {
+            Box(Modifier.testTagsAsResourceIdRoot()) { popup() }
+        }
+        compose.onNode(
+            SemanticsMatcher.expectValue(SemanticsPropertiesAndroid.TestTagsAsResourceId, true) and hasAnyDescendant(hasTestTag(tag)),
+            useUnmergedTree = true,
+        ).assertExists()
+    }
+
+    @Test
+    fun dropdownMenuItemsAreExposedAsResourceIds() {
+        assertPopupExposesTags("gallery.more.item") {
+            DropdownMenu(expanded = true, onDismissRequest = {}) {
+                Box(Modifier.testTag("gallery.more.item").size(1.dp))
+            }
+        }
+    }
+
+    @Test
+    fun alertDialogButtonsAreExposedAsResourceIds() {
+        assertPopupExposesTags("dialog.confirm") {
+            AlertDialog(onDismissRequest = {}, confirmButton = DialogButton(text = "OK", onClick = {}, testTag = "dialog.confirm"))
+        }
+    }
+
+    @Test
+    fun adaptiveSheetContentIsExposedAsResourceIds() {
+        assertPopupExposesTags("sheet.row") {
+            AdaptiveSheet(onDismissRequest = {}) {
+                Box(Modifier.testTag("sheet.row").size(1.dp))
+            }
+        }
+    }
+
+    @Test
+    fun listPreferenceDialogOptionsAreExposedAsResourceIds() {
+        assertPopupExposesTags("settings.autoLock.1") {
+            ListPreferenceDialog(
+                title = null,
+                value = 0,
+                entries = mapOf(0 to "Off", 1 to "1 minute"),
+                onValueChange = {},
+                onDismissRequest = {},
+                testTag = "settings.autoLock",
+            )
+        }
     }
 }
