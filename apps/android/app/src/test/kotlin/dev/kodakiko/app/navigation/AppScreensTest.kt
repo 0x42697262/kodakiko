@@ -60,19 +60,24 @@ class AppScreensTest {
         Route.SettingsLinks to AppScreen.SETTINGS_LINKS,
     )
 
+    private val settings: Map<Route, AppScreen> = mapOf(
+        Route.Settings to AppScreen.SETTINGS,
+        Route.SettingsSearch to AppScreen.SETTINGS_SEARCH,
+        Route.SettingsAppearance to AppScreen.SETTINGS_APPEARANCE,
+        Route.SettingsGallery to AppScreen.SETTINGS_GALLERY,
+        Route.SettingsCapture to AppScreen.SETTINGS_CAPTURE,
+        Route.SettingsSync to AppScreen.SETTINGS_SYNC,
+        Route.SettingsStorage to AppScreen.SETTINGS_STORAGE,
+        Route.SettingsSecurity to AppScreen.SETTINGS_SECURITY,
+        Route.SettingsExport to AppScreen.SETTINGS_EXPORT,
+        Route.SettingsImport to AppScreen.SETTINGS_IMPORT,
+    )
+
     private val notYetBuilt: List<Route> = listOf(
         Route.Home,
         Route.Invite,
         Route.More,
         Route.Statistics,
-        Route.Settings,
-        Route.SettingsSearch,
-        Route.SettingsAppearance,
-        Route.SettingsGallery,
-        Route.SettingsCapture,
-        Route.SettingsSync,
-        Route.SettingsStorage,
-        Route.SettingsSecurity,
         Route.SettingsAccount,
         Route.SettingsServer,
         Route.SettingsPassword,
@@ -81,8 +86,6 @@ class AppScreensTest {
         Route.SettingsAdvanced,
         Route.SettingsDiagnostics,
         Route.SettingsAbout,
-        Route.SettingsExport,
-        Route.SettingsImport,
     )
 
     @Test
@@ -113,6 +116,11 @@ class AppScreensTest {
     @Test
     fun theSharedTabJournalShareWithShareSheetLinkAndLinksListRoutesMapToTheirScreens() {
         for ((route, screen) in sharingAndLinks) assertEquals(route.path, screen, AppScreens.of(route))
+    }
+
+    @Test
+    fun theSettingsRootSearchAndTheFirstSettingsScreensWithBackupMapToTheirScreens() {
+        for ((route, screen) in settings) assertEquals(route.path, screen, AppScreens.of(route))
     }
 
     @Test
@@ -152,7 +160,7 @@ class AppScreensTest {
         assertEquals(
             AppScreen.entries.toSet() - AppScreen.PLACEHOLDER,
             authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet() +
-                sharingAndLinks.values.toSet(),
+                sharingAndLinks.values.toSet() + settings.values.toSet(),
         )
         assertEquals(authAndLock.size, authAndLock.values.toSet().size)
         assertEquals(emptySet<AppScreen>(), authAndLock.values.toSet() intersect gallery.values.toSet())
@@ -175,6 +183,14 @@ class AppScreensTest {
             (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet()) intersect
                 sharingAndLinks.values.toSet(),
         )
+        assertEquals(settings.size, settings.values.toSet().size)
+        assertEquals(
+            emptySet<AppScreen>(),
+            (
+                authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet() +
+                    sharingAndLinks.values.toSet()
+                ) intersect settings.values.toSet(),
+        )
     }
 
     @Test
@@ -183,7 +199,9 @@ class AppScreensTest {
             .filter { Route::class.java.isAssignableFrom(it) && !it.isInterface }
             .map { it.name }
             .toSet()
-        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + captureAndTags.keys + sharingAndLinks.keys + notYetBuilt).map { it.javaClass.name }.toSet()
+        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + captureAndTags.keys + sharingAndLinks.keys + settings.keys + notYetBuilt)
+            .map { it.javaClass.name }
+            .toSet()
         assertEquals(declared, listed)
     }
 }
