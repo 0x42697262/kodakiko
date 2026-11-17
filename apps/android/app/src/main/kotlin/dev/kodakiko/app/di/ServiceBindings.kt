@@ -5,6 +5,7 @@ import android.os.SystemClock
 import android.util.Log
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.BuildConfig
+import dev.kodakiko.app.edit.EditFlushingLockService
 import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.contract.encodeBytes
@@ -45,6 +46,7 @@ import dev.kodakiko.service.lock.LockServiceDeps
 import dev.kodakiko.service.lock.SystemWallClock
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.feature.auth.DeletionDueAt
+import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.lock.PendingChanges
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
@@ -85,17 +87,22 @@ object ServiceBindings {
     fun lockService(
         accountState: Observable<AccountState>,
         steps: LifecycleSteps,
+        flushes: EditFlushes,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): LockService = DefaultLockService(
-        LockServiceDeps(
-            lockSteps = steps.lock,
-            unlockSteps = steps.unlock,
-            accountState = accountState,
-            log = { event, step -> Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step) },
-            scope = scope,
-            ioDispatcher = ioDispatcher,
+    ): LockService = EditFlushingLockService(
+        delegate = DefaultLockService(
+            LockServiceDeps(
+                lockSteps = steps.lock,
+                unlockSteps = steps.unlock,
+                accountState = accountState,
+                log = { event, step -> Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step) },
+                scope = scope,
+                ioDispatcher = ioDispatcher,
+            ),
         ),
+        flushes = flushes,
+        accountState = accountState,
     )
 
     @Provides

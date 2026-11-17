@@ -89,8 +89,12 @@ sealed interface Route : Serializable {
         override val path: String get() = of(RoutePaths.ENTRY, entryId, RoutePaths.DETAILS)
     }
 
-    data class EntryEdit(val entryId: String) : Route {
+    data class EntryEdit(val entryId: String, val isNew: Boolean = false) : Route {
         override val path: String get() = of(RoutePaths.ENTRY, entryId, RoutePaths.EDIT)
+    }
+
+    data class EntryCrop(val entryId: String, val mediaId: String) : Route {
+        override val path: String get() = of(RoutePaths.ENTRY, entryId, RoutePaths.CROP, mediaId)
     }
 
     data object EntryNew : Route {
@@ -266,6 +270,7 @@ sealed interface Route : Serializable {
                 RouteConstants.SINGLE_SEGMENT -> bySingleSegment[segments.first()]
                 RouteConstants.TWO_SEGMENTS -> twoSegments(segments.first(), segments[RouteConstants.SECOND])
                 RouteConstants.THREE_SEGMENTS -> threeSegments(segments.first(), segments[RouteConstants.SECOND], segments[RouteConstants.THIRD])
+                RouteConstants.FOUR_SEGMENTS -> fourSegments(segments)
                 else -> null
             }
         }
@@ -278,6 +283,13 @@ sealed interface Route : Serializable {
             RoutePaths.SETTINGS -> bySettingsSegment[second]
             else -> null
         }
+
+        private fun fourSegments(segments: List<String>): Route? =
+            if (segments.first() == RoutePaths.ENTRY && segments[RouteConstants.THIRD] == RoutePaths.CROP) {
+                EntryCrop(segments[RouteConstants.SECOND], segments[RouteConstants.FOURTH])
+            } else {
+                null
+            }
 
         private fun threeSegments(first: String, second: String, third: String): Route? = when {
             first == RoutePaths.ENTRY && third == RoutePaths.DETAILS -> EntryDetails(second)

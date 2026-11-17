@@ -1,5 +1,7 @@
 package dev.kodakiko.app.gallery
 
+import dev.kodakiko.app.edit.AppEditRecorder
+import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.viewer.AppVideoSource
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.service.account.Observable
@@ -8,6 +10,7 @@ import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LifecycleStep
 import dev.kodakiko.service.lock.LockStepNames
 import dev.kodakiko.ui.core.notice.GalleryNotice
+import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.gallery.GalleryFilterStore
 
 class LifecycleSteps(
@@ -19,6 +22,8 @@ class LifecycleSteps(
     private val settings: AppDeviceSettings,
     private val entryKeys: EntryKeys,
     private val videos: AppVideoSource,
+    private val flushes: EditFlushes,
+    private val recorder: AppEditRecorder,
 ) {
     val lock: List<LifecycleStep> = listOf(
         unwired(LockStepNames.CANCEL_EXPORT),
@@ -37,6 +42,10 @@ class LifecycleSteps(
         },
         unwired(LockStepNames.CLEAR_COLLECTION_NAMES),
         unwired(LockStepNames.CLEAR_ACCOUNT),
+        LifecycleStep(EditAdapterConstants.FLUSH_EDITS) {
+            recorder.abandon()
+            flushes.flushAll()
+        },
         LifecycleStep(LockStepNames.WIPE_KEYS) { entryKeys.clear() },
     )
 

@@ -20,9 +20,7 @@ internal object ViewerConstants {
     const val GEO_SCHEME = "geo:"
     const val GEO_QUERY = "?q="
     const val GEO_SEPARATOR = ","
-    const val LINE_BREAK = "\n"
     const val SINGLE_ENTRY = 1
-    const val HEADING_LEVEL_TWO = 2
 }
 
 internal object ViewerDimens {
@@ -34,11 +32,6 @@ internal object ViewerDimens {
     val TILE_CORNER = 12.dp
     val SHEET_PADDING = 16.dp
     val ROW_PADDING = 8.dp
-    val QUOTE_BAR = 3.dp
-    val LIST_INDENT = 16.dp
-    val NO_INDENT = 0.dp
-    val RULE = 1.dp
-    val CODE_PADDING = 8.dp
     val CONTROL_PADDING = 16.dp
     const val SCRIM_ALPHA = 0.6f
 }

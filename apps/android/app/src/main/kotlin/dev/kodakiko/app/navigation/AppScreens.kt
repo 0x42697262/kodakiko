@@ -12,6 +12,9 @@ import dev.kodakiko.ui.feature.auth.SignInScreen
 import dev.kodakiko.ui.feature.auth.SignUpScreen
 import dev.kodakiko.ui.feature.auth.WelcomeScreen
 import dev.kodakiko.ui.feature.calendar.CalendarScreen
+import dev.kodakiko.ui.feature.edit.CropScreen
+import dev.kodakiko.ui.feature.edit.EditScreen
+import dev.kodakiko.ui.feature.edit.EntryNewScreen
 import dev.kodakiko.ui.feature.gallery.DayScreen
 import dev.kodakiko.ui.feature.gallery.GalleryScreen
 import dev.kodakiko.ui.feature.gallery.TrashScreen
@@ -38,6 +41,9 @@ enum class AppScreen {
     ENTRY,
     ENTRY_DETAILS,
     PLAY,
+    ENTRY_EDIT,
+    ENTRY_NEW,
+    ENTRY_CROP,
     PLACEHOLDER,
 }
 
@@ -60,6 +66,9 @@ object AppScreens {
         is Route.Entry -> AppScreen.ENTRY
         is Route.EntryDetails -> AppScreen.ENTRY_DETAILS
         is Route.Play -> AppScreen.PLAY
+        is Route.EntryEdit -> AppScreen.ENTRY_EDIT
+        Route.EntryNew -> AppScreen.ENTRY_NEW
+        is Route.EntryCrop -> AppScreen.ENTRY_CROP
         else -> AppScreen.PLACEHOLDER
     }
 
@@ -83,6 +92,9 @@ object AppScreens {
             AppScreen.ENTRY -> EntryViewerScreen((route as Route.Entry).entryId)
             AppScreen.ENTRY_DETAILS -> EntryDetailsScreen((route as Route.EntryDetails).entryId)
             AppScreen.PLAY -> (route as Route.Play).let { VideoPlayerScreen(it.entryId, it.mediaId) }
+            AppScreen.ENTRY_EDIT -> (route as Route.EntryEdit).let { EditScreen(it.entryId, it.isNew) }
+            AppScreen.ENTRY_NEW -> EntryNewScreen()
+            AppScreen.ENTRY_CROP -> (route as Route.EntryCrop).let { CropScreen(it.entryId, it.mediaId) }
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }
     }

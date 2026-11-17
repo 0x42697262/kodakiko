@@ -28,6 +28,7 @@ dependencies {
     implementation(projects.service.lock)
     implementation(projects.service.index)
     implementation(projects.service.entries)
+    implementation(projects.service.shareout)
     implementation(projects.data.media)
     implementation(projects.data.db)
     implementation(projects.data.files)

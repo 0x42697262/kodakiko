@@ -163,9 +163,13 @@ object TestTags {
     object Crop {
         const val APPLY = "crop.apply"
         const val AREA = "crop.area"
+        const val BOTTOM_LEFT = "crop.bottomLeft"
+        const val BOTTOM_RIGHT = "crop.bottomRight"
         const val CANCEL = "crop.cancel"
         const val FAILED = "crop.failed"
         const val SHEET = "crop.sheet"
+        const val TOP_LEFT = "crop.topLeft"
+        const val TOP_RIGHT = "crop.topRight"
     }
 
     object Day {
@@ -204,6 +208,7 @@ object TestTags {
         const val INLINE_VIDEO = "edit.inlineVideo"
         const val LOADING = "edit.loading"
         const val MEDIA_MENU = "edit.mediaMenu"
+        const val MORE = "edit.more"
         const val NOTE_DONE = "edit.noteDone"
         const val PAGE = "edit.page"
         const val PAGER = "edit.pager"
@@ -723,6 +728,18 @@ object TestTags {
         const val INVALID = "timeEditor.invalid"
         const val RESET = "timeEditor.reset"
         const val TIME = "timeEditor.time"
+    }
+
+    object Toolbar {
+        const val BOLD = "toolbar.bold"
+        const val BULLET = "toolbar.bullet"
+        const val CHECKLIST = "toolbar.checklist"
+        const val HEADING = "toolbar.heading"
+        const val ITALIC = "toolbar.italic"
+        const val LINK = "toolbar.link"
+        const val QUOTE = "toolbar.quote"
+        const val STRIKE = "toolbar.strike"
+        const val TIME = "toolbar.time"
     }
 
     object Trash {

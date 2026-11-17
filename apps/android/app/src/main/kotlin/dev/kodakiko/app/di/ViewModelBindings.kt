@@ -20,6 +20,13 @@ import dev.kodakiko.ui.feature.auth.SignUpViewModel
 import dev.kodakiko.ui.feature.auth.WelcomeViewModel
 import dev.kodakiko.ui.feature.calendar.CalendarDeps
 import dev.kodakiko.ui.feature.calendar.CalendarViewModel
+import dev.kodakiko.ui.feature.edit.CropDeps
+import dev.kodakiko.ui.feature.edit.CropViewModel
+import dev.kodakiko.ui.feature.edit.CropViewModelFactory
+import dev.kodakiko.ui.feature.edit.EditViewModel
+import dev.kodakiko.ui.feature.edit.EditViewModelFactory
+import dev.kodakiko.ui.feature.edit.EntryNewDeps
+import dev.kodakiko.ui.feature.edit.EntryNewViewModel
 import dev.kodakiko.ui.feature.gallery.DayViewModel
 import dev.kodakiko.ui.feature.gallery.DayViewModelFactory
 import dev.kodakiko.ui.feature.gallery.GalleryDeps
@@ -142,6 +149,22 @@ object ViewModelBindings {
     @ManualViewModelAssistedFactoryKey(VideoPlayerViewModelFactory::class)
     fun videoPlayer(deps: VideoPlayerDeps): ManualViewModelAssistedFactory =
         VideoPlayerViewModelFactory { entryId, mediaId -> VideoPlayerViewModel(deps, entryId, mediaId) }
+
+    @Provides
+    @IntoMap
+    @ManualViewModelAssistedFactoryKey(EditViewModelFactory::class)
+    fun edit(deps: EditDepsFactory): ManualViewModelAssistedFactory =
+        EditViewModelFactory { entryId, isNew -> EditViewModel(deps.create(), entryId, isNew) }
+
+    @Provides
+    @IntoMap
+    @ManualViewModelAssistedFactoryKey(CropViewModelFactory::class)
+    fun crop(deps: CropDeps): ManualViewModelAssistedFactory = CropViewModelFactory { entryId, mediaId -> CropViewModel(deps, entryId, mediaId) }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(EntryNewViewModel::class)
+    fun entryNew(deps: EntryNewDeps): ViewModel = EntryNewViewModel(deps)
 
     @Provides
     @IntoMap

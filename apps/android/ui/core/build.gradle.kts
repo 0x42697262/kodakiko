@@ -14,6 +14,7 @@ dependencies {
     api(projects.service.sync)
     api(projects.service.sharing)
     api(projects.service.account)
+    implementation(projects.shared.markdown)
     api(libs.compose.ui)
     api(libs.compose.foundation)
     api(libs.compose.material3)

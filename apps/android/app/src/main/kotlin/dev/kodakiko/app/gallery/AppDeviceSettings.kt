@@ -35,6 +35,8 @@ class AppDeviceSettings(
         state.value = opened.get()
     }
 
+    fun loaded(): Boolean = store != null
+
     fun unload() {
         store = null
         state.value = DeviceSettingsDefaults.ANDROID

@@ -3,6 +3,7 @@ package dev.kodakiko.app.di
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
+import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.AppGalleryAccount
@@ -42,6 +43,7 @@ import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.index.IndexServiceDeps
 import dev.kodakiko.service.lock.LockControl
 import dev.kodakiko.ui.core.notice.GalleryNotice
+import dev.kodakiko.ui.feature.edit.EditFlushes
 import dev.kodakiko.ui.feature.gallery.GalleryDeps
 import dev.kodakiko.ui.feature.gallery.GalleryFilterStore
 import dev.kodakiko.ui.feature.gallery.GalleryThumbnails
@@ -174,7 +176,9 @@ object GalleryBindings {
         settings: AppDeviceSettings,
         entryKeys: EntryKeys,
         videos: AppVideoSource,
-    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos)
+        flushes: EditFlushes,
+        recorder: AppEditRecorder,
+    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder)
 
     @Provides
     @SingleIn(AppScope::class)

@@ -22,6 +22,7 @@ object RoutePaths {
     const val ENTRY = "entry"
     const val DETAILS = "details"
     const val EDIT = "edit"
+    const val CROP = "crop"
     const val NEW = "new"
     const val PLAY = "play"
     const val CAPTURE = "capture"
@@ -56,7 +57,9 @@ internal object RouteConstants {
     const val SINGLE_SEGMENT = 1
     const val TWO_SEGMENTS = 2
     const val THREE_SEGMENTS = 3
+    const val FOUR_SEGMENTS = 4
     const val SECOND = 1
     const val THIRD = 2
+    const val FOURTH = 3
     const val NO_NAVIGATOR = "No RouteNavigator provided"
 }
