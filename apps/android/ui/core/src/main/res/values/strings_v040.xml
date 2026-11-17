@@ -38,4 +38,6 @@
     </plurals>
     <string name="debug_log_cleared">Debug log cleared.</string>
     <string name="debug_log_failed">Couldn\'t do that. Try again.</string>
+    <string name="calendar_jump_previous_year">Previous year</string>
+    <string name="calendar_jump_next_year">Next year</string>
 </resources>

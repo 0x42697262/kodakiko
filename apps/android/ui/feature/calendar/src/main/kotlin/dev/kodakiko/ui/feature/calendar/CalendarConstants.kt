@@ -22,6 +22,7 @@ internal object CalendarConstants {
     const val DATE_DAY_SEPARATOR = " "
     const val DATE_YEAR_SEPARATOR = ", "
     const val PAGER_FIRST_MONTH = "1900-01"
+    const val JUMP_MONTHS_PER_ROW = 4
 }
 
 internal object CalendarDimens {
