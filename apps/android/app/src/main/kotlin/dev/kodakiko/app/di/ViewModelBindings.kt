@@ -20,6 +20,9 @@ import dev.kodakiko.ui.feature.auth.SignUpViewModel
 import dev.kodakiko.ui.feature.auth.WelcomeViewModel
 import dev.kodakiko.ui.feature.calendar.CalendarDeps
 import dev.kodakiko.ui.feature.calendar.CalendarViewModel
+import dev.kodakiko.ui.feature.capture.CaptureDeps
+import dev.kodakiko.ui.feature.capture.CaptureViewModel
+import dev.kodakiko.ui.feature.capture.CaptureViewModelFactory
 import dev.kodakiko.ui.feature.edit.CropDeps
 import dev.kodakiko.ui.feature.edit.CropViewModel
 import dev.kodakiko.ui.feature.edit.CropViewModelFactory
@@ -34,6 +37,8 @@ import dev.kodakiko.ui.feature.gallery.GalleryViewModel
 import dev.kodakiko.ui.feature.gallery.TrashViewModel
 import dev.kodakiko.ui.feature.lock.LockViewModel
 import dev.kodakiko.ui.feature.lock.PendingChanges
+import dev.kodakiko.ui.feature.tags.TagsDeps
+import dev.kodakiko.ui.feature.tags.TagsViewModel
 import dev.kodakiko.ui.feature.viewer.EntryDetailsDeps
 import dev.kodakiko.ui.feature.viewer.EntryDetailsViewModel
 import dev.kodakiko.ui.feature.viewer.EntryDetailsViewModelFactory
@@ -165,6 +170,16 @@ object ViewModelBindings {
     @IntoMap
     @ViewModelKey(EntryNewViewModel::class)
     fun entryNew(deps: EntryNewDeps): ViewModel = EntryNewViewModel(deps)
+
+    @Provides
+    @IntoMap
+    @ManualViewModelAssistedFactoryKey(CaptureViewModelFactory::class)
+    fun capture(deps: CaptureDeps): ManualViewModelAssistedFactory = CaptureViewModelFactory { entryId, mode -> CaptureViewModel(deps, entryId, mode) }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(TagsViewModel::class)
+    fun tags(deps: TagsDeps): ViewModel = TagsViewModel(deps)
 
     @Provides
     @IntoMap

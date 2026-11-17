@@ -5,6 +5,7 @@ import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.viewer.AppVideoSource
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.service.account.Observable
+import dev.kodakiko.service.entries.CaptureTray
 import dev.kodakiko.service.entries.EntryKeys
 import dev.kodakiko.service.index.IndexService
 import dev.kodakiko.service.lock.LifecycleStep
@@ -24,6 +25,7 @@ class LifecycleSteps(
     private val videos: AppVideoSource,
     private val flushes: EditFlushes,
     private val recorder: AppEditRecorder,
+    private val tray: CaptureTray,
 ) {
     val lock: List<LifecycleStep> = listOf(
         unwired(LockStepNames.CANCEL_EXPORT),
@@ -32,7 +34,7 @@ class LifecycleSteps(
         LifecycleStep(LockStepNames.RELEASE_VIDEO) { videos.releaseAll() },
         unwired(LockStepNames.RELEASE_ORIGINALS),
         LifecycleStep(LockStepNames.CLEAR_THUMBNAILS) { media.clear() },
-        unwired(LockStepNames.CLEAR_TRAY),
+        LifecycleStep(LockStepNames.CLEAR_TRAY) { tray.clear(true) },
         LifecycleStep(LockStepNames.WIPE_TEMP) { tempFiles.wipe() },
         LifecycleStep(LockStepNames.CLEAR_INDEX) { index.clear() },
         LifecycleStep(LockStepNames.CLEAR_UI_STATE) {

@@ -178,7 +178,8 @@ object GalleryBindings {
         videos: AppVideoSource,
         flushes: EditFlushes,
         recorder: AppEditRecorder,
-    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder)
+        tray: CaptureTray,
+    ): LifecycleSteps = LifecycleSteps(index, media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray)
 
     @Provides
     @SingleIn(AppScope::class)

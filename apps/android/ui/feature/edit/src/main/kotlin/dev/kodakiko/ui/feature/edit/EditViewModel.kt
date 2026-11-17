@@ -26,6 +26,7 @@ import dev.kodakiko.ui.core.format.formatClock
 import dev.kodakiko.ui.core.navigation.CaptureMode
 import dev.kodakiko.ui.core.navigation.Route
 import dev.kodakiko.ui.core.notice.GalleryNotice
+import dev.kodakiko.ui.core.tags.toggleTagChoice
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -397,12 +398,8 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
 
     private fun toggleTag(tag: String) {
         val draft = ui.value.draft ?: return
-        if (tag in draft.tags) {
-            change { current -> current.copy(tags = current.tags.filter { it != tag }) }
-            return
-        }
-        if (draft.tags.size >= TAGS_PER_ENTRY_MAX) return
-        change { current -> current.copy(tags = current.tags + tag) }
+        if (tag !in draft.tags && draft.tags.size >= TAGS_PER_ENTRY_MAX) return
+        change { current -> current.copy(tags = toggleTagChoice(current.tags, tag, single = false)) }
     }
 
     private fun editNote() {

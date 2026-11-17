@@ -68,6 +68,8 @@ tasks.register("verify") {
         ":ui:feature:calendar:testDebugUnitTest",
         ":ui:feature:viewer:testDebugUnitTest",
         ":ui:feature:edit:testDebugUnitTest",
+        ":ui:feature:capture:testDebugUnitTest",
+        ":ui:feature:tags:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
         ":app:lintRelease",

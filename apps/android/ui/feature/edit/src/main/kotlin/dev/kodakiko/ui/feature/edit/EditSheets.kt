@@ -6,19 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,11 +29,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import dev.kodakiko.contract.CAPTION_MAX_CHARS
 import dev.kodakiko.contract.MediaKind
-import dev.kodakiko.contract.TAGS_PER_ENTRY_MAX
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.components.AdaptiveSheet
 import dev.kodakiko.ui.core.components.SettingsItemsPaddings
+import dev.kodakiko.ui.core.tags.ChooseTagsSheet
 
 @Composable
 internal fun EditSheets(state: EditState, body: EditBody, onAction: (EditAction) -> Unit) {
@@ -46,7 +41,13 @@ internal fun EditSheets(state: EditState, body: EditBody, onAction: (EditAction)
         is EditSheet.MediaMenu -> MediaMenuSheet(sheet, onAction)
         is EditSheet.Caption -> CaptionSheet(sheet, onAction)
         is EditSheet.Remove -> RemoveSheet(sheet, onAction)
-        is EditSheet.ChooseTags -> TagPickerSheet(sheet.tags, body.tags, onAction)
+        is EditSheet.ChooseTags -> ChooseTagsSheet(
+            choices = sheet.tags,
+            selected = body.tags,
+            onToggle = { onAction(EditAction.ToggleTag(it)) },
+            onEditTags = { onAction(EditAction.EditTags) },
+            onDismiss = { onAction(EditAction.DismissSheet) },
+        )
         null -> Unit
     }
 }
@@ -146,59 +147,5 @@ private fun RemoveSheet(sheet: EditSheet.Remove, onAction: (EditAction) -> Unit)
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun TagPickerSheet(choices: List<String>, selected: List<String>, onAction: (EditAction) -> Unit) {
-    AdaptiveSheet(onDismissRequest = { onAction(EditAction.DismissSheet) }, modifier = Modifier.testTag(TestTags.Tags.PICKER)) {
-        Column(modifier = Modifier.fillMaxWidth().padding(vertical = EditDimens.SHEET_PADDING)) {
-            Text(
-                text = stringResource(R.string.tags_picker_title),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = SettingsItemsPaddings.Horizontal),
-            )
-            Column(modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(vertical = EditDimens.SMALL_SPACING)) {
-                if (choices.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.tags_none_to_pick),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = SettingsItemsPaddings.Horizontal, vertical = EditDimens.SMALL_SPACING),
-                    )
-                }
-                choices.forEach { tag ->
-                    val checked = tag in selected
-                    TagOption(tag, checked, enabled = checked || selected.size < TAGS_PER_ENTRY_MAX) { onAction(EditAction.ToggleTag(tag)) }
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = EditDimens.SMALL_SPACING),
-                horizontalArrangement = Arrangement.End,
-            ) {
-                TextButton(onClick = { onAction(EditAction.EditTags) }, modifier = Modifier.testTag(TestTags.Tags.EDIT_TAGS)) {
-                    Text(text = stringResource(R.string.tags_edit_tags))
-                }
-                TextButton(onClick = { onAction(EditAction.DismissSheet) }, modifier = Modifier.testTag(TestTags.Tags.DONE)) {
-                    Text(text = stringResource(R.string.tags_done))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TagOption(tag: String, checked: Boolean, enabled: Boolean, onToggle: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .toggleable(value = checked, enabled = enabled, role = Role.Checkbox, onValueChange = { onToggle() })
-            .padding(horizontal = SettingsItemsPaddings.Horizontal)
-            .testTag(TestTags.Tags.OPTION + EditConstants.TAG_OPTION_SEPARATOR + tag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING),
-    ) {
-        Checkbox(checked = checked, onCheckedChange = null, enabled = enabled)
-        Text(text = tag, style = MaterialTheme.typography.bodyLarge)
     }
 }

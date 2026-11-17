@@ -6,6 +6,7 @@ import dev.kodakiko.data.db.DeviceSettingsJson
 import dev.kodakiko.data.db.DeviceSettingsStore
 import dev.kodakiko.service.account.DatabaseRowStore
 import dev.kodakiko.ui.feature.gallery.GallerySettings
+import dev.kodakiko.ui.feature.tags.TagsSettings
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ class AppDeviceSettings(
     private val rowStore: DatabaseRowStore,
     private val scope: CoroutineScope,
     ioDispatcher: CoroutineDispatcher,
-) : GallerySettings {
+) : GallerySettings, TagsSettings {
     private val writer = ioDispatcher.limitedParallelism(1)
     private val state = MutableStateFlow(DeviceSettingsDefaults.ANDROID)
 
