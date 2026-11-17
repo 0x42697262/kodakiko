@@ -1,0 +1,136 @@
+package dev.kodakiko.log
+
+object LogServices {
+    const val APP = "app"
+    const val NAV = "nav"
+    const val AUTH = "auth"
+    const val LOCK = "lock"
+    const val SYNC = "sync"
+    const val UPLOAD = "upload"
+    const val DOWNLOAD = "download"
+    const val IMPORT = "import"
+    const val EXPORT = "export"
+    const val RESTORE = "restore"
+    const val CRASH = "crash"
+    const val SETTINGS = "settings"
+    const val LOG = "log"
+}
+
+object LogEvents {
+    const val APP_START = "app_start"
+    const val TEMP_WIPE = "temp_wipe"
+    const val ADOPTION = "adoption"
+    const val RESTORE = "restore"
+    const val STARTUP_READY = "startup_ready"
+    const val UNCAUGHT_COROUTINE = "uncaught_coroutine"
+    const val UNCAUGHT = "uncaught"
+    const val CRASH_FRAME = "at"
+    const val CAUSED_BY = "caused_by"
+    const val STATE = "state"
+    const val UNLOCK_START = "unlock_start"
+    const val UNLOCK_END = "unlock_end"
+    const val LOCK_START = "lock_start"
+    const val LOCK_END = "lock_end"
+    const val STEP = "step"
+    const val PASS = "pass"
+    const val COMPLETED = "completed"
+    const val FAILED = "failed"
+    const val STOPPED = "stopped"
+    const val DOWNLOAD = "download"
+    const val ABORT = "abort"
+    const val SCREEN = "screen"
+    const val CHANGED = "changed"
+    const val LOGGING_ENABLED = "set_debug_logging"
+    const val CLEARED = "cleared"
+}
+
+object LogFields {
+    const val VERSION = "version"
+    const val VERSION_CODE = "version_code"
+    const val SDK = "sdk"
+    const val BUILD_TYPE = "build_type"
+    const val DEBUGGABLE = "debuggable"
+    const val DURATION_MS = "duration_ms"
+    const val PENDING = "pending"
+    const val OUTCOME = "outcome"
+    const val ERROR = "error"
+    const val STATE = "state"
+    const val FROM = "from"
+    const val TO = "to"
+    const val METHOD = "method"
+    const val PHASE = "phase"
+    const val STEP = "step"
+    const val REASON = "reason"
+    const val PUSHED = "pushed"
+    const val PULLED_ENTRIES = "pulled_entries"
+    const val FAILED = "failed"
+    const val OBJECT_ID = "object_id"
+    const val KIND = "kind"
+    const val BYTES = "bytes"
+    const val SCREEN = "screen"
+    const val ACTION = "action"
+    const val DEPTH = "depth"
+    const val ENTRY_ID = "entry_id"
+    const val MEDIA_ID = "media_id"
+    const val COLLECTION_ID = "collection_id"
+    const val COUNT = "count"
+    const val THREAD = "thread"
+    const val TYPE = "type"
+    const val KEY = "key"
+    const val ENABLED = "enabled"
+    const val FIELDS = "fields"
+}
+
+object LogValues {
+    const val OK = "ok"
+    const val FAILED = "failed"
+    const val CANCELLED = "cancelled"
+    const val DENIED = "denied"
+    const val MAIN = "main"
+    const val BACKGROUND = "bg"
+    const val PHASE_LOCK = "lock"
+    const val PHASE_UNLOCK = "unlock"
+    const val KIND_SYNC = "sync"
+    const val KIND_LINK = "link"
+    const val METHOD_PASSWORD = "password"
+    const val METHOD_DEVICE = "device"
+    const val METHOD_RESTORE = "restore"
+    const val ACTION_PUSH = "push"
+    const val ACTION_POP = "pop"
+    const val ACTION_REPLACE = "replace"
+    const val ACTION_REPLACE_ALL = "replace_all"
+    const val ACTION_TAB = "tab"
+    const val REDACTED = "redacted"
+    const val NULL = "null"
+    const val INVALID_NUMBER = "invalid_number"
+    const val UNKNOWN = "unknown"
+}
+
+internal object LogFormatConstants {
+    const val MAX_MESSAGE_CHARS = 2_048
+    const val MAX_SERVICE_CHARS = 24
+    const val MAX_TOKEN_CHARS = 48
+    const val MAX_FRAME_CHARS = 160
+    const val LEVEL_WIDTH = 5
+    const val SERVICE_WIDTH = 9
+    const val SEPARATOR = "  "
+    const val FIELD_SEPARATOR = " "
+    const val ASSIGN = "="
+    const val REPLACEMENT = "_"
+    const val UNKNOWN_SERVICE = "unknown"
+    const val FALLBACK_EVENT = "event"
+    const val FALLBACK_FIELD = "field"
+    const val ALTERNATION = "|"
+    const val FORBIDDEN_PREFIX = "(^|_)("
+    const val FORBIDDEN_SUFFIX = ")(_|$)"
+    const val SAFE_VALUE = "^[A-Za-z0-9_.:-]{1,64}$"
+    const val TOKEN_JUNK = "[^a-z0-9_.:-]+"
+    const val FRAME_JUNK = "[^A-Za-z0-9_.$<>():-]"
+    const val CAMEL_BOUNDARY = "([a-z0-9])([A-Z])"
+    const val CAMEL_REPLACEMENT = "$1_$2"
+    val FORBIDDEN_WORDS: List<String> = listOf(
+        "amount", "body", "caption", "captions", "content", "description", "email", "file", "filename", "label", "link",
+        "location", "lat", "lon", "message", "name", "note", "notes", "passphrase", "password", "path", "place", "query",
+        "recovery", "search", "secret", "tag", "tags", "text", "title", "token", "uri", "url", "username", "value", "words", "date",
+    )
+}
