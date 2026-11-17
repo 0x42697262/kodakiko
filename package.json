@@ -7,7 +7,8 @@
     "node": ">=22.18.0"
   },
   "scripts": {
-    "verify": "pnpm lint && pnpm typecheck && pnpm test",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:generated",
+    "check:generated": "node tests/fixtures/ui-strings/emit-android.ts --check && node apps/android/tools/licenses/emit-licenses.ts --check",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck && tsc -p tsconfig.scripts.json",
     "test": "pnpm -r --filter '!@kodakiko/e2e' test && pnpm test:scripts",
