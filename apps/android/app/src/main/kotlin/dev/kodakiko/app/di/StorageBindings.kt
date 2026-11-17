@@ -4,8 +4,14 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ProcessLifecycleOwner
 import dev.kodakiko.app.ActivityHolder
+import dev.kodakiko.app.BuildConfig
+import dev.kodakiko.app.log.AppLogConstants
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.crypto.createSodium
+import dev.kodakiko.data.log.DebugLogConstants
+import dev.kodakiko.data.log.DebugLogFile
+import dev.kodakiko.data.log.DebugLogStore
+import dev.kodakiko.data.log.FileDebugLog
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.data.migration.LegacySecureStoreSecrets
 import dev.kodakiko.data.migration.SecureStoresTarget
@@ -15,6 +21,12 @@ import dev.kodakiko.data.secure.GlobalStore
 import dev.kodakiko.data.secure.KeyVault
 import dev.kodakiko.data.secure.LegacySecureStore
 import dev.kodakiko.data.secure.SessionStore
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
+import dev.kodakiko.log.typeOf
 import dev.kodakiko.platform.device.ForegroundTracker
 import dev.kodakiko.service.account.DatabaseRowStore
 import dev.kodakiko.service.account.DiskFileStore
@@ -35,9 +47,11 @@ import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.io.File
 
 @BindingContainer
 object StorageBindings {
@@ -51,7 +65,28 @@ object StorageBindings {
     @Provides
     @SingleIn(AppScope::class)
     @ApplicationScope
-    fun applicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    fun applicationScope(log: DebugLog): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + uncaught(log))
+
+    internal fun uncaught(log: DebugLog): CoroutineExceptionHandler = CoroutineExceptionHandler { _, failure ->
+        log.record(LogLevel.ERROR, LogServices.APP, LogEvents.UNCAUGHT_COROUTINE, mapOf(LogFields.TYPE to typeOf(failure)))
+    }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun debugLogFile(context: Context): DebugLogFile = DebugLogFile(
+        File(context.filesDir, DebugLogConstants.DIRECTORY),
+        defaultOn = BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.endsWith(AppLogConstants.PREVIEW_SUFFIX),
+    )
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun fileDebugLog(file: DebugLogFile, @IoDispatcher ioDispatcher: CoroutineDispatcher): FileDebugLog = FileDebugLog(file, ioDispatcher)
+
+    @Provides
+    fun debugLog(log: FileDebugLog): DebugLog = log
+
+    @Provides
+    fun debugLogStore(log: FileDebugLog): DebugLogStore = log
 
     @Provides
     @SingleIn(AppScope::class)

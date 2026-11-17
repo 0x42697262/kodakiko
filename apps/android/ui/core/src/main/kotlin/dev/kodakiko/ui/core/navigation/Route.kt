@@ -209,6 +209,10 @@ sealed interface Route : Serializable {
         override val path: String get() = of(RoutePaths.SETTINGS, RoutePaths.DIAGNOSTICS)
     }
 
+    data object SettingsDebugLog : Route {
+        override val path: String get() = of(RoutePaths.SETTINGS, RoutePaths.DEBUG_LOG)
+    }
+
     data object SettingsAbout : Route {
         override val path: String get() = of(RoutePaths.SETTINGS, RoutePaths.ABOUT)
     }
@@ -263,6 +267,7 @@ sealed interface Route : Serializable {
             SettingsAdmin,
             SettingsAdvanced,
             SettingsDiagnostics,
+            SettingsDebugLog,
             SettingsAbout,
             SettingsExport,
             SettingsImport,

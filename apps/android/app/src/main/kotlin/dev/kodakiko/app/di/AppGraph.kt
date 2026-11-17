@@ -6,8 +6,10 @@ import dev.kodakiko.app.AppStartup
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.system.SystemUiSettings
+import dev.kodakiko.data.log.DebugLogFile
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.data.secure.DeviceGate
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.service.account.Observable
@@ -72,6 +74,10 @@ interface AppGraph : ViewModelGraph {
     val unlockedWork: UnlockedWork
 
     val systemUiSettings: StateFlow<SystemUiSettings>
+
+    val debugLog: DebugLog
+
+    val debugLogFile: DebugLogFile
 
     @DependencyGraph.Factory
     fun interface Factory {

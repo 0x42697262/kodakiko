@@ -38,6 +38,7 @@ import dev.kodakiko.ui.core.components.material.KodakikoSnackbarHost
 import dev.kodakiko.ui.core.components.material.Scaffold
 import dev.kodakiko.ui.core.components.material.SnackbarMessage
 import dev.kodakiko.ui.core.components.material.showMessage
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.settings.Preference
 import dev.kodakiko.ui.core.settings.widget.PreferenceGroupHeader
 import dev.kodakiko.ui.core.util.secondaryItemAlpha
@@ -113,6 +114,13 @@ private fun advancedItems(state: AdvancedSettingsState, onAction: (AdvancedSetti
         subtitle = stringResource(R.string.advanced_reset_summary),
         testTag = TestTags.Advanced.RESET,
         onClick = { onAction(AdvancedSettingsAction.AskReset) },
+    ),
+    Preference.PreferenceItem.TextPreference(
+        title = stringResource(R.string.debug_log_view),
+        subtitle = stringResource(R.string.debug_log_switch_summary),
+        icon = KodakikoIcons.Article,
+        testTag = TestTags.Advanced.DEBUG_LOG,
+        onClick = { onAction(AdvancedSettingsAction.OpenDebugLog) },
     ),
     Preference.PreferenceItem.TextPreference(
         title = stringResource(R.string.advanced_debug),

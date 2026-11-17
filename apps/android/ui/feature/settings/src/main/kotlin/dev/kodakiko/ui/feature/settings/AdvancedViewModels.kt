@@ -55,6 +55,8 @@ sealed interface AdvancedSettingsAction {
 
     data object OpenDiagnostics : AdvancedSettingsAction
 
+    data object OpenDebugLog : AdvancedSettingsAction
+
     data object Back : AdvancedSettingsAction
 }
 
@@ -76,6 +78,7 @@ class AdvancedSettingsViewModel(private val advanced: AdvancedSettingsDeps) : De
             AdvancedSettingsAction.ToggleDebug -> local.update { it.copy(debugInfo = if (it.debugInfo == null) advanced.diagnostics.debugInfoJson() else null) }
             AdvancedSettingsAction.MessageShown -> local.update { it.copy(message = null) }
             AdvancedSettingsAction.OpenDiagnostics -> send(SettingsEvent.Open(Route.SettingsDiagnostics))
+            AdvancedSettingsAction.OpenDebugLog -> send(SettingsEvent.Open(Route.SettingsDebugLog))
             AdvancedSettingsAction.Back -> back()
         }
     }

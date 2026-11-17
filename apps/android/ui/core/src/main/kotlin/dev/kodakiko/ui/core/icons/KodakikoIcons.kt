@@ -6,6 +6,7 @@ import androidx.compose.ui.res.vectorResource
 import dev.kodakiko.ui.core.R
 
 object KodakikoIcons {
+    val Article: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_article)
     val ArrowBack: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_arrow_back)
     val ArrowDownward: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_arrow_downward)
     val ArrowUpward: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_arrow_upward)
@@ -14,8 +15,10 @@ object KodakikoIcons {
     val CheckBox: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_check_box)
     val CheckBoxOutlineBlank: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_check_box_outline_blank)
     val Close: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_close)
+    val ContentCopy: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_content_copy)
     val Delete: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_delete)
     val DisabledByDefault: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_disabled_by_default)
+    val Share: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_share)
     val Help: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_help)
     val Info: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_info)
     val Label: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_label)

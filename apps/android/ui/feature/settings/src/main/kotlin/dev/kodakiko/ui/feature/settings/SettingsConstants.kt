@@ -47,6 +47,7 @@ internal object SettingsConstants {
 
 internal object SettingsDimens {
     val SCREEN_PADDING = 16.dp
+    val LOG_LINE_PADDING = 2.dp
     val SECTION_SPACING = 12.dp
     val ITEM_SPACING = 8.dp
     val USAGE_BAR_HEIGHT = 8.dp

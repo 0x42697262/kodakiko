@@ -42,6 +42,11 @@ object LogEvents {
     const val CHANGED = "changed"
     const val LOGGING_ENABLED = "set_debug_logging"
     const val CLEARED = "cleared"
+    const val IMPORT_PICK = "import_pick"
+    const val RESTORE_START = "restore_start"
+    const val RESTORE_END = "restore_end"
+    const val RESTORE_FAILURE = "restore_failure"
+    const val RESTORE_ERROR = "restore_error"
 }
 
 object LogFields {
@@ -79,6 +84,10 @@ object LogFields {
     const val KEY = "key"
     const val ENABLED = "enabled"
     const val FIELDS = "fields"
+    const val ENCRYPTED = "encrypted"
+    const val ENTRIES = "entries"
+    const val MEDIA = "media"
+    const val DUPLICATES = "duplicates"
 }
 
 object LogValues {

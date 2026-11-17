@@ -48,6 +48,7 @@ object RoutePaths {
     const val ADMIN = "admin"
     const val ADVANCED = "advanced"
     const val DIAGNOSTICS = "diagnostics"
+    const val DEBUG_LOG = "debug-log"
     const val ABOUT = "about"
     const val EXPORT = "export"
     const val IMPORT = "import"

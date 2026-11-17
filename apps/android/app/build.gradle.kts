@@ -59,6 +59,8 @@ dependencies {
     implementation(projects.data.net)
     implementation(projects.data.upload)
     implementation(projects.data.migration)
+    implementation(projects.data.log)
+    implementation(projects.shared.log)
     implementation(projects.platform.device)
     implementation(projects.platform.audio)
     implementation(projects.platform.camera)

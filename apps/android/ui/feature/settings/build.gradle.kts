@@ -18,6 +18,7 @@ dependencies {
     api(projects.service.diagnostics)
     api(projects.data.media)
     api(projects.shared.contract)
+    api(projects.shared.log)
     api(libs.androidx.lifecycle.viewmodel.compose)
     implementation(projects.platform.picker)
     implementation(projects.shared.js)

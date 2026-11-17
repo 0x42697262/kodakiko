@@ -11,6 +11,7 @@ import dev.kodakiko.app.edit.ActivityShareLauncher
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.navigation.HomeSettings
+import dev.kodakiko.app.settings.AppDebugLogPort
 import dev.kodakiko.app.settings.AppSettingsAccount
 import dev.kodakiko.app.settings.AppSettingsBackup
 import dev.kodakiko.app.settings.AppSettingsCredentials
@@ -28,12 +29,14 @@ import dev.kodakiko.app.system.SystemUiSettings
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.db.DeviceSettings
 import dev.kodakiko.data.files.TempFiles
+import dev.kodakiko.data.log.DebugLogStore
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.data.secure.DeviceLock
 import dev.kodakiko.data.secure.DeviceLocks
 import dev.kodakiko.data.secure.KeyVault
 import dev.kodakiko.exporting.ZipTimeZone
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
@@ -72,6 +75,7 @@ import dev.kodakiko.ui.feature.settings.AdvancedSettingsDeps
 import dev.kodakiko.ui.feature.settings.AdvancedSettingsViewModel
 import dev.kodakiko.ui.feature.settings.AppearanceSettingsViewModel
 import dev.kodakiko.ui.feature.settings.CaptureSettingsViewModel
+import dev.kodakiko.ui.feature.settings.DebugLogViewModel
 import dev.kodakiko.ui.feature.settings.DeleteAccountViewModel
 import dev.kodakiko.ui.feature.settings.DiagnosticsViewModel
 import dev.kodakiko.ui.feature.settings.ExportViewModel
@@ -171,7 +175,8 @@ object SettingsBindings {
         tempFiles: TempFiles,
         config: ConfigService,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): RestoreService = SnapshotRestoreService(sodium, index, imports, entries, tempFiles, config::current, ioDispatcher)
+        debugLog: DebugLog,
+    ): RestoreService = SnapshotRestoreService(sodium, index, imports, entries, tempFiles, config::current, ioDispatcher, debugLog)
 
     @Provides
     @SingleIn(AppScope::class)
@@ -197,6 +202,7 @@ object SettingsBindings {
         highlight: SettingsHighlight,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        debugLog: DebugLog,
     ): SettingsDeps = SettingsDeps(
         settings = settings,
         account = AppSettingsAccount(auth, accounts, lockControl),
@@ -206,7 +212,7 @@ object SettingsBindings {
         thumbnails = AppSettingsThumbnails(media, scope, ioDispatcher),
         biometric = SettingsBiometric { DeviceLocks.current(context) != DeviceLock.NONE },
         location = SettingsLocation { timeoutMs -> location.currentPosition(timeoutMs) != null },
-        backup = AppSettingsBackup(context, sodium, exporter, restorer, RestoreSources(context, tempFiles), ioDispatcher),
+        backup = AppSettingsBackup(context, sodium, exporter, restorer, RestoreSources(context, tempFiles), ioDispatcher, debugLog),
         highlight = highlight,
         dynamicColorAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     )
@@ -253,8 +259,21 @@ object SettingsBindings {
     )
 
     @Provides
-    fun advancedSettingsDeps(deps: SettingsDeps, index: IndexService, diagnostics: DiagnosticsService): AdvancedSettingsDeps =
-        AdvancedSettingsDeps(settings = deps, index = index, diagnostics = diagnostics, showDiagnostics = BuildConfig.DEBUG)
+    fun advancedSettingsDeps(
+        context: Context,
+        deps: SettingsDeps,
+        index: IndexService,
+        diagnostics: DiagnosticsService,
+        debugLogStore: DebugLogStore,
+        holder: ActivityHolder,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): AdvancedSettingsDeps = AdvancedSettingsDeps(
+        settings = deps,
+        index = index,
+        diagnostics = diagnostics,
+        showDiagnostics = BuildConfig.DEBUG,
+        debugLog = AppDebugLogPort(context, debugLogStore, diagnostics, ActivityShareLauncher(context, holder), ioDispatcher),
+    )
 
     @Provides
     fun aboutDeps(context: Context, deps: SettingsDeps, @IoDispatcher ioDispatcher: CoroutineDispatcher): AboutDeps = AboutDeps(
@@ -304,6 +323,11 @@ object SettingsBindings {
     @IntoMap
     @ViewModelKey(DiagnosticsViewModel::class)
     fun diagnostics(deps: AdvancedSettingsDeps): ViewModel = DiagnosticsViewModel(deps)
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(DebugLogViewModel::class)
+    fun debugLogViewModel(deps: AdvancedSettingsDeps): ViewModel = DebugLogViewModel(deps)
 
     @Provides
     @IntoMap
