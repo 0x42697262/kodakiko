@@ -31,11 +31,16 @@ class DeviceSettingsGoldenTest {
     }
 
     private fun storedJson(database: KodakikoDatabase): JsonElement =
-        database.kvGet(StorageKeys.SETTINGS_DEVICE)?.let { Json.parseToJsonElement(String(it)) } ?: JsonNull
+        database.kvGet(StorageKeys.SETTINGS_DEVICE)?.let { withoutV041Keys(Json.parseToJsonElement(String(it))) } ?: JsonNull
+
+    private fun withoutV041Keys(element: JsonElement): JsonElement =
+        if (element is JsonObject) JsonObject(element.filterKeys { it != DeviceSettingsKeys.THEME_PRESET }) else element
+
+    private fun encodeV031(settings: DeviceSettings): JsonElement = withoutV041Keys(DeviceSettingsJson.encode(settings))
 
     private val adapter = GoldenAdapter { fn, args ->
         when (fn) {
-            "nativeDefaults" -> DeviceSettingsJson.encode(DeviceSettingsDefaults.ANDROID)
+            "nativeDefaults" -> encodeV031(DeviceSettingsDefaults.ANDROID)
             "resolveStored" -> {
                 val database = freshDatabase()
                 try {
@@ -44,7 +49,7 @@ class DeviceSettingsGoldenTest {
                     val store = DeviceSettingsStore.open(database, DeviceSettingsDefaults.ANDROID) { invalid += it }
                     JsonObject(
                         mapOf(
-                            "value" to DeviceSettingsJson.encode(store.get()),
+                            "value" to encodeV031(store.get()),
                             "invalid" to JsonArray(invalid.map(::JsonPrimitive)),
                             "loaded" to JsonPrimitive(store.loaded()),
                         ),
@@ -69,7 +74,7 @@ class DeviceSettingsGoldenTest {
                     JsonObject(
                         mapOf(
                             "rejected" to JsonPrimitive(rejected),
-                            "value" to DeviceSettingsJson.encode(store.get()),
+                            "value" to encodeV031(store.get()),
                             "stored" to storedJson(database),
                             "notified" to JsonPrimitive(notified),
                         ),
