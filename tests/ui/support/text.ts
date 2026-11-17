@@ -23,6 +23,9 @@ export const STACK_TEXT = Object.freeze({
   seedImportRefused: (name: string, reason: string) => `Importing ${name} was refused: ${reason}`,
   serverRequestFailed: (path: string, status: number) => `GET ${path} answered ${status}.`,
   homeCollectionMissing: 'The server lists no home collection for the account.',
+  linkSeedFailed: (method: string, path: string, status: number, body: string) =>
+    `${method} ${path} answered ${status} while seeding a public link: ${body}`,
+  linkSeedUploadFailed: (status: number) => `Uploading a public link object answered ${status}.`,
 });
 
 export const ANDROID_TEXT = Object.freeze({

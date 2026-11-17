@@ -14,6 +14,7 @@
     "test:e2e": "pnpm --filter @kodakiko/e2e test",
     "format": "prettier --write .",
     "ui:web": "pnpm --filter @kodakiko/ui-tests test:web",
+    "ui:link-viewer": "pnpm --filter @kodakiko/ui-tests test:link-viewer",
     "ui:android": "pnpm --filter @kodakiko/ui-tests test:android",
     "test:scripts": "vitest run --config vitest.scripts.config.ts"
   },

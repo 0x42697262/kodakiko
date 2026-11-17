@@ -9,7 +9,7 @@ import {
   RECOVERY_WORD_COUNT,
   SIGN_UP_WORDS_TIMEOUT_MS,
 } from './constants.ts';
-import type { SeededInvite } from './seed.ts';
+import type { SeededInvite } from './invites.ts';
 
 export type Credentials = { readonly username: string; readonly password: string };
 

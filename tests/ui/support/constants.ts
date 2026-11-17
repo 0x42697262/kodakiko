@@ -10,6 +10,11 @@ export const CLIENT_PACKAGE = '@kodakiko/client';
 export const CLIENT_BUILD_SCRIPT = 'build:web';
 export const CLIENT_PREBUILD_SCRIPT = 'prebuild:android';
 export const CLIENT_METRO_SCRIPT = 'start:metro-ui';
+export const LINK_VIEWER_PACKAGE = '@kodakiko/link-viewer';
+export const LINK_VIEWER_BUILD_SCRIPT = 'build';
+export const LINK_VIEWER_CADDYFILE = './ui/link-viewer.Caddyfile';
+export const LINK_VIEWER_WEB_ROOT = '../../apps/link-viewer/dist';
+export const LINK_VIEWER_SPEC = 'U-18-link-viewer.spec.ts';
 export const CLIENT_ANDROID_DIRECTORY = 'apps/client/android';
 export const WORKSPACE_MARKER = 'pnpm-workspace.yaml';
 
@@ -55,6 +60,8 @@ export const ENV_NAMES = Object.freeze({
   nonInteractive: 'CI',
   publicBaseUrl: 'PUBLIC_BASE_URL',
   s3PublicEndpoint: 'S3_PUBLIC_ENDPOINT',
+  uiCaddyfile: 'UI_CADDYFILE',
+  uiWebRoot: 'UI_WEB_ROOT',
 });
 export const FLAG_ON = '1';
 
@@ -159,3 +166,15 @@ export const METRO_STOP_SIGNAL = 'SIGTERM';
 export const ANDROID_PROJECT_NAME = 'android';
 export const MAESTRO_RELATIVE_BINARY = 'maestro/bin/maestro';
 export const MAESTRO_HOME_DIRECTORY = '.maestro-kodakiko';
+
+export const LINK_SEED_REQUEST_TIMEOUT_MS = 60_000;
+export const LINK_SEED_DEVICE_LABEL = 'UI link seeder';
+export const LINK_SEED_HOME_COLLECTION = 'Journal';
+export const LINK_SEED_ID_BYTES = 16;
+export const LINK_SEED_KEY_BYTES = 32;
+export const LINK_SEED_SCHEMA_VERSION = 1;
+export const LINK_SEED_OBJECT_CONTENT_TYPE = 'application/octet-stream';
+export const LINK_SEED_THUMBNAIL_MIME = 'image/webp';
+export const LINK_SEED_THUMBNAIL_WEBP_BASE64 = 'UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+export const LINK_SEED_THUMBNAIL_SIZE_PX = 1;
+export const LINK_PATH_PREFIX = '/s/';
