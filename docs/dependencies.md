@@ -45,7 +45,7 @@ catalogMode: strict
 | Package | Version | Used by | Purpose | Audit status |
 |---|---|---|---|---|
 | `react-native-libsodium` | 1.7.0 | client (native) | libsodium via JSI (F-LIB-01/02) | wrapper unaudited; libsodium 1.0.21 inside is audited lineage (F-LIB-04). Mitigation: shared known-answer vectors incl. Argon2id (crypto.md §10) |
-| `libsodium-wrappers-sumo` | 0.8.4 | client (web), core tests | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
+| `libsodium-wrappers-sumo` | 0.8.4 | client (web), core tests, link viewer (`apps/link-viewer`: page and media service worker; no Argon2id there) | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
 
 The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1).
 
@@ -58,9 +58,9 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `eslint` | 10.14.0 | lint |
 | `typescript-eslint` | 8.72.1 | TypeScript lint rules |
 | `prettier` | 3.9.10 | formatting |
-| `esbuild` | 0.28.2 | server bundle (architecture.md §4.1), service worker bundle (storage.md §5) |
+| `esbuild` | 0.28.2 | server bundle (architecture.md §4.1), service worker bundle (storage.md §5), link viewer bundles (`apps/link-viewer/build.ts`: page script, media service worker, stylesheet) |
 | `@types/node` | 22.20.5 | server and scripts |
-| `zod` | 4.6.7 | runtime dependency of contract, core, server, client |
+| `zod` | 4.6.7 | runtime dependency of contract, core, server, client, link viewer (jitless under the CSP) |
 
 ### Server
 
