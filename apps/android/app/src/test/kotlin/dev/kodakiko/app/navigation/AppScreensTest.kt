@@ -1,5 +1,6 @@
 package dev.kodakiko.app.navigation
 
+import dev.kodakiko.ui.core.navigation.CaptureMode
 import dev.kodakiko.ui.core.navigation.Route
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -40,13 +41,18 @@ class AppScreensTest {
         Route.EntryCrop("entry-1", "media-1") to AppScreen.ENTRY_CROP,
     )
 
+    private val captureAndTags: Map<Route, AppScreen> = mapOf(
+        Route.Capture() to AppScreen.CAPTURE,
+        Route.Capture("entry-1") to AppScreen.CAPTURE,
+        Route.Capture("entry-1", CaptureMode.VIDEO) to AppScreen.CAPTURE,
+        Route.Tags to AppScreen.TAGS,
+    )
+
     private val notYetBuilt: List<Route> = listOf(
         Route.Home,
         Route.Invite,
         Route.Shared,
         Route.More,
-        Route.Capture(),
-        Route.Tags,
         Route.Collection("collection-1"),
         Route.CollectionShare("collection-1"),
         Route.LinkNew(listOf("entry-1")),
@@ -93,6 +99,19 @@ class AppScreensTest {
     }
 
     @Test
+    fun theCaptureAndTagRoutesMapToTheirScreens() {
+        for ((route, screen) in captureAndTags) assertEquals(route.path, screen, AppScreens.of(route))
+    }
+
+    @Test
+    fun aCaptureRouteCarriesTheEntryAndTheMode() {
+        assertEquals(null, Route.Capture().entryId)
+        assertEquals(CaptureMode.PHOTO, Route.Capture().mode)
+        assertEquals("entry-1", Route.Capture("entry-1", CaptureMode.VIDEO).entryId)
+        assertEquals(CaptureMode.VIDEO, Route.Capture("entry-1", CaptureMode.VIDEO).mode)
+    }
+
+    @Test
     fun aNewEntryRouteRemembersItIsNewAndTheCropRouteNamesItsItem() {
         assertEquals(false, Route.EntryEdit("entry-1").isNew)
         assertEquals(true, Route.EntryEdit("entry-1", isNew = true).isNew)
@@ -109,7 +128,7 @@ class AppScreensTest {
     fun theTableCoversEveryScreenOnce() {
         assertEquals(
             AppScreen.entries.toSet() - AppScreen.PLACEHOLDER,
-            authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet(),
+            authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet(),
         )
         assertEquals(authAndLock.size, authAndLock.values.toSet().size)
         assertEquals(emptySet<AppScreen>(), authAndLock.values.toSet() intersect gallery.values.toSet())
@@ -118,6 +137,11 @@ class AppScreensTest {
         assertEquals(emptySet<AppScreen>(), (authAndLock.values.toSet() + gallery.values.toSet()) intersect calendarAndViewer.values.toSet())
         assertEquals(setOf(AppScreen.ENTRY_EDIT, AppScreen.ENTRY_NEW, AppScreen.ENTRY_CROP), edit.values.toSet())
         assertEquals(emptySet<AppScreen>(), (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet()) intersect edit.values.toSet())
+        assertEquals(setOf(AppScreen.CAPTURE, AppScreen.TAGS), captureAndTags.values.toSet())
+        assertEquals(
+            emptySet<AppScreen>(),
+            (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet()) intersect captureAndTags.values.toSet(),
+        )
     }
 
     @Test
@@ -126,7 +150,7 @@ class AppScreensTest {
             .filter { Route::class.java.isAssignableFrom(it) && !it.isInterface }
             .map { it.name }
             .toSet()
-        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + notYetBuilt).map { it.javaClass.name }.toSet()
+        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + captureAndTags.keys + notYetBuilt).map { it.javaClass.name }.toSet()
         assertEquals(declared, listed)
     }
 }
