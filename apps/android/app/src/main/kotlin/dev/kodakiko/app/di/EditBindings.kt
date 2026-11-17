@@ -57,6 +57,9 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditDepsFactory(
     private val context: Context,
@@ -138,6 +141,7 @@ object EditBindings {
         entries: EntriesService,
         holder: ActivityHolder,
         unlockedWork: UnlockedWork,
+        media: AccountMedia,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): ShareOutService = UnlockedShareOut(
@@ -150,7 +154,13 @@ object EditBindings {
                 files = FileStoreOriginalFiles { fileStore.require() },
                 entryKeys = entryKeys,
                 readMetadata = entries::readMetadata,
-                fetchOriginal = {},
+                fetchOriginal = { objectId ->
+                    withContext(ioDispatcher) { media.fetchObject(objectId) }
+                    scope.launch {
+                        delay(EditAdapterConstants.SHARE_CACHE_TRIM_DELAY_MS)
+                        withContext(ioDispatcher) { media.enforceCache() }
+                    }
+                },
                 launcher = ActivityShareLauncher(context, holder),
                 now = System::currentTimeMillis,
                 scope = scope,
