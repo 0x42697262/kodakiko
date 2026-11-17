@@ -12,6 +12,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.xmlpull.v1.XmlPullParser
 
 @RunWith(RobolectricTestRunner::class)
 class AppIdentityTest {
@@ -48,10 +49,60 @@ class AppIdentityTest {
         "android.permission.ACCESS_BACKGROUND_LOCATION",
     )
 
+    private val releaseLike = BuildConfig.BUILD_TYPE in setOf("release", "preview")
+
+    private class NetworkConfig(
+        val baseCleartext: String?,
+        val cleartextDomains: Set<String>,
+        val userCertificatesOutsideDebugOverrides: Int,
+    )
+
+    private fun networkConfig(): NetworkConfig {
+        val parser = app.resources.getXml(R.xml.network_security_config)
+        val open = ArrayDeque<String>()
+        var baseCleartext: String? = null
+        val cleartextDomains = mutableSetOf<String>()
+        var userCertificates = 0
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            when (parser.eventType) {
+                XmlPullParser.START_TAG -> {
+                    when (parser.name) {
+                        "base-config" -> baseCleartext = parser.getAttributeValue(null, "cleartextTrafficPermitted")
+                        "certificates" -> if (parser.getAttributeValue(null, "src") == "user" && "debug-overrides" !in open) userCertificates++
+                        "domain" -> if ("domain-config" in open) cleartextDomains += parser.nextText().trim()
+                    }
+                    if (parser.eventType == XmlPullParser.START_TAG) open.addLast(parser.name)
+                }
+                XmlPullParser.END_TAG -> open.removeLastOrNull()
+            }
+        }
+        return NetworkConfig(baseCleartext, cleartextDomains, userCertificates)
+    }
+
     @Test
     fun applicationIdDependsOnBuildType() {
-        val expected = if (BuildConfig.BUILD_TYPE == "release") "com.x42697262.kodakiko" else "com.x42697262.kodakiko.next"
+        val base = "com.x42697262.kodakiko"
+        val expected = if (BuildConfig.BUILD_TYPE == "release") base else "$base.next"
         assertEquals(expected, app.packageName)
+        assertTrue(BuildConfig.BUILD_TYPE, BuildConfig.BUILD_TYPE in setOf("debug", "release", "preview"))
+    }
+
+    @Test
+    fun onlyTheDebugBuildIsDebuggable() {
+        assertEquals(!releaseLike, BuildConfig.DEBUG)
+        assertEquals(!releaseLike, app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)
+    }
+
+    @Test
+    fun releaseLikeBuildsAllowNoCleartextAndNoUserCertificates() {
+        val config = networkConfig()
+        assertEquals("false", config.baseCleartext)
+        assertEquals(0, config.userCertificatesOutsideDebugOverrides)
+        if (releaseLike) {
+            assertTrue("cleartext domains: ${config.cleartextDomains}", config.cleartextDomains.isEmpty())
+        } else {
+            assertEquals(setOf("localhost", "127.0.0.1", "10.0.2.2"), config.cleartextDomains)
+        }
     }
 
     @Test

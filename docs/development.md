@@ -40,12 +40,21 @@ enter `https://localhost:9443` on the welcome screen. On the emulator the host i
 
 ## Releases
 
-`APP_VERSION` in `apps/client/app.config.ts` sets the version name and the version code
-(0.3.0 → 300). Pushing a tag `v*` runs `.github/workflows/android-release.yml`: it builds the
-`arm64-v8a` release APK, signs it with the keystore from the repository secrets
-(`ANDROID_KEYSTORE_BASE`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`)
-and publishes it with a `.sha256` as a GitHub release. Pushes to `main` that touch the app run the
-same build without publishing, to warm the Gradle cache.
+From v0.4.0 the released Android app is the Kotlin client in `apps/android`. `app-version-name` in
+`apps/android/gradle/libs.versions.toml` sets its version name and version code
+(`major * 10000 + minor * 100 + patch`, 0.4.0 → 400, above v0.3.1's 301); the application id stays
+`com.x42697262.kodakiko`, so it installs as an update over v0.3.1. Pushing a tag `v*` runs
+`.github/workflows/android-release.yml`: it checks that the tag equals `app-version-name`, runs
+`pnpm verify` and `./gradlew verify`, builds `:app:assembleRelease`, signs it with the keystore from
+the repository secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+`ANDROID_KEY_PASSWORD`), refuses a debug-signed APK and publishes it with a `.sha256` as a GitHub
+release. Pushes to `main` that touch `apps/android` build it unsigned without publishing, to warm the
+Gradle cache.
+
+`./gradlew :app:assemblePreview` (in `apps/android`) builds the preview APK
+(`app/build/outputs/apk/preview/app-preview.apk`): a release build with the id
+`com.x42697262.kodakiko.next`, signed with the local debug key, so it installs next to the released
+app and talks only to HTTPS servers with system certificates.
 
 ## Working on the client
 

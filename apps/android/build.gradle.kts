@@ -76,6 +76,7 @@ tasks.register("verify") {
         ":ui:feature:more:testDebugUnitTest",
         ":app:testDebugUnitTest",
         ":app:testReleaseUnitTest",
+        ":app:testPreviewUnitTest",
         ":app:lintRelease",
     )
 }

@@ -13,7 +13,17 @@ android {
         debug {
             applicationIdSuffix = ".next"
         }
+        create("preview") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".next"
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += "release"
+        }
     }
+}
+
+tasks.withType<Test>().configureEach {
+    if (name == "testPreviewUnitTest") filter.includeTestsMatching("dev.kodakiko.app.AppIdentityTest")
 }
 
 dependencies {
