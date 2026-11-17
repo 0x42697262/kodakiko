@@ -3,6 +3,7 @@ package dev.kodakiko.app.di
 import android.app.Application
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppStartup
+import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.system.SystemUiSettings
@@ -76,6 +77,8 @@ interface AppGraph : ViewModelGraph {
     val systemUiSettings: StateFlow<SystemUiSettings>
 
     val debugLog: DebugLog
+
+    val deviceSettings: AppDeviceSettings
 
     val debugLogFile: DebugLogFile
 

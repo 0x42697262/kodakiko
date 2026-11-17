@@ -31,4 +31,11 @@ object KodakikoIcons {
     val Settings: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_settings)
     val Storage: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_storage)
     val Sync: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_sync)
+    val AccountCircle: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_account_circle)
+    val Code: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_code)
+    val Link: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_link)
+    val Logout: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_logout)
+    val Palette: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_palette)
+    val PhotoCamera: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_photo_camera)
+    val Security: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_security)
 }
