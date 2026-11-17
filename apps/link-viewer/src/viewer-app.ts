@@ -14,7 +14,7 @@ import { CSS_CLASSES, ELEMENT_ROLES, LINK_VIEWER_IDS } from './keys.ts';
 import { failureKind, failureMessage } from './link-errors.ts';
 import { createLinkSession, type LinkSession, type OpenedLink } from './link-session.ts';
 import { parseLinkLocation } from './link-url.ts';
-import { createMediaWorker, type MediaWorker } from './media-worker.ts';
+import { createMediaWorker, forgetMediaOnPageHide, type MediaWorker } from './media-worker.ts';
 import { createObjectUrlCache } from './object-urls.ts';
 import { loadSodium } from './sodium.ts';
 import { createTaskQueue } from './task-queue.ts';
@@ -111,14 +111,25 @@ function showLink(environment: ViewerEnvironment, link: OpenedLink, context: Lin
   environment.root.replaceChildren(gallery.element, detail.element);
 }
 
-export async function startViewer(environment: ViewerEnvironment): Promise<void> {
+export type StopViewer = () => void;
+
+function noop(): void {
+  return undefined;
+}
+
+function watchPageHide(): StopViewer {
+  if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return noop;
+  return forgetMediaOnPageHide(window, navigator.serviceWorker);
+}
+
+export async function startViewer(environment: ViewerEnvironment): Promise<StopViewer> {
   const { root, location, history } = environment;
   showLoading(root);
   const parsed = parseLinkLocation(location.pathname, location.hash);
   history.replaceState(null, '', location.pathname);
   if (!parsed.ok) {
     showFailure(root, failureMessage(parsed.failure));
-    return;
+    return noop;
   }
   let sodium: Sodium;
   try {
@@ -126,7 +137,7 @@ export async function startViewer(environment: ViewerEnvironment): Promise<void>
   } catch (error) {
     parsed.secret.fill(0);
     showFailure(root, failureMessage(failureKind(error, null)));
-    return;
+    return noop;
   }
   const http = createHttpClient({ baseUrl: location.origin });
   const session = createLinkSession({
@@ -145,10 +156,12 @@ export async function startViewer(environment: ViewerEnvironment): Promise<void>
     },
     () => hexId(sodium.randomBytes(PLAYBACK_ID_BYTES)),
   );
+  const stop = watchPageHide();
   void worker.isAvailable();
   try {
     showLink(environment, await session.open(), { sodium, session, worker, playbacks });
   } catch (error) {
     showFailure(root, failureMessage(failureKind(error, null)));
   }
+  return stop;
 }

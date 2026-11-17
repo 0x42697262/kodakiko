@@ -6,6 +6,7 @@ import {
 } from '@kodakiko/contract';
 import type { z } from 'zod';
 import {
+  FETCH_REDIRECT_POLICY,
   HTTP_BACKOFF_FACTOR,
   HTTP_RETRY_AFTER_MAX_MS,
   HTTP_RETRY_ATTEMPTS,
@@ -14,6 +15,7 @@ import {
   HTTP_STATUS,
   HTTP_TIMEOUT_MS,
   MS_PER_SECOND,
+  OPAQUE_REDIRECT_RESPONSE,
 } from './constants.ts';
 import { HTTP_HEADERS, JSON_CONTENT_TYPE } from './keys.ts';
 import { TEXT } from './text.ts';
@@ -66,6 +68,14 @@ type ParsedJson = { readonly ok: true; readonly value: unknown } | { readonly ok
 
 function isSuccess(status: number): boolean {
   return status >= HTTP_STATUS.ok && status < HTTP_STATUS.multipleChoices;
+}
+
+function isRedirect(response: Response): boolean {
+  return (
+    response.redirected ||
+    response.type === OPAQUE_REDIRECT_RESPONSE ||
+    (response.status >= HTTP_STATUS.multipleChoices && response.status < HTTP_STATUS.clientErrorMin)
+  );
 }
 
 function isRetryableStatus(status: number): boolean {
@@ -125,6 +135,7 @@ export function createHttpClient(deps: HttpClientDeps): HttpClient {
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetcher(url, { ...init, signal: controller.signal });
+      if (isRedirect(response)) return null;
       return { status: response.status, headers: response.headers, text: await response.text() };
     } catch {
       return null;
@@ -155,6 +166,7 @@ export function createHttpClient(deps: HttpClientDeps): HttpClient {
       method: call.method,
       headers: buildHeaders(call),
       credentials: 'omit',
+      redirect: FETCH_REDIRECT_POLICY,
       ...(call.body === undefined ? {} : { body: JSON.stringify(call.body) }),
     };
     const timeoutMs = call.timeoutMs ?? HTTP_TIMEOUT_MS;

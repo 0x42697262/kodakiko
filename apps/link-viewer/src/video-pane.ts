@@ -4,6 +4,7 @@ import { playbackMode } from './download.ts';
 import { CSS_CLASSES, ELEMENT_ROLES, LINK_VIEWER_IDS, MEDIA_PATH_PREFIX } from './keys.ts';
 import type { LinkItem, LinkSession } from './link-session.ts';
 import type { MediaWorker } from './media-worker.ts';
+import { safeBlobMimeType } from './object-urls.ts';
 import { MEDIA_MESSAGE } from './sw/messages.ts';
 import { TEXT } from './text.ts';
 import type { Sodium } from '@kodakiko/core';
@@ -37,7 +38,7 @@ export function createPlaybacks(session: LinkSession, worker: () => MediaWorker)
         extraHeaders: registration.extraHeaders,
         plaintextSize: registration.plaintextSize,
         ciphertextSize: registration.ciphertextSize,
-        mimeType: registration.mimeType,
+        mimeType: safeBlobMimeType(registration.mimeType),
       },
       [key],
     );
@@ -93,7 +94,7 @@ async function source(
     return `${MEDIA_PATH_PREFIX}${playbackId}`;
   }
   const bytes = await deps.session.original(item);
-  const url = URL.createObjectURL(new Blob([bytes.slice()], { type: item.descriptor.mimeType }));
+  const url = URL.createObjectURL(new Blob([bytes.slice()], { type: safeBlobMimeType(item.descriptor.mimeType) }));
   onRelease(() => URL.revokeObjectURL(url));
   return url;
 }

@@ -1,3 +1,9 @@
+import { BINARY_MIME_TYPE, BLOB_MIME_TYPES } from './constants.ts';
+
+export function safeBlobMimeType(mimeType: string): string {
+  return BLOB_MIME_TYPES.has(mimeType) ? mimeType : BINARY_MIME_TYPE;
+}
+
 export type ObjectUrlCache = {
   readonly urlFor: (key: string, bytes: Uint8Array, mimeType: string) => string;
   readonly get: (key: string) => string | undefined;
@@ -27,7 +33,7 @@ export function createObjectUrlCache(capacity: number): ObjectUrlCache {
         touch(key, existing);
         return existing;
       }
-      const url = URL.createObjectURL(new Blob([bytes.slice()], { type: mimeType }));
+      const url = URL.createObjectURL(new Blob([bytes.slice()], { type: safeBlobMimeType(mimeType) }));
       touch(key, url);
       evict();
       return url;

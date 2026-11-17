@@ -12,6 +12,7 @@ export const HTTP_STATUS = Object.freeze({
   ok: 200,
   partialContent: 206,
   multipleChoices: 300,
+  clientErrorMin: 400,
   forbidden: 403,
   gone: 410,
   rangeNotSatisfiable: 416,
@@ -19,6 +20,20 @@ export const HTTP_STATUS = Object.freeze({
   serverErrorMin: 500,
   badGateway: 502,
 });
+
+export const FETCH_REDIRECT_POLICY = 'error' as const satisfies RequestRedirect;
+export const OPAQUE_REDIRECT_RESPONSE = 'opaqueredirect' as const satisfies ResponseType;
+
+export const BINARY_MIME_TYPE = 'application/octet-stream';
+export const BLOB_MIME_TYPES: ReadonlySet<string> = new Set([
+  'image/jpeg',
+  'image/webp',
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+]);
+
+export const PAGE_HIDE_EVENT = 'pagehide';
 
 export const KEY_BYTES = 32;
 export const LINK_SECRET_BYTES = 32;

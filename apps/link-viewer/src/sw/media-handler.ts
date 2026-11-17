@@ -9,6 +9,7 @@ import {
   type StreamLayout,
 } from '@kodakiko/core';
 import { HTTP_STATUS, SW_CHUNK_CACHE_SIZE, SW_MAX_RESPONSE_CHUNKS } from '../constants.ts';
+import { safeBlobMimeType } from '../object-urls.ts';
 import {
   ACCEPT_RANGES_BYTES,
   CONTENT_RANGE_PREFIX,
@@ -212,7 +213,7 @@ async function partialResponse(
   return new Response(body, {
     status: HTTP_STATUS.partialContent,
     headers: {
-      [HTTP_HEADERS.contentType]: playback.mimeType,
+      [HTTP_HEADERS.contentType]: safeBlobMimeType(playback.mimeType),
       [HTTP_HEADERS.contentRange]: `${CONTENT_RANGE_PREFIX}${range.start}-${range.end}/${playback.plaintextSize}`,
       [HTTP_HEADERS.contentLength]: String(range.end - range.start + 1),
       [HTTP_HEADERS.acceptRanges]: ACCEPT_RANGES_BYTES,

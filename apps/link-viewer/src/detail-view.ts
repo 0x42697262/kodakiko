@@ -7,7 +7,7 @@ import { CSS_CLASSES, ELEMENT_ROLES, LINK_VIEWER_IDS, SELECTORS } from './keys.t
 import { failureKind, failureMessage } from './link-errors.ts';
 import type { LinkItem, LinkSession } from './link-session.ts';
 import type { MediaWorker } from './media-worker.ts';
-import type { ObjectUrlCache } from './object-urls.ts';
+import { safeBlobMimeType, type ObjectUrlCache } from './object-urls.ts';
 import { TEXT } from './text.ts';
 import { createVideoPane, type Playbacks, type VideoPane } from './video-pane.ts';
 import { canMove, keyCommand, stepIndex, type Direction } from './viewer-model.ts';
@@ -207,7 +207,7 @@ export function createDetailView(deps: DetailDeps): DetailView {
     try {
       const bytes = await deps.session.original(item);
       const url = URL.createObjectURL(
-        new Blob([bytes.slice()], { type: item.descriptor.mimeType }),
+        new Blob([bytes.slice()], { type: safeBlobMimeType(item.descriptor.mimeType) }),
       );
       const anchor = createElement('a', {
         attributes: { href: url, download: downloadName(position, item.descriptor) },

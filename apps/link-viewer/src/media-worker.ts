@@ -1,4 +1,4 @@
-import { SW_CONTROL_TIMEOUT_MS, SW_PING_TIMEOUT_MS } from './constants.ts';
+import { PAGE_HIDE_EVENT, SW_CONTROL_TIMEOUT_MS, SW_PING_TIMEOUT_MS } from './constants.ts';
 import { MEDIA_WORKER_SCOPE, MEDIA_WORKER_SCRIPT } from './keys.ts';
 import {
   MEDIA_MESSAGE,
@@ -15,6 +15,21 @@ export type MediaWorker = {
   readonly isAvailable: () => Promise<boolean>;
   readonly post: (message: PageToWorkerMessage, transfer?: Transferable[]) => void;
 };
+
+export type PageEvents = Pick<EventTarget, 'addEventListener' | 'removeEventListener'>;
+
+export type WorkerControllerHost = {
+  readonly controller: { readonly postMessage: (message: PageToWorkerMessage) => void } | null;
+};
+
+export function forgetMediaOnPageHide(page: PageEvents, host: WorkerControllerHost): () => void {
+  const forgetAll = (): void => host.controller?.postMessage({ type: MEDIA_MESSAGE.forgetAll });
+  page.addEventListener(PAGE_HIDE_EVENT, forgetAll);
+  return () => {
+    page.removeEventListener(PAGE_HIDE_EVENT, forgetAll);
+    forgetAll();
+  };
+}
 
 function timeout(milliseconds: number): Promise<false> {
   return new Promise((resolve) => setTimeout(() => resolve(false), milliseconds));
