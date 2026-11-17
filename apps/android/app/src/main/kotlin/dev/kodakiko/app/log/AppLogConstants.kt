@@ -12,4 +12,9 @@ object AppLogConstants {
     const val ACTION_REPLACE_ALL = "replace_all"
     const val ACTION_TAB = "tab"
     const val NANOS_PER_MILLI = 1_000_000L
+    const val SYNC_UPLOADS = "sync"
+    const val LINK_UPLOADS = "link"
+    const val METHOD_PASSWORD = "password"
+    const val METHOD_DEVICE = "device"
+    const val METHOD_RESTORE = "restore"
 }

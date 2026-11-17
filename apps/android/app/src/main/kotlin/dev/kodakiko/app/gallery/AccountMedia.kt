@@ -27,6 +27,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
+import dev.kodakiko.app.log.elapsedMs
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
+import dev.kodakiko.log.LogValues
+import dev.kodakiko.log.NoDebugLog
+import dev.kodakiko.log.typeOf
 
 class AccountMediaDeps(
     val context: Context,
@@ -41,6 +50,7 @@ class AccountMediaDeps(
     val isWifi: () -> Boolean,
     val localOnly: () -> Boolean,
     val unlocked: () -> Boolean,
+    val log: DebugLog = NoDebugLog,
 )
 
 class AccountMedia(private val deps: AccountMediaDeps) {
@@ -117,11 +127,29 @@ class AccountMedia(private val deps: AccountMediaDeps) {
 
     fun abortDownloads() {
         synchronized(lock) { opened?.downloads?.abortAll() }
+        deps.log.record(LogLevel.INFO, LogServices.DOWNLOAD, LogEvents.ABORT)
     }
 
     fun fetchObject(objectId: String) {
         val media = current() ?: throw MediaUnavailableException()
-        media.downloads.fetch(objectId, DownloadPriority.OPENED)
+        val started = System.nanoTime()
+        try {
+            media.downloads.fetch(objectId, DownloadPriority.OPENED)
+            deps.log.record(
+                LogLevel.INFO,
+                LogServices.DOWNLOAD,
+                LogEvents.DOWNLOAD,
+                mapOf(LogFields.OBJECT_ID to objectId, LogFields.DURATION_MS to elapsedMs(started), LogFields.OUTCOME to LogValues.OK),
+            )
+        } catch (failure: Throwable) {
+            deps.log.record(
+                LogLevel.WARN,
+                LogServices.DOWNLOAD,
+                LogEvents.DOWNLOAD,
+                mapOf(LogFields.OBJECT_ID to objectId, LogFields.DURATION_MS to elapsedMs(started), LogFields.OUTCOME to LogValues.FAILED, LogFields.ERROR to typeOf(failure)),
+            )
+            throw failure
+        }
     }
 
     fun openOriginal(entryId: String, mediaId: String): OpenedReader? {

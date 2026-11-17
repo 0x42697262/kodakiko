@@ -16,6 +16,9 @@
     <string name="links_row_detail">%1$s · %2$s</string>
     <string name="about_mihon_attribution">Kodakiko\'s Android app is based on Mihon (https://github.com/mihonapp/mihon), Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, licensed under Apache-2.0.</string>
     <string name="advanced_reset_confirm">Reset every setting on this device to its default? Your journal is not touched.</string>
+    <string name="advanced_group_general">General</string>
+    <string name="advanced_group_debug_log">Debug log</string>
+    <string name="advanced_group_debug_info">Debug info</string>
     <string name="debug_log_title">Debug log</string>
     <string name="debug_log_view">View debug log</string>
     <string name="debug_log_switch">Debug logging</string>

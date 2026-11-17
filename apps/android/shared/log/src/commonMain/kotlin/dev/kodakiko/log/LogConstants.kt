@@ -43,6 +43,11 @@ object LogEvents {
     const val LOGGING_ENABLED = "set_debug_logging"
     const val CLEARED = "cleared"
     const val IMPORT_PICK = "import_pick"
+    const val EXPORT_START = "export_start"
+    const val EXPORT_PHASE = "export_phase"
+    const val EXPORT_END = "export_end"
+    const val EXPORT_CANCELLED = "export_cancelled"
+    const val EXPORT_ERROR = "export_error"
     const val RESTORE_START = "restore_start"
     const val RESTORE_END = "restore_end"
     const val RESTORE_FAILURE = "restore_failure"
@@ -88,6 +93,8 @@ object LogFields {
     const val ENTRIES = "entries"
     const val MEDIA = "media"
     const val DUPLICATES = "duplicates"
+    const val PARTS = "parts"
+    const val SKIPPED = "skipped"
 }
 
 object LogValues {

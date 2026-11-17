@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.data.media.CacheUsage
 import dev.kodakiko.ui.core.R
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.format.formatBytes
 import dev.kodakiko.ui.core.settings.Preference
@@ -81,12 +82,14 @@ private fun storageItems(
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(R.string.storage_create_backup),
                     subtitle = stringResource(R.string.prefs_export_summary),
+                    icon = KodakikoIcons.Upload,
                     testTag = TestTags.Settings.ROW_EXPORT,
                     onClick = { onAction(StorageSettingsAction.Export) },
                 ),
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(R.string.storage_restore_backup),
                     subtitle = stringResource(R.string.storage_restore_summary),
+                    icon = KodakikoIcons.Download,
                     testTag = TestTags.Settings.ROW_IMPORT,
                     onClick = { onAction(StorageSettingsAction.Import) },
                 ),

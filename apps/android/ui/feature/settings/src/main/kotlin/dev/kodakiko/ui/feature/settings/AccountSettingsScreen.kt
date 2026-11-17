@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.ui.core.R
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.components.AdaptiveSheet
@@ -92,6 +93,7 @@ private fun accountItems(state: AccountSettingsState, onAction: (AccountSettings
         },
         Preference.PreferenceItem.TextPreference(
             title = stringResource(R.string.settings_connect),
+            icon = KodakikoIcons.Cloud,
             testTag = TestTags.Settings.ROW_CONNECT,
             visible = state.local,
             onClick = { onAction(AccountSettingsAction.Open(Route.SettingsConnect)) },
@@ -120,21 +122,25 @@ private fun accountItems(state: AccountSettingsState, onAction: (AccountSettings
         },
         Preference.PreferenceItem.TextPreference(
             title = stringResource(R.string.server_title),
+            icon = KodakikoIcons.Dns,
             testTag = TestTags.Settings.ROW_SERVER,
             onClick = { onAction(AccountSettingsAction.Open(Route.SettingsServer)) },
         ),
         Preference.PreferenceItem.TextPreference(
             title = stringResource(R.string.settings_change_password),
+            icon = KodakikoIcons.Key,
             testTag = TestTags.Settings.ROW_PASSWORD,
             onClick = { onAction(AccountSettingsAction.Open(Route.SettingsPassword)) },
         ),
         Preference.PreferenceItem.TextPreference(
             title = stringResource(R.string.settings_show_recovery),
+            icon = KodakikoIcons.Key,
             testTag = TestTags.Settings.ROW_RECOVERY,
             onClick = { onAction(AccountSettingsAction.ShowRecovery) },
         ),
         Preference.PreferenceItem.TextPreference(
             title = stringResource(if (state.local) R.string.settings_erase else R.string.settings_delete_account),
+            icon = KodakikoIcons.DeleteForever,
             testTag = TestTags.Settings.ROW_DELETE_ACCOUNT,
             danger = true,
             onClick = { onAction(AccountSettingsAction.Open(Route.SettingsDeleteAccount)) },

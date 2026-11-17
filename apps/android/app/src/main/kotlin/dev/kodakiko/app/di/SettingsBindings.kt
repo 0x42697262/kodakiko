@@ -12,6 +12,7 @@ import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.settings.AppDebugLogPort
+import dev.kodakiko.app.log.LoggingExportService
 import dev.kodakiko.app.settings.AppSettingsAccount
 import dev.kodakiko.app.settings.AppSettingsBackup
 import dev.kodakiko.app.settings.AppSettingsCredentials
@@ -148,7 +149,8 @@ object SettingsBindings {
         sodium: Sodium,
         autoLock: AutoLock,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): ExportService = DefaultExportService(
+        debugLog: DebugLog,
+    ): ExportService = LoggingExportService(DefaultExportService(
         ExportServiceDeps(
             entryIds = { exportEntryIds(index) },
             readMetadata = entries::readMetadata,
@@ -163,7 +165,7 @@ object SettingsBindings {
             zipTimeZone = ZipTimeZone { utcMillis -> TimeZone.getDefault().getOffset(utcMillis.toLong()).toDouble() },
             ioDispatcher = ioDispatcher,
         ),
-    )
+    ), debugLog)
 
     @Provides
     @SingleIn(AppScope::class)

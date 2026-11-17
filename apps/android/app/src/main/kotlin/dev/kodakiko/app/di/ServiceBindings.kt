@@ -10,6 +10,7 @@ import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.log.AppLogConstants
 import dev.kodakiko.app.log.timedStep
+import dev.kodakiko.app.log.LoggingAuthService
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.NavigationConstants
 import dev.kodakiko.app.sharing.InProcessUploader
@@ -252,7 +253,8 @@ object ServiceBindings {
         lockService: LockService,
         @SyncUploads syncUploader: InProcessUploader,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): AuthService = DefaultAuthService(
+        debugLog: DebugLog,
+    ): AuthService = LoggingAuthService(DefaultAuthService(
         AuthServiceDeps(
             sodium = sodium,
             http = http,
@@ -280,7 +282,7 @@ object ServiceBindings {
             ioDispatcher = ioDispatcher,
             accountMode = accountMode,
         ),
-    )
+    ), debugLog)
 
     @Provides
     fun randomSource(sodium: Sodium): RandomSource = RandomSource { length -> sodium.randomBytes(length) }

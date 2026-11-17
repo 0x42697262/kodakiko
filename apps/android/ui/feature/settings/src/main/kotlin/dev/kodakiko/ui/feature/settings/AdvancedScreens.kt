@@ -96,47 +96,66 @@ private fun AdvancedMessageEffect(message: AdvancedMessage?, hostState: Snackbar
 
 @Composable
 private fun advancedItems(state: AdvancedSettingsState, onAction: (AdvancedSettingsAction) -> Unit): List<Preference> = listOf(
-    Preference.PreferenceItem.SwitchPreference(
-        value = state.settings.showTechnicalDetails,
-        title = stringResource(R.string.prefs_technical_details),
-        subtitle = stringResource(R.string.prefs_technical_details_summary),
-        testTag = TestTags.Settings.TECHNICAL_DETAILS,
-        onValueChanged = { onAction(AdvancedSettingsAction.SetTechnicalDetails(it)) },
+    Preference.PreferenceGroup(
+        title = stringResource(R.string.advanced_group_general),
+        preferenceItems = listOf(
+            Preference.PreferenceItem.SwitchPreference(
+                value = state.settings.showTechnicalDetails,
+                title = stringResource(R.string.prefs_technical_details),
+                subtitle = stringResource(R.string.prefs_technical_details_summary),
+                testTag = TestTags.Settings.TECHNICAL_DETAILS,
+                onValueChanged = { onAction(AdvancedSettingsAction.SetTechnicalDetails(it)) },
+            ),
+            Preference.PreferenceItem.TextPreference(
+                title = stringResource(R.string.advanced_rebuild),
+                subtitle = stringResource(R.string.advanced_rebuild_summary),
+                icon = KodakikoIcons.Refresh,
+                testTag = TestTags.Advanced.REBUILD,
+                onClick = { onAction(AdvancedSettingsAction.Rebuild) },
+            ),
+            Preference.PreferenceItem.TextPreference(
+                title = stringResource(R.string.advanced_reset),
+                subtitle = stringResource(R.string.advanced_reset_summary),
+                icon = KodakikoIcons.RestartAlt,
+                testTag = TestTags.Advanced.RESET,
+                onClick = { onAction(AdvancedSettingsAction.AskReset) },
+            ),
+        ),
     ),
-    Preference.PreferenceItem.TextPreference(
-        title = stringResource(R.string.advanced_rebuild),
-        subtitle = stringResource(R.string.advanced_rebuild_summary),
-        testTag = TestTags.Advanced.REBUILD,
-        onClick = { onAction(AdvancedSettingsAction.Rebuild) },
+    Preference.PreferenceGroup(
+        title = stringResource(R.string.advanced_group_debug_log),
+        preferenceItems = listOf(
+            Preference.PreferenceItem.TextPreference(
+                title = stringResource(R.string.debug_log_view),
+                subtitle = stringResource(R.string.debug_log_switch_summary),
+                icon = KodakikoIcons.Article,
+                testTag = TestTags.Advanced.DEBUG_LOG,
+                onClick = { onAction(AdvancedSettingsAction.OpenDebugLog) },
+            ),
+        ),
     ),
-    Preference.PreferenceItem.TextPreference(
-        title = stringResource(R.string.advanced_reset),
-        subtitle = stringResource(R.string.advanced_reset_summary),
-        testTag = TestTags.Advanced.RESET,
-        onClick = { onAction(AdvancedSettingsAction.AskReset) },
+    Preference.PreferenceGroup(
+        title = stringResource(R.string.advanced_group_debug_info),
+        preferenceItems = listOf(
+            Preference.PreferenceItem.TextPreference(
+                title = stringResource(R.string.advanced_debug),
+                subtitle = stringResource(R.string.advanced_debug_summary),
+                icon = KodakikoIcons.DataObject,
+                testTag = TestTags.Advanced.DEBUG,
+                onClick = { onAction(AdvancedSettingsAction.ToggleDebug) },
+            ),
+            Preference.PreferenceItem.TextPreference(
+                title = stringResource(R.string.diagnostics_title),
+                icon = KodakikoIcons.BugReport,
+                testTag = TestTags.Advanced.DIAGNOSTICS,
+                visible = state.showDiagnostics,
+                onClick = { onAction(AdvancedSettingsAction.OpenDiagnostics) },
+            ),
+            Preference.PreferenceItem.CustomPreference(title = "", visible = state.debugInfo != null) {
+                DebugText(state.debugInfo.orEmpty())
+            },
+        ),
     ),
-    Preference.PreferenceItem.TextPreference(
-        title = stringResource(R.string.debug_log_view),
-        subtitle = stringResource(R.string.debug_log_switch_summary),
-        icon = KodakikoIcons.Article,
-        testTag = TestTags.Advanced.DEBUG_LOG,
-        onClick = { onAction(AdvancedSettingsAction.OpenDebugLog) },
-    ),
-    Preference.PreferenceItem.TextPreference(
-        title = stringResource(R.string.advanced_debug),
-        subtitle = stringResource(R.string.advanced_debug_summary),
-        testTag = TestTags.Advanced.DEBUG,
-        onClick = { onAction(AdvancedSettingsAction.ToggleDebug) },
-    ),
-    Preference.PreferenceItem.TextPreference(
-        title = stringResource(R.string.diagnostics_title),
-        testTag = TestTags.Advanced.DIAGNOSTICS,
-        visible = state.showDiagnostics,
-        onClick = { onAction(AdvancedSettingsAction.OpenDiagnostics) },
-    ),
-    Preference.PreferenceItem.CustomPreference(title = "", visible = state.debugInfo != null) {
-        DebugText(state.debugInfo.orEmpty())
-    },
 )
 
 @Composable

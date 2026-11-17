@@ -1,5 +1,9 @@
 package dev.kodakiko.app.di
 
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.uploadEvent
+import dev.kodakiko.log.DebugLog
+
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import dev.kodakiko.app.ActivityHolder
@@ -162,7 +166,10 @@ object SharingBindings {
         fileStore: DiskFileStore,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher)
+        debugLog: DebugLog,
+    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher).also { uploader ->
+        uploader.subscribe { debugLog.uploadEvent(AppLogConstants.LINK_UPLOADS, it) }
+    }
 
     @Provides
     @SingleIn(AppScope::class)

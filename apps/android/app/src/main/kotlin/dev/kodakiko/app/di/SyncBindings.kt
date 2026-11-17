@@ -1,5 +1,8 @@
 package dev.kodakiko.app.di
 
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.uploadEvent
+
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.EntriesChangedBus
@@ -62,7 +65,10 @@ object SyncBindings {
         fileStore: DiskFileStore,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher)
+        debugLog: DebugLog,
+    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher).also { uploader ->
+        uploader.subscribe { debugLog.uploadEvent(AppLogConstants.SYNC_UPLOADS, it) }
+    }
 
     @Provides
     @SingleIn(AppScope::class)

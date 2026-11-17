@@ -1,5 +1,7 @@
 package dev.kodakiko.app.di
 
+import dev.kodakiko.log.DebugLog
+
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
@@ -171,6 +173,7 @@ object GalleryBindings {
         wifi: WifiState,
         accountState: Observable<AccountState>,
         accountMode: Observable<AccountMode>,
+        debugLog: DebugLog,
     ): AccountMedia = AccountMedia(
         AccountMediaDeps(
             context = context,
@@ -185,6 +188,7 @@ object GalleryBindings {
             isWifi = { wifi.wifi.value },
             localOnly = { accountMode.value == AccountMode.LOCAL },
             unlocked = { accountState.value is AccountState.Unlocked },
+            log = debugLog,
         ),
     )
 
