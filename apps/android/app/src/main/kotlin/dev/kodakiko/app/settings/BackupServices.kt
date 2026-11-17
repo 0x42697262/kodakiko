@@ -2,6 +2,7 @@ package dev.kodakiko.app.settings
 
 import dev.kodakiko.contract.PublicConfigDto
 import dev.kodakiko.crypto.Sodium
+import dev.kodakiko.crypto.wipe
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.TempPurpose
 import dev.kodakiko.domain.EntryEdit
@@ -71,7 +72,17 @@ class SnapshotRestoreService(
     private suspend fun importMedia(file: RestoreMediaFile, position: Int): ImportOutcome {
         val temp = withContext(ioDispatcher) {
             tempFiles.create(TempPurpose.IMPORT, extensionOf(file.fileName)).also { written ->
-                written.use { it.write(file.bytes) }
+                try {
+                    written.use { out ->
+                        file.copyTo { slice ->
+                            out.write(slice)
+                            wipe(slice)
+                        }
+                    }
+                } catch (failure: Throwable) {
+                    written.delete()
+                    throw failure
+                }
             }
         }
         val limit = (config()?.maxMediaPerEntry ?: EntriesConstants.FALLBACK_MAX_MEDIA_PER_ENTRY).toInt()

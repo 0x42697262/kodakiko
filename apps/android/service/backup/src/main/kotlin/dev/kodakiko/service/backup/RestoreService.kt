@@ -1,14 +1,40 @@
 package dev.kodakiko.service.backup
 
 import dev.kodakiko.crypto.Sodium
+import dev.kodakiko.exporting.ByteArraySource
+import dev.kodakiko.exporting.RandomSource
+import dev.kodakiko.exporting.readAll
 import dev.kodakiko.service.entries.CreateEntryInput
 import dev.kodakiko.service.entries.ImportOutcome
 import dev.kodakiko.service.entries.ImportedMedia
 import kotlinx.coroutines.CoroutineDispatcher
 
-class RestoreFile(val name: String, val bytes: ByteArray)
+class RestoreFile(val name: String, val source: RandomSource) : AutoCloseable {
+    constructor(name: String, bytes: ByteArray) : this(name, ByteArraySource(bytes))
 
-class RestoreMediaFile(val bytes: ByteArray, val fileName: String)
+    val bytes: ByteArray get() = source.readAll()
+
+    override fun close() {
+        source.close()
+    }
+}
+
+class RestoreMediaFile(val fileName: String, val size: Long, private val copy: ((ByteArray) -> Unit) -> Unit) {
+    constructor(bytes: ByteArray, fileName: String) : this(fileName, bytes.size.toLong(), { sink -> sink(bytes.copyOf()) })
+
+    val bytes: ByteArray
+        get() {
+            val out = ByteArray(Math.toIntExact(size))
+            var filled = 0
+            copyTo { slice ->
+                slice.copyInto(out, filled)
+                filled += slice.size
+            }
+            return out
+        }
+
+    fun copyTo(sink: (ByteArray) -> Unit) = copy(sink)
+}
 
 enum class RestoreFailureReason {
     UNREADABLE,

@@ -20,6 +20,7 @@ import dev.kodakiko.app.settings.AppSettingsSync
 import dev.kodakiko.app.settings.AppSettingsThumbnails
 import dev.kodakiko.app.settings.IntentAdminShare
 import dev.kodakiko.app.settings.RawLicenses
+import dev.kodakiko.app.settings.RestoreSources
 import dev.kodakiko.app.settings.SnapshotRestoreService
 import dev.kodakiko.app.settings.exportEntryIds
 import dev.kodakiko.app.sync.AppSyncState
@@ -192,6 +193,7 @@ object SettingsBindings {
         sodium: Sodium,
         exporter: ExportService,
         restorer: RestoreService,
+        tempFiles: TempFiles,
         highlight: SettingsHighlight,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
@@ -204,7 +206,7 @@ object SettingsBindings {
         thumbnails = AppSettingsThumbnails(media, scope, ioDispatcher),
         biometric = SettingsBiometric { DeviceLocks.current(context) != DeviceLock.NONE },
         location = SettingsLocation { timeoutMs -> location.currentPosition(timeoutMs) != null },
-        backup = AppSettingsBackup(context, sodium, exporter, restorer, ioDispatcher),
+        backup = AppSettingsBackup(context, sodium, exporter, restorer, RestoreSources(context, tempFiles), ioDispatcher),
         highlight = highlight,
         dynamicColorAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     )

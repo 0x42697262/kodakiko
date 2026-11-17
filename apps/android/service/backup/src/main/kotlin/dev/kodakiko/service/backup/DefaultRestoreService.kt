@@ -8,21 +8,26 @@ import dev.kodakiko.domain.EntryTimeEdit
 import dev.kodakiko.exporting.EXPORT_NOTE_FILE
 import dev.kodakiko.exporting.ParsedEntryNote
 import dev.kodakiko.exporting.ParsedLocation
-import dev.kodakiko.exporting.decryptKdkx
+import dev.kodakiko.exporting.RandomSource
+import dev.kodakiko.exporting.ZipSourceEntry
+import dev.kodakiko.exporting.copyZipEntry
 import dev.kodakiko.exporting.deriveKdkxKey
-import dev.kodakiko.exporting.isKdkx
+import dev.kodakiko.exporting.listZip
+import dev.kodakiko.exporting.openKdkx
 import dev.kodakiko.exporting.parseEntryNote
 import dev.kodakiko.exporting.readKdkxParams
-import dev.kodakiko.exporting.readZip
+import dev.kodakiko.exporting.readZipEntry
+import dev.kodakiko.exporting.startsWithKdkx
 import dev.kodakiko.service.entries.CreateEntryInput
 import dev.kodakiko.service.entries.ImportOutcome
 import dev.kodakiko.service.entries.ImportedMedia
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 
 private const val NOTE_SUFFIX = BackupConstants.NOTE_SUFFIX + EXPORT_NOTE_FILE
 
 private data class DuplicateKey(val takenAtUtc: String, val mediaCount: Int)
+
+private class Located(val source: RandomSource, val entry: ZipSourceEntry)
 
 private fun textOf(bytes: ByteArray): String {
     val mark = BackupConstants.BYTE_ORDER_MARK
@@ -40,12 +45,12 @@ class DefaultRestoreService(private val deps: RestoreServiceDeps) : RestoreServi
         return withContext(deps.ioDispatcher) { Run(existing, onProgress).execute(files, passphrase) }
     }
 
-    private fun openPart(file: RestoreFile, passphrase: String?): ByteArray {
-        if (!isKdkx(file.bytes)) return file.bytes
+    private fun openPart(file: RestoreFile, passphrase: String?): RandomSource? {
+        if (!file.source.startsWithKdkx()) return null
         if (passphrase == null || passphrase == BackupConstants.NO_PASSPHRASE) throw RestorePassphraseException(file.name)
-        val key = deriveKdkxKey(deps.sodium, passphrase, readKdkxParams(file.bytes))
+        val key = deriveKdkxKey(deps.sodium, passphrase, readKdkxParams(file.source))
         try {
-            return decryptKdkx(deps.sodium, key, file.bytes)
+            return openKdkx(deps.sodium, key, file.source)
         } catch (_: Exception) {
             throw RestorePassphraseException(file.name)
         } finally {
@@ -61,27 +66,34 @@ class DefaultRestoreService(private val deps: RestoreServiceDeps) : RestoreServi
         private var duplicates = 0
 
         suspend fun execute(files: List<RestoreFile>, passphrase: String?): RestoreSummary {
-            val contents = LinkedHashMap<String, ByteArray>()
-            for (file in files) {
-                for (entry in readZip(openPart(file, passphrase))) contents[entry.name] = entry.content
+            val decrypted = mutableListOf<RandomSource>()
+            try {
+                val contents = LinkedHashMap<String, Located>()
+                for (file in files) {
+                    val source = openPart(file, passphrase)?.also { decrypted += it } ?: file.source
+                    for (entry in listZip(source)) contents[entry.name] = Located(source, entry)
+                }
+                val notes = contents.keys.filter { it.endsWith(NOTE_SUFFIX) }.sorted()
+                for ((done, path) in notes.withIndex()) {
+                    onProgress(RestoreProgress(done, notes.size))
+                    restoreEntry(path, contents)
+                }
+                onProgress(RestoreProgress(notes.size, notes.size))
+                return RestoreSummary(entries, media, duplicates, failed.toList())
+            } finally {
+                decrypted.forEach(RandomSource::close)
             }
-            val notes = contents.keys.filter { it.endsWith(NOTE_SUFFIX) }.sorted()
-            for ((done, path) in notes.withIndex()) {
-                onProgress(RestoreProgress(done, notes.size))
-                restoreEntry(path, contents)
-            }
-            onProgress(RestoreProgress(notes.size, notes.size))
-            return RestoreSummary(entries, media, duplicates, failed.toList())
         }
 
-        private fun parse(path: String, contents: Map<String, ByteArray>): ParsedEntryNote? =
+        private fun parse(path: String, contents: Map<String, Located>): ParsedEntryNote? =
             try {
-                parseEntryNote(textOf(contents.getValue(path)))
+                val located = contents.getValue(path)
+                parseEntryNote(textOf(readZipEntry(located.source, located.entry)))
             } catch (_: Exception) {
                 null
             }
 
-        private suspend fun restoreEntry(path: String, contents: Map<String, ByteArray>) {
+        private suspend fun restoreEntry(path: String, contents: Map<String, Located>) {
             val parsed = parse(path, contents)
             if (parsed == null) {
                 failed += RestoreFailure(path, RestoreFailureReason.UNREADABLE)
@@ -97,12 +109,13 @@ class DefaultRestoreService(private val deps: RestoreServiceDeps) : RestoreServi
             val captions = LinkedHashMap<String, String>()
             var problem: RestoreFailureReason? = null
             for ((position, item) in parsed.media.withIndex()) {
-                val bytes = contents[folder + item.file]
-                if (bytes == null) {
+                val located = contents[folder + item.file]
+                if (located == null) {
                     problem = RestoreFailureReason.MISSING_MEDIA
                     continue
                 }
-                when (val outcome = deps.importMedia(RestoreMediaFile(bytes, item.originalName ?: item.file), position)) {
+                val file = RestoreMediaFile(item.originalName ?: item.file, located.entry.size) { sink -> copyZipEntry(located.source, located.entry, sink) }
+                when (val outcome = deps.importMedia(file, position)) {
                     is ImportOutcome.Imported -> {
                         items += outcome.media
                         item.caption?.let { captions[outcome.media.mediaId] = it }

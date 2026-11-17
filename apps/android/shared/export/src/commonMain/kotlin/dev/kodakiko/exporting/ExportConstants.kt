@@ -1,6 +1,8 @@
 package dev.kodakiko.exporting
 
+import dev.kodakiko.crypto.AEAD_TAG_BYTES
 import dev.kodakiko.crypto.STREAM_CHUNK_SIZE_EXPONENT
+import dev.kodakiko.crypto.STREAM_HEADER_BYTES
 import dev.kodakiko.js.JsDate
 
 const val EXPORT_FILE_OVERHEAD_BYTES = 1024L
@@ -125,4 +127,7 @@ internal object KdkxConstants {
     const val BYTE_BITS = 8
     const val BYTE_MASK = 0xFF
     const val U32_MASK = 0xFFFF_FFFFL
+    const val BODY_OFFSET = PREFIX_BYTES + STREAM_HEADER_BYTES
+    const val FULL_CHUNK_BYTES = KDKX_CHUNK_BYTES + AEAD_TAG_BYTES
+    const val NO_CHUNK = -1L
 }

@@ -63,4 +63,5 @@ internal object ZipConstants {
     const val UTF8_CONTINUATION_MASK = 0x3F
     const val REPLACEMENT_CHARACTER = '\uFFFD'
     const val INFLATE_BUFFER_BYTES = 65_536
+    const val COPY_SLICE_BYTES = 1_048_576
 }

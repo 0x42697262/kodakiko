@@ -9,9 +9,9 @@ class ZipFormatException(message: String, cause: Throwable? = null) : Exception(
 
 class ZipEntry(val name: String, val content: ByteArray)
 
-private class CentralRecord(val name: String, val method: Int, val compressedSize: Long, val size: Long, val localOffset: Long, val next: Int)
+internal class CentralRecord(val name: String, val method: Int, val compressedSize: Long, val size: Long, val localOffset: Long, val next: Int)
 
-private fun endRecordOffset(zip: ByteArray): Int {
+internal fun endRecordOffset(zip: ByteArray): Int {
     var offset = zip.size - END_BYTES
     while (offset >= 0 && readU32(zip, offset) != ZipConstants.END_SIGNATURE) {
         if (offset == 0 || zip.size - offset > ZipConstants.END_SEARCH_LIMIT) zipMalformed()
@@ -21,7 +21,7 @@ private fun endRecordOffset(zip: ByteArray): Int {
     return offset
 }
 
-private fun centralRecord(zip: ByteArray, offset: Int): CentralRecord {
+internal fun centralRecord(zip: ByteArray, offset: Int): CentralRecord {
     if (readU32(zip, offset) != ZipConstants.CENTRAL_HEADER_SIGNATURE) zipMalformed()
     val nameLength = readU16(zip, offset + ZipConstants.READ_NAME_LENGTH)
     val extraLength = readU16(zip, offset + ZipConstants.READ_EXTRA_LENGTH)

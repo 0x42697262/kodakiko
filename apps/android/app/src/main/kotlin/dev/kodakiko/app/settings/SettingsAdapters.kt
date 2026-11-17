@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileNotFoundException
 
 class AppSettingsAccount(
     private val auth: AuthService,
@@ -123,6 +122,7 @@ class AppSettingsBackup(
     private val sodium: Sodium,
     override val exporter: ExportService,
     override val restorer: RestoreService,
+    private val sources: RestoreSources,
     private val ioDispatcher: CoroutineDispatcher,
 ) : SettingsBackup {
     override suspend fun openFolder(folder: Uri): ExportDestination = withContext(ioDispatcher) {
@@ -138,10 +138,15 @@ class AppSettingsBackup(
     }
 
     override suspend fun readFiles(files: List<Uri>): List<RestoreFile> = withContext(ioDispatcher) {
-        files.map { uri -> RestoreFile(displayName(uri), read(uri)) }
+        val opened = mutableListOf<RestoreFile>()
+        try {
+            for (uri in files) opened += RestoreFile(displayName(uri), sources.open(uri))
+            opened
+        } catch (failure: Throwable) {
+            opened.forEach(RestoreFile::close)
+            throw failure
+        }
     }
-
-    private fun read(uri: Uri): ByteArray = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: throw FileNotFoundException(uri.toString())
 
     private fun displayName(uri: Uri): String {
         val named = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->

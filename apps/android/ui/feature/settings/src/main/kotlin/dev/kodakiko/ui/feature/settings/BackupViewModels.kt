@@ -8,6 +8,7 @@ import dev.kodakiko.service.backup.ExportCancelledException
 import dev.kodakiko.service.backup.ExportPhase
 import dev.kodakiko.service.backup.ExportProgress
 import dev.kodakiko.service.backup.ExportSummary
+import dev.kodakiko.service.backup.RestoreFile
 import dev.kodakiko.service.backup.RestorePassphraseException
 import dev.kodakiko.service.backup.RestoreProgress
 import dev.kodakiko.service.backup.RestoreSummary
@@ -172,8 +173,9 @@ class ImportViewModel(private val deps: SettingsDeps) : ViewModel() {
         if (current.busy) return
         mutableState.update { it.copy(busy = true, error = null, summary = null) }
         viewModelScope.launch {
+            var read = emptyList<RestoreFile>()
             try {
-                val read = deps.backup.readFiles(files)
+                read = deps.backup.readFiles(files)
                 val passphrase = current.passphrase.ifEmpty { null }
                 val summary = deps.backup.restorer.restore(read, passphrase) { progress -> mutableState.update { it.copy(progress = progress) } }
                 mutableState.update { it.copy(summary = summary) }
@@ -181,9 +183,10 @@ class ImportViewModel(private val deps: SettingsDeps) : ViewModel() {
                 mutableState.update { it.copy(error = ImportError.WRONG_PASSPHRASE) }
             } catch (cancelled: CancellationException) {
                 throw cancelled
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
                 mutableState.update { it.copy(error = ImportError.DAMAGED) }
             } finally {
+                read.forEach { file -> runCatching { file.close() } }
                 mutableState.update { it.copy(busy = false, progress = null) }
             }
         }
