@@ -48,14 +48,22 @@ class AppScreensTest {
         Route.Tags to AppScreen.TAGS,
     )
 
+    private val sharingAndLinks: Map<Route, AppScreen> = mapOf(
+        Route.Shared to AppScreen.SHARED,
+        Route.Collection("collection-1") to AppScreen.COLLECTION,
+        Route.Collection("collection-2") to AppScreen.COLLECTION,
+        Route.CollectionShare("collection-1") to AppScreen.COLLECTION_SHARE,
+        Route.ShareSheet(listOf("entry-1"), true) to AppScreen.SHARE_SHEET,
+        Route.ShareSheet(listOf("entry-1", "entry-2"), false) to AppScreen.SHARE_SHEET,
+        Route.LinkNew(listOf("entry-1")) to AppScreen.LINK_NEW,
+        Route.LinkNew(listOf("entry-1", "entry-2")) to AppScreen.LINK_NEW,
+        Route.SettingsLinks to AppScreen.SETTINGS_LINKS,
+    )
+
     private val notYetBuilt: List<Route> = listOf(
         Route.Home,
         Route.Invite,
-        Route.Shared,
         Route.More,
-        Route.Collection("collection-1"),
-        Route.CollectionShare("collection-1"),
-        Route.LinkNew(listOf("entry-1")),
         Route.Statistics,
         Route.Settings,
         Route.SettingsSearch,
@@ -69,7 +77,6 @@ class AppScreensTest {
         Route.SettingsServer,
         Route.SettingsPassword,
         Route.SettingsDeleteAccount,
-        Route.SettingsLinks,
         Route.SettingsAdmin,
         Route.SettingsAdvanced,
         Route.SettingsDiagnostics,
@@ -104,6 +111,22 @@ class AppScreensTest {
     }
 
     @Test
+    fun theSharedTabJournalShareWithShareSheetLinkAndLinksListRoutesMapToTheirScreens() {
+        for ((route, screen) in sharingAndLinks) assertEquals(route.path, screen, AppScreens.of(route))
+    }
+
+    @Test
+    fun theShareSheetRouteCarriesTheEntriesAndWhetherInKodakikoIsAllowed() {
+        val route = Route.ShareSheet(listOf("entry-1", "entry-2"), false)
+        assertEquals(listOf("entry-1", "entry-2"), route.entryIds)
+        assertEquals(false, route.inKodakiko)
+        assertEquals(true, Route.ShareSheet(listOf("entry-1"), true).inKodakiko)
+        assertEquals(Route.ShareSheet(listOf("entry-1"), true), Route.ShareSheet(listOf("entry-1"), true))
+        assertEquals(listOf("entry-1", "entry-2"), Route.LinkNew(listOf("entry-1", "entry-2")).entryIds)
+        assertEquals("collection-1", Route.CollectionShare("collection-1").collectionId)
+    }
+
+    @Test
     fun aCaptureRouteCarriesTheEntryAndTheMode() {
         assertEquals(null, Route.Capture().entryId)
         assertEquals(CaptureMode.PHOTO, Route.Capture().mode)
@@ -128,7 +151,8 @@ class AppScreensTest {
     fun theTableCoversEveryScreenOnce() {
         assertEquals(
             AppScreen.entries.toSet() - AppScreen.PLACEHOLDER,
-            authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet(),
+            authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet() +
+                sharingAndLinks.values.toSet(),
         )
         assertEquals(authAndLock.size, authAndLock.values.toSet().size)
         assertEquals(emptySet<AppScreen>(), authAndLock.values.toSet() intersect gallery.values.toSet())
@@ -142,6 +166,15 @@ class AppScreensTest {
             emptySet<AppScreen>(),
             (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet()) intersect captureAndTags.values.toSet(),
         )
+        assertEquals(
+            setOf(AppScreen.SHARED, AppScreen.COLLECTION, AppScreen.COLLECTION_SHARE, AppScreen.SHARE_SHEET, AppScreen.LINK_NEW, AppScreen.SETTINGS_LINKS),
+            sharingAndLinks.values.toSet(),
+        )
+        assertEquals(
+            emptySet<AppScreen>(),
+            (authAndLock.values.toSet() + gallery.values.toSet() + calendarAndViewer.values.toSet() + edit.values.toSet() + captureAndTags.values.toSet()) intersect
+                sharingAndLinks.values.toSet(),
+        )
     }
 
     @Test
@@ -150,7 +183,7 @@ class AppScreensTest {
             .filter { Route::class.java.isAssignableFrom(it) && !it.isInterface }
             .map { it.name }
             .toSet()
-        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + captureAndTags.keys + notYetBuilt).map { it.javaClass.name }.toSet()
+        val listed = (authAndLock.keys + gallery.keys + calendarAndViewer.keys + edit.keys + captureAndTags.keys + sharingAndLinks.keys + notYetBuilt).map { it.javaClass.name }.toSet()
         assertEquals(declared, listed)
     }
 }

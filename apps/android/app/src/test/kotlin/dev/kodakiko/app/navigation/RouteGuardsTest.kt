@@ -43,6 +43,8 @@ class RouteGuardsTest {
         Route.Collection("c1"),
         Route.CollectionShare("c1"),
         Route.LinkNew(listOf("abc")),
+        Route.ShareSheet(listOf("abc"), true),
+        Route.ShareSheet(listOf("abc"), false),
         Route.Statistics,
         Route.Settings,
         Route.SettingsSearch,
