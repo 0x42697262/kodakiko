@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -57,6 +58,7 @@ import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.min
 import dev.kodakiko.contract.MediaKind
@@ -118,6 +120,21 @@ private fun PagerBody(entryId: String, pages: List<ViewerPage>, page: Int, zoome
                 )
                 MediaKind.VIDEO -> VideoPage(entryId, item, index, video?.takeIf { it.position == index }, onAction)
                 MediaKind.AUDIO -> Unit
+            }
+            item.caption?.let { caption ->
+                Text(
+                    text = caption,
+                    maxLines = ViewerConstants.CAPTION_MAX_LINES,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .background(Color.Black.copy(alpha = ViewerConstants.CAPTION_SCRIM_ALPHA))
+                        .padding(horizontal = ViewerDimens.CAPTION_PADDING_HORIZONTAL, vertical = ViewerDimens.CAPTION_PADDING_VERTICAL)
+                        .then(if (index == page) Modifier.testTag(TestTags.Viewer.CAPTION) else Modifier),
+                )
             }
         }
     }
