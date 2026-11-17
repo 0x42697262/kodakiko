@@ -38,6 +38,7 @@ object DeviceSettingsKeys {
     const val SYNC_PAUSED = "syncPaused"
     const val TAG_ORDER = "tagOrder"
     const val PURE_BLACK = "pureBlack"
+    const val THEME_PRESET = "themePreset"
     const val HAPTIC_FEEDBACK = "hapticFeedback"
     const val DYNAMIC_COLOR = "dynamicColor"
     const val AUTOPLAY_VIDEOS = "autoplayVideos"

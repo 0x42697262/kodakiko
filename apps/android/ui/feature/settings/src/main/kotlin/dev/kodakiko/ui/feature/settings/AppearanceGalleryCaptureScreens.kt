@@ -24,6 +24,7 @@ import dev.kodakiko.ui.core.components.Banner
 import dev.kodakiko.ui.core.components.BannerKind
 import dev.kodakiko.ui.core.settings.Preference
 import dev.kodakiko.ui.core.settings.PreferenceScaffold
+import dev.kodakiko.ui.core.settings.widget.ThemePresetPreferenceWidget
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
@@ -67,6 +68,14 @@ private fun appearanceItems(settings: DeviceSettings, dynamicColorAvailable: Boo
         testTag = TestTags.Settings.THEME,
         onValueChanged = { theme -> update { it.copy(appTheme = theme) } },
     ),
+    Preference.PreferenceItem.CustomPreference(title = stringResource(R.string.theme_presets_title), visible = !settings.dynamicColor) {
+        ThemePresetPreferenceWidget(
+            selected = settings.themePreset,
+            appTheme = settings.appTheme,
+            pureBlack = settings.pureBlack,
+            onSelect = { preset -> update { it.copy(themePreset = preset) } },
+        )
+    },
     Preference.PreferenceItem.SwitchPreference(
         value = settings.hapticFeedback,
         title = stringResource(R.string.prefs_haptics),

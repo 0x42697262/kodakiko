@@ -1,7 +1,5 @@
 package dev.kodakiko.app.di
 
-import dev.kodakiko.log.DebugLog
-
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
@@ -25,6 +23,7 @@ import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.accountHash
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.platform.device.Haptics
 import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState

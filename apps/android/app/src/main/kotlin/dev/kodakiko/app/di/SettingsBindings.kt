@@ -10,9 +10,9 @@ import dev.kodakiko.app.capture.AppCaptureLocation
 import dev.kodakiko.app.edit.ActivityShareLauncher
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
+import dev.kodakiko.app.log.LoggingExportService
 import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.settings.AppDebugLogPort
-import dev.kodakiko.app.log.LoggingExportService
 import dev.kodakiko.app.settings.AppSettingsAccount
 import dev.kodakiko.app.settings.AppSettingsBackup
 import dev.kodakiko.app.settings.AppSettingsCredentials
@@ -150,22 +150,25 @@ object SettingsBindings {
         autoLock: AutoLock,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         debugLog: DebugLog,
-    ): ExportService = LoggingExportService(DefaultExportService(
-        ExportServiceDeps(
-            entryIds = { exportEntryIds(index) },
-            readMetadata = entries::readMetadata,
-            entryKeys = entryKeys,
-            rowStore = rowStore,
-            files = FileStoreBackupFiles(fileStore::require),
-            fetchObject = { objectId -> withContext(ioDispatcher) { media.fetchObject(objectId) } },
-            enforceCap = { withContext(ioDispatcher) { media.current()?.originals?.enforceCap() } },
-            sodium = sodium,
-            autoLock = autoLock,
-            clock = SystemEntriesClock,
-            zipTimeZone = ZipTimeZone { utcMillis -> TimeZone.getDefault().getOffset(utcMillis.toLong()).toDouble() },
-            ioDispatcher = ioDispatcher,
+    ): ExportService = LoggingExportService(
+        DefaultExportService(
+            ExportServiceDeps(
+                entryIds = { exportEntryIds(index) },
+                readMetadata = entries::readMetadata,
+                entryKeys = entryKeys,
+                rowStore = rowStore,
+                files = FileStoreBackupFiles(fileStore::require),
+                fetchObject = { objectId -> withContext(ioDispatcher) { media.fetchObject(objectId) } },
+                enforceCap = { withContext(ioDispatcher) { media.current()?.originals?.enforceCap() } },
+                sodium = sodium,
+                autoLock = autoLock,
+                clock = SystemEntriesClock,
+                zipTimeZone = ZipTimeZone { utcMillis -> TimeZone.getDefault().getOffset(utcMillis.toLong()).toDouble() },
+                ioDispatcher = ioDispatcher,
+            ),
         ),
-    ), debugLog)
+        debugLog,
+    )
 
     @Provides
     @SingleIn(AppScope::class)

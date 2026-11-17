@@ -6,6 +6,23 @@ enum class AppTheme(override val wire: String) : WireValue {
     DARK("dark"),
 }
 
+enum class ThemePreset(override val wire: String) : WireValue {
+    DEFAULT("default"),
+    CATPPUCCIN("catppuccin"),
+    GREEN_APPLE("greenApple"),
+    LAVENDER("lavender"),
+    MIDNIGHT_DUSK("midnightDusk"),
+    NORD("nord"),
+    STRAWBERRY("strawberry"),
+    TAKO("tako"),
+    TEAL_TURQUOISE("tealTurquoise"),
+    TIDAL_WAVE("tidalWave"),
+    TOKYO_NIGHT("tokyoNight"),
+    YIN_YANG("yinYang"),
+    YOTSUBA("yotsuba"),
+    MONOCHROME("monochrome"),
+}
+
 enum class DateFormat(override val wire: String) : WireValue {
     SYSTEM("system"),
     ISO("iso"),
@@ -127,4 +144,5 @@ data class DeviceSettings(
     val autoplayVideos: Boolean,
     val autoplayOnMobileData: Boolean,
     val timeFormat: TimeFormat,
+    val themePreset: ThemePreset = ThemePreset.DEFAULT,
 )

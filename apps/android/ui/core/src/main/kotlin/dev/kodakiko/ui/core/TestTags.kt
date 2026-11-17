@@ -495,6 +495,8 @@ object TestTags {
     }
 
     object Settings {
+        const val THEME_PRESET = "settings.themePreset"
+        const val THEME_PRESETS = "settings.themePresets"
         const val ABOUT_SCREEN = "settings.aboutScreen"
         const val ACCOUNT_SCREEN = "settings.accountScreen"
         const val APPEARANCE_SCREEN = "settings.appearanceScreen"

@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.data.media.CacheUsage
 import dev.kodakiko.ui.core.R
-import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.format.formatBytes
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.settings.Preference
 import dev.kodakiko.ui.core.settings.PreferenceScaffold
 import dev.zacsweers.metrox.viewmodel.metroViewModel

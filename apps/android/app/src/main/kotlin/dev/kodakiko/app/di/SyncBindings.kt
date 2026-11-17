@@ -1,11 +1,10 @@
 package dev.kodakiko.app.di
 
-import dev.kodakiko.app.log.AppLogConstants
-import dev.kodakiko.app.log.uploadEvent
-
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.EntriesChangedBus
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.uploadEvent
 import dev.kodakiko.app.sharing.InProcessUploader
 import dev.kodakiko.app.sync.AppSyncLifecycle
 import dev.kodakiko.app.sync.AppSyncLog

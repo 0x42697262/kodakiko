@@ -216,6 +216,7 @@ object DeviceSettingsJson {
         flag(K.SYNC_PAUSED, { it.syncPaused }) { s, v -> s.copy(syncPaused = v) },
         SettingsField(K.TAG_ORDER, StringListCodec, { it.tagOrder }) { s, v -> s.copy(tagOrder = v) },
         flag(K.PURE_BLACK, { it.pureBlack }) { s, v -> s.copy(pureBlack = v) },
+        SettingsField(K.THEME_PRESET, EnumCodec(ThemePreset.entries), { it.themePreset }) { s, v -> s.copy(themePreset = v) },
         flag(K.HAPTIC_FEEDBACK, { it.hapticFeedback }) { s, v -> s.copy(hapticFeedback = v) },
         flag(K.DYNAMIC_COLOR, { it.dynamicColor }) { s, v -> s.copy(dynamicColor = v) },
         flag(K.AUTOPLAY_VIDEOS, { it.autoplayVideos }) { s, v -> s.copy(autoplayVideos = v) },

@@ -9,8 +9,8 @@ import dev.kodakiko.app.edit.EditFlushingLockService
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.LifecycleSteps
 import dev.kodakiko.app.log.AppLogConstants
-import dev.kodakiko.app.log.timedStep
 import dev.kodakiko.app.log.LoggingAuthService
+import dev.kodakiko.app.log.timedStep
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.NavigationConstants
 import dev.kodakiko.app.sharing.InProcessUploader
@@ -254,35 +254,38 @@ object ServiceBindings {
         @SyncUploads syncUploader: InProcessUploader,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         debugLog: DebugLog,
-    ): AuthService = LoggingAuthService(DefaultAuthService(
-        AuthServiceDeps(
-            sodium = sodium,
-            http = http,
-            serverUrl = serverUrl,
-            sessionStore = sessionStore,
-            keyVault = keyVault,
-            rowStore = rowStore,
-            fileStore = fileStore,
-            globalStore = globalStore,
-            lifecycle = lifecycle,
-            nowIso = SystemWallClock::nowIso,
-            randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
-            accountState = accountState,
-            activeAccountKey = activeAccountKey,
-            config = config,
-            inviteToken = inviteToken,
-            deviceLabel = { AppConstants.DEVICE_LABEL },
-            homeCollectionName = context.getString(R.string.defaults_home_collection_name),
-            showSecuring = navigator::showSecuring,
-            dismissSecuring = navigator::dismissSecuring,
-            beforeSignOut = {
-                lockService.lock(LockReason.SIGN_OUT)
-                cancelUploads(listOf(syncUploader))
-            },
-            ioDispatcher = ioDispatcher,
-            accountMode = accountMode,
+    ): AuthService = LoggingAuthService(
+        DefaultAuthService(
+            AuthServiceDeps(
+                sodium = sodium,
+                http = http,
+                serverUrl = serverUrl,
+                sessionStore = sessionStore,
+                keyVault = keyVault,
+                rowStore = rowStore,
+                fileStore = fileStore,
+                globalStore = globalStore,
+                lifecycle = lifecycle,
+                nowIso = SystemWallClock::nowIso,
+                randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
+                accountState = accountState,
+                activeAccountKey = activeAccountKey,
+                config = config,
+                inviteToken = inviteToken,
+                deviceLabel = { AppConstants.DEVICE_LABEL },
+                homeCollectionName = context.getString(R.string.defaults_home_collection_name),
+                showSecuring = navigator::showSecuring,
+                dismissSecuring = navigator::dismissSecuring,
+                beforeSignOut = {
+                    lockService.lock(LockReason.SIGN_OUT)
+                    cancelUploads(listOf(syncUploader))
+                },
+                ioDispatcher = ioDispatcher,
+                accountMode = accountMode,
+            ),
         ),
-    ), debugLog)
+        debugLog,
+    )
 
     @Provides
     fun randomSource(sodium: Sodium): RandomSource = RandomSource { length -> sodium.randomBytes(length) }

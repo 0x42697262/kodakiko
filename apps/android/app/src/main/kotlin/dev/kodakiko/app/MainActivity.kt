@@ -52,7 +52,7 @@ class MainActivity : FragmentActivity() {
         graph.startup.start()
         setContent {
             val theme by graph.deviceSettings.settings.collectAsStateWithLifecycle()
-            KodakikoTheme(appTheme = theme.appTheme, pureBlack = theme.pureBlack, dynamicColor = theme.dynamicColor) {
+            KodakikoTheme(appTheme = theme.appTheme, pureBlack = theme.pureBlack, dynamicColor = theme.dynamicColor, preset = theme.themePreset) {
                 val systemUiSettings by graph.systemUiSettings.collectAsStateWithLifecycle()
                 SystemUi(settings = systemUiSettings, darkTheme = isSystemInDarkTheme()) {
                     Box(Modifier.testTag(TestTags.APP_ROOT).testTagsAsResourceIdRoot().fillMaxSize()) {

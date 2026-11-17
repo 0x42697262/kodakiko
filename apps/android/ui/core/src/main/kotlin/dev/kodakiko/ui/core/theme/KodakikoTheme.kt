@@ -9,12 +9,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.kodakiko.data.db.AppTheme
 import dev.kodakiko.data.db.DeviceSettingsDefaults
+import dev.kodakiko.data.db.ThemePreset
 
 @Composable
 fun KodakikoTheme(
     appTheme: AppTheme = DeviceSettingsDefaults.ANDROID.appTheme,
     pureBlack: Boolean = DeviceSettingsDefaults.ANDROID.pureBlack,
     dynamicColor: Boolean = DeviceSettingsDefaults.ANDROID.dynamicColor,
+    preset: ThemePreset = DeviceSettingsDefaults.ANDROID.themePreset,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -24,13 +26,12 @@ fun KodakikoTheme(
         AppTheme.DARK -> true
     }
     MaterialTheme(
-        colorScheme = remember(context, isDark, pureBlack, dynamicColor) {
-            KodakikoColorScheme.getColorScheme(
-                context = context,
-                isDark = isDark,
-                isPureBlack = pureBlack,
-                isDynamic = dynamicColor,
-            )
+        colorScheme = remember(context, isDark, pureBlack, dynamicColor, preset) {
+            if (dynamicColor && isDynamicColorAvailable()) {
+                KodakikoColorScheme.getColorScheme(context = context, isDark = isDark, isPureBlack = pureBlack, isDynamic = true)
+            } else {
+                ThemePresets.colorScheme(preset, isDark, pureBlack)
+            }
         },
         content = content,
     )

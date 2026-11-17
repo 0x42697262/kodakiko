@@ -40,4 +40,19 @@
     <string name="debug_log_failed">Couldn\'t do that. Try again.</string>
     <string name="calendar_jump_previous_year">Previous year</string>
     <string name="calendar_jump_next_year">Next year</string>
+    <string name="theme_preset_default">Default</string>
+    <string name="theme_preset_catppuccin">Catppuccin</string>
+    <string name="theme_preset_green_apple">Green Apple</string>
+    <string name="theme_preset_lavender">Lavender</string>
+    <string name="theme_preset_midnight_dusk">Midnight Dusk</string>
+    <string name="theme_preset_nord">Nord</string>
+    <string name="theme_preset_strawberry">Strawberry</string>
+    <string name="theme_preset_tako">Tako</string>
+    <string name="theme_preset_teal_turquoise">Teal &amp; Turquoise</string>
+    <string name="theme_preset_tidal_wave">Tidal Wave</string>
+    <string name="theme_preset_tokyo_night">Tokyo Night</string>
+    <string name="theme_preset_yin_yang">Yin &amp; Yang</string>
+    <string name="theme_preset_yotsuba">Yotsuba</string>
+    <string name="theme_preset_monochrome">Monochrome</string>
+    <string name="theme_presets_title">Color theme</string>
 </resources>

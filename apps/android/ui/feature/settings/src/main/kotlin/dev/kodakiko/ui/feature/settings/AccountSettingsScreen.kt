@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kodakiko.ui.core.R
-import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.components.AdaptiveSheet
@@ -37,6 +36,7 @@ import dev.kodakiko.ui.core.components.FormButton
 import dev.kodakiko.ui.core.components.FormButtonStyle
 import dev.kodakiko.ui.core.components.FormTextField
 import dev.kodakiko.ui.core.format.formatBytes
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 import dev.kodakiko.ui.core.navigation.Route
 import dev.kodakiko.ui.core.settings.Preference
 import dev.kodakiko.ui.core.util.optionalTestTag
