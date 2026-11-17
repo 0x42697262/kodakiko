@@ -404,6 +404,16 @@ class SettingsHarness(mode: AccountMode = AccountMode.SERVER, initial: DeviceSet
     val highlight = SettingsHighlight()
     var biometric = true
     var dynamicColor = true
+    val profile = FakeSettingsProfile()
+    val credentials = FakeSettingsCredentials()
+    val index = FakeIndexService()
+    val diagnostics = FakeDiagnosticsService()
+    val licenses = FakeSettingsLicenses()
+    val admin = FakeAdminService()
+    val share = FakeAdminShare()
+    var nowMs = NOW_MS
+    var appVersion = APP_VERSION
+    var showDiagnostics = true
 
     val deps: SettingsDeps
         get() = SettingsDeps(
@@ -419,6 +429,18 @@ class SettingsHarness(mode: AccountMode = AccountMode.SERVER, initial: DeviceSet
             highlight = highlight,
             dynamicColorAvailable = dynamicColor,
         )
+
+    val accountDeps: AccountSettingsDeps
+        get() = AccountSettingsDeps(settings = deps, profile = profile, credentials = credentials, nowMs = { nowMs })
+
+    val advancedDeps: AdvancedSettingsDeps
+        get() = AdvancedSettingsDeps(settings = deps, index = index, diagnostics = diagnostics, showDiagnostics = showDiagnostics)
+
+    val aboutDeps: AboutDeps
+        get() = AboutDeps(settings = deps, appVersion = appVersion, licenses = licenses)
+
+    val adminDeps: AdminDeps
+        get() = AdminDeps(settings = deps, admin = admin, share = share, nowMs = { nowMs })
 }
 
 class RecordingNavigator(start: List<Route>) : RouteNavigator {

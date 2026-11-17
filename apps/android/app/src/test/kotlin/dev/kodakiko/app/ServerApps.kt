@@ -1,12 +1,22 @@
 package dev.kodakiko.app
 
 import android.content.Context
+import dev.kodakiko.contract.AdminInviteCreateResponse
+import dev.kodakiko.contract.AdminStatsResponse
+import dev.kodakiko.contract.AdminUserDto
+import dev.kodakiko.contract.AdminUserListResponse
 import dev.kodakiko.contract.ContractJson
 import dev.kodakiko.contract.ContractSchemas
 import dev.kodakiko.contract.DownloadResponse
+import dev.kodakiko.contract.InviteDto
+import dev.kodakiko.contract.InviteListResponse
+import dev.kodakiko.contract.OptionalValue
 import dev.kodakiko.contract.PublicConfigDto
 import dev.kodakiko.contract.Routes
 import dev.kodakiko.contract.SignupMode
+import dev.kodakiko.contract.UserDto
+import dev.kodakiko.contract.UserRole
+import dev.kodakiko.contract.UserStatus
 import dev.kodakiko.crypto.createSodium
 import dev.kodakiko.data.db.DeviceSettings
 import dev.kodakiko.data.db.DeviceSettingsDefaults
@@ -182,10 +192,16 @@ class FakeBucket {
     }
 }
 
-class FakeKodakikoServer(private val sharingEnabled: Boolean, private val bucket: FakeBucket) : Dispatcher() {
+class FakeKodakikoServer(private val sharingEnabled: Boolean, private val bucket: FakeBucket, private val role: UserRole = UserRole.MEMBER) : Dispatcher() {
     private val mock = MockWebServer()
 
     val calls: MutableList<String> = CopyOnWriteArrayList()
+
+    val bodies: MutableList<Pair<String, String>> = CopyOnWriteArrayList()
+
+    val users: MutableList<AdminUserDto> = CopyOnWriteArrayList(listOf(adminUser(ME_ID, V031Fixture.USERNAME, role, ME_USED_BYTES, ME_LAST_ACTIVE)))
+
+    val invites: MutableList<InviteDto> = CopyOnWriteArrayList()
 
     val baseUrl: String get() = mock.url("/").toString().trimEnd('/')
 
@@ -202,12 +218,51 @@ class FakeKodakikoServer(private val sharingEnabled: Boolean, private val bucket
     override fun dispatch(request: RecordedRequest): MockResponse {
         val path = request.url.encodedPath
         calls += "${request.method} $path"
+        request.body?.utf8()?.takeIf { it.isNotEmpty() }?.let { bodies += "${request.method} $path" to it }
         return when {
             request.method == GET && path == Routes.config() -> json(ContractJson.stringify(ContractSchemas.publicConfigSchema.encode(config(sharingEnabled))))
+            request.method == GET && path == Routes.usersMe() -> json(ContractJson.stringify(ContractSchemas.userDto.encode(users.first().user)))
+            role == UserRole.ADMIN && path.startsWith(Routes.adminUsers()) -> adminUsers(request, path)
+            role == UserRole.ADMIN && path.startsWith(Routes.adminInvites()) -> adminInvites(request, path)
+            role == UserRole.ADMIN && request.method == GET && path == Routes.adminStats() -> json(ContractJson.stringify(ContractSchemas.adminStatsResponse.encode(STATS)))
             request.method == GET && path == Routes.objectDownload(V031Media.THUMBNAIL_OBJECT) -> download(V031Media.THUMBNAIL_OBJECT)
             request.method == GET && path == Routes.objectDownload(V031Media.ORIGINAL_OBJECT) -> download(V031Media.ORIGINAL_OBJECT)
             else -> MockResponse.Builder().code(NOT_FOUND).build()
         }
+    }
+
+    private fun adminUsers(request: RecordedRequest, path: String): MockResponse = when (request.method) {
+        GET -> json(ContractJson.stringify(ContractSchemas.adminUserListResponse.encode(AdminUserListResponse(users.toList(), null))))
+        PATCH -> {
+            val id = path.removePrefix(Routes.adminUsers() + "/")
+            val patch = ContractSchemas.adminUserPatchRequest.decode(ContractJson.parse(request.body!!.utf8()))
+            val index = users.indexOfFirst { it.user.id == id }
+            val current = users[index]
+            val quota = when (val value = patch.quotaBytes) {
+                OptionalValue.Absent -> current.user.quotaBytes
+                is OptionalValue.Present -> value.value
+            }
+            val updated = current.copy(user = current.user.copy(quotaBytes = quota, role = patch.role ?: current.user.role))
+            users[index] = updated
+            json(ContractJson.stringify(ContractSchemas.adminUserDto.encode(updated)))
+        }
+        else -> MockResponse.Builder().code(NOT_FOUND).build()
+    }
+
+    private fun adminInvites(request: RecordedRequest, path: String): MockResponse = when {
+        request.method == GET && path == Routes.adminInvites() -> json(ContractJson.stringify(ContractSchemas.inviteListResponse.encode(InviteListResponse(invites.toList()))))
+        request.method == POST && path == Routes.adminInvites() -> {
+            val input = ContractSchemas.adminInviteCreateRequest.decode(ContractJson.parse(request.body!!.utf8()))
+            invites += InviteDto(INVITE_ID, input.role, CREATED_AT, INVITE_EXPIRES_AT, null, null, null)
+            json(ContractJson.stringify(ContractSchemas.adminInviteCreateResponse.encode(AdminInviteCreateResponse(INVITE_URL, INVITE_EXPIRES_AT))))
+        }
+        request.method == DELETE -> {
+            val id = path.removePrefix(Routes.adminInvites() + "/")
+            val index = invites.indexOfFirst { it.id == id }
+            invites[index] = invites[index].copy(revokedAt = CREATED_AT)
+            MockResponse.Builder().code(NO_CONTENT).build()
+        }
+        else -> MockResponse.Builder().code(NOT_FOUND).build()
     }
 
     private fun download(objectId: String): MockResponse =
@@ -217,11 +272,50 @@ class FakeKodakikoServer(private val sharingEnabled: Boolean, private val bucket
 
     companion object {
         const val GET = "GET"
+        const val POST = "POST"
+        const val PATCH = "PATCH"
+        const val DELETE = "DELETE"
         const val TOKEN = "fake-session-token-for-k007local"
+        const val ME_ID = "AJodCY5u6JCoGljpGC5X5w"
+        const val ME_USED_BYTES = 348_160L
+        const val NEWCOMER_ID = "NEWCOMERnewcomer000001"
+        const val NEWCOMER = "newcomer"
+        const val INVITE_ID = "INVITEinvite0000000001"
+        const val INVITE_URL = "https://kodakiko.example.com/invite#kdk_i_abcdefghijklmnopqrstuv"
+        const val INVITE_EXPIRES_AT = "2099-01-08T00:00:00.000Z"
+        const val CREATED_AT = "2026-11-18T00:00:00.000Z"
+        private const val ME_LAST_ACTIVE = "2026-11-17T09:30:00.000Z"
         private const val LOOPBACK = "127.0.0.1"
         private const val OK = 200
+        private const val NO_CONTENT = 204
         private const val NOT_FOUND = 404
         private const val EXPIRES_AT = "2099-01-01T00:00:00.000Z"
+
+        val STATS = AdminStatsResponse(
+            users = 2,
+            activeUsers30d = 1,
+            pendingDeletion = 0,
+            collections = 3,
+            entries = 1,
+            objects = 2,
+            totalBytes = 27_032,
+            quotaBytesAllocated = null,
+        )
+
+        fun adminUser(id: String, username: String, role: UserRole, usedBytes: Long, lastActiveAt: String?): AdminUserDto = AdminUserDto(
+            UserDto(
+                id = id,
+                username = username,
+                role = role,
+                status = UserStatus.ACTIVE,
+                quotaBytes = null,
+                usedBytes = usedBytes,
+                createdAt = CREATED_AT,
+                deletionDueAt = null,
+            ),
+            sessionCount = 1,
+            lastActiveAt = lastActiveAt,
+        )
 
         fun config(sharingEnabled: Boolean): PublicConfigDto = PublicConfigDto(
             signupMode = SignupMode.INVITE,
@@ -262,6 +356,7 @@ object ServerFixture {
         settings: DeviceSettings? = null,
         remoteThumbnail: Boolean = true,
         remoteOriginal: Boolean = false,
+        role: UserRole = UserRole.MEMBER,
     ) {
         FakeAndroidKeyStore.install()
         V031Fixture.install(context)
@@ -274,7 +369,7 @@ object ServerFixture {
             bodies[V031Media.THUMBNAIL_OBJECT] = V031Media.fixtureThumbnailCiphertext
             bodies[V031Media.ORIGINAL_OBJECT] = V031Media.fixtureOriginalCiphertext
         }.start()
-        val server = FakeKodakikoServer(sharingEnabled, bucket).start()
+        val server = FakeKodakikoServer(sharingEnabled, bucket, role).start()
         this.bucket = bucket
         this.server = server
         val global = GlobalStore(context)
@@ -288,6 +383,27 @@ object ServerFixture {
 class ServerV031App : KodakikoApp() {
     override fun onCreate() {
         ServerFixture.install(this, sharingEnabled = true, bucketMode = FakeBucket.Mode.SERVE)
+        super.onCreate()
+    }
+}
+
+class ServerAdminV031App : KodakikoApp() {
+    override fun onCreate() {
+        ServerFixture.install(this, sharingEnabled = true, bucketMode = FakeBucket.Mode.SERVE, role = UserRole.ADMIN)
+        ServerFixture.requireServer().users += FakeKodakikoServer.adminUser(
+            FakeKodakikoServer.NEWCOMER_ID,
+            FakeKodakikoServer.NEWCOMER,
+            UserRole.MEMBER,
+            0,
+            null,
+        )
+        super.onCreate()
+    }
+}
+
+class ServerAdminInviteV031App : KodakikoApp() {
+    override fun onCreate() {
+        ServerFixture.install(this, sharingEnabled = true, bucketMode = FakeBucket.Mode.SERVE, role = UserRole.ADMIN)
         super.onCreate()
     }
 }
