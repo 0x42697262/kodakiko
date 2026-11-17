@@ -5,7 +5,8 @@ package dev.kodakiko.ui.feature.edit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,10 +25,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -41,12 +41,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
@@ -54,26 +53,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import dev.kodakiko.contract.EntryLocation
 import dev.kodakiko.contract.LocationSource
-import dev.kodakiko.contract.NOTE_MAX_CHARS
 import dev.kodakiko.js.jsToFixed
 import dev.kodakiko.markdown.MarkdownAction
-import dev.kodakiko.markdown.TextSelection
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.components.AppBar
-import dev.kodakiko.ui.core.components.AppBarActions
 import dev.kodakiko.ui.core.components.Banner
 import dev.kodakiko.ui.core.components.BannerKind
+import dev.kodakiko.ui.core.components.DropdownMenu
 import dev.kodakiko.ui.core.format.formatDuration
 import dev.kodakiko.ui.core.format.formatEntryTime
 import dev.kodakiko.ui.core.icons.KodakikoIcons
@@ -111,32 +104,56 @@ fun EditContent(state: EditState, onAction: (EditAction) -> Unit, modifier: Modi
                 EditBodyParts(state, body, onAction)
             }
             EditSheets(state, body, onAction)
+            state.noteEditor?.let { NoteEditorDialog(body.note, it, onAction) }
         }
     }
 }
 
 @Composable
 private fun EditTopBar(isNew: Boolean, onAction: (EditAction) -> Unit, modifier: Modifier = Modifier) {
-    val done = stringResource(R.string.edit_done)
-    val view = stringResource(R.string.edit_view_entry)
-    val trash = stringResource(R.string.edit_trash)
-    val check = EditIcons.Check
     AppBar(
         title = stringResource(if (isNew) R.string.compose_title else R.string.edit_title),
         modifier = modifier,
         navigateUp = { onAction(EditAction.Back) },
         navigateUpTestTag = TestTags.Compose.BACK,
         actions = {
-            AppBarActions(
-                actions = listOf(
-                    AppBar.Action(title = done, icon = check, testTag = TestTags.Compose.SAVE, onClick = { onAction(EditAction.Done) }),
-                    AppBar.OverflowAction(title = view, testTag = TestTags.Edit.VIEW, onClick = { onAction(EditAction.ViewEntry) }),
-                    AppBar.OverflowAction(title = trash, testTag = TestTags.Edit.TRASH, onClick = { onAction(EditAction.Trash) }),
-                ),
-                overflowTestTag = TestTags.Edit.MORE,
-            )
+            IconButton(onClick = { onAction(EditAction.Done) }, modifier = Modifier.testTag(TestTags.Compose.SAVE)) {
+                Icon(imageVector = EditIcons.Check, contentDescription = stringResource(R.string.edit_done))
+            }
+            EditOverflow(onAction)
         },
     )
+}
+
+@Composable
+private fun EditOverflow(onAction: (EditAction) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val danger = MaterialTheme.colorScheme.error
+    Box {
+        IconButton(onClick = { expanded = true }, modifier = Modifier.testTag(TestTags.Edit.MORE)) {
+            Icon(imageVector = KodakikoIcons.MoreVert, contentDescription = stringResource(R.string.gallery_more))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(text = stringResource(R.string.edit_view_entry)) },
+                leadingIcon = { Icon(imageVector = EditIcons.Visibility, contentDescription = null) },
+                onClick = {
+                    expanded = false
+                    onAction(EditAction.ViewEntry)
+                },
+                modifier = Modifier.testTag(TestTags.Edit.VIEW),
+            )
+            DropdownMenuItem(
+                text = { Text(text = stringResource(R.string.edit_trash), color = danger) },
+                leadingIcon = { Icon(imageVector = KodakikoIcons.Delete, contentDescription = null, tint = danger) },
+                onClick = {
+                    expanded = false
+                    onAction(EditAction.Trash)
+                },
+                modifier = Modifier.testTag(TestTags.Edit.TRASH),
+            )
+        }
+    }
 }
 
 @Composable
@@ -160,7 +177,7 @@ private fun EditBodyParts(state: EditState, body: EditBody, onAction: (EditActio
         WhenSection(body.time, state.timeEditor, onAction)
         body.location?.let { WhereSection(it, onAction) }
         TagsSection(body.tags, onAction)
-        NoteSection(body.note, state.noteEditor, onAction)
+        NoteSection(body.note, onAction)
         if (state.failed) Banner(text = stringResource(R.string.edit_failed), kind = BannerKind.ERROR, testTag = TestTags.Edit.FAILED)
     }
 }
@@ -314,29 +331,27 @@ private fun WhenSection(time: EditTime, editor: TimeEditorUi?, onAction: (EditAc
     }
 }
 
+private enum class TimePart { DATE, TIME }
+
 @Composable
 private fun TimeEditor(editor: TimeEditorUi, onAction: (EditAction) -> Unit) {
     var date by remember(editor) { mutableStateOf(editor.date) }
     var time by remember(editor) { mutableStateOf(editor.time) }
-    val apply = { onAction(EditAction.ApplyTime(date, time)) }
+    var picking by remember { mutableStateOf<TimePart?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING)) {
-        OutlinedTextField(
+        ClickableField(
+            label = stringResource(R.string.time_editor_date),
             value = date,
-            onValueChange = { date = it },
-            label = { Text(text = stringResource(R.string.time_editor_date)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { apply() }),
-            modifier = Modifier.fillMaxWidth().testTag(TestTags.TimeEditor.DATE),
+            icon = KodakikoIcons.CalendarMonth,
+            tag = TestTags.TimeEditor.DATE,
+            onClick = { picking = TimePart.DATE },
         )
-        OutlinedTextField(
+        ClickableField(
+            label = stringResource(R.string.time_editor_time),
             value = time,
-            onValueChange = { time = it },
-            label = { Text(text = stringResource(R.string.time_editor_time)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { apply() }),
-            modifier = Modifier.fillMaxWidth().testTag(TestTags.TimeEditor.TIME),
+            icon = EditIcons.Schedule,
+            tag = TestTags.TimeEditor.TIME,
+            onClick = { picking = TimePart.TIME },
         )
         if (editor.invalid) {
             Text(
@@ -350,11 +365,49 @@ private fun TimeEditor(editor: TimeEditorUi, onAction: (EditAction) -> Unit) {
             OutlinedButton(onClick = { onAction(EditAction.ResetTime) }, modifier = Modifier.testTag(TestTags.TimeEditor.RESET)) {
                 Text(text = stringResource(R.string.time_editor_reset))
             }
-            Button(onClick = apply, modifier = Modifier.testTag(TestTags.TimeEditor.DONE)) {
+            Button(onClick = { onAction(EditAction.ApplyTime(date, time)) }, modifier = Modifier.testTag(TestTags.TimeEditor.DONE)) {
                 Text(text = stringResource(R.string.time_editor_done))
             }
         }
     }
+    when (picking) {
+        TimePart.DATE -> EntryDatePicker(
+            date = date,
+            onPick = {
+                date = it
+                picking = null
+            },
+            onDismiss = { picking = null },
+        )
+        TimePart.TIME -> EntryTimePicker(
+            time = time,
+            onPick = {
+                time = it
+                picking = null
+            },
+            onDismiss = { picking = null },
+        )
+        null -> Unit
+    }
+}
+
+@Composable
+private fun ClickableField(label: String, value: String, icon: ImageVector, tag: String, onClick: () -> Unit) {
+    val interactions = remember { MutableInteractionSource() }
+    val currentOnClick by rememberUpdatedState(onClick)
+    LaunchedEffect(interactions) {
+        interactions.interactions.collect { if (it is PressInteraction.Release) currentOnClick() }
+    }
+    OutlinedTextField(
+        value = value,
+        onValueChange = {},
+        readOnly = true,
+        singleLine = true,
+        label = { Text(text = label) },
+        trailingIcon = { Icon(imageVector = icon, contentDescription = null) },
+        interactionSource = interactions,
+        modifier = Modifier.fillMaxWidth().testTag(tag),
+    )
 }
 
 @Composable
@@ -388,17 +441,15 @@ private fun WhereSection(location: EntryLocation, onAction: (EditAction) -> Unit
 private fun TagsSection(tags: List<String>, onAction: (EditAction) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING)) {
         SectionLabel(stringResource(R.string.compose_tags))
-        if (tags.isNotEmpty()) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING),
-                verticalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING),
-            ) {
-                tags.forEachIndexed { position, tag -> TagChip(tag, position, onAction) }
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING),
+            verticalArrangement = Arrangement.spacedBy(EditDimens.SMALL_SPACING),
+            itemVerticalAlignment = Alignment.CenterVertically,
+        ) {
+            tags.forEachIndexed { position, tag -> TagChip(tag, position, onAction) }
+            IconButton(onClick = { onAction(EditAction.ChooseTags) }, modifier = Modifier.testTag(TestTags.Tags.CHOOSE)) {
+                Icon(imageVector = EditIcons.Add, contentDescription = stringResource(R.string.tags_choose))
             }
-        }
-        OutlinedButton(onClick = { onAction(EditAction.ChooseTags) }, modifier = Modifier.testTag(TestTags.Tags.CHOOSE)) {
-            Icon(imageVector = EditIcons.Label, contentDescription = null)
-            Text(text = stringResource(R.string.tags_choose), modifier = Modifier.padding(start = EditDimens.SMALL_SPACING))
         }
     }
 }
@@ -429,7 +480,7 @@ private fun TagChip(tag: String, position: Int, onAction: (EditAction) -> Unit) 
     }
 }
 
-private val TOOLBAR: List<Pair<MarkdownAction, Int>> = listOf(
+internal val TOOLBAR: List<Pair<MarkdownAction, Int>> = listOf(
     MarkdownAction.BOLD to R.string.toolbar_bold,
     MarkdownAction.ITALIC to R.string.toolbar_italic,
     MarkdownAction.STRIKE to R.string.toolbar_strike,
@@ -454,7 +505,7 @@ internal fun toolbarTag(action: MarkdownAction): String = when (action) {
 }
 
 @Composable
-private fun toolbarIcon(action: MarkdownAction): ImageVector = when (action) {
+internal fun toolbarIcon(action: MarkdownAction): ImageVector = when (action) {
     MarkdownAction.BOLD -> EditIcons.Bold
     MarkdownAction.ITALIC -> EditIcons.Italic
     MarkdownAction.STRIKE -> EditIcons.Strike
@@ -467,11 +518,10 @@ private fun toolbarIcon(action: MarkdownAction): ImageVector = when (action) {
 }
 
 @Composable
-private fun NoteSection(note: String, editor: NoteEditorUi?, onAction: (EditAction) -> Unit) {
+private fun NoteSection(note: String, onAction: (EditAction) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(EditDimens.TINY_SPACING)) {
         SectionLabel(stringResource(R.string.compose_note))
         when {
-            editor != null -> NoteEditor(note, editor.selection, onAction)
             note.isBlank() -> AddNote(onAction)
             else -> Row(verticalAlignment = Alignment.Top) {
                 MarkdownView(source = note, onOpenLink = { onAction(EditAction.OpenLink(it)) }, modifier = Modifier.weight(1f))
@@ -495,37 +545,5 @@ private fun AddNote(onAction: (EditAction) -> Unit) {
             .testTag(TestTags.Edit.ADD_NOTE),
     ) {
         Text(text = stringResource(R.string.edit_add_note), color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun NoteEditor(note: String, selection: TextSelection, onAction: (EditAction) -> Unit) {
-    val external = TextFieldValue(note, TextRange(selection.start, selection.end))
-    val local = remember { mutableStateOf(external) }
-    val shown = if (local.value.text == external.text && local.value.selection == external.selection) local.value else external
-    val focus = remember { FocusRequester() }
-    LaunchedEffect(focus) { focus.requestFocus() }
-    Column(verticalArrangement = Arrangement.spacedBy(EditDimens.TINY_SPACING)) {
-        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
-            TOOLBAR.forEach { (action, label) ->
-                IconButton(onClick = { onAction(EditAction.Toolbar(action)) }, modifier = Modifier.testTag(toolbarTag(action))) {
-                    Icon(imageVector = toolbarIcon(action), contentDescription = stringResource(label))
-                }
-            }
-            IconButton(onClick = { onAction(EditAction.NoteDone) }, modifier = Modifier.testTag(TestTags.Edit.NOTE_DONE)) {
-                Icon(imageVector = EditIcons.Check, contentDescription = stringResource(R.string.edit_note_done))
-            }
-        }
-        OutlinedTextField(
-            value = shown,
-            onValueChange = { next ->
-                val limited = if (next.text.length > NOTE_MAX_CHARS) TextFieldValue(next.text.take(NOTE_MAX_CHARS), TextRange(NOTE_MAX_CHARS)) else next
-                local.value = limited
-                onAction(EditAction.NoteChanged(limited.text, TextSelection(limited.selection.start, limited.selection.end)))
-            },
-            placeholder = { Text(text = stringResource(R.string.compose_note_placeholder)) },
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-            modifier = Modifier.fillMaxWidth().focusRequester(focus).testTag(TestTags.Compose.NOTE),
-        )
     }
 }

@@ -1,5 +1,6 @@
 package dev.kodakiko.ui.feature.edit
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
 import dev.kodakiko.contract.EntryLocation
@@ -43,10 +44,15 @@ sealed interface EditSheet {
 
     @Immutable
     data class ChooseTags(val tags: List<String>) : EditSheet
+
+    @Immutable
+    data class Unsaved(val exit: EditExit, val isNew: Boolean) : EditSheet
 }
 
+enum class EditExit { BACK, VIEW }
+
 @Immutable
-data class NoteEditorUi(val selection: TextSelection)
+data class NoteEditorUi(val selection: TextSelection, val preview: Boolean = false)
 
 @Immutable
 data class TimeEditorUi(val date: String, val time: String, val invalid: Boolean)
@@ -109,6 +115,8 @@ sealed interface EditAction {
 
     data object AddFromDevice : EditAction
 
+    data class Picked(val uris: List<Uri>) : EditAction
+
     data object ToggleFavorite : EditAction
 
     data object Paste : EditAction
@@ -149,6 +157,14 @@ sealed interface EditAction {
 
     data object NoteDone : EditAction
 
+    data class NoteMode(val preview: Boolean) : EditAction
+
+    data object CopyNote : EditAction
+
+    data object SaveChanges : EditAction
+
+    data object DiscardChanges : EditAction
+
     data class OpenLink(val url: String) : EditAction
 }
 
@@ -164,6 +180,8 @@ sealed interface EditEvent {
     data class OpenUri(val uri: String) : EditEvent
 
     data class Share(val entryIds: List<String>, val inKodakiko: Boolean) : EditEvent
+
+    data class PickMedia(val remainingSlots: Int) : EditEvent
 }
 
 @Immutable

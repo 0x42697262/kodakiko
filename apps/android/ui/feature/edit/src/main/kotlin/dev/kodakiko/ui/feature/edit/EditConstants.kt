@@ -25,6 +25,7 @@ object EditConstants {
     const val SHADE_ALPHA = 0.55f
     const val HALF = 2f
     const val TAG_OPTION_SEPARATOR = "."
+    const val NOTE_MODES = 2
 }
 
 internal object EditDimens {

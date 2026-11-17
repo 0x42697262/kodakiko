@@ -1,8 +1,15 @@
 package dev.kodakiko.app.edit
 
+import android.content.ClipData
+import android.content.ClipDescription
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.PersistableBundle
 import dev.kodakiko.app.ActivityHolder
+import dev.kodakiko.app.capture.AppCaptureFiles
 import dev.kodakiko.app.viewer.AppViewerVoice
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.TempPurpose
@@ -18,6 +25,7 @@ import dev.kodakiko.service.sharing.ShareTextOption
 import dev.kodakiko.ui.feature.edit.EditClipboard
 import dev.kodakiko.ui.feature.edit.EditClock
 import dev.kodakiko.ui.feature.edit.EditImages
+import dev.kodakiko.ui.feature.edit.EditPicks
 import dev.kodakiko.ui.feature.edit.EditRecorder
 import dev.kodakiko.ui.feature.edit.EditSharing
 import dev.kodakiko.ui.feature.edit.EditVoice
@@ -39,7 +47,7 @@ class AppEditImages(private val thumbnails: GalleryThumbnails) : EditImages {
 }
 
 class AppEditClipboard(
-    context: Context,
+    private val context: Context,
     private val tempFiles: TempFiles,
     private val unlockedWork: UnlockedWork,
     private val ioDispatcher: CoroutineDispatcher,
@@ -49,6 +57,15 @@ class AppEditClipboard(
     override suspend fun hasImage(): Boolean = withContext(ioDispatcher) { images.hasImage() }
 
     override suspend fun readImage(): MediaInput? = unlockedWork.runUnlocked { withContext(ioDispatcher) { readOnIo() } }
+
+    override fun copyText(text: String) {
+        val clip = ClipData.newPlainText(EditAdapterConstants.NOTE_CLIP_LABEL, text)
+        clip.description.extras = PersistableBundle().apply { putBoolean(sensitiveExtra(), true) }
+        context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(clip)
+    }
+
+    private fun sensitiveExtra(): String =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ClipDescription.EXTRA_IS_SENSITIVE else EditAdapterConstants.LEGACY_IS_SENSITIVE
 
     private fun readOnIo(): MediaInput? {
         val bytes = images.readJpeg() ?: return null
@@ -63,6 +80,10 @@ class AppEditClipboard(
         }
         return MediaInput(MediaOrigin.PASTE, temp.file, null, null)
     }
+}
+
+class AppEditPicks(private val files: AppCaptureFiles, private val unlockedWork: UnlockedWork) : EditPicks {
+    override suspend fun copy(uri: Uri): MediaInput? = unlockedWork.runUnlocked { files.copyPicked(uri) }
 }
 
 class AppEditRecorder(context: Context, private val tempFiles: TempFiles, private val ioDispatcher: CoroutineDispatcher) : EditRecorder {

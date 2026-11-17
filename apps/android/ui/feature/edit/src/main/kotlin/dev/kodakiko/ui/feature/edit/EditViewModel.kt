@@ -1,5 +1,6 @@
 package dev.kodakiko.ui.feature.edit
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.kodakiko.contract.CAPTION_MAX_CHARS
@@ -17,6 +18,7 @@ import dev.kodakiko.js.JsDate
 import dev.kodakiko.js.jsonStringifyNumber
 import dev.kodakiko.markdown.TextSelection
 import dev.kodakiko.markdown.applyMarkdownAction
+import dev.kodakiko.markdown.markdownPlainText
 import dev.kodakiko.service.entries.EntriesConstants
 import dev.kodakiko.service.entries.ImportOutcome
 import dev.kodakiko.service.entries.ImportSlots
@@ -40,11 +42,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 private data class EditUi(
     val metadata: EntryMetadataV1? = null,
     val draft: EditDraft? = null,
     val favorite: Boolean = false,
+    val imported: Set<String> = emptySet(),
     val page: Int = 0,
     val sheet: EditSheet? = null,
     val noteEditor: NoteEditorUi? = null,
@@ -58,10 +63,13 @@ private data class EditUi(
 class EditViewModel(private val deps: EditDeps, private val entryId: String, private val isNew: Boolean) : ViewModel() {
     private val eventChannel = Channel<EditEvent>(Channel.UNLIMITED)
     private val ui = MutableStateFlow(EditUi())
-    private val saver = Autosaver(viewModelScope, ::write) { ui.update { it.copy(failed = true) } }
-    private val unregister = deps.flushes.register(saver::flush)
+    private val work = Mutex()
+    private val unregister = deps.flushes.register(::saveForLock)
     private var ticker: Job? = null
     private var leaving = false
+
+    @Volatile
+    private var cropping: String? = null
 
     val events: Flow<EditEvent> = eventChannel.receiveAsFlow()
 
@@ -70,15 +78,18 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
 
     init {
         viewModelScope.launch {
-            load()
+            reload()
             checkClipboard()
         }
     }
 
     fun onAction(action: EditAction) {
         when (action) {
-            EditAction.Back, EditAction.Done -> leave()
-            EditAction.ViewEntry -> afterFlush { send(EditEvent.Replace(Route.Entry(entryId))) }
+            EditAction.Back -> requestExit(EditExit.BACK)
+            EditAction.Done -> done()
+            EditAction.ViewEntry -> requestExit(EditExit.VIEW)
+            EditAction.SaveChanges -> saveAndExit()
+            EditAction.DiscardChanges -> discard()
             EditAction.Trash -> trash()
             is EditAction.PageChanged -> ui.update { it.copy(page = action.page) }
             is EditAction.ScreenVisible -> screenVisible(action.visible)
@@ -94,7 +105,8 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             is EditAction.Remove -> removeItem(action.mediaId, resetPage = true)
             is EditAction.OpenPlayer -> send(EditEvent.Open(Route.Play(entryId, action.mediaId)))
             is EditAction.Capture -> openCapture(action.mode)
-            EditAction.AddFromDevice -> openCapture(CaptureMode.PHOTO)
+            EditAction.AddFromDevice -> pickMedia()
+            is EditAction.Picked -> picked(action.uris)
             EditAction.ToggleFavorite -> toggleFavorite()
             EditAction.Paste -> paste()
             EditAction.ToggleRecording -> if (ui.value.recording == null) startRecording() else stopRecording()
@@ -112,12 +124,14 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             is EditAction.RemoveTag -> change { draft -> draft.copy(tags = draft.tags.filter { it != action.tag }) }
             EditAction.EditTags -> {
                 ui.update { it.copy(sheet = null) }
-                afterFlush { send(EditEvent.Open(Route.Tags)) }
+                send(EditEvent.Open(Route.Tags))
             }
             EditAction.EditNote -> editNote()
             is EditAction.NoteChanged -> noteChanged(action.text, action.selection)
             is EditAction.Toolbar -> toolbar(action)
             EditAction.NoteDone -> ui.update { it.copy(noteEditor = null) }
+            is EditAction.NoteMode -> ui.update { current -> current.copy(noteEditor = current.noteEditor?.copy(preview = action.preview)) }
+            EditAction.CopyNote -> copyNote()
             is EditAction.OpenLink -> send(EditEvent.OpenUri(action.url))
         }
     }
@@ -141,42 +155,144 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         null
     }
 
-    private fun afterFlush(then: suspend () -> Unit) {
-        viewModelScope.launch {
-            saver.flush()
-            then()
-        }
-    }
-
-    private fun closeSheetThen(work: suspend () -> Unit) {
+    private fun closeSheetThen(task: suspend () -> Unit) {
         ui.update { it.copy(sheet = null) }
-        viewModelScope.launch { attempt(work) }
+        viewModelScope.launch { attempt(task) }
     }
 
-    private suspend fun write(next: EditDraft) {
+    private suspend fun write(draft: EditDraft, favorite: Boolean): EntryMetadataV1 {
         val current = deps.entries.readMetadata(entryId)
-        val diff = diffDraft(current, next)
+        val diff = diffDraft(current, draft)
         for (mediaId in diff.removedMediaIds) deps.entries.removeMedia(entryId, mediaId)
         if (diff.edit != EntryEdit()) deps.entries.edit(entryId, diff.edit)
-        ui.update { it.copy(failed = false) }
+        if (favorite != (current.favorite == true)) deps.entries.setFavorite(listOf(entryId), favorite)
+        return deps.entries.readMetadata(entryId)
     }
 
-    private suspend fun load(): Boolean {
-        val metadata = attempt { deps.entries.readMetadata(entryId) }
-        if (metadata == null) {
-            if (!leaving) {
-                leaving = true
-                send(EditEvent.Back)
-            }
+    private suspend fun saveForLock() {
+        save()
+    }
+
+    private suspend fun save(): Boolean = work.withLock { saveLocked() }
+
+    private suspend fun saveLocked(): Boolean {
+        val current = ui.value
+        val draft = current.draft ?: return true
+        val fresh = attempt { write(draft, current.favorite) }
+        if (fresh == null) {
+            ui.update { it.copy(failed = true) }
             return false
         }
-        ui.update { it.copy(metadata = metadata, draft = draftFromMetadata(metadata), favorite = metadata.favorite == true) }
+        ui.update { it.copy(metadata = fresh, imported = emptySet(), failed = false) }
         return true
     }
 
+    private fun dirty(current: EditUi): Boolean {
+        val metadata = current.metadata ?: return false
+        val draft = current.draft ?: return false
+        return draftChanged(diffDraft(metadata, draft)) || current.favorite != (metadata.favorite == true) || current.imported.isNotEmpty()
+    }
+
+    private fun requestExit(exit: EditExit) {
+        val current = ui.value
+        if (current.draft != null && (isNew || dirty(current))) {
+            ui.update { it.copy(sheet = EditSheet.Unsaved(exit, isNew)) }
+        } else {
+            exitNow(exit)
+        }
+    }
+
+    private fun exitNow(exit: EditExit) {
+        when {
+            isNew -> send(EditEvent.Home)
+            exit == EditExit.VIEW -> send(EditEvent.Replace(Route.Entry(entryId)))
+            else -> send(EditEvent.Back)
+        }
+    }
+
+    private fun pendingExit(): EditExit = (ui.value.sheet as? EditSheet.Unsaved)?.exit ?: EditExit.BACK
+
+    private fun done() {
+        viewModelScope.launch {
+            if (!save()) return@launch
+            deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
+            exitNow(EditExit.BACK)
+        }
+    }
+
+    private fun saveAndExit() {
+        val exit = pendingExit()
+        ui.update { it.copy(sheet = null) }
+        viewModelScope.launch {
+            if (!save()) return@launch
+            if (exit == EditExit.BACK) deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
+            exitNow(exit)
+        }
+    }
+
+    private fun discard() {
+        val exit = pendingExit()
+        ui.update { it.copy(sheet = null) }
+        viewModelScope.launch {
+            val discarded = work.withLock { if (isNew) deleteNew() else removeImported() }
+            if (discarded) exitNow(exit) else ui.update { it.copy(failed = true) }
+        }
+    }
+
+    private suspend fun deleteNew(): Boolean = attempt { deps.entries.deletePermanently(listOf(entryId)) } != null
+
+    private suspend fun removeImported(): Boolean {
+        val imported = ui.value.imported
+        if (imported.isEmpty()) return true
+        val present = attempt { deps.entries.readMetadata(entryId) }?.media?.map { it.mediaId } ?: return false
+        val removable = present.filter { it in imported }.let { if (it.size >= present.size) it.dropLast(EditConstants.SINGLE_ITEM) else it }
+        var removed = true
+        for (mediaId in removable) {
+            if (attempt { deps.entries.removeMedia(entryId, mediaId) } == null) removed = false
+        }
+        return removed
+    }
+
+    private fun missing() {
+        if (leaving) return
+        leaving = true
+        send(EditEvent.Back)
+    }
+
+    private suspend fun reloadLocked() {
+        val fresh = attempt { deps.entries.readMetadata(entryId) }
+        if (fresh == null) {
+            missing()
+            return
+        }
+        val target = cropping
+        var consumed = false
+        ui.update { current ->
+            val previous = current.metadata
+            val draft = current.draft
+            if (previous == null || draft == null) {
+                return@update current.copy(metadata = fresh, draft = draftFromMetadata(fresh), favorite = fresh.favorite == true)
+            }
+            val before = previous.media.map { it.mediaId }
+            val after = fresh.media.map { it.mediaId }
+            val added = after.filter { it !in before }
+            val removed = before.filter { it !in after }
+            val replaced = if (target != null && target in removed && added.isNotEmpty()) mapOf(target to added.first()) else emptyMap()
+            consumed = replaced.isNotEmpty()
+            val imported = (current.imported.map { replaced[it] ?: it } + added.filter { it !in replaced.values }).filter { it in after }.toSet()
+            val wasFavorite = previous.favorite == true
+            current.copy(
+                metadata = fresh,
+                draft = mergeDraft(draftFromMetadata(previous), draftFromMetadata(fresh), draft, replaced),
+                favorite = if (current.favorite == wasFavorite) fresh.favorite == true else current.favorite,
+                imported = imported,
+            )
+        }
+        if (consumed) cropping = null
+    }
+
     private suspend fun reload() {
-        saver.flush()
-        load()
+        work.withLock { reloadLocked() }
     }
 
     private suspend fun checkClipboard() {
@@ -184,28 +300,16 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         ui.update { it.copy(canPaste = available) }
     }
 
-    private fun change(debounced: Boolean = false, patch: (EditDraft) -> EditDraft) {
-        var next: EditDraft? = null
+    private fun change(patch: (EditDraft) -> EditDraft) {
         ui.update { current ->
             val draft = current.draft ?: return@update current
-            val patched = patch(draft)
-            next = patched
-            current.copy(draft = patched)
-        }
-        next?.let { saver.change(it, debounced) }
-    }
-
-    private fun leave() {
-        viewModelScope.launch {
-            saver.flush()
-            deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
-            send(if (isNew) EditEvent.Home else EditEvent.Back)
+            current.copy(draft = patch(draft))
         }
     }
 
     private fun trash() {
         viewModelScope.launch {
-            saver.flush()
+            work.withLock { saveLocked() }
             attempt { deps.entries.trash(listOf(entryId)) } ?: return@launch
             deps.notices.value = GalleryNotice.Trashed(entryId)
             send(EditEvent.Home)
@@ -215,7 +319,6 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
     private fun screenVisible(visible: Boolean) {
         if (!visible) {
             deps.voice.stop()
-            viewModelScope.launch { saver.flush() }
             return
         }
         viewModelScope.launch {
@@ -253,7 +356,8 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
 
     private fun crop(mediaId: String) {
         ui.update { it.copy(sheet = null) }
-        afterFlush { send(EditEvent.Open(Route.EntryCrop(entryId, mediaId))) }
+        cropping = mediaId
+        send(EditEvent.Open(Route.EntryCrop(entryId, mediaId)))
     }
 
     private fun askRemove(mediaId: String) {
@@ -270,19 +374,11 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
     }
 
     private fun openCapture(mode: CaptureMode) {
-        afterFlush { send(EditEvent.Open(Route.Capture(entryId, mode))) }
+        send(EditEvent.Open(Route.Capture(entryId, mode)))
     }
 
     private fun toggleFavorite() {
-        var next = false
-        ui.update { current ->
-            next = !current.favorite
-            current.copy(favorite = next)
-        }
-        viewModelScope.launch {
-            saver.flush()
-            attempt { deps.entries.setFavorite(listOf(entryId), next) }
-        }
+        ui.update { it.copy(favorite = !it.favorite) }
     }
 
     private fun limit(): Int = (deps.config.current()?.maxMediaPerEntry ?: EntriesConstants.FALLBACK_MAX_MEDIA_PER_ENTRY).toInt()
@@ -290,20 +386,37 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
     private fun paste() {
         viewModelScope.launch {
             val input = attempt { deps.clipboard.readImage() } ?: return@launch
-            saver.flush()
-            if (attempt { addInput(input) } == null) ui.update { it.copy(failed = true) }
-            reload()
+            work.withLock {
+                if (attempt { importLocked(input) } != true) ui.update { it.copy(failed = true) }
+                reloadLocked()
+            }
         }
     }
 
-    private suspend fun addInput(input: MediaInput) {
+    private fun pickMedia() {
+        val used = ui.value.metadata?.media?.size ?: return
+        send(EditEvent.PickMedia(limit() - used))
+    }
+
+    private fun picked(uris: List<Uri>) {
+        if (uris.isEmpty()) return
+        viewModelScope.launch {
+            work.withLock {
+                for (uri in uris) {
+                    val input = attempt { deps.picks.copy(uri) }
+                    if (input == null || attempt { importLocked(input) } != true) ui.update { it.copy(failed = true) }
+                }
+                reloadLocked()
+            }
+        }
+    }
+
+    private suspend fun importLocked(input: MediaInput): Boolean {
         val current = deps.entries.readMetadata(entryId)
         val outcome = deps.imports.importOne(input, ImportSlots(used = current.media.size, limit = limit()))
-        if (outcome is ImportOutcome.Imported) {
-            deps.entries.addMedia(entryId, listOf(outcome.media))
-        } else {
-            ui.update { it.copy(failed = true) }
-        }
+        if (outcome !is ImportOutcome.Imported) return false
+        deps.entries.addMedia(entryId, listOf(outcome.media))
+        return true
     }
 
     private fun startRecording() {
@@ -342,9 +455,10 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         }
     }
 
-    private suspend fun saveRecording(): Boolean {
+    private suspend fun saveRecording(): Boolean = work.withLock { saveRecordingLocked() }
+
+    private suspend fun saveRecordingLocked(): Boolean {
         val recorded = deps.recorder.stop() ?: return true
-        saver.flush()
         val current = deps.entries.readMetadata(entryId)
         val outcome = deps.imports.importVoiceNote(
             recorded.input,
@@ -353,7 +467,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         )
         if (outcome !is ImportOutcome.Imported) return false
         deps.entries.addMedia(entryId, listOf(outcome.media))
-        reload()
+        reloadLocked()
         return true
     }
 
@@ -409,7 +523,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
 
     private fun noteChanged(text: String, selection: TextSelection) {
         ui.update { current -> current.copy(noteEditor = current.noteEditor?.copy(selection = selection)) }
-        change(debounced = true) { it.copy(note = text) }
+        change { it.copy(note = text) }
     }
 
     private fun toolbar(action: EditAction.Toolbar) {
@@ -417,8 +531,15 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         val note = current.draft?.note ?: return
         val selection = current.noteEditor?.selection ?: TextSelection(note.length, note.length)
         val edited = applyMarkdownAction(action.action, note, selection, clockText())
-        ui.update { it.copy(noteEditor = NoteEditorUi(edited.selection)) }
-        change(debounced = true) { it.copy(note = edited.text) }
+        ui.update { it.copy(noteEditor = it.noteEditor?.copy(selection = edited.selection) ?: NoteEditorUi(edited.selection)) }
+        change { it.copy(note = edited.text) }
+    }
+
+    private fun copyNote() {
+        val current = ui.value
+        val note = current.draft?.note ?: return
+        val text = if (current.noteEditor?.preview == true) markdownPlainText(note) else note
+        if (text.isNotEmpty()) deps.clipboard.copyText(text)
     }
 
     private fun clockText(): String {

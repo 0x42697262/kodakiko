@@ -12,8 +12,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import dev.kodakiko.contract.CAPTION_MAX_CHARS
 import dev.kodakiko.contract.MediaKind
+import dev.kodakiko.ui.core.EditTags
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.components.AdaptiveSheet
@@ -41,6 +44,7 @@ internal fun EditSheets(state: EditState, body: EditBody, onAction: (EditAction)
         is EditSheet.MediaMenu -> MediaMenuSheet(sheet, onAction)
         is EditSheet.Caption -> CaptionSheet(sheet, onAction)
         is EditSheet.Remove -> RemoveSheet(sheet, onAction)
+        is EditSheet.Unsaved -> UnsavedSheet(sheet, onAction)
         is EditSheet.ChooseTags -> ChooseTagsSheet(
             choices = sheet.tags,
             selected = body.tags,
@@ -145,6 +149,36 @@ private fun RemoveSheet(sheet: EditSheet.Remove, onAction: (EditAction) -> Unit)
                 ) {
                     Text(text = stringResource(R.string.edit_remove_confirm))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UnsavedSheet(sheet: EditSheet.Unsaved, onAction: (EditAction) -> Unit) {
+    AdaptiveSheet(onDismissRequest = { onAction(EditAction.DismissSheet) }, modifier = Modifier.testTag(EditTags.UNSAVED_SHEET)) {
+        SheetColumn {
+            Text(
+                text = stringResource(if (sheet.isNew) R.string.edit_unsaved_new_title else R.string.edit_unsaved_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(if (sheet.isNew) R.string.edit_unsaved_new_body else R.string.edit_unsaved_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Button(onClick = { onAction(EditAction.SaveChanges) }, modifier = Modifier.fillMaxWidth().testTag(EditTags.UNSAVED_SAVE)) {
+                Text(text = stringResource(R.string.edit_unsaved_save))
+            }
+            OutlinedButton(
+                onClick = { onAction(EditAction.DiscardChanges) },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                modifier = Modifier.fillMaxWidth().testTag(EditTags.UNSAVED_DISCARD),
+            ) {
+                Text(text = stringResource(R.string.edit_unsaved_discard))
+            }
+            TextButton(onClick = { onAction(EditAction.DismissSheet) }, modifier = Modifier.fillMaxWidth().testTag(EditTags.UNSAVED_KEEP)) {
+                Text(text = stringResource(R.string.edit_unsaved_keep))
             }
         }
     }

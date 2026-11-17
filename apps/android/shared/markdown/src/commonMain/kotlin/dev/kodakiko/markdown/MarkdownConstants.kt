@@ -11,6 +11,17 @@ internal object ParseConstants {
     val SCHEME_PATTERN = Regex("^([a-z][a-z0-9+.-]*:)")
 }
 
+internal object PlainTextConstants {
+    const val BLOCK_SEPARATOR = "\n\n"
+    const val LINE_SEPARATOR = "\n"
+    const val BULLET = "•"
+    const val TASK_DONE = "☑"
+    const val TASK_OPEN = "☐"
+    const val ORDERED_SUFFIX = "."
+    const val MARKER_GAP = " "
+    const val CONTINUATION = "  "
+}
+
 internal object ToolbarConstants {
     const val BOLD = "**"
     const val ITALIC = "*"

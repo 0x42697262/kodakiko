@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_unsaved_title">Save your changes?</string>
+    <string name="edit_unsaved_body">Discard puts the entry back the way it was and removes the photos, videos and voice notes added since you opened it.</string>
+    <string name="edit_unsaved_new_title">Save this entry?</string>
+    <string name="edit_unsaved_new_body">Discard deletes this new entry and everything in it.</string>
+    <string name="edit_unsaved_save">Save</string>
+    <string name="edit_unsaved_discard">Discard</string>
+    <string name="edit_unsaved_keep">Keep editing</string>
+    <string name="edit_note_close">Close</string>
+    <string name="edit_note_copy">Copy</string>
+    <string name="edit_note_code">Code</string>
+    <string name="edit_note_preview">Preview</string>
+    <string name="edit_note_preview_empty">Nothing to preview.</string>
+    <string name="edit_picker_ok">OK</string>
+    <string name="edit_picker_cancel">Cancel</string>
+</resources>

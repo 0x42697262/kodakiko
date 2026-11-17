@@ -3,10 +3,12 @@ package dev.kodakiko.app.di
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
+import dev.kodakiko.app.capture.AppCaptureFiles
 import dev.kodakiko.app.edit.ActivityShareLauncher
 import dev.kodakiko.app.edit.AppCropOriginals
 import dev.kodakiko.app.edit.AppEditClipboard
 import dev.kodakiko.app.edit.AppEditImages
+import dev.kodakiko.app.edit.AppEditPicks
 import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.edit.AppEditSharing
 import dev.kodakiko.app.edit.AppEditVoice
@@ -69,6 +71,7 @@ class EditDepsFactory(
     private val sharing: AppEditSharing,
     private val notices: Observable<GalleryNotice?>,
     private val flushes: EditFlushes,
+    private val picks: AppEditPicks,
     private val ioDispatcher: CoroutineDispatcher,
 ) {
     fun create(): EditDeps = EditDeps(
@@ -84,6 +87,7 @@ class EditDepsFactory(
         notices = notices,
         flushes = flushes,
         clock = SystemEditClock,
+        picks = picks,
     )
 }
 
@@ -163,6 +167,10 @@ object EditBindings {
 
     @Provides
     @SingleIn(AppScope::class)
+    fun editPicks(files: AppCaptureFiles, unlockedWork: UnlockedWork): AppEditPicks = AppEditPicks(files, unlockedWork)
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun editRecorder(context: Context, tempFiles: TempFiles, @IoDispatcher ioDispatcher: CoroutineDispatcher): AppEditRecorder =
         AppEditRecorder(context, tempFiles, ioDispatcher)
 
@@ -199,8 +207,9 @@ object EditBindings {
         sharing: AppEditSharing,
         notices: Observable<GalleryNotice?>,
         flushes: EditFlushes,
+        picks: AppEditPicks,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): EditDepsFactory = EditDepsFactory(context, entries, imports, index, config, settings, clipboard, recorder, media, sharing, notices, flushes, ioDispatcher)
+    ): EditDepsFactory = EditDepsFactory(context, entries, imports, index, config, settings, clipboard, recorder, media, sharing, notices, flushes, picks, ioDispatcher)
 
     @Provides
     fun cropDeps(entries: EntriesService, imports: ImportPipeline, originals: CropOriginals, config: ConfigService): CropDeps =
