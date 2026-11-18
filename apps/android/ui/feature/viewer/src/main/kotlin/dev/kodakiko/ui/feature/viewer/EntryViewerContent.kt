@@ -157,15 +157,6 @@ private fun DeletePermanentlyButton(onAction: (ViewerAction) -> Unit) {
 private fun BodyParts(state: ViewerState, entry: ViewerEntry, body: ViewerBody, onAction: (ViewerAction) -> Unit) {
     if (body.pages.isNotEmpty()) {
         ViewerPager(state.entryId, body.pages, state.page, state.zoomed, state.video, onAction)
-        body.pages.getOrNull(state.page)?.caption?.let { caption ->
-            Text(
-                text = caption,
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth().testTag(TestTags.Viewer.CAPTION),
-            )
-        }
         Text(
             text = stringResource(R.string.viewer_page_indicator, state.page + 1, body.pages.size),
             textAlign = TextAlign.Center,

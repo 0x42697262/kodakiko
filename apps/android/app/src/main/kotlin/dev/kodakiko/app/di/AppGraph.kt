@@ -3,11 +3,15 @@ package dev.kodakiko.app.di
 import android.app.Application
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppStartup
+import dev.kodakiko.app.capture.PendingDeviceDeletes
+import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.HomeSettings
 import dev.kodakiko.app.system.SystemUiSettings
+import dev.kodakiko.data.log.DebugLogFile
 import dev.kodakiko.data.migration.LegacyAdoption
 import dev.kodakiko.data.secure.DeviceGate
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AuthService
 import dev.kodakiko.service.account.Observable
@@ -59,6 +63,8 @@ interface AppGraph : ViewModelGraph {
 
     val captureTray: CaptureTray
 
+    val pendingDeviceDeletes: PendingDeviceDeletes
+
     val cameraPreview: CameraPreview
 
     val sharingThumbnails: SharingThumbnails
@@ -72,6 +78,12 @@ interface AppGraph : ViewModelGraph {
     val unlockedWork: UnlockedWork
 
     val systemUiSettings: StateFlow<SystemUiSettings>
+
+    val debugLog: DebugLog
+
+    val deviceSettings: AppDeviceSettings
+
+    val debugLogFile: DebugLogFile
 
     @DependencyGraph.Factory
     fun interface Factory {

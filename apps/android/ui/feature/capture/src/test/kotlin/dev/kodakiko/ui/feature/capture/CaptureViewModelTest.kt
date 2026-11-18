@@ -873,4 +873,58 @@ class CaptureViewModelTest {
     private companion object {
         const val TAP_MS = 80L
     }
+
+    @Test
+    fun f15EveryPickedImportIsReportedWithItsMediaIdOrNullWhenRefused() = runTest {
+        h.imports.refusals["notes.pdf"] = ImportRefusal.UNSUPPORTED
+        val (vm, _) = open()
+        vm.onAction(CaptureAction.Picked(listOf(uri("a.jpg"), uri("notes.pdf"), uri("b.jpg"))))
+        runCurrent()
+        assertEquals(
+            listOf(picked("a.jpg") to mediaId("item1"), picked("notes.pdf") to null, picked("b.jpg") to mediaId("item2")),
+            h.captureFiles.imported,
+        )
+    }
+
+    @Test
+    fun f15RemovingATrayItemForgetsItsDeviceOriginal() = runTest {
+        val (vm, _) = open()
+        vm.onAction(CaptureAction.Picked(listOf(uri("a.jpg"), uri("b.jpg"))))
+        runCurrent()
+        vm.onAction(CaptureAction.Remove(mediaId("item1")))
+        runCurrent()
+        assertEquals(listOf(listOf(mediaId("item1"))), h.captureFiles.forgotten)
+    }
+
+    @Test
+    fun f15DiscardingTheTrayForgetsEveryDeviceOriginalInIt() = runTest {
+        val (vm, _) = open()
+        vm.onAction(CaptureAction.Picked(listOf(uri("a.jpg"), uri("b.jpg"))))
+        runCurrent()
+        vm.onAction(CaptureAction.Close)
+        vm.onAction(CaptureAction.Discard)
+        runCurrent()
+        assertEquals(listOf(listOf(mediaId("item1"), mediaId("item2"))), h.captureFiles.forgotten)
+    }
+
+    @Test
+    fun f15DiscardingLeftoversForgetsTheirDeviceOriginals() = runTest {
+        h.entry(mediaCount = 1)
+        h.tray.add(imported(mediaId("left1")))
+        val (vm, _) = open(entryId = ENTRY)
+        vm.onAction(CaptureAction.Discard)
+        runCurrent()
+        assertEquals(listOf(listOf(mediaId("left1"))), h.captureFiles.forgotten)
+    }
+
+    @Test
+    fun f15KeepingTheTrayForgetsNothing() = runTest {
+        val (vm, _) = open()
+        vm.onAction(CaptureAction.Picked(listOf(uri("a.jpg"))))
+        runCurrent()
+        vm.onAction(CaptureAction.Close)
+        vm.onAction(CaptureAction.Keep)
+        runCurrent()
+        assertEquals(emptyList<List<String>>(), h.captureFiles.forgotten)
+    }
 }

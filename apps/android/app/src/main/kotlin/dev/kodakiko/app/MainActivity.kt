@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -49,7 +51,8 @@ class MainActivity : FragmentActivity() {
         graph.activityHolder.attach(this)
         graph.startup.start()
         setContent {
-            KodakikoTheme {
+            val theme by graph.deviceSettings.settings.collectAsStateWithLifecycle()
+            KodakikoTheme(appTheme = theme.appTheme, pureBlack = theme.pureBlack, dynamicColor = theme.dynamicColor, preset = theme.themePreset) {
                 val systemUiSettings by graph.systemUiSettings.collectAsStateWithLifecycle()
                 SystemUi(settings = systemUiSettings, darkTheme = isSystemInDarkTheme()) {
                     Box(Modifier.testTag(TestTags.APP_ROOT).testTagsAsResourceIdRoot().fillMaxSize()) {
@@ -63,7 +66,9 @@ class MainActivity : FragmentActivity() {
                             LocalSharingThumbnails provides graph.sharingThumbnails,
                             LocalLinkThumbnails provides graph.linkThumbnails,
                         ) {
-                            AppContent(graph)
+                            Surface(color = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground) {
+                                AppContent(graph)
+                            }
                         }
                     }
                 }

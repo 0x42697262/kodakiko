@@ -3,6 +3,8 @@ package dev.kodakiko.ui.feature.sharing
 import androidx.compose.ui.unit.dp
 
 internal object SharingConstants {
+    const val DIRECT_SHARE_ENTRIES = 1
+    const val SINGLE_ITEM = 1
     const val STATE_SUBSCRIPTION_MS = 5_000L
     const val PART_SEPARATOR = " "
     const val SORT_BEFORE = -1

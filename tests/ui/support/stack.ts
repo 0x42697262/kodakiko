@@ -4,13 +4,13 @@ import {
   API_PORT,
   BUILD_TIMEOUT_MS,
   CADDY_SERVICE,
-  CLIENT_BUILD_SCRIPT,
-  CLIENT_PACKAGE,
   COMPOSE_FILE,
   COMPOSE_UP_TIMEOUT_MS,
   ENV_NAMES,
   HOST_FIREWALL_HINT,
   KILL_GRACE_MS,
+  LINK_VIEWER_BUILD_SCRIPT,
+  LINK_VIEWER_PACKAGE,
   READY_POLL_MS,
   READY_REQUEST_TIMEOUT_MS,
   READY_URL,
@@ -121,7 +121,7 @@ export async function startStack({
   apiOverrides = apiEnvOverrides;
   try {
     await pnpm(['--filter', SERVER_PACKAGE, 'build']);
-    if (build) await pnpm(['--filter', CLIENT_PACKAGE, CLIENT_BUILD_SCRIPT]);
+    if (build) await pnpm(['--filter', LINK_VIEWER_PACKAGE, LINK_VIEWER_BUILD_SCRIPT]);
     await compose(['down', '-v'], COMPOSE_UP_TIMEOUT_MS);
     await compose(['up', '-d', '--wait'], COMPOSE_UP_TIMEOUT_MS);
     exportGarageKey(await bootstrapGarage());

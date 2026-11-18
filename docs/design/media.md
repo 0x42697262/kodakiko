@@ -3,6 +3,9 @@
 Design reference written before the build (2026-11-11). Where it differs from the code, the code
 and the feature specs' implementation notes are right.
 
+Client parts describe the Expo app (v0.1–v0.3); since v0.4.0 the client is the Kotlin Android app
+(`apps/android`, [architecture.md](../architecture.md)) and there is no web app.
+
 Normative for the capture and import paths in `apps/client/src/features/capture/`, the thumbnail pipeline in `apps/client/src/services/media/`, and EXIF handling in `packages/core/src/media/`.
 
 Covers: capture (camera), import (picker, drag-drop, paste), thumbnails, EXIF and time extraction,

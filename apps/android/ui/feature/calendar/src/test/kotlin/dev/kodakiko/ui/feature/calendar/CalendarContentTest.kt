@@ -171,21 +171,23 @@ class CalendarContentTest {
     }
 
     @Test
-    fun theJumpSheetShowsTheFieldAndSendsTextAndSubmit() {
+    fun theJumpSheetShowsTheShownYearAndAMonthTapJumpsThere() {
         show(CalendarStates.state(jump = CalendarJump("2026-11")))
         assertTrue(compose.exists(TestTags.Calendar.JUMP_SHEET))
-        compose.onNodeWithTag(TestTags.Calendar.JUMP_FIELD).assertTextContains("2026-11")
-        compose.onNodeWithTag(TestTags.Calendar.JUMP_FIELD).performTextReplacement("2025-02")
-        compose.onNodeWithTag(TestTags.Calendar.JUMP_SUBMIT).performClick()
+        compose.onNodeWithTag(TestTags.Calendar.JUMP_YEAR, useUnmergedTree = true).assertTextContains("2026")
+        compose.onNodeWithTag(TestTags.Calendar.JUMP_PREVIOUS_YEAR).performClick()
+        compose.onNodeWithTag(TestTags.Calendar.JUMP_YEAR, useUnmergedTree = true).assertTextContains("2025")
+        compose.onNodeWithTag(TestTags.listItem(TestTags.Calendar.JUMP_MONTH, 1)).performClick()
         assertEquals(listOf(CalendarAction.JumpText("2025-02"), CalendarAction.SubmitJump), actions)
         assertFalse(compose.exists(TestTags.Calendar.JUMP_INVALID))
     }
 
     @Test
-    fun theKeyboardActionSubmitsTheJump() {
+    fun theNextYearButtonMovesTheMonthGridForward() {
         show(CalendarStates.state(jump = CalendarJump("2026-11")))
-        compose.onNodeWithTag(TestTags.Calendar.JUMP_FIELD).performImeAction()
-        assertEquals(listOf<CalendarAction>(CalendarAction.SubmitJump), actions)
+        compose.onNodeWithTag(TestTags.Calendar.JUMP_NEXT_YEAR).performClick()
+        compose.onNodeWithTag(TestTags.listItem(TestTags.Calendar.JUMP_MONTH, 0)).performClick()
+        assertEquals(listOf(CalendarAction.JumpText("2027-01"), CalendarAction.SubmitJump), actions)
     }
 
     @Test
@@ -202,7 +204,7 @@ class CalendarContentTest {
     fun noJumpSheetWithoutAJumpState() {
         show(CalendarStates.state())
         assertFalse(compose.exists(TestTags.Calendar.JUMP_SHEET))
-        assertFalse(compose.exists(TestTags.Calendar.JUMP_FIELD))
+        assertFalse(compose.exists(TestTags.Calendar.JUMP_YEAR))
     }
 
     @Test

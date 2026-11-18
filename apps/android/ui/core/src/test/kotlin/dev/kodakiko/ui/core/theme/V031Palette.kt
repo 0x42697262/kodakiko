@@ -72,8 +72,8 @@ object V031Palette {
     val DARK: Map<String, Long> = mapOf(
         "primary" to 0xFF7AA2FF,
         "onPrimary" to 0xFF0B0B0D,
-        "primaryContainer" to 0xFF7AA2FF,
-        "onPrimaryContainer" to 0xFF0B0B0D,
+        "primaryContainer" to 0xFF2A3F7A,
+        "onPrimaryContainer" to 0xFFDDE4FF,
         "inversePrimary" to 0xFF2F5FD0,
         "secondaryContainer" to 0xFF2A3354,
         "onSecondaryContainer" to 0xFFF2F2F5,
@@ -82,24 +82,33 @@ object V031Palette {
         "surface" to 0xFF0B0B0D,
         "onSurface" to 0xFFF2F2F5,
         "surfaceVariant" to 0xFF1C1C1F,
-        "onSurfaceVariant" to 0xFFA1A1AA,
-        "outline" to 0xFF3A3A3F,
+        "onSurfaceVariant" to 0xFFC8C8D0,
+        "outline" to 0xFF4A4A52,
         "error" to 0xFFFF6B6B,
         "surfaceContainerLow" to 0xFF0B0B0D,
         "surfaceContainer" to 0xFF1C1C1F,
-        "surfaceContainerHigh" to 0xFF1C1C1F,
+        "surfaceContainerHigh" to 0xFF26262A,
     )
 
     val PURE_BLACK_OVERRIDES: Map<String, Long> = mapOf(
         "background" to 0xFF000000,
+        "onBackground" to 0xFFFFFFFF,
         "surface" to 0xFF000000,
-        "surfaceContainerLow" to 0xFF000000,
-        "surfaceVariant" to 0xFF121212,
-        "surfaceContainer" to 0xFF121212,
-        "surfaceContainerHigh" to 0xFF121212,
+        "onSurface" to 0xFFFFFFFF,
+        "surfaceContainerLow" to 0xFF0C0C0C,
+        "surfaceVariant" to 0xFF0C0C0C,
+        "surfaceContainer" to 0xFF0C0C0C,
+        "surfaceContainerHigh" to 0xFF131313,
     )
 
     val DARK_PURE_BLACK: Map<String, Long> = DARK + PURE_BLACK_OVERRIDES
+
+    val DYNAMIC_PURE_BLACK_OVERRIDES: Map<String, Long> = mapOf(
+        "background" to 0xFF000000,
+        "onBackground" to 0xFFFFFFFF,
+        "surface" to 0xFF000000,
+        "onSurface" to 0xFFFFFFFF,
+    )
 
     const val ICON_BACKGROUND: Long = 0xFF1E1D2B
 }

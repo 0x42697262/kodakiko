@@ -10,21 +10,24 @@ http://:9580 {
     reverse_proxy host.docker.internal:9582
   }
   handle /s/* {
-    import snippets/security-headers.caddy
+    import snippets/link-viewer-headers.caddy
     header Cache-Control "no-cache"
     root * /srv/web
     rewrite * /viewer.html
     file_server
   }
-  handle /media-sw.js {
-    import snippets/security-headers.caddy
+  @viewerAssets path /viewer.js /styles.css /media-sw.js
+  handle @viewerAssets {
+    import snippets/link-viewer-headers.caddy
     header Cache-Control "no-cache"
     root * /srv/web
     file_server
   }
   handle {
     import snippets/security-headers.caddy
+    header Cache-Control "no-cache"
     root * /srv/web
+    rewrite * /index.html
     file_server
   }
 }

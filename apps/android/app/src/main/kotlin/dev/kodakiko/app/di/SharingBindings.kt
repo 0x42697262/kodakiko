@@ -8,6 +8,8 @@ import dev.kodakiko.app.edit.ActivityShareLauncher
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppGalleryAccount
 import dev.kodakiko.app.gallery.EntriesChangedBus
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.uploadEvent
 import dev.kodakiko.app.sharing.AppLinkSharing
 import dev.kodakiko.app.sharing.InProcessUploader
 import dev.kodakiko.app.sharing.RowStoreJournalRows
@@ -17,6 +19,7 @@ import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.ConfigService
 import dev.kodakiko.service.account.DiskFileStore
@@ -162,7 +165,10 @@ object SharingBindings {
         fileStore: DiskFileStore,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher)
+        debugLog: DebugLog,
+    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher).also { uploader ->
+        uploader.subscribe { debugLog.uploadEvent(AppLogConstants.LINK_UPLOADS, it) }
+    }
 
     @Provides
     @SingleIn(AppScope::class)

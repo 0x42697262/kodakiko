@@ -343,4 +343,74 @@ class ShareSheetViewModelTest {
         o.vm.onAction(ShareSheetAction.Dismiss)
         assertEquals(listOf<ShareSheetEvent>(ShareSheetEvent.Close), o.events)
     }
+
+    @Test
+    fun f18OneEntryWithOnlyToAppsGoesStraightToTheChooserWithAllItsMediaAndNoText() = runTest {
+        h.pairEntry()
+        h.accountMode.value = AccountMode.LOCAL
+        val o = open()
+        val call = h.shareOut.shared.single()
+        assertEquals(listOf("p1", "p2"), call.items.map { it.media.mediaId })
+        assertEquals(setOf("p1", "p2"), call.chosen)
+        assertEquals(ShareTextOption.NONE, call.option)
+        assertTrue(o.state.direct)
+        assertEquals(listOf<ShareSheetEvent>(ShareSheetEvent.Close), o.events)
+    }
+
+    @Test
+    fun f18AServerWithSharingAndLinksOffAlsoGoesStraightToTheChooser() = runTest {
+        h.pairEntry()
+        h.config.config = publicConfig(sharing = false, links = false)
+        val o = open()
+        assertEquals(1, h.shareOut.shared.size)
+        assertEquals(listOf<ShareSheetEvent>(ShareSheetEvent.Close), o.events)
+    }
+
+    @Test
+    fun f18TheSheetStaysForSeveralEntriesOrWhenInKodakikoIsPossible() = runTest {
+        h.pairEntry()
+        h.shareOut.store("solo", "", video("v1", 20 * MB))
+        open().let {
+            assertFalse(it.state.direct)
+            assertTrue(it.events.isEmpty())
+        }
+        h.accountMode.value = AccountMode.LOCAL
+        open(listOf("pair", "solo")).let {
+            assertFalse(it.state.direct)
+            assertEquals(listOf("p1", "p2", "v1"), it.apps.items!!.map { item -> item.media.mediaId })
+            assertTrue(it.events.isEmpty())
+        }
+        assertTrue(h.shareOut.shared.isEmpty())
+    }
+
+    @Test
+    fun f18AnEntryWithoutMediaShowsTheSheetInstead() = runTest {
+        h.shareOut.store("empty", "")
+        h.accountMode.value = AccountMode.LOCAL
+        val o = open(listOf("empty"))
+        assertFalse(o.state.direct)
+        assertTrue(h.shareOut.shared.isEmpty())
+        assertTrue(o.events.isEmpty())
+    }
+
+    @Test
+    fun f18AFailedDirectShareShowsTheSheetWithTheError() = runTest {
+        h.pairEntry()
+        h.accountMode.value = AccountMode.LOCAL
+        h.shareOut.shareFailure = IllegalStateException("no space")
+        val o = open()
+        assertFalse(o.state.direct)
+        assertTrue(o.apps.failed)
+        assertTrue(o.events.isEmpty())
+    }
+
+    @Test
+    fun f18ItemsThatCannotBeReadShowTheSheetWithTheError() = runTest {
+        h.accountMode.value = AccountMode.LOCAL
+        h.shareOut.itemsFailure = IllegalStateException("damaged")
+        val o = open()
+        assertFalse(o.state.direct)
+        assertTrue(o.apps.failed)
+        assertTrue(h.shareOut.shared.isEmpty())
+    }
 }

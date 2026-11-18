@@ -45,8 +45,17 @@ internal object SettingsConstants {
     val LARGE_UPLOAD_THRESHOLDS: List<Long> = listOf(52_428_800L, 104_857_600L, 262_144_000L, 524_288_000L, 1_073_741_824L)
 }
 
+internal object SettingsGroups {
+    const val DISPLAY = 1
+    const val DATA = 2
+    const val ACCOUNT = 3
+    const val APP = 4
+    const val SESSION = 5
+}
+
 internal object SettingsDimens {
     val SCREEN_PADDING = 16.dp
+    val LOG_LINE_PADDING = 2.dp
     val SECTION_SPACING = 12.dp
     val ITEM_SPACING = 8.dp
     val USAGE_BAR_HEIGHT = 8.dp

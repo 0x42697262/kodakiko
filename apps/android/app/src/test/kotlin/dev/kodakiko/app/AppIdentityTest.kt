@@ -106,10 +106,10 @@ class AppIdentityTest {
     }
 
     @Test
-    fun versionIsFourHundred() {
+    fun versionIsFourHundredOne() {
         val info = app.packageManager.getPackageInfo(app.packageName, 0)
-        assertEquals(400L, info.longVersionCode)
-        assertEquals("0.4.0", info.versionName)
+        assertEquals(401L, info.longVersionCode)
+        assertEquals("0.4.1", info.versionName)
     }
 
     @Test

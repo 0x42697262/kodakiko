@@ -434,7 +434,9 @@ class SettingsHarness(mode: AccountMode = AccountMode.SERVER, initial: DeviceSet
         get() = AccountSettingsDeps(settings = deps, profile = profile, credentials = credentials, nowMs = { nowMs })
 
     val advancedDeps: AdvancedSettingsDeps
-        get() = AdvancedSettingsDeps(settings = deps, index = index, diagnostics = diagnostics, showDiagnostics = showDiagnostics)
+        get() = AdvancedSettingsDeps(settings = deps, index = index, diagnostics = diagnostics, showDiagnostics = showDiagnostics, debugLog = debugLog)
+
+    val debugLog = FakeDebugLogPort()
 
     val aboutDeps: AboutDeps
         get() = AboutDeps(settings = deps, appVersion = appVersion, licenses = licenses)
@@ -535,4 +537,37 @@ fun SemanticsNodeInteraction.captureScreenshot(name: String) {
 
 fun captureScreenScreenshot(name: String) {
     captureScreenRoboImage(Screenshots.path(name), Screenshots.options(name))
+}
+
+class FakeDebugLogPort : DebugLogPort {
+    val infoFlow = kotlinx.coroutines.flow.MutableStateFlow(dev.kodakiko.log.DebugLogInfo.EMPTY)
+    val linesFlow = kotlinx.coroutines.flow.MutableStateFlow(emptyList<String>())
+    var copies = 0
+    var shares = 0
+    var failure: Exception? = null
+
+    override val info: kotlinx.coroutines.flow.Flow<dev.kodakiko.log.DebugLogInfo> = infoFlow
+    override val lines: kotlinx.coroutines.flow.Flow<List<String>> = linesFlow
+
+    override suspend fun setEnabled(on: Boolean) {
+        failure?.let { throw it }
+        infoFlow.value = infoFlow.value.copy(enabled = on)
+    }
+
+    override suspend fun clear() {
+        failure?.let { throw it }
+        linesFlow.value = emptyList()
+        infoFlow.value = infoFlow.value.copy(entries = 0, sizeBytes = 0)
+    }
+
+    override suspend fun copy(): Int {
+        failure?.let { throw it }
+        copies += 1
+        return linesFlow.value.size
+    }
+
+    override suspend fun share() {
+        failure?.let { throw it }
+        shares += 1
+    }
 }

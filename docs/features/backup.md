@@ -1,12 +1,13 @@
 # Backup and restore
 
 Export writes the whole journal as plain or passphrase-encrypted files that other tools can read;
-import brings such files back into any account. Code: `packages/core/src/export/`,
-`packages/core/scripts/decrypt-export.ts`, `apps/client/src/services/export/`,
-`apps/client/src/services/import/journal-import.ts`, `apps/client/src/adapters/export-destination/`,
-`apps/client/src/adapters/archive/`.
+import brings such files back into any account. Code: `:shared:export` (layout, `entry.md`, ZIP
+writer and reader, KDKX, streaming sources), `:service:backup` (export with cancel and lock abort,
+SAF destination, restore), `:ui:feature:settings` (`BackupScreens`, `BackupViewModels`), `:app`
+(`settings/BackupServices.kt`, `RestoreSources.kt`, `log/LoggingExportService.kt`), and
+`packages/core/scripts/decrypt-export.ts` (the command-line decrypter).
 
-## Export (Data and storage › Export)
+## Export (Data and storage › Backup and restore › Create backup)
 
 **What is written.** Own, not trashed, readable entries in time order:
 
@@ -47,14 +48,14 @@ media: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo, caption: "Low
 **How.** Originals that are not on the device are downloaded first; each is decrypted chunk by
 chunk straight into the ZIP stream. No plaintext is ever written to the app's storage. The cache
 limit is enforced after each entry. Auto-lock pauses while an export runs; locking or Cancel aborts
-the current part and keeps finished parts.
+the current part and keeps finished parts ("Export canceled. Finished files were kept.").
 
-**Where it goes:**
-
-| Platform | Destination |
-|---|---|
-| Android | A folder chosen with the system picker (Storage Access Framework) |
-| Web | A folder (`showDirectoryPicker`, Chrome) or, without it, one download per part (parts limited to 1 GiB; larger items are skipped and listed) |
+**Where it goes:** **Choose Folder and Export** opens the Android folder picker (Storage Access
+Framework); the parts are written into the chosen folder (a phone folder, an SD card or a cloud
+app's folder). The screen shows the phase (Planning, Downloading, Writing), entries and parts done,
+and asks "Keep Kodakiko open until the export finishes." With the
+[debug log](settings.md#debug-log) on, the start, each phase, the end (parts, bytes, entries,
+duration), a cancel or an error class are recorded.
 
 **Encrypt with a passphrase** (at least 12 characters, typed twice) writes `<part>.zip.kdkx`
 instead:
@@ -76,23 +77,34 @@ KODAKIKO_EXPORT_PASSPHRASE='…' pnpm --filter @kodakiko/core decrypt-export par
 
 writes the plain ZIP files next to them (it prompts for the passphrase when the variable is not set).
 
-## Import (Data and storage › Restore backup)
+## Import (Data and storage › Backup and restore › Restore backup)
 
-1. Choose the files (Android: several files with the system picker; web: a file input), and the
-   passphrase when any part ends in `.kdkx`. A wrong or missing passphrase stops with an error.
-2. Each part is opened (decrypted when needed) and unzipped in memory.
+1. **Choose Files and Import**: pick every part of one export at once with the Android file picker,
+   with the passphrase when any part ends in `.kdkx` ("Passphrase (for encrypted exports)"). A wrong
+   or missing passphrase stops with "The passphrase does not open these files."
+2. Each part is read in place, never loaded whole: the picked file is
+   opened for random access (a temp copy only when the provider cannot seek), a `.kdkx` part is
+   decrypted one 1 MiB chunk at a time, the ZIP's directory is read from its end, and each file is
+   streamed in slices into an import temp file. The first v0.4.0 preview build read the picked file
+   whole and crashed on a large encrypted backup right after picking it (fixed before v0.4.0
+   shipped); a 117 MB backup made by v0.3.1 now
+   restores with a heap of about 19 MB.
 3. Every `entry.md` is parsed (a strict reader of exactly the format above) and its files imported
    through the normal media pipeline ([capture.md](capture.md#the-import-pipeline)), then an entry
    is created with the time and offset, tags, place, note, items in order, favorite and captions.
 4. An entry is skipped as a duplicate when one with the same time and number of items already
    exists. Problems are reported per entry: unreadable note, missing files, refused files.
 
-The summary reads "Imported (n) entries" with the duplicates and failures. Importing into a new
+Progress shows "Importing (i) of (n) entries…"; the summary reads "Imported (n) entries with (m)
+photos and videos. Skipped (k) already here." and "(f) entries could not be imported." Files that
+are not an export, or are damaged, answer "These files are not a Kodakiko export, or they are
+damaged." With the debug log on, the pick (file count and bytes, recorded before anything is
+read), start, progress, end and failure reasons are recorded, never file names. Importing into a new
 account restores a journal; importing into the same account adds only what is missing.
 
-Limits: parts are unzipped in memory, which is fine for normal journals; automatic scheduled
-backups do not exist yet.
+Automatic scheduled backups do not exist yet.
 
 ## Checked only on a phone
 
-The Android folder picker and writing large parts through it.
+The Android folder picker and writing large parts through it, and restoring a large backup from
+cloud storage providers.

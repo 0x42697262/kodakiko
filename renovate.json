@@ -14,7 +14,7 @@
       "automerge": false
     },
     {
-      "matchPackageNames": ["libsodium*", "react-native-libsodium"],
+      "matchPackageNames": ["libsodium*", "com.goterl:lazysodium*"],
       "labels": ["needs-crypto-review"],
       "automerge": false
     }

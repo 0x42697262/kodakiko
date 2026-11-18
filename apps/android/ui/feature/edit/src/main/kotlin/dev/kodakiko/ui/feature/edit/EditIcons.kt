@@ -3,8 +3,12 @@ package dev.kodakiko.ui.feature.edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import dev.kodakiko.ui.core.R as CoreR
 
 internal object EditIcons {
+    val Add: ImageVector @Composable get() = ImageVector.vectorResource(CoreR.drawable.ic_edit_add)
+    val Tune: ImageVector @Composable get() = ImageVector.vectorResource(CoreR.drawable.ic_edit_tune)
+    val Visibility: ImageVector @Composable get() = ImageVector.vectorResource(CoreR.drawable.ic_edit_visibility)
     val AddPhoto: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.edit_ic_add_photo)
     val Bold: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.edit_ic_format_bold)
     val Bullet: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.edit_ic_format_list_bulleted)

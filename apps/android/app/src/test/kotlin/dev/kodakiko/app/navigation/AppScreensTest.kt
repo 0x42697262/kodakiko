@@ -83,6 +83,7 @@ class AppScreensTest {
         Route.SettingsAdmin to AppScreen.SETTINGS_ADMIN,
         Route.SettingsAdvanced to AppScreen.SETTINGS_ADVANCED,
         Route.SettingsDiagnostics to AppScreen.SETTINGS_DIAGNOSTICS,
+        Route.SettingsDebugLog to AppScreen.SETTINGS_DEBUG_LOG,
         Route.SettingsAbout to AppScreen.SETTINGS_ABOUT,
     )
 

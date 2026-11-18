@@ -8,10 +8,12 @@ import dev.kodakiko.app.capture.AppCaptureCamera
 import dev.kodakiko.app.capture.AppCaptureFiles
 import dev.kodakiko.app.capture.AppCaptureLocation
 import dev.kodakiko.app.capture.AppCapturePermissions
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.capture.SystemCaptureClock
 import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.data.files.TempFiles
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.platform.device.Haptics
 import dev.kodakiko.platform.location.LocationProvider
 import dev.kodakiko.service.account.ConfigService
@@ -48,8 +50,17 @@ object CaptureBindings {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun captureFiles(context: Context, tempFiles: TempFiles, @IoDispatcher ioDispatcher: CoroutineDispatcher): AppCaptureFiles =
-        AppCaptureFiles(context, tempFiles, ioDispatcher)
+    fun pendingDeviceDeletes(): PendingDeviceDeletes = PendingDeviceDeletes()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun captureFiles(
+        context: Context,
+        tempFiles: TempFiles,
+        deviceDeletes: PendingDeviceDeletes,
+        log: DebugLog,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): AppCaptureFiles = AppCaptureFiles(context, tempFiles, deviceDeletes, log, ioDispatcher)
 
     @Provides
     @SingleIn(AppScope::class)

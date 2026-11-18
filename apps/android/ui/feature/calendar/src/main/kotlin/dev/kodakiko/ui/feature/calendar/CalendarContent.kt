@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,7 +39,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -55,7 +55,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import dev.kodakiko.domain.CalendarCell
+import dev.kodakiko.domain.addMonths
 import dev.kodakiko.domain.monthGrid
+import dev.kodakiko.domain.yearMonthOf
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.components.AppBar
@@ -138,7 +140,7 @@ private fun MonthPager(state: CalendarState, onAction: (CalendarAction) -> Unit)
         val gaps = CalendarDimens.CELL_GAP * (CalendarConstants.DAYS_PER_WEEK - 1)
         val cellSize = (maxWidth - gaps) / CalendarConstants.DAYS_PER_WEEK
         val pageHeight = (cellSize + CalendarDimens.CELL_GAP) * CalendarConstants.WEEKS_PER_PAGE
-        val pages = remember(state.months, state.month) { (state.months + state.month).distinct().sorted() }
+        val pages = remember(state.months, state.month, state.today) { pagerPages(state.months + state.month, yearMonthOf(state.today)) }
         val target = pages.indexOf(state.month)
         val pagerState = rememberPagerState(initialPage = target) { pages.size }
         val currentPages by rememberUpdatedState(pages)
@@ -148,7 +150,8 @@ private fun MonthPager(state: CalendarState, onAction: (CalendarAction) -> Unit)
             if (pagerState.currentPage != target) pagerState.animateScrollToPage(target)
         }
         LaunchedEffect(pagerState) {
-            snapshotFlow { pagerState.settledPage }.collect { page ->
+            snapshotFlow { pagerState.settledPage to pagerState.isScrollInProgress }.collect { (page, scrolling) ->
+                if (scrolling) return@collect
                 val month = currentPages.getOrNull(page)
                 if (month != null && month != currentMonth) currentOnAction(CalendarAction.Settled(month))
             }
@@ -167,6 +170,12 @@ private fun MonthPager(state: CalendarState, onAction: (CalendarAction) -> Unit)
             }
         }
     }
+}
+
+private fun pagerPages(months: Collection<String>, thisMonth: String): List<String> {
+    val first = (months + CalendarConstants.PAGER_FIRST_MONTH).minOrNull() ?: CalendarConstants.PAGER_FIRST_MONTH
+    val past = generateSequence(first) { addMonths(it, CalendarConstants.NEXT_MONTH) }.takeWhile { it <= thisMonth }.toList()
+    return past + months.filter { it > thisMonth }.distinct().sorted()
 }
 
 @Composable
@@ -199,6 +208,10 @@ private fun MonthPage(yearMonth: String, today: String, days: Map<String, Calend
 
 @Composable
 private fun DayCell(cell: CalendarCell, day: CalendarDay?, cellSize: Dp, onAction: (CalendarAction) -> Unit) {
+    if (!cell.inMonth) {
+        Spacer(modifier = Modifier.size(cellSize))
+        return
+    }
     val shape = RoundedCornerShape(CalendarDimens.CELL_CORNER)
     val colors = MaterialTheme.colorScheme
     var modifier = Modifier
@@ -206,15 +219,11 @@ private fun DayCell(cell: CalendarCell, day: CalendarDay?, cellSize: Dp, onActio
         .clip(shape)
         .background(colors.surfaceContainerHigh)
     if (cell.isToday) modifier = modifier.border(BorderStroke(CalendarDimens.TODAY_RING, colors.primary), shape)
-    if (cell.inMonth) {
-        val label = CalendarLabels.cellLabel(LocalResources.current, cell.localDate, day?.count ?: 0)
-        modifier = modifier
-            .testTag(TestTags.calendarDay(cell.localDate))
-            .semantics { contentDescription = label }
-            .clickable(enabled = day != null, role = Role.Button) { onAction(CalendarAction.OpenDay(cell.localDate)) }
-    } else {
-        modifier = modifier.alpha(CalendarDimens.DIMMED_ALPHA)
-    }
+    val label = CalendarLabels.cellLabel(LocalResources.current, cell.localDate, day?.count ?: 0)
+    modifier = modifier
+        .testTag(TestTags.calendarDay(cell.localDate))
+        .semantics { contentDescription = label }
+        .clickable(enabled = day != null, role = Role.Button) { onAction(CalendarAction.OpenDay(cell.localDate)) }
     val coverMediaId = day?.coverMediaId
     Box(modifier = modifier) {
         if (day != null && coverMediaId != null) DayCover(day.coverEntryId, coverMediaId)
@@ -228,7 +237,7 @@ private fun DayCell(cell: CalendarCell, day: CalendarDay?, cellSize: Dp, onActio
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(CalendarDimens.DAY_NUMBER_PADDING)
-                .then(if (cell.inMonth) Modifier.testTag(TestTags.Calendar.DAY_NUMBER) else Modifier),
+                .testTag(TestTags.Calendar.DAY_NUMBER),
         )
     }
 }

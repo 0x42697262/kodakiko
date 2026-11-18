@@ -61,3 +61,32 @@ fun diffDraft(current: EntryMetadataV1, draft: EditDraft): DraftDiff {
 }
 
 fun draftChanged(diff: DraftDiff): Boolean = diff.removedMediaIds.isNotEmpty() || diff.edit != EntryEdit()
+
+fun EditDraft.rekeyed(replaced: Map<String, String>): EditDraft {
+    if (replaced.isEmpty()) return this
+    return copy(
+        mediaIds = mediaIds.map { replaced[it] ?: it },
+        captions = captions.mapKeys { (mediaId, _) -> replaced[mediaId] ?: mediaId },
+    )
+}
+
+private fun <T> keepMine(base: T, fresh: T, mine: T): T = if (mine == base) fresh else mine
+
+fun mergeDraft(base: EditDraft, fresh: EditDraft, draft: EditDraft, replaced: Map<String, String>): EditDraft {
+    val from = base.rekeyed(replaced)
+    val mine = draft.rekeyed(replaced)
+    val freshIds = fresh.mediaIds.toSet()
+    val added = fresh.mediaIds.filter { it !in from.mediaIds }
+    val mediaIds = if (mine.mediaIds == from.mediaIds) fresh.mediaIds else mine.mediaIds.filter { it in freshIds } + added
+    val captions = mediaIds.mapNotNull { mediaId ->
+        keepMine(from.captions[mediaId], fresh.captions[mediaId], mine.captions[mediaId])?.let { mediaId to it }
+    }.toMap()
+    return EditDraft(
+        mediaIds = mediaIds,
+        note = keepMine(from.note, fresh.note, mine.note),
+        tags = if (sameTags(mine.tags, from.tags)) fresh.tags else mine.tags,
+        time = keepMine(from.time, fresh.time, mine.time),
+        location = if (sameLocation(mine.location, from.location)) fresh.location else mine.location,
+        captions = captions,
+    )
+}

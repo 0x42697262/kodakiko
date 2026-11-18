@@ -5,22 +5,18 @@
   "scripts": {
     "test": "vitest run support",
     "typecheck": "tsc --noEmit",
-    "test:web": "playwright test -c web/playwright.config.ts",
     "test:link-viewer": "playwright test -c web/link-viewer.config.ts",
-    "screenshots": "playwright test -c screenshots/playwright.config.ts",
     "test:android": "node scripts/build-android-runner.ts && node android/dist/run.mjs",
     "install:maestro": "sh android/install-maestro.sh",
     "fixtures": "sh ../fixtures/media/generate.sh"
   },
   "dependencies": {
-    "@kodakiko/client": "workspace:*",
     "@kodakiko/contract": "workspace:*",
     "@kodakiko/core": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
     "esbuild": "catalog:",
-    "fflate": "catalog:",
     "libsodium-wrappers-sumo": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

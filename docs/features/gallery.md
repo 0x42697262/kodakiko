@@ -1,8 +1,10 @@
 # Gallery and the local index
 
 The home tab lists every entry of the journal from an in-memory index that is built from the
-encrypted local database at unlock. Code: `packages/core/src/index/`,
-`apps/client/src/services/index/`, `apps/client/src/features/gallery/`.
+encrypted local database at unlock. Code: `:shared:index` (`GalleryIndex`, tokenizer, filters,
+grouping), `:service:index` (build and updates), `:ui:feature:gallery` (`GalleryContent`,
+`GallerySettingsSheet`, `GalleryViewModel`, `GalleryArrangement`, Trash and Day screens), `:app`
+(`gallery/*Adapters.kt`, Coil thumbnails).
 
 ## The index
 
@@ -25,7 +27,8 @@ note, favorite and pending (not synced yet, or an upload still running).
   and never match tag or text filters.
 - The index is cleared on lock and sign-out. Settings › Advanced › **Rebuild index** rebuilds it and
   reports how many entries it read and how long it took.
-- 20,000 synthetic entries with 30 words each query in well under 50 ms in Node.
+- 20,000 synthetic entries build in under 2 s and query in tens of milliseconds on the JVM
+  (`IndexBenchmarkTest`, `GalleryIndexPerformanceTest`).
 
 ## The gallery screen
 
@@ -38,14 +41,13 @@ each with a count pill when counts are on. Favorites drives the favorite filter.
 
 **Filter chips** under the bar show each active filter with a remove ✕, and **Clear All**.
 
-**The list** (FlashList): an On This Day card, then group headers and rows of tiles. Grouping
+**The list** (a lazy Compose grid, adapted from Mihon's library): an On This Day card, then group headers and rows of tiles. Grouping
 (sheet › Group): **Day** (default: "Today", "Yesterday", "Monday, Nov 9", "Nov 9, 2024"),
 Month, Year, Tag (one group per tag, untagged last) or None.
 
 **Tiles** show the cover thumbnail and, depending on the display mode, the time and note preview.
 Badges (each can be turned off): note, video, item count ("+n"), favorite, waiting to upload, and
-kept offline (off by default). Tap opens the entry; long-press (Android) or Ctrl/Cmd+click (web) starts selection; on the
-web a checkbox shows on hover and Shift+click selects a range.
+kept offline (off by default). Tap opens the entry; long-press starts selection.
 
 **Selection mode:** the bar shows "(n) selected" with select all, select inverse and actions
 (the bulk sheet, [edit-page.md](edit-page.md#bulk-actions)); entering it gives a haptic tick.
@@ -58,12 +60,13 @@ Leaving the screen or locking clears the selection.
 **Empty states:** "No entries yet. Tap + to capture your first moment."; with filters, "No entries
 match these filters." and **Clear Filters**. While the index builds: "Opening your journal…".
 
-**Snackbars** at the bottom: "Saved." after leaving a new entry, "Moved to trash." with **Undo**,
+**Snackbars** at the bottom: "Saved." after Done or Save on the edit page, "Moved to trash." with **Undo**,
 "That entry no longer exists." when an opened entry was gone.
 
 ## Filter, Sort, Display, Group sheet
 
-A bottom sheet with underlined tabs, closed by dragging its handle down or tapping outside.
+A bottom sheet with underlined tabs (Mihon's library settings dialog), closed by dragging it down
+past 30 % of its height, a fast fling, or tapping outside.
 
 | Tab | Options |
 |---|---|
@@ -73,12 +76,15 @@ A bottom sheet with underlined tabs, closed by dragging its handle down or tappi
 | Group | Day, Month, Year, Tag, None |
 
 Everything except the text search, tags and dates is a device setting and survives restarts; the
-filter itself lives in memory until lock.
+filter itself lives in memory until lock. The stored filters also hold a kept-offline tri-state
+(from v0.3.1) that has no row in the sheet; it stays off. Filter › Tags opens a checkbox list of
+the tags; the bulk Add Tag… and Remove Tag… sheets show the tags as filter chips in a wrapping row.
 
 ## On This Day
 
 A horizontal card of groups "(n) year(s) ago", each with up to 10 entries from today's month and
-day in earlier years, newest first. Hidden when any filter is active, or with **On This Day** off.
+day in earlier years, newest first. Hidden when any filter is active. The **On This Day** setting
+is stored but not applied yet (v0.3.1 did not apply it either).
 
 ## Trash
 

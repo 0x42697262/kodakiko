@@ -4,46 +4,64 @@
 
 | Command | What it runs | Needs |
 |---|---|---|
-| `pnpm verify` | ESLint, TypeScript in every package, unit tests (core, contract, server, client, native upload, UI-test support, scripts) | nothing |
+| `./gradlew verify` (in `apps/android`) | Spotless formatting, `tooling-tests` (no comments, no magic values, no literal UI text, module boundaries, catalog allowlist, release build rules), every JVM and Robolectric unit test of `:shared:*`, `:data:*`, `:platform:*`, `:service:*`, `:ui:*` and `:app` (debug, release and preview variants), the Roborazzi screenshot comparisons, and `:app:lintRelease` | JDK 21, Android SDK, host libsodium for Robolectric (F-KT-24) |
+| `./gradlew e2e` (in `apps/android`) | `:e2e`: the Kotlin services of two simulated devices against the real server (sync, sharing, public links, tags, local-only mode, accounts, the e2e B-ids) | test stack, Node |
+| `./gradlew :module:connectedDebugAndroidTest` / `:shared:x:connectedAndroidDeviceTest` | Device tests (`src/androidTest`, `src/androidDeviceTest`): camera, audio, decrypting video source, secure stores, markdown regex engine | a running emulator |
+| `pnpm verify` | ESLint, TypeScript and unit tests of the server, contract, core, link viewer, UI-test support and scripts; the generated Android strings and license list (`check:generated`); license gate | nothing |
 | `pnpm --filter @kodakiko/server test:integration` | Server against Postgres and Garage | test stack |
-| `pnpm test:e2e` | `tests/e2e/scenarios`: sync, sharing, public links, tags, local-only mode with two simulated devices | test stack |
-| `pnpm ui:web` | Every Playwright flow in `tests/ui/web/specs`, desktop and Pixel 7 viewports (about 15 minutes) | Docker; starts its own stack |
-| `pnpm ui:android U-NN …` | Maestro flows in `tests/ui/android/flows` against the Kotlin debug build (`com.x42697262.kodakiko.next`; the runner builds `:app:assembleDebug` and installs it, and refuses the v0.3.1 id) | running emulator; `UI_SKIP_BUILD=1` reuses the installed build |
-| `pnpm --filter @kodakiko/ui-tests screenshots` | Seeds a demo journal and writes `docs/screenshots/*.png` | Docker, ImageMagick, ffmpeg |
+| `pnpm ui:android U-NN …` | Maestro flows in `tests/ui/android/flows` against the Kotlin debug build (`com.x42697262.kodakiko.next`; the runner builds `:app:assembleDebug`, installs it, and refuses the v0.3.1 id) | running emulator; `UI_SKIP_BUILD=1` reuses the installed build |
+| `pnpm ui:link-viewer` | The public link viewer flow (U-18 viewer half) in Playwright, desktop and phone viewports | Docker; starts its own stack |
 
 Test stack: `docker compose -f infra/compose/docker-compose.test.yml up -d --wait`.
 
-One web flow on one viewport:
+One Gradle test class: `./gradlew :ui:feature:edit:testDebugUnitTest --tests '*EditViewModelTest'`.
+
+### Screenshots (Roborazzi)
+
+Screenshot tests render the stateless `XContent` composables on Robolectric at 360 × 640 dp
+(`w360dp-h640dp-xhdpi`) and live next to each UI module in `src/test/screenshots/<area>/<name>.png`.
+A normal test run compares against the committed baseline and fails on a difference; a missing
+baseline is recorded on the first run. To re-record after an intended change:
 
 ```sh
-cd tests/ui
-pnpm exec playwright test -c web/playwright.config.ts U-29 --project=desktop
+./gradlew :ui:feature:settings:recordRoborazziDebug
 ```
 
-Failures keep a trace and a video under `tests/ui/reports/`.
+Look at every re-recorded image before committing it, and say in the commit which change it
+shows. `docs/screenshots/` holds copies of a curated set ([screenshots/README.md](screenshots/README.md)).
+
+### Compose compiler reports
+
+```sh
+./gradlew :app:assembleRelease -Pkodakiko.composeReports=true
+```
+
+Off by default. With the property, every module that applies `kodakiko.compose` (`:app` and all
+`:ui:*`) writes its Compose compiler reports and metrics to `<module>/build/compose-reports`
+(composables, classes, `module.json`), and those modules compile non-incrementally so the reports are
+complete. `apps/android/stability_config.conf` marks immutable models from non-Compose modules as
+stable in every build. Four unstable parameters remain on purpose (default-argument ViewModels and
+the fast-scroller thumb position).
+
+### Maestro setup
+
+- `pnpm --filter @kodakiko/ui-tests install:maestro` installs Maestro 2.12.1 (checked against its
+  SHA-256); `tests/ui/android/create-avd.sh` creates the test emulator.
+- Flows reach the UI test stack through the emulator's host alias `10.0.2.2` (`adb reverse` does
+  not forward on the test emulator). "Offline" on Android stops the stack's Caddy container and
+  starts it again. Run the runner with the system `adb`, outside `nix develop`.
+- Element ids are the Compose `testTag`s from `TestTags` (exposed as resource ids); flows find
+  elements only by id. Maestro fills fields with `tapOn` + `inputText`, hides the keyboard before
+  tapping fields that may sit under it, and force-stops the app before each flow. Double taps use
+  `delay: 250` and swipes run from 90 % to 10 % of the width (Compose gesture thresholds).
 
 ## Rules
 
 - A test is written before the code it checks and seen failing first.
 - Existing tests are not deleted, skipped or loosened. When the programmer changes a behavior, the
-  test changes with it and the area's feature doc says so.
-- Web flows that need one viewport skip the other in `beforeAll` (`test.skip(...)`), and every flow
-  seeds its own account (`uiUsername('U-NN', project, n)`), so flows do not share state.
-- Flows must not log console errors or page errors: the fixture fails the test if they do.
-
-## How the UI test stack works
-
-- `pnpm ui:web` starts `infra/compose/docker-compose.ui.yml` (project `kodakiko-ui`, Postgres,
-  Garage and Caddy, all data on tmpfs so every run starts empty), runs the API on the host at
-  port 9582 and serves the web build through Caddy at `http://localhost:9580`. Plain HTTP on
-  `localhost` is a secure context, so service workers, WebCrypto and OPFS work without
-  certificates. The host firewall must let the Caddy container reach port 9582.
-- Element ids come from `apps/client/src/keys/`; flows find elements only by id.
-- Android flows reach the stack through the emulator's host alias `10.0.2.2` (`adb reverse` does
-  not forward on the test emulator). "Offline" on Android stops the stack's Caddy container and
-  starts it again. Run the Android runner with the system `adb`, outside `nix develop`.
-- Maestro fills fields with `tapOn` + `inputText`, hides the keyboard before tapping fields that
-  may sit under it, and force-stops the app before each flow.
+  test changes with it and the area's feature doc says so. A screenshot baseline is re-recorded only
+  for an intended visual change.
+- Every Maestro flow seeds its own account, so flows do not share state.
 
 ## Where things are
 
@@ -51,66 +69,76 @@ Failures keep a trace and a video under `tests/ui/reports/`.
 |---|---|
 | Flow catalog | [below](#flow-catalog) |
 | Behavior catalog (Given / When / Then) | [behaviors.md](behaviors.md) |
+| Compose tests and screenshot baselines | `apps/android/ui/**/src/test`, `apps/android/app/src/test` |
+| End-to-end tests and their Node launcher | `apps/android/e2e`, `tests/e2e/support` |
 | Seeding accounts and entries through the API | `tests/ui/support/seed.ts` |
 | Reading what the server stores | `tests/ui/support/server-state.ts` |
-| Media fixtures | `tests/fixtures/media/` |
+| Media fixtures, v0.3.1 device fixtures, golden files | `tests/fixtures/media/`, `tests/fixtures/v031-device/`, `tests/fixtures/golden*/` |
 
 ## Not covered by automated tests
 
-These run only on a phone: background uploads, biometric unlock, camera capture and hold to
-record, Android ripple, haptics and predictive back, dynamic color, share to apps, clipboard
-paste, voice recording with `expo-audio`, crop with `expo-image-manipulator`, and key-derivation
-timing. Each feature doc lists what is checked only on a phone.
+These run only on a phone: biometric unlock and the device-PIN prompt, camera capture and hold to
+record on real hardware, voice recording quality (AAC channels and bit rate), Android's delete
+confirmation for device originals, the system share chooser, clipboard paste, folder writes through
+the system folder picker, haptics, dynamic color, and key-derivation timing. The one-time adoption
+of a v0.3.1 install is a release drill (U-41) on an emulator with a real v0.3.1 install. There is no
+background upload service yet, so long uploads with the app closed are not tested. Each feature doc
+lists what is checked only on a phone.
 
 ## Flow catalog
 
-`W` = web in both viewports, `W-d` = the desktop viewport only, `W (mobile)` = the Pixel 7
-viewport only, `A` = Android. The Behavior column points into [behaviors.md](behaviors.md). The
-spec files are `tests/ui/web/specs/U-NN-*.spec.ts` and `tests/ui/android/flows/U-NN-*.yaml`.
+The flows come from v0.3.1, where most ran in Playwright against the web app. Since v0.4.0:
 
-| Flow | Platform | Behavior | Steps (test ids) |
+- `A`: a Maestro flow on the Android emulator (`tests/ui/android/flows/U-NN-*.yaml`).
+- `twin`: a Compose test in `./gradlew verify` that walks the same steps on the Kotlin screens; the
+  test method's name starts with the flow id (`u17…`, `U19…`) where one exists.
+- `LV`: the public link viewer's Playwright spec (`tests/ui/web/specs/U-18-link-viewer.spec.ts`).
+- **dropped**: the behavior only existed in the web app (B-ids marked dropped in
+  [behaviors.md](behaviors.md)).
+
+| Flow | Runs as | Behavior | Steps (test ids) / where |
 |---|---|---|---|
-| U-01 | W, A | B-001 | `seedInvite` → web: `/invite#<token>` (Android: connect with the invite URL) → `signUp.username`, `signUp.password`, `signUp.confirm` → `signUp.submit` → wait `recoveryKey.word.1` (60 s) → read the 24 words → `recoveryKey.done` → `confirmRecoveryWords` (Android: `common/recovery-words.yaml`) → `recoveryKey.confirmSubmit` → `home.signedInAs` contains the username |
-| U-02 | W, A | B-004 | `seedAccount` → `/sign-in`: wrong password → `errors.invalidCredentials`; unknown username → `errors.invalidCredentials` with the same text; right password → `home.signedInAs` |
-| U-03 | W, A | B-006 | `seedAccount` → `signIn.forgot` → `recover.username`, `recover.words` (the words joined by spaces), `recover.newPassword`, `recover.confirm` → `recover.submit` → `home.signedInAs` → `home.signOut` → sign in with the new password works; with the old one → `errors.invalidCredentials` |
-| U-04 | W | B-009 (web) | `seedAccount` → sign in → `page.reload()` → `lock.title` → `lock.password` wrong → `lock.wrongPassword`; right → `home.signedInAs` |
-| U-05 | W, A | B-010 | `seedAccount` + `seedDeletionRequest` → sign in → `cancelDeletion.title` → `cancelDeletion.submit` → `home.signedInAs` |
-| U-06 | W | B-020, B-022 | `seedAccount` → sign in → `gallery.capture` → `addFiles(photo-gps.jpg, video-20s.mp4)` → `capture.trayItem.1` visible → Next → note "Picnic", tag "family" → Save → `gallery.tile.0` → open → `viewer.pageIndicator` "1 / 2"; the location row is shown |
-| U-07 | W | B-022 offline | as U-06 up to Save, but `context.setOffline(true)` before Save → `gallery.tilePending.0` → `context.setOffline(false)` → the dot disappears within 60 s → a second context signed in to the same account shows `gallery.tile.0` |
-| U-08 | W | B-028 | `seedAccount` → sign in → `/capture` → `pasteFile(screenshot.png)` → `capture.trayItem.0`; `dropFile(photo-portrait.jpg)` on `capture.dropZone` → `capture.trayItem.1` |
-| U-09 | A | B-020 | sign in → `gallery.capture` → tap `capture.shutter` → `capture.trayItem.0`; `capture.mode.video`, tap `capture.shutter`, wait, tap again (records a few seconds) → `capture.trayItem.1`; Next → Save → `gallery.tile.0`. Uses the emulator's virtual camera (UNVERIFIED for vision-camera: if the camera does not start, mark U-09 `manual` in `behaviors.md` and report) |
-| U-10 | W, A | B-040, B-041 | `seedEntries`: 3 entries on 3 different past days, tags `a` / `a b` / `c`, one note contains "lake" → 3 day headers → Filter → tags `a`, `b` → Apply → exactly `gallery.tile.0` → Clear All → Search "lake" → exactly 1 tile |
-| U-11 | W, A | B-043 | `seedEntries` on the 3rd and the 17th of the current month → Calendar tab → `calendar.day.<YYYY-MM-17>` → `/day/…` shows `gallery.tile.0` |
-| U-12 | W-d, A | B-044 | `seedEntries` 1 entry with `photo-gps.jpg`, `photo-portrait.jpg` → open → `viewer.pageIndicator` "1 / 2". Android: `doubleTapOn: { id: viewer.zoomable.0 }` → label "Photo 1, zoomed" → `swipe` left on it → indicator still "1 / 2" → `doubleTapOn` → label "Photo 1" → `swipe` left → "2 / 2" (Kotlin app: `doubleTapOn` uses `delay: 250` and both swipes run from 90% to 10% of the width, because Compose ignores a second tap within 40 ms and pages only past half a page or 400 dp/s). Web desktop: `dblclick` on `viewer.zoomable.0` → `aria-label` "Photo 1, zoomed" → `dblclick` → "Photo 1"; Ctrl + `mouse.wheel(0, -300)` → zoomed; Escape key not involved; `ArrowRight` after un-zooming → "2 / 2". Pinch is covered by the zoom-math unit tests and by hand || 14 |
-| U-13 | W-d | B-046 | `seedEntries` with `video-20s.mp4` → `context.route` delays bucket responses 250 ms (Chrome would otherwise buffer the whole fixture on localhost before the seek) → open → play → `video.player` → `page.evaluate` sets the `<video>` `currentTime = 15` → within 10 s `currentTime ≥ 15` and not paused; the bytes of responses from `localhost:9581` (counted with `context.on('response')`, which also sees service-worker requests in Chromium) are less than the object's ciphertext size |
-| U-14 | W-d | B-008 (web) | `page.clock.install()` **before** the first `goto` → `seedAccount`, sign in → `page.clock.fastForward('16:00')` with no input → `lock.title` |
-| U-15 | A | B-008 (Android) | part 1: sign in → Settings › Security → auto-lock 1 minute → `pressKey: Home`; `waitAfterMs: 70000`; part 2: `launchApp: { appId: com.x42697262.kodakiko, stopApp: false }` → `lock.title` |
-| U-16 | W-d | B-105, B-008 | `chromium.launchPersistentContext(tempDir, { baseURL: 'http://localhost:9580' })` with `page.clock.install()` → sign in → Settings › Security keep unlocked on → fast-forward 16 minutes → still `gallery` (no idle lock, D-63) → close the context → relaunch with the same directory → the gallery without a password → "Lock Now" → `lock.title` |
-| U-17 | W-d | B-080, B-082 | `seedAccount` A and B, `seedEntries` 2 for A, `seedShare` → context B: Shared tab → the journal with 2 tiles, no "Edit" in an entry; contexts A and B open the security code screens (B through Settings › Account, never `page.goto`, which reloads and locks the web app) → the texts are equal; B "Leave" → the journal disappears |
-| U-18 | W-d | B-083, B-086 | `seedEntries` 1 entry with `photo-gps.jpg`, `video-gps.mov`, `video-20s.mp4` and a note → create a link: untick `video-gps.mov`, notes off → read the URL → a fresh context with no account opens it → exactly `linkViewer.item.0` and `.1`; no note text; the photo "Download" (`page.waitForEvent('download')`) yields a JPEG whose `readImageMetadata` (Node) has no date and no GPS; the video plays and seeks to 10 s |
-| U-19 | W-d | B-100 | `seedAccount({ role: 'admin' })` → Settings › Admin → New Invite → URL shown → a second context signs up with it → People shows the new user → set quota 1 GB → the row shows it |
-| U-20 | W-d | B-102 | `page.addInitScript` deletes `window.showDirectoryPicker` (forces the download fallback) → `seedEntries` 2 entries → Settings › Export → collect every `download` → unzip in Node with `fflate` → one `entry.md` per entry; media bytes equal the fixture files |
-| U-21 | A | B-104 | sign in → Settings › Account → Change Server… → confirm → `welcome.serverLabel` visible and empty |
-| U-22 | A | — | `launchApp clearState` → `welcome.local` → local setup (username, password, `localSetup.understand`) → recovery key confirm → capture a photo with the emulator camera → `gallery.tile.0` visible with its `gallery.tilePending.0` badge (local entries stay queued until a server is connected, as in v0.3.1) |
-| U-23 | A | — | part 2 of U-22's device state (no `clearState`): sidecar seeds an invite → Settings › Account › Connect a Server… (`10.0.2.2` UI stack, invite link, password) → `connect.done` (the server-side entry count is not checked: sidecars only seed) |
-| U-24 | W-d | — | `seedEntries` a photo and a video → Filter sheet: `sheet.filter.video` include → Display tab: display mode List → 1 tile with the clip's note; lock and unlock → still 1 tile (settings persist) |
-| U-25 | W | — | `seedEntries` 3 entries tagged beach, city, city → tag tabs All, beach, city; `gallery.tagTab.1` → 2 tiles; All → 3 |
-| U-26 | W-d | — | 2 entries → open the second, `viewer.favorite` → Favorited; `gallery.tagTab.favorites` → 1 tile; All → 2; Filter sheet favorite include→exclude → 1 tile |
-| U-27 | W-d | — | 3 entries in June and July → 3 day headers; sheet Group › Month → 2 headers, "July 2026" then "June 2026" |
-| U-28 | W-d | — | tags beach (2 entries) and city → More › Tags: row 0 "beach, 2 entries"; rename to seaside → row 0 seaside; gallery tab 0 "seaside" shows 2 tiles |
-| U-29 | W-d | — | account A (2 entries) exports with a passphrase through the download fallback → only `.kdkx` files; account B: Data and storage › Restore backup, passphrase, choose the files → "Imported 2 entries" → 2 tiles |
-| U-30 | W-d | — | entries this month and 2 months ahead → Calendar › skips the empty month, then › is disabled; jump to next month → "No entries in that month yet." |
-| U-31 | W-d | — | More › Tags clicked 5 times quickly → one Tags page; one Back → More |
-| U-32 | W-d | — | `seedEntries` 1 entry → viewer ⋮ › Move to Trash → Snackbar `gallery.noticeTrashed` "Moved to trash." and no tile → `gallery.noticeUndo` → the tile is back, the Snackbar gone |
-| U-33 | W (mobile) | — | Filter sheet open → a 30 px drag on the handle springs back → a 300 px drag closes the sheet |
-| U-34 | W-d | — | seeded note → edit page shows it rendered (no text field) → `edit.editNote` → type, `toolbar.bold`, type → `**swim**` in the field → `compose.back` right away → reopen: the rendered note has the text (autosave flushed on leave) |
-| U-35 | W-d | — | edit page ⋮ › Caption "Heron at dawn" → `edit.captionText.0` → back: `viewer.caption` shows it → gallery search "heron" → 1 tile |
-| U-36 | W-d | — | entry with a photo and a video → ⋮ on page 2 › Set as Cover → viewer page 1 is the video (Play in view) → remove page 2 with the confirm → no page dots → removing the last item offers no confirm |
-| U-37 | W (mobile) | — | ⋮ › Crop → drag the bottom-right handle → Apply → the server has one media item with a new id (the cropped copy replaced the original) |
-| U-38 | W-d | — | video entry → viewer: `viewer.inlineVideo.0` plays muted and looped → mute button unmutes → Data and storage › Autoplay videos off → the viewer shows Play and no inline video |
-| U-39 | W-d | — | viewer Share › To apps: both items checked, "Share 2 items" → uncheck one → "Share 1 item", the encryption note shows → edit page: paste `screenshot.png` → a third page and dot appear |
-| U-40 | W-d | — | Chromium fake microphone → edit page mic → recording tile → stop after 2 s → `voice.tile.0` with "00:01"–"00:04", no page dots → viewer: page indicator "1 / 1", play the voice note → the audio element plays |
+| U-00 | A | — | smoke: `launchApp clearState` → `welcome.title` |
+| U-01 | A | B-001 | `seedInvite` → connect with the invite URL → `signUp.username`, `signUp.password`, `signUp.confirm` → `signUp.submit` → wait `recoveryKey.word.1` (60 s) → read the 24 words → `recoveryKey.done` → `common/recovery-words.yaml` → `recoveryKey.confirmSubmit` → `home.signedInAs` contains the username |
+| U-02 | A | B-004 | `seedAccount` → sign in: wrong password → `errors.invalidCredentials`; unknown username → `errors.invalidCredentials` with the same text; right password → `home.signedInAs` |
+| U-03 | A | B-006 | `seedAccount` → `signIn.forgot` → `recover.username`, `recover.words` (the words joined by spaces), `recover.newPassword`, `recover.confirm` → `recover.submit` → `home.signedInAs` → `home.signOut` → sign in with the new password works; with the old one → `errors.invalidCredentials` |
+| U-04 | **dropped** | B-009 (web) | web reload locks the page; Android password unlock is covered by `LockViewModelTest` and U-15 |
+| U-05 | A | B-010 | `seedAccount` + `seedDeletionRequest` → sign in → `cancelDeletion.title` → `cancelDeletion.submit` → `home.signedInAs` (screen logic also in `CancelDeletionViewModelTest`) |
+| U-06 | twin | B-020, B-022 | `CaptureScreenTest.u06…`: two picked files fill the tray and Next opens the new entry |
+| U-07 | e2e | B-022 offline | covered by `B022Test` (save offline, the entry shows at once and syncs when online) |
+| U-08 | **dropped** | B-028 | web paste and drag-and-drop |
+| U-09 | A + twin | B-020 | sign in → `gallery.capture` → tap `capture.shutter` → `capture.trayItem.0`; `capture.mode.video`, tap `capture.shutter`, wait, tap again → `capture.trayItem.1`; Next → Save → `gallery.tile.0` (emulator virtual camera); twin `CaptureScreenTest.u09…` |
+| U-10 | A | B-040, B-041 | `seedEntries`: 3 entries on 3 different past days, tags `a` / `a b` / `c`, one note contains "lake" → 3 day headers → `gallery.filter` → `tags.choose` → tags `a`, `b` → `filter.apply` → exactly `gallery.tile.0` → `gallery.clearAll` → `gallery.search` "lake" → exactly 1 tile |
+| U-11 | A | B-043 | `seedEntries` on the 3rd and the 17th of the current month → `tabs.calendar` → `calendar.day.<YYYY-MM-17>` → `day.screen` shows `gallery.tile.0` only |
+| U-12 | A | B-044 | `seedEntries` 1 entry with `photo-gps.jpg`, `photo-portrait.jpg` → open → `viewer.pageIndicator` "1 / 2" → `doubleTapOn: { id: viewer.zoomable.0 }` → label "Photo 1, zoomed" → swipe left on it → indicator still "1 / 2" → `doubleTapOn` → label "Photo 1" → swipe left → "2 / 2". Pinch is covered by the zoom unit tests and by hand |
+| U-13 | **dropped** | B-046 | web video seek; Android seeking is a device test (`DecryptingDataSourceDeviceTest`) |
+| U-14 | **dropped** | B-008 (web) | idle auto-lock in the browser |
+| U-15 | A + twin | B-008 | part 1: sign in → Settings › Security and privacy → auto-lock 1 minute → `pressKey: Home`; `waitAfterMs: 70000`; part 2: `launchApp` without stopping → `lock.title`; twins `AutoLockWiringTest.u15…`, `SecuritySettingsTest` |
+| U-16 | **dropped** | B-105 | keep me unlocked in the browser |
+| U-17 | twin | B-080, B-082 | `SharingFlowsTest.u17…`: the owner finds the recipient and both read the same security code; the recipient browses the journal read-only and leaving removes it |
+| U-18 | twin + LV | B-083, B-086 | creation: `LinksFlowsTest.u18…`, `LinkCreateViewModelTest.u18…` (untick the `.mov`, notes off, the URL shows); viewing: LV spec on the link-viewer stack (exactly the chosen items, no note, downloads without date or GPS, the video plays and seeks) |
+| U-19 | twin | B-100 | `AdminSettingsTest`, `AdvancedAboutAdminWiringTest.U19…`: New Invite shows the URL, the newcomer gets a 1 GB quota |
+| U-20 | **dropped** (mechanism) | B-102 | the browser download fallback; Android exports through the system folder picker (`ExportSettingsTest`) |
+| U-21 | A + twin | B-104 | sign in → Settings › Account › Change Server… → confirm → `welcome.serverLabel` visible and empty; twins `AccountWiringTest`, `AccountSettingsTest` |
+| U-22 | A | — | `launchApp clearState` → `welcome.local` → local setup (username, password, `localSetup.understand`) → recovery key confirm → capture a photo with the emulator camera → `gallery.tile.0` with its `gallery.tilePending.0` badge (local entries stay queued until a server is connected) |
+| U-23 | A | — | part 2 of U-22's device state (no `clearState`): a sidecar seeds an invite → Settings › Account › Connect a Server… (`10.0.2.2` UI stack, invite link, password) → `connect.done` |
+| U-24 | twin | — | display mode List and a video-only filter persist (`GallerySheetsContentTest`, `GalleryViewModelTest`) |
+| U-25 | twin | — | tag tabs All / beach / city filter the grid (`GalleryContentTest`, `GalleryViewModelTest`) |
+| U-26 | twin | — | Favorites tab and the favorite include/exclude filter (`GalleryContentTest`, `GalleryViewModelTest`) |
+| U-27 | twin | — | Group › Month shows month headers newest first (`GallerySheetsContentTest`, `GalleryViewModelTest`) |
+| U-28 | twin | — | `TagsFlowsTest.u28…`, `TagsViewModelTest.u28…`: renaming a tag renames it on every entry and keeps its place |
+| U-29 | twin | — | `ImportSettingsTest.u29…`: an encrypted export restores with its passphrase into another account |
+| U-30 | twin | B-043 | the next-month arrow skips empty future months and stops after the last one; Jump to an empty month shows "No entries in that month yet." (`CalendarViewModelTest`, `CalendarContentTest`) |
+| U-31 | twin | — | `CaptureAndTagsWiringTest.u31…`: opening the tag editor five times quickly opens it once and one Back leaves it |
+| U-32 | twin | — | Move to Trash shows the "Moved to trash." snackbar and Undo brings the tile back (`TrashDayAndSnackbarContentTest`, `GalleryViewModelTest`) |
+| U-33 | twin | — | a short drag on a sheet springs back, past 30 % or a fast fling closes it (`AdaptiveSheetTest`) |
+| U-34 | twin | — | `EditFlowsTest.u34…`, `NoteViewModelTest`: the full-screen note editor writes markdown with the toolbar and the note is stored on Save (v0.4.1: no autosave on leave) |
+| U-35 | twin | — | `EditFlowsTest.u35…`: a caption shows on its photo and is stored (and found by search) |
+| U-36 | twin | B-027 | `EditFlowsTest.u36…`: Set as Cover moves an item first, removing asks first, the last item cannot be removed |
+| U-37 | twin | — | `EditFlowsTest.u37…`: cropping replaces the photo with the cropped copy |
+| U-38 | twin | — | inline video plays muted and looped, unmute works, Autoplay off shows Play instead (`InlineVideoViewModelTest`, `StorageSettingsTest`); v0.4.1: no Play button while a video autoplays |
+| U-39 | twin | — | `ShareSheetContentTest`, `ShareSheetViewModelTest`, `SharingFlowsTest.u39…`: the To apps picker starts with every item checked and counts them; `EditFlowsTest.u39…`: pasting a picture adds a page and a dot |
+| U-40 | twin | — | `EditFlowsTest.u40…`: a voice note recorded on the edit page is saved and listed |
 
-Not driven by either tool (checked by hand): fingerprint unlock, the background upload
-notification and resume, Android decrypted-video cleanup, pinch gestures, Wi-Fi-only uploads.
-
+Not driven by any tool (checked by hand): fingerprint unlock, Android decrypted-file audit on a real
+phone, pinch gestures, Wi-Fi-only uploads, the delete-from-device confirmation.

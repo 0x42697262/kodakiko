@@ -42,6 +42,18 @@ object LogEvents {
     const val CHANGED = "changed"
     const val LOGGING_ENABLED = "set_debug_logging"
     const val CLEARED = "cleared"
+    const val IMPORT_PICK = "import_pick"
+    const val DEVICE_ORIGINAL_UNMAPPED = "device_original_unmapped"
+    const val DEVICE_DELETE = "device_delete"
+    const val EXPORT_START = "export_start"
+    const val EXPORT_PHASE = "export_phase"
+    const val EXPORT_END = "export_end"
+    const val EXPORT_CANCELLED = "export_cancelled"
+    const val EXPORT_ERROR = "export_error"
+    const val RESTORE_START = "restore_start"
+    const val RESTORE_END = "restore_end"
+    const val RESTORE_FAILURE = "restore_failure"
+    const val RESTORE_ERROR = "restore_error"
 }
 
 object LogFields {
@@ -79,6 +91,12 @@ object LogFields {
     const val KEY = "key"
     const val ENABLED = "enabled"
     const val FIELDS = "fields"
+    const val ENCRYPTED = "encrypted"
+    const val ENTRIES = "entries"
+    const val MEDIA = "media"
+    const val DUPLICATES = "duplicates"
+    const val PARTS = "parts"
+    const val SKIPPED = "skipped"
 }
 
 object LogValues {
@@ -86,6 +104,7 @@ object LogValues {
     const val FAILED = "failed"
     const val CANCELLED = "cancelled"
     const val DENIED = "denied"
+    const val KEPT = "kept"
     const val MAIN = "main"
     const val BACKGROUND = "bg"
     const val PHASE_LOCK = "lock"

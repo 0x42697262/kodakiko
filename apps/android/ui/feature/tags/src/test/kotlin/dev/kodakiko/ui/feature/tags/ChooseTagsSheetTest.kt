@@ -58,7 +58,11 @@ class ChooseTagsSheetTest {
         compose.waitForIdle()
     }
 
-    private fun top(tag: String): Float = compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot.top
+    private fun readsBefore(first: String, second: String): Boolean {
+        val a = compose.onNodeWithTag(first).fetchSemanticsNode().boundsInRoot
+        val b = compose.onNodeWithTag(second).fetchSemanticsNode().boundsInRoot
+        return a.top < b.top || (a.top == b.top && a.left < b.left)
+    }
 
     @Test
     fun theSheetListsTheChoicesInOrderWithTheChosenOnesChecked() {
@@ -69,8 +73,8 @@ class ChooseTagsSheetTest {
         compose.onNodeWithTag(option("zoo")).assertIsOff()
         compose.onNodeWithTag(option("city")).assertIsOff()
         compose.onNodeWithTag(option("zoo")).assert(hasText("zoo"))
-        assertTrue(top(option("zoo")) < top(option("beach")))
-        assertTrue(top(option("beach")) < top(option("city")))
+        assertTrue(readsBefore(option("zoo"), option("beach")))
+        assertTrue(readsBefore(option("beach"), option("city")))
         compose.onNodeWithTag(TestTags.Tags.EDIT_TAGS).assert(hasText("Edit tags"))
         compose.onNodeWithTag(TestTags.Tags.DONE).assert(hasText("Done"))
         assertFalse(compose.onAllNodes(hasText("No tags yet. Create them in Settings › Tags."), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())

@@ -19,6 +19,7 @@ dependencies {
     api(projects.shared.markdown)
     api(libs.androidx.lifecycle.viewmodel.compose)
     implementation(projects.shared.js)
+    implementation(projects.platform.picker)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.activity.compose)
     implementation(libs.metrox.viewmodel.compose)

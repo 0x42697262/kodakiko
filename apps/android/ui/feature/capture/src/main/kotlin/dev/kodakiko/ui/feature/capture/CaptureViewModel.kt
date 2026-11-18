@@ -78,7 +78,10 @@ class CaptureViewModel(private val deps: CaptureDeps, private val entryId: Strin
             is CaptureAction.SetMode -> unlessRecording { current.update { it.copy(mode = action.mode) } }
             CaptureAction.PickFromGallery -> unlessRecording { send(CaptureEvent.PickFromGallery(remainingSlots())) }
             is CaptureAction.Picked -> picked(action)
-            is CaptureAction.Remove -> viewModelScope.launch { deps.tray.remove(action.mediaId) }
+            is CaptureAction.Remove -> viewModelScope.launch {
+                deps.tray.remove(action.mediaId)
+                deps.files.forget(listOf(action.mediaId))
+            }
             is CaptureAction.PhoneCamera -> openPhoneCamera(action.video)
             is CaptureAction.PhoneCameraResult -> phoneCameraResult(action.ok)
             CaptureAction.Next -> if (current.value.canNext) send(CaptureEvent.Open(Route.EntryNew))
@@ -287,6 +290,7 @@ class CaptureViewModel(private val deps: CaptureDeps, private val entryId: Strin
             val limit = limit()
             val outcome = attempt { deps.imports.importOne(input, ImportSlots(used = deps.tray.items.size, limit = limit)) }
                 ?: ImportOutcome.Refused(ImportRefusal.READ_FAILED, input.fileName)
+            deps.files.imported(input, (outcome as? ImportOutcome.Imported)?.media?.mediaId)
             when (outcome) {
                 is ImportOutcome.Imported -> deps.tray.addImported(outcome.media, generation)
                 is ImportOutcome.Refused -> addRefusal(CaptureRefusal(outcome.reason, refusalLabel(input), limit))
@@ -377,16 +381,21 @@ class CaptureViewModel(private val deps: CaptureDeps, private val entryId: Strin
     private fun discard() {
         when (current.value.dialog) {
             is CaptureDialog.Discard -> viewModelScope.launch {
-                deps.tray.clear(true)
+                clearTray()
                 current.update { it.copy(dialog = null) }
                 send(CaptureEvent.Back)
             }
             is CaptureDialog.Leftover -> viewModelScope.launch {
-                deps.tray.clear(true)
+                clearTray()
                 current.update { it.copy(dialog = null) }
             }
             null -> Unit
         }
+    }
+
+    private suspend fun clearTray() {
+        deps.files.forget(deps.tray.items.map { it.mediaId })
+        deps.tray.clear(true)
     }
 
     private suspend fun <T> attempt(work: suspend () -> T): T? = try {

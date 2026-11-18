@@ -3,6 +3,7 @@ package dev.kodakiko.app.di
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AccountMediaDeps
@@ -23,6 +24,7 @@ import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.accountHash
 import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.secure.AccountMode
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.platform.device.Haptics
 import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState
@@ -171,6 +173,7 @@ object GalleryBindings {
         wifi: WifiState,
         accountState: Observable<AccountState>,
         accountMode: Observable<AccountMode>,
+        debugLog: DebugLog,
     ): AccountMedia = AccountMedia(
         AccountMediaDeps(
             context = context,
@@ -185,6 +188,7 @@ object GalleryBindings {
             isWifi = { wifi.wifi.value },
             localOnly = { accountMode.value == AccountMode.LOCAL },
             unlocked = { accountState.value is AccountState.Unlocked },
+            log = debugLog,
         ),
     )
 
@@ -216,13 +220,14 @@ object GalleryBindings {
         flushes: EditFlushes,
         recorder: AppEditRecorder,
         tray: CaptureTray,
+        deviceDeletes: PendingDeviceDeletes,
         collectionNames: CollectionNames,
         accounts: AccountService,
         shareOut: Lazy<ShareOutService>,
     ): LifecycleSteps = LifecycleSteps(
         LifecycleSteps.LifecycleSync(sync, linkUploader, exporter) { accountMode.value == AccountMode.LOCAL },
         index,
-        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames, accounts, shareOut,
+        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, deviceDeletes, collectionNames, accounts, shareOut,
     )
 
     @Provides

@@ -3,6 +3,8 @@ package dev.kodakiko.ui.feature.viewer
 import androidx.compose.ui.unit.dp
 
 internal object ViewerConstants {
+    const val CAPTION_MAX_LINES = 2
+    const val CAPTION_SCRIM_ALPHA = 0.55f
     const val ZOOM_MIN = 1.0
     const val ZOOM_MAX = 5.0
     const val ZOOM_DOUBLE_TAP = 2.5
@@ -24,6 +26,8 @@ internal object ViewerConstants {
 }
 
 internal object ViewerDimens {
+    val CAPTION_PADDING_HORIZONTAL = 12.dp
+    val CAPTION_PADDING_VERTICAL = 6.dp
     val SCREEN_PADDING = 16.dp
     val SECTION_SPACING = 12.dp
     val SMALL_SPACING = 8.dp

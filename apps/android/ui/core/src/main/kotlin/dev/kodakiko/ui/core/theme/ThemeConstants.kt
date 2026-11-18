@@ -22,9 +22,14 @@ object ThemeConstants {
         val BACKGROUND = Color(0xFF0B0B0D)
         val SURFACE = Color(0xFF1C1C1F)
         val TEXT = Color(0xFFF2F2F5)
-        val TEXT_MUTED = Color(0xFFA1A1AA)
-        val BORDER = Color(0xFF3A3A3F)
+        val TEXT_MUTED = Color(0xFFC8C8D0)
+        val BORDER = Color(0xFF4A4A52)
         val DANGER = Color(0xFFFF6B6B)
+        val PRIMARY_CONTAINER = Color(0xFF2A3F7A)
+        val ON_PRIMARY_CONTAINER = Color(0xFFDDE4FF)
+        val SURFACE_HIGH = Color(0xFF26262A)
+        val SURFACE_HIGHEST = Color(0xFF303035)
+        val OUTLINE_VARIANT = Color(0xFF3A3A3F)
     }
 
     object PureBlack {

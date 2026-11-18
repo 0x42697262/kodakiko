@@ -6,15 +6,18 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import dev.kodakiko.data.db.AppTheme
 import dev.kodakiko.data.db.DeviceSettingsDefaults
+import dev.kodakiko.data.db.ThemePreset
 
 @Composable
 fun KodakikoTheme(
     appTheme: AppTheme = DeviceSettingsDefaults.ANDROID.appTheme,
     pureBlack: Boolean = DeviceSettingsDefaults.ANDROID.pureBlack,
     dynamicColor: Boolean = DeviceSettingsDefaults.ANDROID.dynamicColor,
+    preset: ThemePreset = DeviceSettingsDefaults.ANDROID.themePreset,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -24,13 +27,13 @@ fun KodakikoTheme(
         AppTheme.DARK -> true
     }
     MaterialTheme(
-        colorScheme = remember(context, isDark, pureBlack, dynamicColor) {
-            KodakikoColorScheme.getColorScheme(
-                context = context,
-                isDark = isDark,
-                isPureBlack = pureBlack,
-                isDynamic = dynamicColor,
-            )
+        colorScheme = remember(context, isDark, pureBlack, dynamicColor, preset) {
+            if (dynamicColor && isDynamicColorAvailable()) {
+                val dynamic = KodakikoColorScheme.getColorScheme(context = context, isDark = isDark, isPureBlack = false, isDynamic = true)
+                if (isDark && pureBlack) dynamic.copy(background = Color.Black, onBackground = Color.White, surface = Color.Black, onSurface = Color.White) else dynamic
+            } else {
+                ThemePresets.colorScheme(preset, isDark, pureBlack)
+            }
         },
         content = content,
     )

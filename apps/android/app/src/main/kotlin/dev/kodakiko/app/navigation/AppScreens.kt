@@ -30,6 +30,7 @@ import dev.kodakiko.ui.feature.settings.AdminScreen
 import dev.kodakiko.ui.feature.settings.AdvancedSettingsScreen
 import dev.kodakiko.ui.feature.settings.AppearanceSettingsScreen
 import dev.kodakiko.ui.feature.settings.CaptureSettingsScreen
+import dev.kodakiko.ui.feature.settings.DebugLogScreen
 import dev.kodakiko.ui.feature.settings.DeleteAccountScreen
 import dev.kodakiko.ui.feature.settings.DiagnosticsScreen
 import dev.kodakiko.ui.feature.settings.ExportScreen
@@ -99,6 +100,7 @@ enum class AppScreen {
     SETTINGS_ADMIN,
     SETTINGS_ADVANCED,
     SETTINGS_DIAGNOSTICS,
+    SETTINGS_DEBUG_LOG,
     SETTINGS_ABOUT,
     PLACEHOLDER,
 }
@@ -152,6 +154,7 @@ object AppScreens {
         Route.SettingsAdmin -> AppScreen.SETTINGS_ADMIN
         Route.SettingsAdvanced -> AppScreen.SETTINGS_ADVANCED
         Route.SettingsDiagnostics -> AppScreen.SETTINGS_DIAGNOSTICS
+        Route.SettingsDebugLog -> AppScreen.SETTINGS_DEBUG_LOG
         Route.SettingsAbout -> AppScreen.SETTINGS_ABOUT
         else -> AppScreen.PLACEHOLDER
     }
@@ -206,6 +209,7 @@ object AppScreens {
             AppScreen.SETTINGS_ADMIN -> AdminScreen()
             AppScreen.SETTINGS_ADVANCED -> AdvancedSettingsScreen()
             AppScreen.SETTINGS_DIAGNOSTICS -> DiagnosticsScreen()
+            AppScreen.SETTINGS_DEBUG_LOG -> DebugLogScreen()
             AppScreen.SETTINGS_ABOUT -> AboutScreen()
             AppScreen.PLACEHOLDER -> PlaceholderScreen()
         }

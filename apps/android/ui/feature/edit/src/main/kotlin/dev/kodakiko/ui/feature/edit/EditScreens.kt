@@ -6,14 +6,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.kodakiko.platform.picker.MediaPicking
+import dev.kodakiko.platform.picker.PickerRequest
 import dev.kodakiko.ui.core.navigation.LocalRouteNavigator
 import dev.kodakiko.ui.core.navigation.Route
 import dev.kodakiko.ui.core.navigation.RouteNavigator
@@ -29,6 +36,12 @@ fun interface CropViewModelFactory : ManualViewModelAssistedFactory {
     fun create(entryId: String, mediaId: String): CropViewModel
 }
 
+private class PendingPick {
+    var request: PickerRequest<PickVisualMediaRequest, *>? = null
+}
+
+private typealias PickLauncher = ManagedActivityResultLauncher<Intent, ActivityResult>
+
 @Composable
 fun EditScreen(entryId: String, isNew: Boolean) {
     val viewModel = assistedMetroViewModel<EditViewModel, EditViewModelFactory>(key = entryId + isNew) { create(entryId, isNew) }
@@ -38,8 +51,17 @@ fun EditScreen(entryId: String, isNew: Boolean) {
     val microphone = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         viewModel.onAction(EditAction.ToggleRecording)
     }
+    val pending = remember { PendingPick() }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val request = pending.request
+        pending.request = null
+        viewModel.onAction(EditAction.Picked(pickedUris(request?.contract?.parseResult(result.resultCode, result.data))))
+    }
+    BackHandler { viewModel.onAction(EditAction.Back) }
     LaunchedEffect(viewModel, navigator) {
-        viewModel.events.collect { event -> handle(event, navigator, context) }
+        viewModel.events.collect { event ->
+            if (event is EditEvent.PickMedia) pick(context, picker, pending, event.remainingSlots) else handle(event, navigator, context)
+        }
     }
     LifecycleStartEffect(viewModel) {
         viewModel.onAction(EditAction.ScreenVisible(true))
@@ -83,6 +105,22 @@ fun EntryNewScreen(viewModel: EntryNewViewModel = metroViewModel()) {
     EntryNewContent(state = state)
 }
 
+private fun pickedUris(result: Any?): List<Uri> = when (result) {
+    is Uri -> listOf(result)
+    is List<*> -> result.filterIsInstance<Uri>()
+    else -> emptyList()
+}
+
+private fun pick(context: Context, launcher: PickLauncher, pending: PendingPick, remainingSlots: Int) {
+    val request = MediaPicking.request(remainingSlots) ?: return
+    pending.request = request
+    try {
+        launcher.launch(request.contract.createIntent(context, request.input))
+    } catch (_: ActivityNotFoundException) {
+        pending.request = null
+    }
+}
+
 private fun microphoneGranted(context: Context): Boolean =
     context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
 
@@ -94,6 +132,7 @@ private fun handle(event: EditEvent, navigator: RouteNavigator, context: Context
         is EditEvent.Replace -> navigator.replace(event.route)
         is EditEvent.OpenUri -> openUri(context, event.uri)
         is EditEvent.Share -> navigator.push(Route.ShareSheet(event.entryIds, event.inKodakiko))
+        is EditEvent.PickMedia -> Unit
     }
 }
 

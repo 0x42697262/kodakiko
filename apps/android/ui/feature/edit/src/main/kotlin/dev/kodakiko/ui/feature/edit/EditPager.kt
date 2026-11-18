@@ -40,7 +40,6 @@ import dev.kodakiko.contract.MediaKind
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
-import dev.kodakiko.ui.core.icons.KodakikoIcons
 import kotlinx.coroutines.CancellationException
 
 @Composable
@@ -78,11 +77,13 @@ private fun PagerBody(entryId: String, pages: List<EditPage>, page: Int, onActio
 @Composable
 private fun MediaPage(entryId: String, item: EditPage, position: Int, onAction: (EditAction) -> Unit) {
     val thumbnail = rememberThumbnail(entryId, item.mediaId)
+    val options = stringResource(R.string.edit_media_options)
     Box(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(EditDimens.TILE_CORNER))
             .background(MaterialTheme.colorScheme.surfaceContainer)
+            .clickable(role = Role.Button, onClickLabel = options) { onAction(EditAction.OpenMediaMenu(item.mediaId)) }
             .testTag(listItem(TestTags.Edit.PAGE, position)),
     ) {
         thumbnail?.let { Image(bitmap = it, contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize()) }
@@ -121,7 +122,7 @@ private fun MediaPage(entryId: String, item: EditPage, position: Int, onAction: 
                 .padding(EditDimens.SMALL_SPACING)
                 .testTag(listItem(TestTags.Edit.MEDIA_MENU, position)),
         ) {
-            Icon(imageVector = KodakikoIcons.MoreVert, contentDescription = stringResource(R.string.edit_media_options))
+            Icon(imageVector = EditIcons.Tune, contentDescription = options)
         }
     }
 }

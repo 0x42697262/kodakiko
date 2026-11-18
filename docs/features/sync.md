@@ -2,13 +2,15 @@
 
 Kodakiko works offline first: every change is written to the local encrypted database together
 with an outbox item, and a sync pass pushes the outbox, uploads objects and pulls other devices'
-changes. Code: `packages/core/src/sync/`, `apps/client/src/services/sync/`,
-`packages/native-upload/`, `packages/contract/src/outbox.ts`. Detailed design:
+changes. Code: `:shared:sync` (failures, push plan, pulled entries, three-way merge), `:service:sync`
+(`SyncService`, executors, pull, conflict resolver, upload coordinator, banners), `:data:upload`
+(the uploader), `:shared:contract` (outbox and API schemas), `:app` (`sync/SyncAdapters.kt`,
+`di/SyncBindings.kt`). Detailed design:
 [../design/sync.md](../design/sync.md).
 
 ## When sync runs
 
-A pass starts at unlock, when the app comes to the foreground, when the browser comes back online,
+A pass starts at unlock, when the app comes to the foreground, when the network comes back,
 every 60 s while active, 2 s after a local change, on uploader events, on **Sync now** (Settings ›
 Sync) and on a pull-to-refresh. Only one pass runs at a time; triggers during a pass run one more
 afterwards. A pass is: reconcile uploads → push the outbox → pull.
@@ -61,16 +63,24 @@ per object id) returns one URL or multipart part URLs, the uploader PUTs the enc
 and its outbox item dead. Each pass also reconciles objects that were uploading when the app
 stopped.
 
-| Platform | Uploader |
-|---|---|
-| Android | `packages/native-upload`: a Kotlin foreground service with a progress notification and the app's OkHttp; uploads continue while the app is in the background. Notification permission is asked for on Android 13+ |
-| Web | An in-page queue, 3 parts at a time, each part read with `Blob.slice` from OPFS; 5-minute timeout per part |
+The uploader (`:data:upload`, ported from v0.3.1's native upload module) runs inside the app
+process on the shared OkHttp client: 3 parts at a time, a 5-minute timeout per part, the encrypted
+file read straight from disk. Uploads stop at lock and when the app process ends, and continue at
+the next unlock (the multipart resume above means nothing already sent is sent again).
+
+Not in v0.4.x: v0.3.1's foreground upload service with its progress notification and the
+notification-permission prompt were not ported, so uploads do not continue while the app is closed
+(planned after v0.4.1).
 
 **Large uploads on Wi-Fi only** (default on; "large" = **Large means**, default 100 MiB) holds
 large objects back while on mobile data.
 
 Every change of an object's upload state re-indexes its entry, which drives the gallery's "waiting
 to upload" badge.
+
+With the [debug log](settings.md#debug-log) on, each pass (pushed, pulled entries, failed,
+duration), each sync warning and each upload result (completed, failed or stopped, with the object
+id and whether it was a sync or a link upload) is recorded; never entry contents.
 
 ## Pull
 
@@ -100,7 +110,7 @@ version both sides saw), local and server.
 | Captions | A caption changed on one side is kept; changed on both → local |
 | Favorite | As note |
 
-If the merge equals the server version, the client adopts it; otherwise it seals the merge on top
+If the merge equals the server version, the app adopts it; otherwise it seals the merge on top
 of the server revision and retries once.
 
 ## Keys
@@ -111,5 +121,5 @@ keys are cached in memory and wiped on lock.
 
 ## Checked only on a phone
 
-The background upload service and its notification, resuming after the app was killed, and
-Wi-Fi detection.
+Uploads of large videos on a real network, resuming after the app was killed, and Wi-Fi
+detection.

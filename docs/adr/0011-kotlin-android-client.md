@@ -1,7 +1,8 @@
 # 11. Kotlin Android client on a Kotlin Multiplatform core; web client dropped
 
-Date: 2026-11-14. Status: proposed (v0.4.0). Supersedes ADR 1 for the clients; ADR 1 still holds
-for the server, `packages/contract` and `packages/core`.
+Date: 2026-11-14. Status: accepted, shipped in v0.4.0; the Expo client was removed in v0.4.1.
+Supersedes ADR 1 for the clients; ADR 1 still holds for the server, `packages/contract` and
+`packages/core`.
 
 ## Context
 v0.3.1 (Expo / React Native, one codebase for Android and web) works, but on a phone it is "not
@@ -17,16 +18,17 @@ is not a priority.
 - Pure logic (crypto, contract types, account, domain, media parsing, index, sync decisions,
   export, markdown) moves into Kotlin Multiplatform modules (`androidTarget` + `jvm` now; `wasmJs`
   when web returns).
-- The web client is dropped. The public link viewer is kept as a small standalone page (pending
-  the programmer's answer).
+- The web client is dropped. The public link viewer is kept as a small standalone page
+  (`apps/link-viewer`, plain TypeScript and DOM, D-108).
 - The server, `packages/contract` and `packages/core` stay in TypeScript. `packages/core` becomes
   the reference implementation that checks every byte the Kotlin app writes (differential tests).
 - The app updates in place over v0.3.1 (same applicationId and signing key) and adopts the existing
   on-device files and database unchanged.
 
 ## Consequences
-+ Native rendering, gestures, predictive back and media pipelines; direct reuse of ~15–20k lines of
-  Mihon UI code.
++ Native rendering, gestures and media pipelines; direct reuse of ~15–20k lines of Mihon UI code.
+  (Navigation uses Voyager like Mihon, which has no predictive-back preview animation; v0.3.1 had
+  one. Accepted, D-107.)
 + Video plays through a decrypting Media3 data source with no plaintext file on disk.
 + Two implementations of the crypto and formats cross-check each other.
 - Two languages in the repository; contract changes must be made in TS and Kotlin together

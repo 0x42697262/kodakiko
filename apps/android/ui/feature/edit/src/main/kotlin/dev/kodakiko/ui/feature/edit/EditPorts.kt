@@ -1,5 +1,6 @@
 package dev.kodakiko.ui.feature.edit
 
+import android.net.Uri
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.ImageBitmap
@@ -18,6 +19,38 @@ interface EditClipboard {
     suspend fun hasImage(): Boolean
 
     suspend fun readImage(): MediaInput?
+
+    fun copyText(text: String) {}
+}
+
+fun interface EditPicks {
+    suspend fun copy(uri: Uri): MediaInput?
+
+    fun imported(input: MediaInput, mediaId: String?) {}
+}
+
+interface DeviceOriginals {
+    fun deletableCount(mediaIds: Collection<String>): Int
+
+    fun replaced(oldMediaId: String, newMediaId: String)
+
+    fun keep(mediaIds: Collection<String>)
+
+    suspend fun delete(mediaIds: Collection<String>)
+
+    fun forget(mediaIds: Collection<String>)
+}
+
+object NoDeviceOriginals : DeviceOriginals {
+    override fun deletableCount(mediaIds: Collection<String>): Int = 0
+
+    override fun replaced(oldMediaId: String, newMediaId: String) = Unit
+
+    override fun keep(mediaIds: Collection<String>) = Unit
+
+    override suspend fun delete(mediaIds: Collection<String>) = Unit
+
+    override fun forget(mediaIds: Collection<String>) = Unit
 }
 
 data class RecordedVoiceNote(val input: MediaInput, val durationMs: Long, val mimeType: String)
@@ -85,6 +118,8 @@ class EditDeps(
     val notices: Observable<GalleryNotice?>,
     val flushes: EditFlushes,
     val clock: EditClock,
+    val picks: EditPicks = EditPicks { null },
+    val originals: DeviceOriginals = NoDeviceOriginals,
 )
 
 class CropDeps(

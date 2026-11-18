@@ -288,6 +288,16 @@ class FakeCaptureFiles : CaptureFiles {
     val outputs = mutableListOf<File>()
     val copied = mutableListOf<Uri>()
     val unreadable = mutableSetOf<String>()
+    val imported = mutableListOf<Pair<MediaInput, String?>>()
+    val forgotten = mutableListOf<List<String>>()
+
+    override fun imported(input: MediaInput, mediaId: String?) {
+        imported += input to mediaId
+    }
+
+    override fun forget(mediaIds: Collection<String>) {
+        forgotten += mediaIds.toList()
+    }
 
     override fun phoneCameraOutput(video: Boolean): File {
         val file = File(File(context.cacheDir, "capture"), "phone-${outputs.size}" + if (video) ".mp4" else ".jpg")

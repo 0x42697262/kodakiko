@@ -24,6 +24,7 @@ import androidx.compose.ui.text.AnnotatedString
 import dev.kodakiko.contract.MediaKind
 import dev.kodakiko.service.entries.MediaInput
 import dev.kodakiko.service.entries.MediaOrigin
+import dev.kodakiko.ui.core.EditTags
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.navigation.Route
@@ -95,10 +96,12 @@ class EditFlowsTest {
         compose.waitForIdle()
     }
 
+    private fun caption(position: Int): SemanticsNodeInteraction = compose.onNodeWithTag(listItem(TestTags.Edit.CAPTION_TEXT, position), useUnmergedTree = true)
+
     private fun editable(text: String) = SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(text))
 
     @Test
-    fun u34TheNoteIsSavedWithoutASaveButtonAndTheToolbarWritesMarkdown() {
+    fun u34TheNoteIsWrittenOnSaveAndTheToolbarWritesMarkdown() {
         h.store(metadata(media = listOf(photo(P1)), note = "First draft"))
         start()
         openEdit()
@@ -111,7 +114,13 @@ class EditFlowsTest {
         node(TestTags.Compose.NOTE).performTextInput("swim")
         compose.waitForIdle()
         node(TestTags.Compose.NOTE).assert(editable("Lake day **swim**"))
+        tap(TestTags.Edit.NOTE_DONE)
+        assertFalse(compose.exists(EditTags.NOTE_EDITOR))
+        assertEquals("First draft", h.entries.meta().note)
         tap(TestTags.Compose.BACK)
+        assertTrue(compose.exists(EditTags.UNSAVED_SHEET))
+        assertEquals("First draft", h.entries.meta().note)
+        tap(EditTags.UNSAVED_SAVE)
         assertEquals(listOf<EditEvent>(EditEvent.Back), events)
         assertEquals("Lake day **swim**", h.entries.meta().note)
         openEdit()
@@ -128,9 +137,10 @@ class EditFlowsTest {
         clickInSheet(TestTags.Edit.CAPTION)
         node(TestTags.Edit.CAPTION_FIELD).performTextReplacement("Heron at dawn")
         clickInSheet(TestTags.Edit.CAPTION_SAVE)
-        node(listItem(TestTags.Edit.CAPTION_TEXT, 0)).assertTextEquals("Heron at dawn")
+        caption(0).assertTextEquals("Heron at dawn")
         assertFalse(compose.exists(TestTags.Edit.CAPTION_SHEET))
         tap(TestTags.Compose.BACK)
+        tap(EditTags.UNSAVED_SAVE)
         assertEquals("Heron at dawn", h.entries.meta().media.single().caption)
     }
 
@@ -144,6 +154,7 @@ class EditFlowsTest {
         click(listItem(TestTags.Edit.MEDIA_MENU, 1))
         clickInSheet(TestTags.Edit.SET_COVER)
         tap(TestTags.Compose.BACK)
+        tap(EditTags.UNSAVED_SAVE)
         assertEquals(listOf(MediaKind.VIDEO, MediaKind.PHOTO), h.entries.meta().media.map { it.kind })
 
         openEdit()
@@ -156,6 +167,7 @@ class EditFlowsTest {
         clickInSheet(TestTags.Compose.REMOVE_ITEM)
         assertTrue(compose.exists(TestTags.Edit.REMOVE_SHEET))
         assertFalse(compose.exists(TestTags.Edit.REMOVE_CONFIRM))
+        tap(TestTags.Compose.SAVE)
         assertEquals(listOf(VID), h.entries.meta().media.map { it.mediaId })
     }
 
@@ -192,7 +204,7 @@ class EditFlowsTest {
         h.entries.stored.putAll(crop.entries.stored)
         openEdit()
         assertTrue(compose.exists(listItem(TestTags.Edit.PAGE, 0)))
-        node(listItem(TestTags.Edit.CAPTION_TEXT, 0)).assertTextEquals("crop me")
+        caption(0).assertTextEquals("crop me")
     }
 
     @Test
@@ -223,6 +235,8 @@ class EditFlowsTest {
         node(listItem(TestTags.Voice.DURATION, 0)).assertTextEquals("00:02")
         assertFalse(compose.exists(TestTags.Edit.DOTS))
         tap(TestTags.Compose.BACK)
+        assertTrue(compose.exists(EditTags.UNSAVED_SHEET))
+        tap(EditTags.UNSAVED_SAVE)
         assertEquals(listOf(MediaKind.PHOTO, MediaKind.AUDIO), h.entries.meta().media.map { it.kind })
     }
 
@@ -235,6 +249,40 @@ class EditFlowsTest {
         tap(TestTags.Compose.SAVE)
         assertEquals(listOf<EditEvent>(EditEvent.Home), events)
         assertTrue(h.notices.value is GalleryNotice.Saved)
+    }
+
+    @Test
+    fun f10BackAfterTypingAsksAndDiscardPutsTheEntryBack() {
+        h.store(metadata(media = listOf(photo(P1)), note = "Kept as it was"))
+        start()
+        openEdit()
+        click(TestTags.Edit.EDIT_NOTE)
+        node(TestTags.Compose.NOTE).performTextReplacement("Not wanted")
+        compose.waitForIdle()
+        tap(TestTags.Edit.NOTE_DONE)
+        tap(TestTags.Compose.BACK)
+        assertTrue(compose.exists(EditTags.UNSAVED_SHEET))
+        tap(EditTags.UNSAVED_KEEP)
+        assertFalse(compose.exists(EditTags.UNSAVED_SHEET))
+        assertEquals(emptyList<EditEvent>(), events)
+        assertTrue(compose.onAllNodes(hasText("Not wanted", substring = true), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        tap(TestTags.Compose.BACK)
+        tap(EditTags.UNSAVED_DISCARD)
+        assertEquals(listOf<EditEvent>(EditEvent.Back), events)
+        assertEquals("Kept as it was", h.entries.meta().note)
+    }
+
+    @Test
+    fun f10DiscardingANewEntryDeletesItAndGoesHome() {
+        h.store(metadata(media = listOf(photo(P1))))
+        start()
+        openEdit(isNew = true)
+        tap(TestTags.Compose.BACK)
+        assertTrue(compose.exists(EditTags.UNSAVED_SHEET))
+        tap(EditTags.UNSAVED_DISCARD)
+        assertEquals(listOf<EditEvent>(EditEvent.Home), events)
+        assertEquals(listOf(listOf(ENTRY)), h.entries.deleted)
+        assertFalse(ENTRY in h.entries.stored)
     }
 
     private companion object {

@@ -2,13 +2,18 @@ package dev.kodakiko.ui.core.tags
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -24,6 +29,7 @@ import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.components.AdaptiveSheet
 import dev.kodakiko.ui.core.components.SettingsItemsPaddings
+import dev.kodakiko.ui.core.icons.KodakikoIcons
 
 fun toggleTagChoice(current: List<String>, tag: String, single: Boolean): List<String> = when {
     single -> if (tag in current) emptyList() else listOf(tag)
@@ -57,10 +63,15 @@ fun ChooseTagsSheet(
                         modifier = Modifier.padding(horizontal = SettingsItemsPaddings.Horizontal, vertical = TagsSheetDimens.SMALL_SPACING),
                     )
                 }
-                choices.forEach { tag ->
-                    val checked = tag in selected
-                    val enabled = single || checked || selected.size < TAGS_PER_ENTRY_MAX
-                    TagOption(tag, checked, enabled, single) { onToggle(tag) }
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsItemsPaddings.Horizontal),
+                    horizontalArrangement = Arrangement.spacedBy(TagsSheetDimens.SMALL_SPACING),
+                ) {
+                    choices.forEach { tag ->
+                        val checked = tag in selected
+                        val enabled = single || checked || selected.size < TAGS_PER_ENTRY_MAX
+                        TagOption(tag, checked, enabled, single) { onToggle(tag) }
+                    }
                 }
             }
             Row(
@@ -80,20 +91,18 @@ fun ChooseTagsSheet(
 
 @Composable
 private fun TagOption(tag: String, checked: Boolean, enabled: Boolean, single: Boolean, onToggle: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .toggleable(value = checked, enabled = enabled, role = if (single) Role.RadioButton else Role.Checkbox, onValueChange = { onToggle() })
-            .padding(horizontal = SettingsItemsPaddings.Horizontal)
-            .testTag(TestTags.Tags.OPTION + TagsSheetConstants.OPTION_SEPARATOR + tag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(TagsSheetDimens.SMALL_SPACING),
-    ) {
-        if (single) {
-            RadioButton(selected = checked, onClick = null, enabled = enabled)
+    FilterChip(
+        selected = checked,
+        onClick = onToggle,
+        enabled = enabled,
+        label = { Text(text = tag, style = MaterialTheme.typography.bodyMedium) },
+        leadingIcon = if (checked) {
+            { Icon(imageVector = KodakikoIcons.Check, contentDescription = null, modifier = Modifier.size(FilterChipDefaults.IconSize)) }
         } else {
-            Checkbox(checked = checked, onCheckedChange = null, enabled = enabled)
-        }
-        Text(text = tag, style = MaterialTheme.typography.bodyLarge)
-    }
+            null
+        },
+        modifier = Modifier
+            .toggleable(value = checked, enabled = enabled, role = if (single) Role.RadioButton else Role.Checkbox, onValueChange = { onToggle() })
+            .testTag(TestTags.Tags.OPTION + TagsSheetConstants.OPTION_SEPARATOR + tag),
+    )
 }

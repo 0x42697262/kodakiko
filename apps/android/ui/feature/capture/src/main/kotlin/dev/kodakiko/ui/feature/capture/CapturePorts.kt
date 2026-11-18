@@ -45,6 +45,10 @@ interface CaptureFiles {
     fun phoneCameraOutput(video: Boolean): File
 
     suspend fun copyPicked(uri: Uri): MediaInput?
+
+    fun imported(input: MediaInput, mediaId: String?) {}
+
+    fun forget(mediaIds: Collection<String>) {}
 }
 
 fun interface CaptureLocation {

@@ -2,7 +2,6 @@ node_modules/
 dist/
 build/
 coverage/
-.expo/
 *.tsbuildinfo
 .env
 .env.*
@@ -13,11 +12,6 @@ sbom*.json
 tmp/
 docs/planning/
 scripts/local/
-apps/client/android/
-apps/client/ios/
-apps/client/expo-env.d.ts
-apps/client/public/workers/
-apps/client/public/media-sw.js
 .pnpm-store/
 .pi/implementer/logs/
 .pi/implementer/sessions/

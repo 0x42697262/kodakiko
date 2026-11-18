@@ -3,6 +3,8 @@ package dev.kodakiko.app.di
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.EntriesChangedBus
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.uploadEvent
 import dev.kodakiko.app.sharing.InProcessUploader
 import dev.kodakiko.app.sync.AppSyncLifecycle
 import dev.kodakiko.app.sync.AppSyncLog
@@ -12,6 +14,11 @@ import dev.kodakiko.app.sync.SessionInvalidation
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.net.NetworkMonitor
 import dev.kodakiko.data.secure.AccountMode
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.DiskFileStore
 import dev.kodakiko.service.account.LifecyclePort
@@ -57,7 +64,10 @@ object SyncBindings {
         fileStore: DiskFileStore,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher)
+        debugLog: DebugLog,
+    ): InProcessUploader = InProcessUploader(okHttpClient, fileStore::require, scope, ioDispatcher).also { uploader ->
+        uploader.subscribe { debugLog.uploadEvent(AppLogConstants.SYNC_UPLOADS, it) }
+    }
 
     @Provides
     @SingleIn(AppScope::class)
@@ -92,8 +102,10 @@ object SyncBindings {
         session: SessionInvalidation,
         state: AppSyncState,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        debugLog: DebugLog,
     ): SyncService {
-        val scope = CoroutineScope(SupervisorJob() + ioDispatcher)
+        val scope = CoroutineScope(SupervisorJob() + ioDispatcher + StorageBindings.uncaught(debugLog))
+        val syncLog = AppSyncLog(debugLog)
         val unlocked = { accountState.value is AccountState.Unlocked }
         val uploads = DefaultUploadCoordinator(
             UploadCoordinatorDeps(
@@ -104,7 +116,7 @@ object SyncBindings {
                 uploadPolicy = policy,
                 thumbnails = ThumbnailUploadHook { objectId -> withContext(ioDispatcher) { media.current()?.thumbnails?.afterUpload(objectId) } },
                 notificationPrompt = NotificationPrompt(NotificationPromptDeps(rowStore = rowStore, request = null, ioDispatcher = ioDispatcher)),
-                log = AppSyncLog,
+                log = syncLog,
                 scope = scope,
                 ioDispatcher = ioDispatcher,
             ),
@@ -116,7 +128,7 @@ object SyncBindings {
                 files = files,
                 uploader = uploader,
                 uploads = uploads,
-                pull = DefaultPull(PullDeps(http, rowStore, files, bus::emit, AppSyncLog, ioDispatcher)),
+                pull = DefaultPull(PullDeps(http, rowStore, files, bus::emit, syncLog, ioDispatcher)),
                 conflict = DefaultConflictResolver(ConflictResolverDeps(sodium, rowStore, entryKeys, SystemSyncClock, ioDispatcher)),
                 onEntriesChanged = bus::emit,
                 clock = SystemSyncClock,
@@ -124,7 +136,7 @@ object SyncBindings {
                 lifecycle = AppSyncLifecycle(lifecycle, monitor),
                 accountState = accountState,
                 onSessionInvalid = session::invalidate,
-                log = AppSyncLog,
+                log = syncLog,
                 localOnly = { accountMode.value == AccountMode.LOCAL || (settings.loaded() && settings.settings.value.syncPaused) },
                 scope = scope,
                 ioDispatcher = ioDispatcher,
@@ -132,7 +144,18 @@ object SyncBindings {
         )
         state.publish(service.status())
         service.subscribe(state::publish)
-        service.onPassCompleted {
+        service.onPassCompleted { report ->
+            debugLog.record(
+                LogLevel.INFO,
+                LogServices.SYNC,
+                LogEvents.PASS,
+                mapOf(
+                    LogFields.PUSHED to report.pushed,
+                    LogFields.PULLED_ENTRIES to report.pulledEntries,
+                    LogFields.FAILED to report.failed,
+                    LogFields.DURATION_MS to report.durationMs,
+                ),
+            )
             if (unlocked()) {
                 scope.launch {
                     attempt {

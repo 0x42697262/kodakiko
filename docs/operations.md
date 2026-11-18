@@ -1,7 +1,13 @@
 # Operations guide
 
 How to run Kodakiko on a home server or a VPS behind a private VPN, with real HTTPS, backups and a
-restore drill. Design background: `docs/design/deployment.md`.
+restore drill. Design background: `docs/design/deployment.md` (written for v0.1–v0.3, when Caddy
+also served the web app).
+
+What the stack serves since v0.4.0: Caddy proxies the API (`/api/*`, `/health/*`), serves the
+public link viewer (`apps/link-viewer`) at `/s/*` with its three assets (`/viewer.js`,
+`/styles.css`, `/media-sw.js`), and answers every other path with a "Get the Android app" page.
+There is no web app: people use the Android app, and visitors of a public link use any browser.
 
 All commands run in `infra/compose/` on the server unless a step says otherwise. In phase 1 (no
 registry yet) every `docker compose` command also gets `-f docker-compose.yml -f
@@ -50,7 +56,8 @@ docker-compose.build.yml`, which builds the two images locally instead of pullin
    names within about two minutes.
 8. `docker compose exec api node dist/cli.js apply-bucket-cors` → prints the applied origin.
 9. `docker compose exec api node dist/cli.js create-invite --role admin` → prints an invite URL.
-   Open it on a device that is in the VPN (D-47) and create the first account.
+   On a phone that is in the VPN (D-47), open Kodakiko, choose to connect to a server, paste the
+   invite URL and create the first account.
 
 ## 4. Exposure
 
@@ -90,7 +97,7 @@ Do this on a second machine (or VM) at least every 90 days (release checklist it
 5. Copy the bucket back. The helper in `backup.sh` passes the Garage credentials; for a manual
    run use the same `-e RCLONE_CONFIG_GARAGE_*` options as the script, with
    `sync "$RCLONE_REMOTE/bucket" garage:kodakiko`.
-6. `docker compose up -d`; sign in on a device; the gallery loads and an original opens.
+6. `docker compose up -d`; sign in in the Android app; the gallery loads and an original opens.
 7. `docker compose exec api node dist/cli.js stats` matches step 1 (users, entries, bytes).
 
 ## 7. Updates and rollback
@@ -111,7 +118,7 @@ Configuration only (D-41, `deployment.md` §6). Two options:
    block of the Caddyfile, so Caddy keeps the client address that cloudflared forwards. The API
    still trusts forwarded headers from private peers only (`TRUSTED_PROXIES`).
 2. **Only public links for viewers outside the VPN:** a tunnel or Tailscale Funnel limited to the
-   paths `/s/*`, `/_expo/static/*`, `/media-sw.js`, `/api/v1/config` and
+   paths `/s/*`, `/viewer.js`, `/styles.css`, `/media-sw.js`, `/api/v1/config` and
    `/api/v1/public-links/*`, and `PUBLIC_LINK_PROXY=true` in `.env.api`, because the `s3.` host
    stays private.
 

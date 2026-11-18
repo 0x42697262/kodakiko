@@ -1,5 +1,6 @@
 package dev.kodakiko.app.settings
 
+import dev.kodakiko.app.log.elapsedMs
 import dev.kodakiko.contract.PublicConfigDto
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.crypto.wipe
@@ -11,6 +12,12 @@ import dev.kodakiko.index.GalleryIndex
 import dev.kodakiko.index.GalleryScope
 import dev.kodakiko.index.GalleryView
 import dev.kodakiko.index.IndexedEntry
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
+import dev.kodakiko.log.typeOf
 import dev.kodakiko.service.backup.DefaultRestoreService
 import dev.kodakiko.service.backup.ExistingEntry
 import dev.kodakiko.service.backup.RestoreFile
@@ -50,8 +57,41 @@ class SnapshotRestoreService(
     private val tempFiles: TempFiles,
     private val config: () -> PublicConfigDto?,
     private val ioDispatcher: CoroutineDispatcher,
+    private val log: DebugLog,
 ) : RestoreService {
     override suspend fun restore(files: List<RestoreFile>, passphrase: String?, onProgress: (RestoreProgress) -> Unit): RestoreSummary {
+        val started = System.nanoTime()
+        log.record(
+            LogLevel.INFO,
+            LogServices.RESTORE,
+            LogEvents.RESTORE_START,
+            mapOf(LogFields.COUNT to files.size, LogFields.ENCRYPTED to (passphrase != null)),
+        )
+        try {
+            val summary = restoreFiles(files, passphrase, onProgress)
+            log.record(
+                LogLevel.INFO,
+                LogServices.RESTORE,
+                LogEvents.RESTORE_END,
+                mapOf(
+                    LogFields.ENTRIES to summary.entries,
+                    LogFields.MEDIA to summary.media,
+                    LogFields.DUPLICATES to summary.duplicates,
+                    LogFields.FAILED to summary.failed.size,
+                    LogFields.DURATION_MS to elapsedMs(started),
+                ),
+            )
+            summary.failed.groupingBy { it.reason }.eachCount().forEach { (reason, count) ->
+                log.record(LogLevel.WARN, LogServices.RESTORE, LogEvents.RESTORE_FAILURE, mapOf(LogFields.REASON to reason, LogFields.COUNT to count))
+            }
+            return summary
+        } catch (failure: Throwable) {
+            log.record(LogLevel.ERROR, LogServices.RESTORE, LogEvents.RESTORE_ERROR, mapOf(LogFields.TYPE to typeOf(failure), LogFields.DURATION_MS to elapsedMs(started)))
+            throw failure
+        }
+    }
+
+    private suspend fun restoreFiles(files: List<RestoreFile>, passphrase: String?, onProgress: (RestoreProgress) -> Unit): RestoreSummary {
         val existing = withContext(Dispatchers.Main.immediate) {
             ownEntries(index.index()).map { ExistingEntry(it.takenAtUtc, it.mediaCount) }
         }

@@ -8,6 +8,9 @@ import dev.kodakiko.app.BuildConfig
 import dev.kodakiko.app.edit.EditFlushingLockService
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.gallery.LifecycleSteps
+import dev.kodakiko.app.log.AppLogConstants
+import dev.kodakiko.app.log.LoggingAuthService
+import dev.kodakiko.app.log.timedStep
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.NavigationConstants
 import dev.kodakiko.app.sharing.InProcessUploader
@@ -22,6 +25,11 @@ import dev.kodakiko.data.net.HttpClient
 import dev.kodakiko.data.net.HttpConstants
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.data.secure.DeviceLocks
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
 import dev.kodakiko.service.account.AccountService
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.AccountStorage
@@ -44,6 +52,7 @@ import dev.kodakiko.service.lock.AutoLock
 import dev.kodakiko.service.lock.AutoLockDeps
 import dev.kodakiko.service.lock.BackgroundAutoLock
 import dev.kodakiko.service.lock.DefaultLockService
+import dev.kodakiko.service.lock.LifecycleStep
 import dev.kodakiko.service.lock.LockControl
 import dev.kodakiko.service.lock.LockControlDeps
 import dev.kodakiko.service.lock.LockReason
@@ -103,13 +112,17 @@ object ServiceBindings {
         unlockedWork: UnlockedWork,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        debugLog: DebugLog,
     ): LockService = EditFlushingLockService(
         delegate = DefaultLockService(
             LockServiceDeps(
-                lockSteps = steps.lock,
-                unlockSteps = steps.unlock,
+                lockSteps = steps.lock.map { it.timed(debugLog, AppLogConstants.PHASE_LOCK) },
+                unlockSteps = steps.unlock.map { it.timed(debugLog, AppLogConstants.PHASE_UNLOCK) },
                 accountState = accountState,
-                log = { event, step -> Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step) },
+                log = { event, step ->
+                    Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + step)
+                    debugLog.record(LogLevel.WARN, LogServices.LOCK, event, mapOf(LogFields.STEP to step))
+                },
                 scope = scope,
                 ioDispatcher = ioDispatcher,
                 unlockedWork = unlockedWork,
@@ -197,6 +210,7 @@ object ServiceBindings {
         settings: AppDeviceSettings,
         @ApplicationScope scope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        debugLog: DebugLog,
     ): AppNavigator = AppNavigator(
         accountState = accountState,
         returnTo = lockControl.returnTo,
@@ -206,6 +220,14 @@ object ServiceBindings {
         prepareHome = {
             val loading = scope.async(ioDispatcher) { attempt { settings.load() } }
             withTimeoutOrNull(NavigationConstants.PREPARE_HOME_TIMEOUT_MS) { loading.await() }
+        },
+        onNavigate = { action, route, depth ->
+            debugLog.record(
+                LogLevel.INFO,
+                LogServices.NAV,
+                LogEvents.SCREEN,
+                mapOf(LogFields.SCREEN to route::class.simpleName, LogFields.ACTION to action, LogFields.DEPTH to depth),
+            )
         },
     )
 
@@ -231,34 +253,38 @@ object ServiceBindings {
         lockService: LockService,
         @SyncUploads syncUploader: InProcessUploader,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): AuthService = DefaultAuthService(
-        AuthServiceDeps(
-            sodium = sodium,
-            http = http,
-            serverUrl = serverUrl,
-            sessionStore = sessionStore,
-            keyVault = keyVault,
-            rowStore = rowStore,
-            fileStore = fileStore,
-            globalStore = globalStore,
-            lifecycle = lifecycle,
-            nowIso = SystemWallClock::nowIso,
-            randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
-            accountState = accountState,
-            activeAccountKey = activeAccountKey,
-            config = config,
-            inviteToken = inviteToken,
-            deviceLabel = { AppConstants.DEVICE_LABEL },
-            homeCollectionName = context.getString(R.string.defaults_home_collection_name),
-            showSecuring = navigator::showSecuring,
-            dismissSecuring = navigator::dismissSecuring,
-            beforeSignOut = {
-                lockService.lock(LockReason.SIGN_OUT)
-                cancelUploads(listOf(syncUploader))
-            },
-            ioDispatcher = ioDispatcher,
-            accountMode = accountMode,
+        debugLog: DebugLog,
+    ): AuthService = LoggingAuthService(
+        DefaultAuthService(
+            AuthServiceDeps(
+                sodium = sodium,
+                http = http,
+                serverUrl = serverUrl,
+                sessionStore = sessionStore,
+                keyVault = keyVault,
+                rowStore = rowStore,
+                fileStore = fileStore,
+                globalStore = globalStore,
+                lifecycle = lifecycle,
+                nowIso = SystemWallClock::nowIso,
+                randomId = { encodeBytes(sodium.randomBytes(AppConstants.RANDOM_ID_BYTES)) },
+                accountState = accountState,
+                activeAccountKey = activeAccountKey,
+                config = config,
+                inviteToken = inviteToken,
+                deviceLabel = { AppConstants.DEVICE_LABEL },
+                homeCollectionName = context.getString(R.string.defaults_home_collection_name),
+                showSecuring = navigator::showSecuring,
+                dismissSecuring = navigator::dismissSecuring,
+                beforeSignOut = {
+                    lockService.lock(LockReason.SIGN_OUT)
+                    cancelUploads(listOf(syncUploader))
+                },
+                ioDispatcher = ioDispatcher,
+                accountMode = accountMode,
+            ),
         ),
+        debugLog,
     )
 
     @Provides
@@ -276,3 +302,5 @@ object ServiceBindings {
         withContext(ioDispatcher) { attempt { AccountStorage.readString(rowStore, StorageKeys.ACCOUNT_DELETION_DUE_AT) } }
     }
 }
+
+private fun LifecycleStep.timed(log: DebugLog, phase: String): LifecycleStep = LifecycleStep(name) { log.timedStep(phase, name) { run() } }

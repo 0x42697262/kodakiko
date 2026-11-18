@@ -1,9 +1,6 @@
 **/node_modules
 **/dist
-**/.expo
 **/.turbo
-apps/client/android
-apps/client/ios
 tests/ui/reports
 tests/ui/android/dist
 .git

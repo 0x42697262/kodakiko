@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
+import dev.kodakiko.app.log.AppLogConstants
 import dev.kodakiko.data.db.StartScreen
 import dev.kodakiko.service.account.AccountState
 import dev.kodakiko.service.account.Observable
@@ -25,6 +26,7 @@ class AppNavigator(
     private val startScreen: () -> StartScreen,
     clock: () -> Long,
     private val prepareHome: (suspend () -> Unit)? = null,
+    private val onNavigate: (String, Route, Int) -> Unit = { _, _, _ -> },
 ) : RouteNavigator {
     private val guard = NavigationGuard(clock)
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
@@ -87,6 +89,7 @@ class AppNavigator(
         }
         lastTransition = RouteTransition(RouteTransitions.kindOf(target), forward = true)
         navigator.push(RouteScreen(target))
+        onNavigate(AppLogConstants.ACTION_PUSH, target, navigator.items.size)
     }
 
     override fun pop(): Boolean {
@@ -95,6 +98,7 @@ class AppNavigator(
             lastTransition = RouteTransition(RouteTransitions.kindOf(routeOf(navigator.lastItem)), forward = false)
             navigator.pop()
             guard.reset()
+            onNavigate(AppLogConstants.ACTION_POP, routeOf(navigator.lastItem), navigator.items.size)
             return true
         }
         val start = startTab()
@@ -116,6 +120,7 @@ class AppNavigator(
         }
         lastTransition = RouteTransition(RouteTransitions.kindOf(target), forward = true)
         navigator.replace(RouteScreen(target))
+        onNavigate(AppLogConstants.ACTION_REPLACE, target, navigator.items.size)
     }
 
     override fun replaceAll(route: Route) {
@@ -130,6 +135,7 @@ class AppNavigator(
         } else {
             navigator.replaceAll(RouteScreen(target))
         }
+        onNavigate(AppLogConstants.ACTION_REPLACE_ALL, target, navigator.items.size)
     }
 
     fun showSecuring() {
@@ -142,6 +148,7 @@ class AppNavigator(
 
     fun selectTab(tab: Route.Tab) {
         currentTab = tab
+        onNavigate(AppLogConstants.ACTION_TAB, tab, voyager?.items?.size ?: 0)
     }
 
     private fun startTab(): Route.Tab = RouteGuards.startRoute(startScreen())

@@ -2,8 +2,8 @@
 
 Tags group entries instead of folders. Like Mihon's categories, they are created, renamed,
 reordered and deleted in one place (the tag editor) and picked from that list everywhere else.
-Code: `packages/core/src/domain/tags.ts`, `apps/client/src/features/tags/`,
-`apps/client/src/services/entries/entries-service.ts` (`renameTag`, `deleteTag`, bulk tag edits).
+Code: `:shared:domain` (tag rules), `:ui:feature:tags` (tag editor, adapted from Mihon's category
+screen), `:ui:core` (`ChooseTagsSheet`), `:service:entries` (rename, delete, bulk tag edits).
 
 ## Rules
 
@@ -21,9 +21,9 @@ you show on those entries but are never added to your list.
 
 ## The tag editor (Settings › Tags, also More › Tags)
 
-- One row per tag with its entry count ("beach, 2 entries"), move up and move down, **Rename** and
-  **Delete**.
-- **Add** creates an empty tag that stays in the list until used.
+- One row per tag with its entry count ("beach, 2 entries"), a drag handle to reorder (v0.3.1 had
+  move up and move down buttons), **Rename** and **Delete**.
+- **Add** (the round button) creates an empty tag that stays in the list until used.
 - Rename and delete apply to every own entry that has the tag, through the normal edit path, so the
   change syncs; a renamed tag keeps its place in the order.
 - The order drives the gallery's tag tabs.
@@ -32,12 +32,15 @@ you show on those entries but are never added to your list.
 
 The edit page, the gallery filter and the bulk actions never accept typed tags:
 
-- **Choose tags** opens a checkbox dialog of the tag list (no more than 50 can be checked on an
-  entry) with **Edit tags**, which opens the editor and comes back. "No tags yet. Create them in
-  Settings › Tags." when the list is empty.
-- Chosen tags show as chips with a remove ✕.
-- Bulk Add Tag… / Remove Tag… pick one tag from the list; entries that already have it (or do not)
-  are counted as skipped.
+- On the edit page, the **+** button after the entry's tags (v0.4.1; v0.4.0 had a long "Choose
+  tags" button) opens the choose-tags sheet: the tag list as filter chips in a wrapping row, with a
+  check mark on chosen tags (v0.4.1; v0.4.0 used plain checkbox rows). A tap toggles a tag; no more
+  than 50 can be chosen on an entry; **Edit tags** opens the editor and comes back. "No tags yet.
+  Create them in Settings › Tags." when the list is empty.
+- Chosen tags show on the edit page as chips with a remove ✕.
+- The gallery's Filter › Tags is a checkbox list of the tags.
+- Bulk Add Tag… / Remove Tag… pick one tag from the list, shown as filter chips; entries that
+  already have it (or do not) are counted as skipped.
 
 ## Where tags appear
 

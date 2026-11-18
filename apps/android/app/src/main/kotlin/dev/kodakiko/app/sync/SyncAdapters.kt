@@ -3,6 +3,9 @@ package dev.kodakiko.app.sync
 import android.util.Log
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.data.net.NetworkMonitor
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
 import dev.kodakiko.service.account.LifecyclePort
 import dev.kodakiko.service.sync.SyncLifecycle
 import dev.kodakiko.service.sync.SyncLog
@@ -35,9 +38,10 @@ class NetworkWifiSource(private val network: NetworkMonitor) : WifiSource {
     override fun subscribe(listener: () -> Unit): () -> Unit = network.subscribe { listener() }
 }
 
-object AppSyncLog : SyncLog {
+class AppSyncLog(private val log: DebugLog) : SyncLog {
     override fun warn(event: String, fields: Map<String, Any?>) {
-        Log.w(AppConstants.LOG_TAG, event + AppConstants.LOG_SEPARATOR + fields)
+        Log.w(AppConstants.LOG_TAG, event)
+        log.record(LogLevel.WARN, LogServices.SYNC, event, fields)
     }
 }
 

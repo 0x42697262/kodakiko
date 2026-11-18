@@ -160,7 +160,7 @@ class KodakikoThemeTest {
     @Test
     @Config(qualifiers = "night")
     fun pureBlackIsAppliedOnTopOfDynamicColorLikeV031() {
-        val expected = V031Palette.allRoles(dynamicDarkColorScheme(context)) + V031Palette.PURE_BLACK_OVERRIDES
+        val expected = V031Palette.allRoles(dynamicDarkColorScheme(context)) + V031Palette.DYNAMIC_PURE_BLACK_OVERRIDES
         val (dynamicBlack) = schemes(ThemeInput(AppTheme.SYSTEM, pureBlack = true, dynamicColor = true))
         assertEquals(expected, V031Palette.allRoles(dynamicBlack))
     }

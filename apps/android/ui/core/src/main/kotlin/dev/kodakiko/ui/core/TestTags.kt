@@ -35,6 +35,7 @@ object TestTags {
 
     object Advanced {
         const val DEBUG = "advanced.debug"
+        const val DEBUG_LOG = "advanced.debugLog"
         const val DEBUG_TEXT = "advanced.debugText"
         const val DIAGNOSTICS = "advanced.diagnostics"
         const val MESSAGE = "advanced.message"
@@ -43,6 +44,20 @@ object TestTags {
         const val RESET_CONFIRM = "advanced.resetConfirm"
         const val RESET_SHEET = "advanced.resetSheet"
         const val SCREEN = "advanced.screen"
+    }
+
+    object DebugLog {
+        const val CLEAR = "debugLog.clear"
+        const val CLEAR_CONFIRM = "debugLog.clearConfirm"
+        const val CLEAR_SHEET = "debugLog.clearSheet"
+        const val COPY = "debugLog.copy"
+        const val EMPTY = "debugLog.empty"
+        const val LINE = "debugLog.line"
+        const val LIST = "debugLog.list"
+        const val MESSAGE = "debugLog.message"
+        const val SCREEN = "debugLog.screen"
+        const val SHARE = "debugLog.share"
+        const val SWITCH = "debugLog.switch"
     }
 
     object App {
@@ -80,6 +95,10 @@ object TestTags {
         const val JUMP = "calendar.jump"
         const val JUMP_FIELD = "calendar.jumpField"
         const val JUMP_INVALID = "calendar.jumpInvalid"
+        const val JUMP_MONTH = "calendar.jumpMonth"
+        const val JUMP_NEXT_YEAR = "calendar.jumpNextYear"
+        const val JUMP_PREVIOUS_YEAR = "calendar.jumpPreviousYear"
+        const val JUMP_YEAR = "calendar.jumpYear"
         const val JUMP_SHEET = "calendar.jumpSheet"
         const val JUMP_SUBMIT = "calendar.jumpSubmit"
         const val MONTH_TITLE = "calendar.monthTitle"
@@ -476,6 +495,8 @@ object TestTags {
     }
 
     object Settings {
+        const val THEME_PRESET = "settings.themePreset"
+        const val THEME_PRESETS = "settings.themePresets"
         const val ABOUT_SCREEN = "settings.aboutScreen"
         const val ACCOUNT_SCREEN = "settings.accountScreen"
         const val APPEARANCE_SCREEN = "settings.appearanceScreen"
@@ -606,6 +627,7 @@ object TestTags {
     }
 
     object Share {
+        const val INCLUDE_TEXT = "share.includeText"
         const val CANCEL = "share.cancel"
         const val CONFIRM = "share.confirm"
         const val FAILED = "share.failed"
@@ -778,6 +800,7 @@ object TestTags {
     }
 
     object Viewer {
+        const val FULL_SCREEN_PHOTO = "viewer.fullScreenPhoto"
         const val ADD_MEDIA = "viewer.addMedia"
         const val BACK = "viewer.back"
         const val CAPTION = "viewer.caption"

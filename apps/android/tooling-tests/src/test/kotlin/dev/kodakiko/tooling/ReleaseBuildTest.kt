@@ -14,7 +14,7 @@ class ReleaseBuildTest {
     private val catalog = File(Repo.android, "gradle/libs.versions.toml").readText()
     private val buildLogicConstants =
         File(Repo.android, "build-logic/src/main/kotlin/dev/kodakiko/buildlogic/BuildLogicConstants.kt").readText()
-    private val expoConfig = File(Repo.root, "apps/client/app.config.ts").readText()
+    private val expoConfig = File(Repo.root, "tests/fixtures/v031-device/app.config.v031.txt").readText()
     private val workflow = File(Repo.root, ".github/workflows/android-release.yml").readText()
 
     private fun capture(text: String, pattern: String): String =

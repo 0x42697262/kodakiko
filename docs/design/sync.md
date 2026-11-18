@@ -3,6 +3,9 @@
 Design reference written before the build (2026-11-11). Where it differs from the code, the code
 and the feature specs' implementation notes are right.
 
+Client parts describe the Expo app (v0.1–v0.3); since v0.4.0 the client is the Kotlin Android app
+(`apps/android`, [architecture.md](../architecture.md)) and there is no web app.
+
 Normative for `packages/core/src/sync/` (pure state machine), `apps/client/src/services/sync/` (driver), and the server's sync endpoints in `docs/design/api.md`.
 
 ## 1. Model

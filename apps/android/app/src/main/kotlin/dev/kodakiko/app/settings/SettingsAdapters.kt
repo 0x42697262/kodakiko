@@ -13,6 +13,13 @@ import dev.kodakiko.data.media.CacheUsage
 import dev.kodakiko.data.media.MediaUnavailableException
 import dev.kodakiko.data.media.ThumbnailModeSwitch
 import dev.kodakiko.data.secure.AccountMode
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
+import dev.kodakiko.log.LogValues
+import dev.kodakiko.log.typeOf
 import dev.kodakiko.platform.picker.FolderPermissions
 import dev.kodakiko.platform.picker.FolderWriter
 import dev.kodakiko.service.account.AccountService
@@ -124,6 +131,7 @@ class AppSettingsBackup(
     override val restorer: RestoreService,
     private val sources: RestoreSources,
     private val ioDispatcher: CoroutineDispatcher,
+    private val log: DebugLog,
 ) : SettingsBackup {
     override suspend fun openFolder(folder: Uri): ExportDestination = withContext(ioDispatcher) {
         FolderPermissions.take(context, folder)
@@ -138,11 +146,13 @@ class AppSettingsBackup(
     }
 
     override suspend fun readFiles(files: List<Uri>): List<RestoreFile> = withContext(ioDispatcher) {
+        log.record(LogLevel.INFO, LogServices.RESTORE, LogEvents.IMPORT_PICK, mapOf(LogFields.COUNT to files.size))
         val opened = mutableListOf<RestoreFile>()
         try {
             for (uri in files) opened += RestoreFile(displayName(uri), sources.open(uri))
             opened
         } catch (failure: Throwable) {
+            log.record(LogLevel.ERROR, LogServices.RESTORE, LogEvents.IMPORT_PICK, mapOf(LogFields.OUTCOME to LogValues.FAILED, LogFields.ERROR to typeOf(failure)))
             opened.forEach(RestoreFile::close)
             throw failure
         }

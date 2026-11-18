@@ -11,8 +11,10 @@ import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.doubleClick
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -438,7 +440,7 @@ class EntryViewerContentTest {
     }
 
     @Test
-    fun anInlineVideoPlaysMutedWithASpeakerButton() {
+    fun anInlineVideoPlaysMutedWithASpeakerButtonAndHidesThePlayButton() {
         val surfaces = FakeVideoSurfaces()
         val video = FakePreparedVideo("m2")
         show(ViewerStates.full.copy(page = 1, video = InlineVideoUi(position = 1, mediaId = "m2", video = video, muted = true)), surfaces = surfaces)
@@ -448,7 +450,7 @@ class EntryViewerContentTest {
         mute.assert(hasContentDescription("Turn the sound on"))
         mute.performClick()
         assertEquals(listOf<ViewerAction>(ViewerAction.ToggleMute), taps())
-        assertTrue(compose.exists(TestTags.Viewer.PLAY))
+        assertFalse(compose.exists(TestTags.Viewer.PLAY))
     }
 
     @Test
@@ -472,5 +474,51 @@ class EntryViewerContentTest {
     private companion object {
         const val KEEP_OFFLINE = "viewer.keepOffline"
         const val REMOVE_OFFLINE = "viewer.removeOffline"
+        const val DOUBLE_TAP_WAIT_MS = 500L
+    }
+
+    private fun inFullScreen(tag: String) = compose.onNode(hasTestTag(tag) and hasAnyAncestor(hasTestTag(TestTags.Viewer.FULL_SCREEN_PHOTO)), useUnmergedTree = true)
+
+    private fun singleTap(node: SemanticsNodeInteraction) {
+        node.performTouchInput { click() }
+        compose.mainClock.advanceTimeBy(DOUBLE_TAP_WAIT_MS)
+        compose.waitForIdle()
+    }
+
+    @Test
+    fun f17TheCaptionIsDrawnOnItsPhotoPage() {
+        show(ViewerStates.full)
+        compose.onNode(hasTestTag(TestTags.Viewer.CAPTION) and hasAnyAncestor(hasTestTag(listItem(TestTags.Viewer.PAGE, 0))), useUnmergedTree = true)
+            .assertTextEquals("Heron at dawn")
+    }
+
+    @Test
+    fun f20TappingAPhotoOpensItFullScreenAndATapClosesIt() {
+        show(ViewerStates.full)
+        assertFalse(compose.exists(TestTags.Viewer.FULL_SCREEN_PHOTO))
+        singleTap(zoomable(0))
+        assertTrue(compose.exists(TestTags.Viewer.FULL_SCREEN_PHOTO))
+        inFullScreen(listItem(TestTags.Viewer.ZOOMABLE, 0)).assert(hasContentDescription("Photo 1"))
+        singleTap(inFullScreen(listItem(TestTags.Viewer.ZOOMABLE, 0)))
+        assertFalse(compose.exists(TestTags.Viewer.FULL_SCREEN_PHOTO))
+        assertEquals(emptyList<ViewerAction>(), taps())
+    }
+
+    @Test
+    fun f20TheFullScreenPhotoOpensOnTheCurrentPage() {
+        show(ViewerStates.full.copy(page = 2))
+        singleTap(zoomable(2))
+        assertTrue(compose.exists(TestTags.Viewer.FULL_SCREEN_PHOTO))
+        inFullScreen(listItem(TestTags.Viewer.ZOOMABLE, 2)).assert(hasContentDescription("Photo 3"))
+    }
+
+    @Test
+    fun f20ADoubleTapZoomsAndDoesNotOpenFullScreen() {
+        showStateful(ViewerStates.state())
+        zoomable(0).performTouchInput { doubleClick() }
+        compose.mainClock.advanceTimeBy(DOUBLE_TAP_WAIT_MS)
+        compose.waitForIdle()
+        assertFalse(compose.exists(TestTags.Viewer.FULL_SCREEN_PHOTO))
+        label(0, zoomed = true)
     }
 }

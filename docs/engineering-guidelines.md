@@ -1,7 +1,6 @@
 # Engineering guidelines (project-agnostic)
 
-Written 2026-11-11 for new sessions (any LLM or human) working in **any** repository for this
-programmer. It merges two sources:
+Written 2026-11-11 for anyone starting work in **any** repository of this programmer. It merges two sources:
 
 - **[P] the programmer's "Architecture and design principles"** (layers, hard rules, DDIA principles,
   client/server contract, lifecycle, testing, documentation, working rules, stack mappings);
@@ -14,8 +13,8 @@ section 14. Rules marked **(hard rule)** are non-negotiable; the rest is strong 
 
 How to use this file:
 
-1. Read the target repository's own instruction files first (`AGENTS.md`, `CLAUDE.md`,
-   `CONTRIBUTING.md`, README). **Repository rules win over this file**, including over hard rules
+1. Read the target repository's own instruction files first (`AGENTS.md`, `CONTRIBUTING.md`,
+   README). **Repository rules win over this file**, including over hard rules
    here (a repository may be stricter or have a recorded reason to differ).
 2. Apply sections 1–5 always; the others when the task touches their area.
 3. Run the checklist in section 15 before saying a task is done.
@@ -142,6 +141,18 @@ or an ADR. Comments rot; docs get reviewed.
 Allowed exceptions [P]: annotations tools need (PHPDoc generics, JSDoc types where TypeScript isn't
 used), lint-disable directives whose reason is in the docs, license headers. (Conflict C-1: [C]
 allowed none. A repository whose linter bans all comments keeps banning them.)
+
+**Attribution headers** are the one exception even where the linter bans every other comment: a file
+adapted from another project keeps the short header its license asks for (Apache-2.0 §4 asks to keep
+attribution notices), word for word, as the first lines of the file, and nothing else. The header
+names the source and the copyright holders; it explains nothing about the code. The linter allows
+exactly that header text and no variations. Example (Kotlin files adapted from Mihon):
+
+    // Adapted from https://github.com/mihonapp/mihon
+    // Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, Apache-2.0
+
+The project's license list (in the app's About screen and in the dependencies doc) names the source
+too.
 
 ### 4.2 No magic values (hard rule) [P, C]
 
@@ -445,6 +456,9 @@ Write this analysis into the feature doc ("why the page cannot do it directly") 
 - **Frontend:** component tests for logic, and a few end-to-end tests (Playwright/Cypress) for critical
   flows; ad-hoc checks can drive a headless browser over the DevTools protocol against a local build,
   capturing console errors and light/dark screenshots.
+- **Android:** ViewModel tests with fake ports, Compose UI tests on the JVM (Robolectric), screenshot
+  tests (Roborazzi) of the stateless screen content in light and dark, and a few device flows
+  (Maestro) for what only a device can show.
 - Cover: success, refused credentials, read-only refusal, unreadable resource, invalid input caught
   before any request (assert the fake saw no request), remote error markup, usage errors, stored file
   permissions.
@@ -553,7 +567,46 @@ Write this analysis into the feature doc ("why the page cannot do it directly") 
 - Node ≥ 22.18 runs `.ts` directly; `node:test` for tests; esbuild for browser bundles; one verify
   script (lint with zero warnings, `tsc --noEmit`, tests).
 
-### 13.4 Other stacks
+### 13.4 Kotlin / Android app (Jetpack Compose, Gradle modules)
+
+    app/                         composition root: DI graph (Metro), MainActivity, navigation, wiring of ports
+    build-logic/                 convention plugins (one per module kind), shared Gradle constants
+    gradle/libs.versions.toml    the only place versions live (dependency allowlist)
+    shared/<area>/               Kotlin Multiplatform commonMain: pure rules, formats, crypto, sync merge
+    data/<area>/                 Android I/O: database, files, secure storage, network, media, logs
+    platform/<area>/             device features: camera, picker, audio, location, haptics, clipboard
+    service/<area>/              use cases over data/platform; an api interface + implementation
+    ui/core/                     theme, components, settings widgets, Route keys, strings, TestTags
+    ui/feature/<area>/           XScreen (ViewModel, events, navigation) + XContent (stateless UI)
+    tooling-tests/               source rules (no comments, no magic values, no literal UI text),
+                                 module boundaries, catalog allowlist, release build checks
+    e2e/                         services against the real server in containers
+
+| Layer (3.x) | Kotlin home |
+|---|---|
+| Entry (3) | `:app` (Activity, navigation, DI) and the `XScreen` composables: collect state, send events |
+| Use cases (3.2) | `:service:*` and the ViewModels that call them; ViewModels hold UI state only |
+| Domain (pure) | `:shared:*` in `commonMain`: no `android.*` or `java.*`, so the compiler enforces purity |
+| Adapters | `:data:*` and `:platform:*`; ports are interfaces declared where they are used |
+| Constants (4.2) | `*Constants.kt` objects per module; UI text in `res/values/strings*.xml`; test ids in `TestTags` |
+| Versioned persistence (4.4) | SQLite `user_version`, a `schemaVersion` in every stored JSON blob, versioned migration markers |
+
+- Dependencies point down only (`:app` → `:ui:*` → `:service:*` → `:data:*`/`:platform:*` →
+  `:shared:*`); feature modules never depend on each other and navigate with route keys from the
+  core UI module. A test (Konsist-style or a Gradle-file reader) enforces it.
+- Threads: disk, database, crypto and network on `Dispatchers.IO` or a dedicated dispatcher; the main
+  thread never does I/O (StrictMode `penaltyDeath` in debug builds catches mistakes early).
+- State: `StateFlow<XState>` per ViewModel (`stateIn(WhileSubscribed)`), one-shot events through a
+  `Channel`, dialogs as a nullable sealed value in the state. State classes are `@Immutable`; check
+  the Compose compiler reports for unstable parameters.
+- Secrets are `ByteArray`, wiped in `finally`, compared in constant time, redacted in `toString()`.
+- Verification is one Gradle task (`verify`: formatting, tooling rules, unit and Robolectric tests,
+  screenshot comparison, lint) that CI runs on every change; slow suites (end-to-end against a server,
+  device flows, benchmarks) are separate tasks.
+- Build reproducibly: Gradle dependency verification (checksums) and dependency locking, the wrapper
+  pinned with its checksum, release signing only in CI.
+
+### 13.5 Other stacks
 
 The same mapping applies: entry (controllers, handlers) -> services/use cases -> pure domain ->
 adapters, with typed config, migrations, an i18n catalog and a docs/ADR folder. Django: views ->

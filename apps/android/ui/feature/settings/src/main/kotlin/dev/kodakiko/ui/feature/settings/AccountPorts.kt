@@ -57,6 +57,7 @@ class AdvancedSettingsDeps(
     val index: IndexService,
     val diagnostics: DiagnosticsService,
     val showDiagnostics: Boolean,
+    val debugLog: DebugLogPort,
 )
 
 @Immutable

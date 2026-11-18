@@ -201,6 +201,30 @@ class AppNavigationTest {
     }
 
     @Test
+    fun f18TheShareSheetIsDrawnOverTheScreenItWasOpenedFromAndBackLeavesThatScreen() {
+        val host = host(unlockedState()).also { it.show() }
+        val sheet = Route.ShareSheet(listOf(ENTRY), inKodakiko = true)
+        host.push(Route.Trash)
+        host.push(sheet)
+        assertEquals(listOf(Route.Gallery, Route.Trash, sheet), host.routes())
+        compose.onNodeWithTag(routeTag(Route.Trash)).assertIsDisplayed()
+        compose.onNodeWithTag(routeTag(sheet)).assertIsDisplayed()
+        host.systemBack()
+        assertEquals(listOf(Route.Gallery, Route.Trash), host.routes())
+        assertFalse(host.shown(sheet))
+        compose.onNodeWithTag(routeTag(Route.Trash)).assertIsDisplayed()
+    }
+
+    @Test
+    fun f18OnlyTheShareSheetKeepsTheScreenBelowDrawn() {
+        val host = host(unlockedState()).also { it.show() }
+        host.push(Route.Trash)
+        host.push(Route.LinkNew(listOf(ENTRY)))
+        compose.onNodeWithTag(routeTag(Route.LinkNew(listOf(ENTRY)))).assertIsDisplayed()
+        assertFalse(host.shown(Route.Trash))
+    }
+
+    @Test
     fun theRootOfTheSignedOutFlowLeavesBackToTheSystem() {
         val host = host(AccountState.SignedOut()).also { it.show() }
         assertFalse(host.backIsHandledInside())
@@ -425,5 +449,6 @@ class AppNavigationTest {
 
     private companion object {
         const val STEP_MS = 30L
+        const val ENTRY = "entry00000000000000001"
     }
 }

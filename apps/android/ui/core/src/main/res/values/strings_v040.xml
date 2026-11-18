@@ -16,4 +16,46 @@
     <string name="links_row_detail">%1$s · %2$s</string>
     <string name="about_mihon_attribution">Kodakiko\'s Android app is based on Mihon (https://github.com/mihonapp/mihon), Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, licensed under Apache-2.0.</string>
     <string name="advanced_reset_confirm">Reset every setting on this device to its default? Your journal is not touched.</string>
+    <string name="advanced_group_general">General</string>
+    <string name="advanced_group_debug_log">Debug log</string>
+    <string name="advanced_group_debug_info">Debug info</string>
+    <string name="debug_log_title">Debug log</string>
+    <string name="debug_log_view">View debug log</string>
+    <string name="debug_log_switch">Debug logging</string>
+    <string name="debug_log_switch_summary">Saves app activity (ids, counts, timings, errors) to a file on this device. Never notes, captions, tags, file names, passwords or keys. Crashes are always saved.</string>
+    <plurals name="debug_log_summary">
+        <item quantity="one">%1$d entry · %2$s</item>
+        <item quantity="other">%1$d entries · %2$s</item>
+    </plurals>
+    <string name="debug_log_empty">The debug log is empty.</string>
+    <string name="debug_log_copy">Copy</string>
+    <string name="debug_log_share">Share</string>
+    <string name="debug_log_clear">Clear</string>
+    <string name="debug_log_clear_confirm">Delete every line of the debug log?</string>
+    <plurals name="debug_log_copied">
+        <item quantity="one">Copied %1$d line.</item>
+        <item quantity="other">Copied %1$d lines.</item>
+    </plurals>
+    <string name="debug_log_cleared">Debug log cleared.</string>
+    <string name="debug_log_failed">Couldn\'t do that. Try again.</string>
+    <string name="calendar_jump_previous_year">Previous year</string>
+    <string name="calendar_jump_next_year">Next year</string>
+    <string name="theme_preset_default">Default</string>
+    <string name="theme_preset_catppuccin">Catppuccin</string>
+    <string name="theme_preset_green_apple">Green Apple</string>
+    <string name="theme_preset_lavender">Lavender</string>
+    <string name="theme_preset_midnight_dusk">Midnight Dusk</string>
+    <string name="theme_preset_nord">Nord</string>
+    <string name="theme_preset_strawberry">Strawberry</string>
+    <string name="theme_preset_tako">Tako</string>
+    <string name="theme_preset_teal_turquoise">Teal &amp; Turquoise</string>
+    <string name="theme_preset_tidal_wave">Tidal Wave</string>
+    <string name="theme_preset_tokyo_night">Tokyo Night</string>
+    <string name="theme_preset_yin_yang">Yin &amp; Yang</string>
+    <string name="theme_preset_yotsuba">Yotsuba</string>
+    <string name="theme_preset_monochrome">Monochrome</string>
+    <string name="theme_presets_title">Color theme</string>
+    <string name="theme_preset_dynamic">Dynamic</string>
+    <string name="theme_mode_system">System</string>
+    <string name="share_include_text">Include text</string>
 </resources>

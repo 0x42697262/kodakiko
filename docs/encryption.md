@@ -40,13 +40,28 @@ entry in several collections has one wrap of its key per collection.
 
 ## Where the keys live
 
-| Platform | Master key |
-|---|---|
-| Android | `expo-secure-store` (Keystore, excluded from backup), with biometrics when enrolled |
-| Web | Page memory only, cleared on lock; **Keep me unlocked** stores it encrypted under a non-extractable WebCrypto key in IndexedDB |
+On the phone (Android app, `:data:secure`, F-KT-25):
 
-The web service worker that streams video receives one original key per playback and forgets it
-on lock.
+| What | Where | Protection |
+|---|---|---|
+| Master key, phone with biometrics | `kodakiko.secure.vault` file, wrapped by the Keystore key `kodakiko.secure.vault.biometric.v1` (AES-256-GCM) | The key works only after a fingerprint or face check (BiometricPrompt with a CryptoObject); a newly enrolled fingerprint invalidates it, and the next unlock needs the password |
+| Master key, phone with a screen lock but no biometrics | same file, wrapped by `kodakiko.secure.vault.device.v1` | The app asks for the device PIN, pattern or password before it unwraps the key |
+| Master key, phone without a screen lock | not stored | The password is needed at every unlock |
+| Session token, active account, server URL and config | `kodakiko.secure.sessions` and `kodakiko.secure.global`, encrypted with `kodakiko.secure.store.v1` | Keystore key, no user check; excluded from Android backup and device transfer |
+| Master key, collection and entry keys while unlocked | Memory only, as byte arrays | Wiped at lock and sign-out; crypto refuses all-zero (wiped) keys, and running work is stopped before the keys are wiped |
+
+The v0.3.1 secure items (`expo-secure-store`) are read once on the first start after the update,
+moved to the stores above, and then deleted.
+
+What stays unencrypted on the phone, in app-private storage: plain thumbnails unless **Encrypt
+thumbnails** is on; the debug log (`files/logs/debug.log`: ids, counts, timings and error class
+names, never content, see [features/settings.md](features/settings.md#debug-log)); and short-lived
+temporary files (camera captures before import, decrypted copies for Share to apps). Temporary
+files are wiped at app start, at unlock and at lock. Videos and voice notes play straight from the
+encrypted file, so no decrypted copy is written.
+
+The public link viewer (browser) keeps the link secret in the URL fragment and in page memory
+only; its media service worker gets one key per video and forgets it when the page closes.
 
 ## Sharing and links
 

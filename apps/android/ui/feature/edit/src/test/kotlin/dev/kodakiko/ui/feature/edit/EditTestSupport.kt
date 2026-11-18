@@ -5,6 +5,7 @@ package dev.kodakiko.ui.feature.edit
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -288,6 +289,8 @@ class FakeEntries(private val log: MutableList<String>) : EntriesService {
     val added = mutableListOf<List<String>>()
     val favorites = mutableListOf<Boolean>()
     val trashed = mutableListOf<List<String>>()
+    val deleted = mutableListOf<List<String>>()
+    var deleteFailure: Throwable? = null
     val created = mutableListOf<CreateEntryInput>()
     var reads = 0
     var readFailure: Throwable? = null
@@ -352,7 +355,13 @@ class FakeEntries(private val log: MutableList<String>) : EntriesService {
 
     override suspend fun restore(entryIds: List<String>): BulkResult = error(UNUSED)
 
-    override suspend fun deletePermanently(entryIds: List<String>): BulkResult = error(UNUSED)
+    override suspend fun deletePermanently(entryIds: List<String>): BulkResult {
+        log += "deletePermanently"
+        deleteFailure?.let { throw it }
+        deleted += entryIds
+        entryIds.forEach { stored.remove(it) }
+        return BulkResult(entryIds.size, 0)
+    }
 
     override suspend fun createFromMedia(input: CreateEntryInput, items: List<ImportedMedia>): String = error(UNUSED)
 
@@ -419,6 +428,12 @@ fun publicConfig(sharing: Boolean = true, links: Boolean = true, maxMedia: Long 
 class FakeClipboard(private val log: MutableList<String>) : EditClipboard {
     var image: MediaInput? = null
     var checks = 0
+    val copied = mutableListOf<String>()
+
+    override fun copyText(text: String) {
+        log += "copyText"
+        copied += text
+    }
 
     override suspend fun hasImage(): Boolean {
         checks += 1
@@ -484,6 +499,57 @@ class FakeSharing(private val log: MutableList<String>) : EditSharing {
     }
 }
 
+class FakePicks(private val log: MutableList<String>) : EditPicks {
+    val inputs = LinkedHashMap<Uri, MediaInput?>()
+    val imported = mutableListOf<Pair<MediaInput, String?>>()
+
+    override suspend fun copy(uri: Uri): MediaInput? {
+        log += "copy:$uri"
+        return inputs[uri]
+    }
+
+    override fun imported(input: MediaInput, mediaId: String?) {
+        imported += input to mediaId
+    }
+}
+
+class FakeDeviceOriginals(private val log: MutableList<String>) : DeviceOriginals {
+    val pending = linkedSetOf<String>()
+    val counted = mutableListOf<List<String>>()
+    val kept = mutableListOf<List<String>>()
+    val deletedOriginals = mutableListOf<List<String>>()
+    val forgotten = mutableListOf<List<String>>()
+    val replacements = mutableListOf<Pair<String, String>>()
+
+    override fun deletableCount(mediaIds: Collection<String>): Int {
+        counted += mediaIds.toList()
+        return mediaIds.count { it in pending }
+    }
+
+    override fun replaced(oldMediaId: String, newMediaId: String) {
+        replacements += oldMediaId to newMediaId
+        if (pending.remove(oldMediaId)) pending += newMediaId
+    }
+
+    override fun keep(mediaIds: Collection<String>) {
+        log += "keepOriginals"
+        kept += mediaIds.toList()
+        pending.removeAll(mediaIds.toSet())
+    }
+
+    override suspend fun delete(mediaIds: Collection<String>) {
+        log += "deleteOriginals"
+        deletedOriginals += mediaIds.filter { it in pending }
+        pending.removeAll(mediaIds.toSet())
+    }
+
+    override fun forget(mediaIds: Collection<String>) {
+        log += "forgetOriginals"
+        forgotten += mediaIds.toList()
+        pending.removeAll(mediaIds.toSet())
+    }
+}
+
 class FakeEditClock(var nowMs: Long = NOW_MS, var offset: Long = DEVICE_OFFSET) : EditClock {
     override fun nowMs(): Long = nowMs
 
@@ -504,6 +570,8 @@ class EditHarness {
     val notices = Observable<GalleryNotice?>(null)
     val flushes = EditFlushes()
     val clock = FakeEditClock()
+    val picks = FakePicks(log)
+    val originals = FakeDeviceOriginals(log)
 
     val deps = EditDeps(
         entries = entries,
@@ -518,6 +586,8 @@ class EditHarness {
         notices = notices,
         flushes = flushes,
         clock = clock,
+        picks = picks,
+        originals = originals,
     )
 
     fun store(meta: EntryMetadataV1, id: String = ENTRY) {

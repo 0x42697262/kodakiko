@@ -1,14 +1,14 @@
-# Local-only mode (Android)
+# Local-only mode
 
 Kodakiko can run with no server at all: the journal lives only on the phone, encrypted exactly as
 it would be for a server, and can move to a server later without re-encrypting anything. Code:
-`packages/core/src/account/local.ts`, `apps/client/src/services/auth-service.ts` (`setUpLocal`,
-`connectServer`, `eraseLocal`, the `mode` observable),
-`apps/client/src/features/auth/LocalSetupScreen.tsx`, `features/settings/ConnectServerScreen.tsx`.
+`:shared:account` (local account material), `:service:account` (`setUpLocal`, `connectServer`,
+`eraseLocal`, the `mode` flow), `:ui:feature:auth` (`LocalSetupScreen`, `ConnectServerScreen`),
+`:ui:feature:settings` (Account, Sync and Data and storage rows that change in local mode).
 
 ## Setting up
 
-Welcome › **Use Without a Server** (Android only; the web app always has a server):
+Welcome › **Use Without a Server** (`/local-setup`):
 
 1. A warning, "This phone will hold the only copy of your journal until you connect a server.
    Export it from Settings to keep a backup.", with a required **I understand**.
@@ -28,9 +28,11 @@ The account's local storage label is `local/<userId>` and its mode (`account.mod
 | Limits | The defaults a server would enforce: 20 items per entry, 3.5 GiB per file |
 | Settings › Account | Username, "Stored only on this phone", Connect a Server…, Change Password… and Show Recovery Key… (both offline), Erase This Journal… |
 | Settings › Sync | "This journal is stored only on this phone." and Connect a Server… |
-| Settings › Data and storage | Usage only; cache size, clearing originals and the Wi-Fi rule are hidden |
-| Sharing, public links, admin, security code, Change Server | Hidden; the Shared tab says "Connect a server to share journals." |
-| Share sheet | To apps only |
+| Settings › Data and storage | Usage and Backup and restore; cache size, clearing originals, Autoplay on mobile data and the Wi-Fi rule are hidden |
+| More tab | Pause sync is hidden |
+| Settings root | Links, Admin and Sign Out are hidden; Sync stays and offers Connect a Server… |
+| Sharing, public links, admin, security code, Change Server | Hidden; the bottom bar has no Shared tab |
+| Share sheet | To apps only; sharing one entry opens the Android share chooser directly ([sharing.md](sharing.md#the-share-sheet)) |
 | Forgot password? | Recovery with the 24 words, offline |
 | Sign Out | Hidden; Erase This Journal… is the explicit way out |
 
@@ -58,9 +60,10 @@ be recovered unless you exported it."
 
 ## Backups
 
-Local journals are the only copy, so exports matter: see [backup.md](backup.md).
+Local journals are the only copy, so backups matter: Settings › Data and storage › **Create
+backup** (see [backup.md](backup.md)).
 
 ## Checked only on a phone
 
-The whole mode runs on Android only; UI flows U-22 (set up and capture) and U-23 (connect a
-server) cover it on the emulator.
+UI flows U-22 (set up and capture) and U-23 (connect a server) cover the mode on the emulator;
+they were not rerun for v0.4.1 (no automated device runs in this release).

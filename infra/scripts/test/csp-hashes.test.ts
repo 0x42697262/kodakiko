@@ -14,7 +14,7 @@ function hashOf(text: string): string {
 
 const FIXTURE = `<!doctype html><html><head>
 <script>${FIRST}</script>
-<script src="/_expo/static/js/web/entry.js" defer></script>
+<script src="/viewer.js" defer></script>
 </head><body><script type="module">${SECOND}</script></body></html>`;
 
 let directory: string | null = null;
