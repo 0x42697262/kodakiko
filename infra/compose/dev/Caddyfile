@@ -10,7 +10,7 @@ https://localhost:9443 {
     reverse_proxy host.docker.internal:8080
   }
   handle {
-    reverse_proxy host.docker.internal:8081
+    respond 404
   }
 }
 

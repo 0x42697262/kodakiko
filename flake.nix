@@ -1,5 +1,5 @@
 {
-  description = "Kodakiko development shell: Android SDK for Expo SDK 58 / React Native 0.88 builds";
+  description = "Kodakiko development shell: Android SDK and JDK for the Kotlin Android app (apps/android)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";

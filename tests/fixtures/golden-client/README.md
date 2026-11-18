@@ -4,7 +4,9 @@ Deterministic outputs of the Expo client's TypeScript code (`apps/client`) that 
 must reproduce: the markdown parser and toolbar, the calendar model, the gallery arrangement,
 the export ZIP container, the v0.3.1 device settings (`settings.device`) and the v0.3.1 API call
 table (`api/calls.json`). Everything except `manifest.json` (the judge's list of required files and
-fields) and this README is generated:
+fields) and this README is generated. The generator and its regeneration test lived in `apps/client`,
+which v0.4.1 deleted (K261); the files are frozen and regenerating them needs a `v0.3.1`/`v0.4.0`
+checkout:
 
 ```sh
 pnpm --filter @kodakiko/client generate-golden-client

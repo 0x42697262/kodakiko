@@ -39,7 +39,7 @@ describe('checkLicenses', () => {
     expect(checkLicenses(REPORT)).toEqual(['secret@0.1.0 (UNLICENSED)']);
   });
 
-  it('builds the sorted licenses.json list, one row per version', () => {
+  it('lists every package version sorted by name and version', () => {
     expect(licenseList(REPORT)).toEqual([
       { name: 'a-dual', version: '1.0.0', license: '(MIT OR GPL-3.0)' },
       { name: 'b-lib', version: '1.0.0', license: 'MIT' },

@@ -20,15 +20,17 @@ kodakiko.{$DOMAIN} {
 	handle /health/* {
 		reverse_proxy api:8080
 	}
-	handle /media-sw.js {
-		import snippets/security-headers.caddy
+	handle /s/* {
+		import snippets/link-viewer-headers.caddy
 		header Cache-Control "no-cache"
 		root * /srv/web
+		rewrite * /viewer.html
 		file_server
 	}
-	handle /_expo/static/* {
-		import snippets/security-headers.caddy
-		header Cache-Control "public, max-age=31536000, immutable"
+	@viewerAssets path /viewer.js /styles.css /media-sw.js
+	handle @viewerAssets {
+		import snippets/link-viewer-headers.caddy
+		header Cache-Control "no-cache"
 		root * /srv/web
 		file_server
 	}
@@ -36,7 +38,7 @@ kodakiko.{$DOMAIN} {
 		import snippets/security-headers.caddy
 		header Cache-Control "no-cache"
 		root * /srv/web
-		try_files {path} /index.html
+		rewrite * /index.html
 		file_server
 	}
 }

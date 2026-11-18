@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import pg from 'pg';
 import type { Sodium } from '@kodakiko/core';
-import { createNodeSodium } from '@kodakiko/client/test-support';
+import { createNodeSodium } from '../../../packages/core/test/sodium-node.ts';
 import {
   buildApp,
   createDatabase,

@@ -1,6 +1,4 @@
 export const STACK_TEXT = Object.freeze({
-  seedShareFlagOff: 'seedShare needs FLAG_SHARING=true on the UI server.',
-  seedShareIncomplete: (added: number, wanted: number) => `seedShare added ${added} of ${wanted} entries.`,
   commandFailed: (command: string, detail: string) => `Command failed: ${command}\n${detail}`,
   commandTimedOut: (command: string) => `Command timed out: ${command}`,
   workspaceRootMissing: (start: string) => `Cannot find the workspace root above ${start}.`,
@@ -17,12 +15,11 @@ export const STACK_TEXT = Object.freeze({
     'UI_S3_ACCESS_KEY_ID and UI_S3_SECRET_ACCESS_KEY are not set; the stack is not running.',
   inviteUrlMissing: 'The create-invite command printed no URL.',
   deletionRequestFailed: (status: number) => `Requesting the account deletion answered ${status}.`,
-  sessionTokenMissing: 'The seeded account has no session token.',
-  seedOutboxNotEmpty: (kinds: string) => `The seeded entries did not finish syncing: ${kinds}`,
   seedMediaMissing: (name: string) => `Cannot read the fixture ${name}.`,
+  seedRequestFailed: (method: string, path: string, status: number, body: string) =>
+    `${method} ${path} answered ${status} while seeding: ${body}`,
+  seedUploadFailed: (status: number) => `Uploading a seeded object answered ${status}.`,
   seedImportRefused: (name: string, reason: string) => `Importing ${name} was refused: ${reason}`,
-  serverRequestFailed: (path: string, status: number) => `GET ${path} answered ${status}.`,
-  homeCollectionMissing: 'The server lists no home collection for the account.',
   linkSeedFailed: (method: string, path: string, status: number, body: string) =>
     `${method} ${path} answered ${status} while seeding a public link: ${body}`,
   linkSeedUploadFailed: (status: number) => `Uploading a public link object answered ${status}.`,

@@ -2,8 +2,9 @@ import { createHash, randomBytes } from 'node:crypto';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { byteSourceFromBytes, readImageMetadata, readVideoMetadata } from '@kodakiko/core';
-import { ApiError, createHttpClient, createLinkSession } from '@kodakiko/client/testing';
-import { parseLinkFragment } from '../../../apps/client/src/services/links/link-url.ts';
+import { ApiError, createHttpClient } from '../../../apps/link-viewer/src/http.ts';
+import { createLinkSession } from '../../../apps/link-viewer/src/link-session.ts';
+import { parseLinkFragment } from '../../../apps/link-viewer/src/link-url.ts';
 import {
   box,
   buildJpeg,
@@ -110,11 +111,7 @@ function viewer(harness: Harness, url: string) {
   const secret = parseLinkFragment(parsed.hash);
   if (secret === null) throw new Error('bad link');
   const linkId = parsed.pathname.split('/').at(-1) ?? '';
-  const http = createHttpClient({
-    baseUrl: async () => harness.baseUrl,
-    sessionToken: async () => null,
-    onSessionInvalid: () => undefined,
-  });
+  const http = createHttpClient({ baseUrl: harness.baseUrl });
   return createLinkSession({ sodium: harness.sodium, http, linkId, secret, origin: harness.baseUrl });
 }
 

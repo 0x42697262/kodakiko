@@ -1,9 +1,0 @@
-export const ZOOM_MIN = 1;
-export const ZOOM_MAX = 5;
-export const ZOOM_DOUBLE_TAP = 2.5;
-export const ZOOM_ANIMATION_MS = 200;
-export const ZOOM_SNAP_BELOW = 1.05;
-export const ZOOM_UNZOOMED = 1;
-export const HALF = 2;
-export const WHEEL_ZOOM_SENSITIVITY = 0.002;
-export const DOUBLE_TAP_COUNT = 2;

@@ -13,14 +13,8 @@ export default tseslint.config(
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/.expo/**',
       '**/coverage/**',
-      'apps/client/android/**',
       'apps/android/**',
-      'apps/client/ios/**',
-      'apps/client/expo-env.d.ts',
-      'apps/client/public/workers/**',
-      'apps/client/public/media-sw.js',
       'docs/**',
       'tests/ui/reports/**',
     ],
@@ -57,47 +51,14 @@ export default tseslint.config(
   },
   {
     files: ['packages/contract/**/*.{ts,tsx,js}'],
-    rules: forbid('@kodakiko/*', 'react', 'react*', 'expo', 'expo*', 'node:*'),
+    rules: forbid('@kodakiko/*', 'node:*'),
   },
   {
     files: ['packages/core/src/**/*.{ts,tsx,js}'],
-    rules: forbid(
-      'react',
-      'react-native',
-      'react-native-*',
-      'expo',
-      'expo-*',
-      'node:*',
-      'libsodium*',
-      '@kodakiko/server',
-      '@kodakiko/client',
-    ),
-  },
-  {
-    files: ['apps/client/**/*.{ts,tsx,js}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: ['@kodakiko/server'],
-          paths: [{ name: 'react-native', importNames: ['Pressable'], message: 'Use Touchable from src/ui (spec 24).' }],
-        },
-      ],
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: "JSXAttribute[name.name='allowFontScaling'][value.expression.value=false]",
-          message: 'Respect the system font scale (spec 24).',
-        },
-      ],
-    },
-  },
-  {
-    files: ['apps/client/src/ui/**/*.{ts,tsx}'],
-    rules: forbid('@kodakiko/server'),
+    rules: forbid('node:*', 'libsodium*', '@kodakiko/server', '@kodakiko/link-viewer'),
   },
   {
     files: ['apps/server/**/*.{ts,tsx,js}'],
-    rules: forbid('@kodakiko/client', 'react', 'react*', 'expo', 'expo*'),
+    rules: forbid('@kodakiko/link-viewer'),
   },
 );

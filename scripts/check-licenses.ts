@@ -1,5 +1,4 @@
 import { execFileSync } from 'node:child_process';
-import { writeFile } from 'node:fs/promises';
 
 export type LicensePackage = { readonly name: string; readonly versions: readonly string[]; readonly license: string };
 export type LicenseReport = Readonly<Record<string, readonly LicensePackage[]>>;
@@ -21,8 +20,6 @@ export const ALLOWED_LICENSES: ReadonlySet<string> = new Set([
 ]);
 
 const TOKEN = /\(|\)|[^\s()]+/g;
-const OUTPUT_FILE = 'apps/client/assets/licenses.json';
-const JSON_INDENT = 2;
 const MAX_BUFFER_BYTES = 268_435_456;
 
 class ParseFailure extends Error {}
@@ -95,9 +92,6 @@ if (import.meta.main) {
   });
   const report = JSON.parse(output) as LicenseReport;
   const offenders = checkLicenses(report);
-  if (process.argv.includes('--write')) {
-    await writeFile(OUTPUT_FILE, `${JSON.stringify(licenseList(report), null, JSON_INDENT)}\n`);
-  }
   if (offenders.length > 0) {
     process.stderr.write(`Licenses outside D-70:\n${offenders.join('\n')}\n`);
     process.exit(1);

@@ -10,12 +10,6 @@ Every version below is the **newest release published at least 7 days before 202
 exactly these versions. If an install happens much later, do **not** pick newer versions;
 it reports "allowlist is N days old" and this file is refreshed by the same rule.
 
-Expo-family packages follow Expo SDK 58's `bundledNativeModules.json` (F-TOOL-12). Where the SDK
-asks for a patch newer than the age cutoff (`expo-router ~58.0.31`, `expo-sqlite ~58.0.16`,
-`expo-video ~58.0.14`), the older compliant patch below is pinned and the resulting
-`npx expo install --check` patch-level warning is accepted. A minor or major mismatch stops the
-work and goes to Opus.
-
 ## Policy settings (go in `pnpm-workspace.yaml`, F-TOOL-01..04)
 
 ```yaml
@@ -33,9 +27,8 @@ catalogMode: strict
   script). When `pnpm install` stops with `ERR_PNPM_IGNORED_BUILDS` for another package, the implementer
   adds it **only if that package is on this allowlist**, with `true` if its build is needed for the
   app to run (native binary download) and `false` otherwise, and records the line here. Anything
-  else stops the work. Recorded so far: `react-native-libsodium: true` (2026-11-12, client foundation; its
-  postinstall unpacks the bundled prebuilt libsodium, `tar -xzf libsodium/build.tgz`, needed by the
-  Android build).
+  else stops the work. Recorded so far: none (the Expo client's `react-native-libsodium: true` left
+  with `apps/client`, K261).
 - `packageManager` in the root `package.json`: `pnpm@12.17.0` (2026-10-30, compliant).
 
 ## Allowlist
@@ -44,8 +37,7 @@ catalogMode: strict
 
 | Package | Version | Used by | Purpose | Audit status |
 |---|---|---|---|---|
-| `react-native-libsodium` | 1.7.0 | client (native) | libsodium via JSI (F-LIB-01/02) | wrapper unaudited; libsodium 1.0.21 inside is audited lineage (F-LIB-04). Mitigation: shared known-answer vectors incl. Argon2id (crypto.md §10) |
-| `libsodium-wrappers-sumo` | 0.8.4 | client (web), core tests, link viewer (`apps/link-viewer`: page and media service worker; no Argon2id there) | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
+| `libsodium-wrappers-sumo` | 0.8.4 | core tests, UI-test seeding (`tests/ui`), e2e launcher (`tests/e2e`), link viewer (`apps/link-viewer`: page and media service worker; no Argon2id there) | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
 
 The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1).
 
@@ -60,7 +52,7 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `prettier` | 3.9.10 | formatting |
 | `esbuild` | 0.28.2 | server bundle (architecture.md §4.1), service worker bundle (storage.md §5), link viewer bundles (`apps/link-viewer/build.ts`: page script, media service worker, stylesheet) |
 | `@types/node` | 22.20.5 | server and scripts |
-| `zod` | 4.6.7 | runtime dependency of contract, core, server, client, link viewer (jitless under the CSP) |
+| `zod` | 4.6.7 | runtime dependency of contract, core, server, link viewer (jitless under the CSP) |
 
 ### Server
 
@@ -79,73 +71,22 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 `@fastify/cors` was removed in review 1: the web app calls the API on its own origin
 (deployment.md §2), and the Android app is not subject to CORS.
 
-### Client (Expo SDK 58 family)
+### Removed client packages
 
-| Package | Version | Purpose |
-|---|---|---|
-| `expo` | 58.0.23 | platform |
-| `expo-router` | 58.0.30 | navigation (client.md §1) |
-| `react` / `react-dom` | 19.3.0 | UI; matches Expo SDK 58 (F-TOOL-12): react-native 0.88.1's bundled renderer is built against 19.3.0 (`ReactFabric-*.js` `version: "19.3.0"`), and `react-dom` must equal `react` exactly |
-| `react-native` | 0.88.1 | UI |
-| `react-native-web` | 0.21.4 | web target |
-| `@expo/metro-runtime` | 58.0.17 | web runtime for Expo Router |
-| `expo-linking` | 58.0.16 | required peer of `expo-router` |
-| `@expo/log-box` | 58.0.15 | required peer of `expo-router` |
-| `react-native-screens` | 4.30.1 | required peer of `expo-router` |
-| `react-native-safe-area-context` | 5.11.1 | required peer of `expo-router`; `SafeAreaProvider` |
-| `react-native-gesture-handler` | 3.3.0 | pinch, pan and double-tap gestures for photo zoom (D-59); SDK 58 bundled version |
-| `react-native-reanimated` | 4.7.1 | gesture-driven transforms on the UI thread (D-59); peer `react-native` 0.86-0.88 |
-| `react-native-worklets` | 0.13.1 | required peer of reanimated 4 (`0.13.x`); SDK 58 asks `0.13.0`, 0.13.1 is a compliant patch |
-| `expo-constants` | 58.0.15 | app version display |
-| `expo-file-system` | 58.0.13 | FileHandle chunked I/O (F-LIB-05) |
-| `expo-sqlite` | 58.0.15 | RowStore, plain (D-37); no SQLCipher plugin |
-| `expo-secure-store` | 58.0.2 | KeyVault (F-LIB-13) |
-| `expo-font` | 58.0.11 | peer of `@expo/vector-icons` (Material UI) |
-| `expo-screen-capture` | 58.0.6 | Secure screen setting, Android `FLAG_SECURE` (Material UI, OQ-2) |
-| `@expo/vector-icons` | 15.1.1 | MaterialIcons for every icon (Material UI, D-84); MIT; released 2026-02-23 |
-| `react-native-paper` | 5.15.4 | Material 3 components (Material UI, D-84); MIT; released 2026-11-02 |
-| `expo-status-bar` | 58.0.4 | Full screen setting (Material UI) |
-| `expo-navigation-bar` | 58.0.4 | Full screen setting, hides the Android navigation bar (Material UI) |
-| `expo-keep-awake` | 58.0.3 | Keep the screen on while capturing (Material UI) |
-| `expo-haptics` | 58.0.7 | Haptic ticks (native feel, D-103 Q1); SDK 58 bundled `~58.0.7`; released 2026-10-16 |
-| `expo-audio` | 58.0.11 | Voice notes: recording and playback (edit page, D-95); SDK 58 bundled `~58.0.11`; released 2026-10-31 |
-| `expo-clipboard` | 58.0.4 | Android image paste on the edit page (edit page, D-96; re-added after review 1 removed it); SDK 58 bundled `~58.0.4`; released 2026-10-21 |
-| `react-native-share` | 12.3.1 | Share several decrypted files to other apps (`ACTION_SEND_MULTIPLE`; edit page, D-93); MIT; released 2026-05-04; `expo-sharing` shares one file only |
-| `@pchmn/expo-material3-theme` | 1.4.0 | Material You dynamic color setting (native feel, D-103 Q2); MIT; released 2026-02-02; deps `@material/material-color-utilities`, `color` |
-| `react-native-zoom-toolkit` | 5.1.1 | Android photo viewer `Gallery` (viewer); MIT; released 2026-08-30 |
-| `expo-local-authentication` | 58.0.2 | biometrics (F-LIB-13) |
-| `expo-image` | 58.0.18 | display, cache, dimensions (F-LIB-09) |
-| `expo-image-picker` | 58.0.10 | Android Photo Picker import (F-LIB-12) |
-| `expo-image-manipulator` | 58.0.16 | thumbnail resize + WebP encode, link-copy re-encode (media.md §3, §6) |
-| `expo-video` | 58.0.13 | Android playback (temp file) and video metadata |
-| `expo-video-thumbnails` | 58.0.2 | Android video poster frame (media.md §3) |
-| `expo-network` | 58.0.4 | network type (Wi-Fi or not) for the large-upload rule and pinned downloads (D-61); SDK 58 asks `~58.0.5` (patch newer than the age cutoff, accepted) |
-| `expo-location` | 58.0.20 | opt-in device location for new camera captures (D-55); SDK 58 asks `~58.0.21` (patch newer than the age cutoff, accepted per the version rule) |
-| `react-native-vision-camera` | 5.2.4 | Android camera (F-LIB-06) |
-| `react-native-nitro-modules` | 0.37.2 | peer of vision-camera |
-| `react-native-nitro-image` | 0.15.2 | peer of vision-camera |
-| `@shopify/flash-list` | 2.3.2 | gallery grid (F-LIB-10); 2.3.2 is the SDK 58 bundled version |
-| `idb` | 8.0.4 | web RowStore (IndexedDB wrapper) |
-| `@types/react` | 19.3.0 | dev: React 19 ships no type definitions; needed by the client type check |
-
-Removed in review 1: `expo-clipboard` (web paste uses DOM events), `expo-application`, `tsx`.
-
-### Client libraries decided after review 1
-
-| Package | Version | Purpose | Decision |
-|---|---|---|---|
-| `marked` | 18.1.3 | markdown **lexer only** for notes; tokens rendered by our code; HTML output never used | D-51 (F-LIB-16) |
-| `fflate` | 0.8.3 | streaming zip writer for the journal export, behind the `ArchiveWriter` port | D-52 (F-LIB-17) |
+The Expo client's packages (the Expo SDK 58 family, React Native, `react-native-libsodium`,
+`@shopify/flash-list`, `idb`, `marked`, `fflate`, `@types/react`, …) were removed with `apps/client`
+in v0.4.1 (K261, D-167); the `v0.3.1` tag keeps their rows. The Android app's libraries are in the
+Kotlin section below.
 
 ### Test tooling (UI tests, D-74)
 
 | Package / tool | Version | Why |
 |---|---|---|
-| `@playwright/test` | 1.64.1 (2026-10-14) | web UI flows; devDependency of `tests/ui` only; its Chromium build is downloaded by `playwright install chromium` (tied to this version) |
+| `@playwright/test` | 1.64.1 (2026-10-14) | link viewer flow (U-18); devDependency of `tests/ui` only; its Chromium build is downloaded by `playwright install chromium` (tied to this version) |
 | Maestro CLI | 2.12.1 (2026-11-02) | Android UI flows; not an npm package; downloaded by `tests/ui/android/install-maestro.sh` and checked against SHA-256 `54dbb0716425626604973cbb374c585ca30272375d9ce15177a1152765ddd9d7`; Apache-2.0 |
 | ffmpeg | ≥ 8.0 (developer machine) | generates the committed media fixtures once (`tests/fixtures/media/generate.sh`); never installed by the project, never in an image |
 
-`tests/ui` also uses `fflate` and `libsodium-wrappers-sumo` (already allowlisted).
+`tests/ui` also uses `esbuild` and `libsodium-wrappers-sumo` (already allowlisted).
 
 ### Container images
 
@@ -166,8 +107,8 @@ Pinned by commit SHA (release workflow); each release was older than 7 days when
 
 | Action | Version | Commit | Used by |
 |---|---|---|---|
-| `actions/checkout` | v7.0.1 (2026-07-20) | `3d3c42e5aac5ba805825da76410c181273ba90b1` | `android-release.yml` |
-| `actions/setup-node` | v7.1.0 (2026-10-08) | `949feb2413d6458794dcd2491c4babbbce0c15c1` | `android-release.yml` |
+| `actions/checkout` | v7.0.1 (2026-07-20) | `3d3c42e5aac5ba805825da76410c181273ba90b1` | `android-release.yml`, `kotlin.yml`, `ts.yml` |
+| `actions/setup-node` | v7.1.0 (2026-10-08) | `949feb2413d6458794dcd2491c4babbbce0c15c1` | `android-release.yml`, `kotlin.yml`, `ts.yml` |
 | `actions/setup-java` | v6.2.0 (2026-11-04) | `77dd5b2ce225ea11469928ac317850245a74ae78` | `android-release.yml` |
 | `gradle/actions/setup-gradle` | v6.4.1 (2026-10-28; pinned 2026-11-14) | `8da46b539cd8fe6ab27ca75128919a18d757604c` | `android-release.yml` (Gradle dependency and build cache; written on `main`, read by tag builds) |
 
@@ -176,13 +117,8 @@ Pinned by commit SHA (release workflow); each release was older than 7 days when
 | Package | Reason |
 |---|---|
 | `exifr` | stale since 2021, React Native undocumented (F-LIB-15); in-repo bounded EXIF reader instead (media.md §4.1) |
-| `op-sqlite` | SQLCipher + FTS5 combination undocumented (F-LIB-08); not needed after D-37 |
-| `react-native-background-upload` | unmaintained since 2022 (F-LIB-14); `packages/native-upload` instead |
-| `expo-background-task` | WorkManager runs at most every 15 min (F-LIB-14); the foreground upload service covers uploads (sync.md §8) |
 | `tus-js-client` | foreground-only, extra protocol; presigned multipart is enough (storage.md §3) |
 | MinIO server image | unmaintained (F-S3-01); Garage instead |
-| `@tanstack/react-query` | the local-first index replaces a server-state cache in v1 (client.md §3) |
-| `react-native-markdown-display` | stale (F-LIB-16) |
 | Any SRP library | ADR 3 |
 | Any BIP-39 library | word list committed as data (crypto.md §5.6) |
 | `typescript` 7.x | breaks `typescript-eslint` (F-TOOL-11) |
@@ -437,5 +373,4 @@ Tool, not a dependency: Maestro (already used for Android flows).
 ## Review cadence
 
 Every row is reviewed when Renovate bumps it; the `Status` line carries the review date.
-Quarterly: re-check audit statuses (react-native-libsodium PR #108, new audits of libsodium or
-Expo).
+Quarterly: re-check audit statuses (new audits of libsodium and its bindings).

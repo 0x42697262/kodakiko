@@ -9,11 +9,9 @@ saveExact: true
 strictDepBuilds: true
 allowBuilds:
   esbuild: true
-  react-native-libsodium: true
 catalogMode: strict
 
 catalog:
-  react-native-libsodium: 1.7.0
   libsodium-wrappers-sumo: 0.8.4
   typescript: 6.0.3
   vitest: 5.1.0
@@ -32,51 +30,4 @@ catalog:
   '@types/pg': 8.23.1
   '@aws-sdk/client-s3': 3.1161.0
   '@aws-sdk/s3-request-presigner': 3.1161.0
-  expo: 58.0.23
-  expo-router: 58.0.30
-  react: 19.3.0
-  react-dom: 19.3.0
-  react-native: 0.88.1
-  react-native-web: 0.21.4
-  '@expo/metro-runtime': 58.0.17
-  expo-linking: 58.0.16
-  '@expo/log-box': 58.0.15
-  react-native-screens: 4.30.1
-  react-native-safe-area-context: 5.11.1
-  react-native-gesture-handler: 3.3.0
-  react-native-reanimated: 4.7.1
-  react-native-worklets: 0.13.1
-  expo-constants: 58.0.15
-  expo-file-system: 58.0.13
-  expo-sqlite: 58.0.15
-  expo-secure-store: 58.0.2
-  expo-font: 58.0.11
-  expo-screen-capture: 58.0.6
-  expo-status-bar: 58.0.4
-  expo-navigation-bar: 58.0.4
-  expo-keep-awake: 58.0.3
-  expo-haptics: 58.0.7
-  expo-audio: 58.0.11
-  expo-clipboard: 58.0.4
-  react-native-share: 12.3.1
-  '@pchmn/expo-material3-theme': 1.4.0
-  react-native-zoom-toolkit: 5.1.1
-  '@expo/vector-icons': 15.1.1
-  react-native-paper: 5.15.4
-  expo-local-authentication: 58.0.2
-  expo-image: 58.0.18
-  expo-image-picker: 58.0.10
-  expo-image-manipulator: 58.0.16
-  expo-video: 58.0.13
-  expo-video-thumbnails: 58.0.2
-  expo-network: 58.0.4
-  expo-location: 58.0.20
-  react-native-vision-camera: 5.2.4
-  react-native-nitro-modules: 0.37.2
-  react-native-nitro-image: 0.15.2
-  '@shopify/flash-list': 2.3.2
-  idb: 8.0.4
-  '@types/react': 19.3.0
-  marked: 18.1.3
-  fflate: 0.8.3
   '@playwright/test': 1.64.1
