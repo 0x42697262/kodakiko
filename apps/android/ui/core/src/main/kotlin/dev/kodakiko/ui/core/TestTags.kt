@@ -627,6 +627,7 @@ object TestTags {
     }
 
     object Share {
+        const val INCLUDE_TEXT = "share.includeText"
         const val CANCEL = "share.cancel"
         const val CONFIRM = "share.confirm"
         const val FAILED = "share.failed"

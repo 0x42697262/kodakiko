@@ -25,6 +25,10 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -161,19 +165,33 @@ private fun ToApps(state: ToAppsState, onAction: (ShareSheetAction) -> Unit) {
         if (items == null) {
             if (!state.failed) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         } else {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(SharingDimens.PICK_SPACING), verticalArrangement = Arrangement.spacedBy(SharingDimens.PICK_SPACING)) {
-                items.forEachIndexed { position, item ->
-                    PickTile(item, position, item.media.mediaId in state.chosen) { onAction(ShareSheetAction.Toggle(item.media.mediaId)) }
+            if (items.size > SharingConstants.SINGLE_ITEM) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(SharingDimens.PICK_SPACING), verticalArrangement = Arrangement.spacedBy(SharingDimens.PICK_SPACING)) {
+                    items.forEachIndexed { position, item ->
+                        PickTile(item, position, item.media.mediaId in state.chosen) { onAction(ShareSheetAction.Toggle(item.media.mediaId)) }
+                    }
                 }
             }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)) {
-                textOptions.forEach { (option, testTag) ->
-                    FilterChip(
-                        selected = state.option == option,
-                        onClick = { onAction(ShareSheetAction.ChooseText(option)) },
-                        label = { Text(text = textOptionLabel(option)) },
-                        modifier = Modifier.testTag(testTag),
-                    )
+            var includeText by rememberSaveable { mutableStateOf(state.option != ShareTextOption.NONE) }
+            FilterChip(
+                selected = includeText,
+                onClick = {
+                    includeText = !includeText
+                    if (!includeText) onAction(ShareSheetAction.ChooseText(ShareTextOption.NONE))
+                },
+                label = { Text(text = stringResource(R.string.share_include_text)) },
+                modifier = Modifier.testTag(TestTags.Share.INCLUDE_TEXT),
+            )
+            if (includeText) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)) {
+                    textOptions.forEach { (option, testTag) ->
+                        FilterChip(
+                            selected = state.option == option,
+                            onClick = { onAction(ShareSheetAction.ChooseText(option)) },
+                            label = { Text(text = textOptionLabel(option)) },
+                            modifier = Modifier.testTag(testTag),
+                        )
+                    }
                 }
             }
             if (state.selection.warn) {

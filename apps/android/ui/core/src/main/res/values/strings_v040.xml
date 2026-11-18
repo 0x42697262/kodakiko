@@ -57,4 +57,5 @@
     <string name="theme_presets_title">Color theme</string>
     <string name="theme_preset_dynamic">Dynamic</string>
     <string name="theme_mode_system">System</string>
+    <string name="share_include_text">Include text</string>
 </resources>
