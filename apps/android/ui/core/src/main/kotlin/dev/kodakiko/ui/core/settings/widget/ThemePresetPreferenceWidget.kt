@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import dev.kodakiko.data.db.AppTheme
 import dev.kodakiko.data.db.ThemePreset
+import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.settings.SettingsConstants
@@ -44,30 +48,71 @@ fun ThemePresetPreferenceWidget(
     selected: ThemePreset,
     appTheme: AppTheme,
     pureBlack: Boolean,
+    dynamicAvailable: Boolean,
+    dynamicSelected: Boolean,
     onSelect: (ThemePreset) -> Unit,
+    onSelectDynamic: () -> Unit,
+    onAppTheme: (AppTheme) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val choices = ThemePreset.entries
-    FlowRow(
-        modifier = modifier.fillMaxWidth().padding(horizontal = SettingsConstants.PREFS_HORIZONTAL_PADDING).testTag(TestTags.Settings.THEME_PRESETS),
-        maxItemsInEachRow = ThemePresetConstants.COLUMNS,
-        horizontalArrangement = Arrangement.spacedBy(ThemePresetConstants.TILE_SPACING),
-        verticalArrangement = Arrangement.spacedBy(ThemePresetConstants.TILE_SPACING),
-    ) {
-        choices.forEach { preset ->
-            Box(modifier = Modifier.weight(ThemePresetConstants.WEIGHT)) {
-                KodakikoTheme(appTheme = appTheme, pureBlack = pureBlack, dynamicColor = false, preset = preset) {
-                    ThemeTile(
-                        label = stringResource(ThemePresets.label(preset)),
-                        selected = preset == selected,
-                        tag = listItem(TestTags.Settings.THEME_PRESET, preset.ordinal),
-                        onClick = { onSelect(preset) },
-                    )
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = SettingsConstants.PREFS_HORIZONTAL_PADDING)) {
+        ThemeModeRow(appTheme, onAppTheme)
+        Spacer(modifier = Modifier.height(ThemePresetConstants.TILE_SPACING))
+        val tiles = (if (dynamicAvailable) 1 else 0) + ThemePreset.entries.size
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.Settings.THEME_PRESETS),
+            maxItemsInEachRow = ThemePresetConstants.COLUMNS,
+            horizontalArrangement = Arrangement.spacedBy(ThemePresetConstants.TILE_SPACING),
+            verticalArrangement = Arrangement.spacedBy(ThemePresetConstants.TILE_SPACING),
+        ) {
+            if (dynamicAvailable) {
+                Box(modifier = Modifier.weight(ThemePresetConstants.WEIGHT)) {
+                    KodakikoTheme(appTheme = appTheme, pureBlack = pureBlack, dynamicColor = true) {
+                        ThemeTile(
+                            label = stringResource(R.string.theme_preset_dynamic),
+                            selected = dynamicSelected,
+                            tag = TestTags.Settings.DYNAMIC_COLOR,
+                            onClick = onSelectDynamic,
+                        )
+                    }
                 }
             }
+            ThemePreset.entries.forEach { preset ->
+                Box(modifier = Modifier.weight(ThemePresetConstants.WEIGHT)) {
+                    KodakikoTheme(appTheme = appTheme, pureBlack = pureBlack, dynamicColor = false, preset = preset) {
+                        ThemeTile(
+                            label = stringResource(ThemePresets.label(preset)),
+                            selected = !dynamicSelected && preset == selected,
+                            tag = listItem(TestTags.Settings.THEME_PRESET, preset.ordinal),
+                            onClick = { onSelect(preset) },
+                        )
+                    }
+                }
+            }
+            repeat((ThemePresetConstants.COLUMNS - tiles % ThemePresetConstants.COLUMNS) % ThemePresetConstants.COLUMNS) {
+                Spacer(modifier = Modifier.weight(ThemePresetConstants.WEIGHT))
+            }
         }
-        repeat((ThemePresetConstants.COLUMNS - choices.size % ThemePresetConstants.COLUMNS) % ThemePresetConstants.COLUMNS) {
-            Spacer(modifier = Modifier.weight(ThemePresetConstants.WEIGHT))
+    }
+}
+
+@Composable
+private fun ThemeModeRow(appTheme: AppTheme, onAppTheme: (AppTheme) -> Unit) {
+    val modes = listOf(
+        AppTheme.LIGHT to R.string.prefs_theme_light,
+        AppTheme.SYSTEM to R.string.theme_mode_system,
+        AppTheme.DARK to R.string.prefs_theme_dark,
+    )
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().testTag(TestTags.Settings.THEME)) {
+        modes.forEachIndexed { index, (mode, label) ->
+            SegmentedButton(
+                selected = appTheme == mode,
+                onClick = { onAppTheme(mode) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = modes.size),
+                modifier = Modifier.testTag(optionTag(TestTags.Settings.THEME, mode)),
+            ) {
+                Text(text = stringResource(label), maxLines = 1)
+            }
         }
     }
 }

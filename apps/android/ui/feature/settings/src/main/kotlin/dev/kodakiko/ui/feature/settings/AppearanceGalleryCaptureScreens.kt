@@ -43,6 +43,30 @@ fun AppearanceSettingsScreen(viewModel: AppearanceSettingsViewModel = metroViewM
 
 @Composable
 private fun appearanceItems(settings: DeviceSettings, dynamicColorAvailable: Boolean, update: SettingsChange): List<Preference> = listOf(
+    Preference.PreferenceGroup(
+        title = stringResource(R.string.prefs_theme),
+        preferenceItems = listOf(
+            Preference.PreferenceItem.CustomPreference(title = stringResource(R.string.theme_presets_title)) {
+                ThemePresetPreferenceWidget(
+                    selected = settings.themePreset,
+                    appTheme = settings.appTheme,
+                    pureBlack = settings.pureBlack,
+                    dynamicAvailable = dynamicColorAvailable,
+                    dynamicSelected = dynamicColorAvailable && settings.dynamicColor,
+                    onSelect = { preset -> update { it.copy(themePreset = preset, dynamicColor = false) } },
+                    onSelectDynamic = { update { it.copy(dynamicColor = true) } },
+                    onAppTheme = { theme -> update { it.copy(appTheme = theme) } },
+                )
+            },
+            Preference.PreferenceItem.SwitchPreference(
+                value = settings.pureBlack,
+                title = stringResource(R.string.prefs_pure_black),
+                subtitle = stringResource(R.string.prefs_pure_black_summary),
+                testTag = TestTags.Settings.PURE_BLACK,
+                onValueChanged = { on -> update { it.copy(pureBlack = on) } },
+            ),
+        ),
+    ),
     Preference.PreferenceItem.SwitchPreference(
         value = settings.fullScreen,
         title = stringResource(R.string.prefs_full_screen),
@@ -57,46 +81,12 @@ private fun appearanceItems(settings: DeviceSettings, dynamicColorAvailable: Boo
         testTag = TestTags.Settings.HIDE_BARS_ON_SCROLL,
         onValueChanged = { on -> update { it.copy(hideBarsOnScroll = on) } },
     ),
-    Preference.PreferenceItem.ListPreference(
-        value = settings.appTheme,
-        entries = mapOf(
-            AppTheme.SYSTEM to stringResource(R.string.prefs_theme_system),
-            AppTheme.LIGHT to stringResource(R.string.prefs_theme_light),
-            AppTheme.DARK to stringResource(R.string.prefs_theme_dark),
-        ),
-        title = stringResource(R.string.prefs_theme),
-        testTag = TestTags.Settings.THEME,
-        onValueChanged = { theme -> update { it.copy(appTheme = theme) } },
-    ),
-    Preference.PreferenceItem.CustomPreference(title = stringResource(R.string.theme_presets_title), visible = !settings.dynamicColor) {
-        ThemePresetPreferenceWidget(
-            selected = settings.themePreset,
-            appTheme = settings.appTheme,
-            pureBlack = settings.pureBlack,
-            onSelect = { preset -> update { it.copy(themePreset = preset) } },
-        )
-    },
     Preference.PreferenceItem.SwitchPreference(
         value = settings.hapticFeedback,
         title = stringResource(R.string.prefs_haptics),
         subtitle = stringResource(R.string.prefs_haptics_summary),
         testTag = TestTags.Settings.HAPTICS,
         onValueChanged = { on -> update { it.copy(hapticFeedback = on) } },
-    ),
-    Preference.PreferenceItem.SwitchPreference(
-        value = settings.dynamicColor,
-        title = stringResource(R.string.prefs_dynamic_color),
-        subtitle = stringResource(R.string.prefs_dynamic_color_summary),
-        testTag = TestTags.Settings.DYNAMIC_COLOR,
-        visible = dynamicColorAvailable,
-        onValueChanged = { on -> update { it.copy(dynamicColor = on) } },
-    ),
-    Preference.PreferenceItem.SwitchPreference(
-        value = settings.pureBlack,
-        title = stringResource(R.string.prefs_pure_black),
-        subtitle = stringResource(R.string.prefs_pure_black_summary),
-        testTag = TestTags.Settings.PURE_BLACK,
-        onValueChanged = { on -> update { it.copy(pureBlack = on) } },
     ),
     Preference.PreferenceItem.ListPreference(
         value = settings.timeFormat,

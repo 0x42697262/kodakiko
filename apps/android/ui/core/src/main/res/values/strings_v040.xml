@@ -55,4 +55,6 @@
     <string name="theme_preset_yotsuba">Yotsuba</string>
     <string name="theme_preset_monochrome">Monochrome</string>
     <string name="theme_presets_title">Color theme</string>
+    <string name="theme_preset_dynamic">Dynamic</string>
+    <string name="theme_mode_system">System</string>
 </resources>
