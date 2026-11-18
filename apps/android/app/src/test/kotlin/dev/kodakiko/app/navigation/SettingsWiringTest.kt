@@ -111,6 +111,7 @@ class SettingsWiringTest : AppWiringHarness() {
     fun createBackupAsksForAFolderAndRestoreBackupForFilesThroughTheSystemPicker() {
         openSettings()
         click(TestTags.Settings.ROW_STORAGE)
+        awaitTag(TestTags.Settings.USAGE_ORIGINALS)
         click(TestTags.Settings.ROW_EXPORT)
         awaitTag(TestTags.Settings.EXPORT_SCREEN)
         while (startedIntent() != null) Unit
