@@ -48,4 +48,5 @@ object KodakikoIcons {
     val Dns: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_dns)
     val Key: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_key)
     val DeleteForever: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_delete_forever)
+    val Check: ImageVector @Composable get() = ImageVector.vectorResource(R.drawable.ic_check)
 }
