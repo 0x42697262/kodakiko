@@ -9,12 +9,14 @@ import dev.kodakiko.markdown.EditedText
 import dev.kodakiko.markdown.MarkdownAction
 import dev.kodakiko.markdown.TextSelection
 import dev.kodakiko.markdown.applyMarkdownAction
+import dev.kodakiko.markdown.markdownPlainText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
@@ -140,7 +142,7 @@ class NoteViewModelTest {
     }
 
     @Test
-    fun toolbarEditsAreSavedLikeTyping() = runTest {
+    fun toolbarEditsAreKeptLikeTypingAndWrittenOnDone() = runTest {
         val (vm, _) = open("")
         vm.onAction(EditAction.EditNote)
         vm.type("Lake day ", at(9))
@@ -149,7 +151,64 @@ class NoteViewModelTest {
         assertEquals(emptyList<EntryEdit>(), h.entries.edits)
         advanceTimeBy(EditConstants.AUTOSAVE_DEBOUNCE_MS)
         runCurrent()
+        assertEquals(emptyList<EntryEdit>(), h.entries.edits)
+        vm.onAction(EditAction.NoteDone)
+        vm.onAction(EditAction.Done)
+        runCurrent()
         assertEquals(listOf(EntryEdit(note = "Lake day ****")), h.entries.edits)
+    }
+
+    @Test
+    fun closingTheEditorKeepsTheTextOnThePageWithoutWritingIt() = runTest {
+        val (vm, screen) = open("")
+        vm.onAction(EditAction.EditNote)
+        vm.type("kept", at(4))
+        vm.onAction(EditAction.NoteDone)
+        runCurrent()
+        assertNull(screen.value.noteEditor)
+        assertEquals("kept", screen.value.body?.note)
+        assertEquals(emptyList<EntryEdit>(), h.entries.edits)
+    }
+
+    @Test
+    fun theEditorSwitchesBetweenCodeAndPreview() = runTest {
+        val (vm, screen) = open()
+        vm.onAction(EditAction.NoteMode(preview = true))
+        assertNull(screen.value.noteEditor)
+        vm.onAction(EditAction.EditNote)
+        assertFalse(requireNotNull(screen.value.noteEditor).preview)
+        vm.onAction(EditAction.NoteMode(preview = true))
+        assertEquals(NoteEditorUi(at(20), preview = true), screen.value.noteEditor)
+        vm.onAction(EditAction.NoteMode(preview = false))
+        assertEquals(NoteEditorUi(at(20), preview = false), screen.value.noteEditor)
+    }
+
+    @Test
+    fun copyInCodeModeCopiesTheRawMarkdown() = runTest {
+        val (vm, _) = open()
+        vm.onAction(EditAction.EditNote)
+        vm.onAction(EditAction.CopyNote)
+        assertEquals(listOf("**swim** at the lake"), h.clipboard.copied)
+    }
+
+    @Test
+    fun copyInPreviewModeCopiesTheRenderedText() = runTest {
+        val (vm, _) = open("# Lake\n\n- **swim**\n- [x] towel")
+        vm.onAction(EditAction.EditNote)
+        vm.onAction(EditAction.NoteMode(preview = true))
+        vm.onAction(EditAction.CopyNote)
+        assertEquals(listOf(markdownPlainText("# Lake\n\n- **swim**\n- [x] towel")), h.clipboard.copied)
+        assertEquals("Lake\n\n• swim\n☑ towel", h.clipboard.copied.single())
+    }
+
+    @Test
+    fun anEmptyNoteCopiesNothing() = runTest {
+        val (vm, _) = open("")
+        vm.onAction(EditAction.EditNote)
+        vm.onAction(EditAction.CopyNote)
+        vm.onAction(EditAction.NoteMode(preview = true))
+        vm.onAction(EditAction.CopyNote)
+        assertEquals(emptyList<String>(), h.clipboard.copied)
     }
 
     @Test

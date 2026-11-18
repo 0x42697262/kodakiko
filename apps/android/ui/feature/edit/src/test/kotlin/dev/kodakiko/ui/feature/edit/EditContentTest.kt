@@ -17,7 +17,10 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -34,6 +37,7 @@ import androidx.compose.ui.text.TextRange
 import dev.kodakiko.contract.MediaKind
 import dev.kodakiko.markdown.MarkdownAction
 import dev.kodakiko.markdown.TextSelection
+import dev.kodakiko.ui.core.EditTags
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.navigation.CaptureMode
@@ -163,13 +167,57 @@ class EditContentTest {
         show(EditStates.full)
         assertTrue(compose.exists(TestTags.Edit.PAGER))
         assertTrue(compose.exists(listItem(TestTags.Edit.PAGE, 0)))
-        node(listItem(TestTags.Edit.CAPTION_TEXT, 0)).assertTextEquals("Heron at dawn")
+        compose.onNodeWithTag(listItem(TestTags.Edit.CAPTION_TEXT, 0), useUnmergedTree = true).assertTextEquals("Heron at dawn")
         assertTrue(compose.exists(TestTags.Edit.DOTS))
         assertEquals(3, (0..3).count { compose.exists(listItem(TestTags.Edit.DOT, it)) })
         node(listItem(TestTags.Edit.DOT, 0)).assert(hasContentDescription("Page 1 of 3")).assertIsSelected()
         node(listItem(TestTags.Edit.DOT, 2)).assert(hasContentDescription("Page 3 of 3")).assertIsNotSelected()
         click(listItem(TestTags.Edit.DOT, 2))
         assertTrue(EditAction.PageChanged(2) in actions)
+    }
+
+    @Test
+    fun tappingAPhotoPageOpensItsMenu() {
+        show(EditStates.full)
+        node(listItem(TestTags.Edit.PAGE, 0)).assert(hasClickAction()).performClick()
+        compose.waitForIdle()
+        assertEquals(listOf<EditAction>(EditAction.OpenMediaMenu(P1)), taps())
+    }
+
+    @Test
+    fun theUnsavedSheetOffersSaveDiscardAndKeepEditing() {
+        show(EditStates.full.copy(sheet = EditSheet.Unsaved(EditExit.BACK, isNew = false)))
+        assertTrue(compose.exists(EditTags.UNSAVED_SHEET))
+        assertTrue(shows("Save your changes?"))
+        assertTrue(shows("Discard puts the entry back the way it was and removes the photos, videos and voice notes added since you opened it."))
+        node(EditTags.UNSAVED_SAVE).assertTextContains("Save").performClick()
+        compose.waitForIdle()
+        node(EditTags.UNSAVED_DISCARD).assertTextContains("Discard").performClick()
+        compose.waitForIdle()
+        node(EditTags.UNSAVED_KEEP).assertTextContains("Keep editing").performClick()
+        compose.waitForIdle()
+        assertEquals(listOf(EditAction.SaveChanges, EditAction.DiscardChanges, EditAction.DismissSheet), taps())
+    }
+
+    @Test
+    fun aNewEntrysUnsavedSheetSaysDiscardDeletesIt() {
+        show(EditStates.newEntry.copy(sheet = EditSheet.Unsaved(EditExit.BACK, isNew = true)))
+        assertTrue(shows("Save this entry?"))
+        assertTrue(shows("Discard deletes this new entry and everything in it."))
+        assertFalse(shows("Save your changes?"))
+    }
+
+    @Test
+    fun theDeviceOriginalsSheetOffersKeepAndDelete() {
+        show(EditStates.full.copy(sheet = EditSheet.DeviceOriginals(2, listOf(P1, P2), EditExit.BACK, notice = true)))
+        assertTrue(compose.exists(EditTags.DEVICE_ORIGINALS_SHEET))
+        assertTrue(shows("Delete 2 from this device?"))
+        assertTrue(shows("Saved. The originals are still in your phone gallery. Android asks you to confirm before deleting them."))
+        node(EditTags.DEVICE_ORIGINALS_KEEP).assertTextContains("Keep").performClick()
+        compose.waitForIdle()
+        node(EditTags.DEVICE_ORIGINALS_DELETE).assertTextContains("Delete").performClick()
+        compose.waitForIdle()
+        assertEquals(listOf(EditAction.KeepDeviceOriginals, EditAction.DeleteDeviceOriginals), taps())
     }
 
     @Test
@@ -415,18 +463,54 @@ class EditContentTest {
     }
 
     @Test
-    fun theTimeEditorHasDateAndTimeFieldsDoneAndUseOriginalTime() {
+    fun theTimeEditorHasDateAndTimePickerFieldsDoneAndUseOriginalTime() {
         show(EditStates.state(timeEditor = TimeEditorUi("2026-11-21", "09:00", invalid = false)))
         node(TestTags.TimeEditor.DATE).assert(editable("2026-11-21"))
         node(TestTags.TimeEditor.TIME).assert(editable("09:00"))
         assertFalse(compose.exists(TestTags.TimeEditor.INVALID))
-        node(TestTags.TimeEditor.DATE).performTextReplacement("2026-11-20")
-        node(TestTags.TimeEditor.TIME).performTextReplacement("18:30")
+        assertFalse(compose.exists(EditTags.DATE_PICKER))
+        assertFalse(compose.exists(EditTags.TIME_PICKER))
+        click(TestTags.TimeEditor.DATE)
+        assertTrue(compose.exists(EditTags.DATE_PICKER))
+        compose.onNode(hasText("Friday, November 20, 2026") and hasClickAction()).performClick()
+        compose.waitForIdle()
+        tap(EditTags.PICKER_OK)
+        assertFalse(compose.exists(EditTags.DATE_PICKER))
+        node(TestTags.TimeEditor.DATE).assert(editable("2026-11-20"))
+        click(TestTags.TimeEditor.TIME)
+        assertTrue(compose.exists(EditTags.TIME_PICKER))
+        tap(EditTags.PICKER_OK)
+        assertFalse(compose.exists(EditTags.TIME_PICKER))
+        node(TestTags.TimeEditor.TIME).assert(editable("09:00"))
+        assertEquals(emptyList<EditAction>(), taps())
         node(TestTags.TimeEditor.DONE).performScrollTo().assertTextContains("Done").performClick()
         compose.waitForIdle()
         node(TestTags.TimeEditor.RESET).performScrollTo().assertTextContains("Use original time").performClick()
         compose.waitForIdle()
-        assertEquals(listOf(EditAction.ApplyTime("2026-11-20", "18:30"), EditAction.ResetTime), taps())
+        assertEquals(listOf(EditAction.ApplyTime("2026-11-20", "09:00"), EditAction.ResetTime), taps())
+    }
+
+    @Test
+    fun aCancelledPickerKeepsTheValue() {
+        show(EditStates.state(timeEditor = TimeEditorUi("2026-11-21", "09:00", invalid = false)))
+        click(TestTags.TimeEditor.DATE)
+        compose.onNode(hasText("Friday, November 20, 2026") and hasClickAction()).performClick()
+        compose.waitForIdle()
+        tap(EditTags.PICKER_CANCEL)
+        assertFalse(compose.exists(EditTags.DATE_PICKER))
+        node(TestTags.TimeEditor.DATE).assert(editable("2026-11-21"))
+        click(TestTags.TimeEditor.TIME)
+        tap(EditTags.PICKER_CANCEL)
+        assertFalse(compose.exists(EditTags.TIME_PICKER))
+        node(TestTags.TimeEditor.TIME).assert(editable("09:00"))
+        assertEquals(emptyList<EditAction>(), taps())
+    }
+
+    @Test
+    fun theDateFieldsCannotBeTypedInto() {
+        show(EditStates.state(timeEditor = TimeEditorUi("2026-11-21", "09:00", invalid = false)))
+        node(TestTags.TimeEditor.DATE).assert(SemanticsMatcher.keyNotDefined(SemanticsActions.SetText))
+        node(TestTags.TimeEditor.TIME).assert(SemanticsMatcher.keyNotDefined(SemanticsActions.SetText))
     }
 
     @Test
@@ -466,7 +550,8 @@ class EditContentTest {
         node(listItem(TestTags.Tags.CHIP, 1)).assertTextEquals("family")
         node(listItem(TestTags.Tags.REMOVE, 1)).assert(hasContentDescription("Remove family"))
         click(listItem(TestTags.Tags.REMOVE, 1))
-        node(TestTags.Tags.CHOOSE).performScrollTo().assertTextContains("Choose tags")
+        node(TestTags.Tags.CHOOSE).performScrollTo().assert(hasContentDescription("Choose tags"))
+        assertFalse(shows("Choose tags"))
         click(TestTags.Tags.CHOOSE)
         assertEquals(listOf(EditAction.RemoveTag("family"), EditAction.ChooseTags), taps())
     }
@@ -545,19 +630,47 @@ class EditContentTest {
     }
 
     @Test
-    fun theEditorShowsTheToolbarTheFieldAndDone() {
+    fun theEditorOpensFullScreenWithTheToolbarTheFieldAndDone() {
         show(EditStates.editing("Lake day "))
-        assertFalse(compose.exists(TestTags.Markdown.VIEW))
-        assertFalse(compose.exists(TestTags.Edit.EDIT_NOTE))
+        assertTrue(compose.exists(EditTags.NOTE_EDITOR))
+        assertFalse(compose.exists(EditTags.NOTE_PREVIEW))
+        node(EditTags.NOTE_MODE_CODE).assertIsSelected()
+        node(EditTags.NOTE_MODE_PREVIEW).assertIsNotSelected()
         node(TestTags.Compose.NOTE).assert(editable("Lake day "))
         val labels = listOf("Bold", "Italic", "Strikethrough", "Heading", "Bullet list", "Checklist", "Quote", "Link", "Insert the time")
         MarkdownAction.entries.forEachIndexed { position, action ->
             node(Ids.toolbar(action)).performScrollTo().assert(hasContentDescription(labels[position])).performClick()
             compose.waitForIdle()
         }
-        node(TestTags.Edit.NOTE_DONE).performScrollTo().assert(hasContentDescription("Done editing")).performClick()
+        node(TestTags.Edit.NOTE_DONE).assert(hasContentDescription("Done editing")).performClick()
         compose.waitForIdle()
         assertEquals(MarkdownAction.entries.map { EditAction.Toolbar(it) } + EditAction.NoteDone, taps())
+    }
+
+    @Test
+    fun theNoteEditorTopBarClosesCopiesAndSwitchesModes() {
+        show(EditStates.editing("Lake day "))
+        node(EditTags.NOTE_CLOSE).assert(hasContentDescription("Close")).performClick()
+        compose.waitForIdle()
+        node(EditTags.NOTE_COPY).assert(hasContentDescription("Copy")).performClick()
+        compose.waitForIdle()
+        node(EditTags.NOTE_MODE_PREVIEW).assertTextContains("Preview").performClick()
+        compose.waitForIdle()
+        node(EditTags.NOTE_MODE_CODE).assertTextContains("Code").performClick()
+        compose.waitForIdle()
+        assertEquals(listOf(EditAction.NoteDone, EditAction.CopyNote, EditAction.NoteMode(preview = true), EditAction.NoteMode(preview = false)), taps())
+    }
+
+    @Test
+    fun thePreviewShowsTheRenderedNoteWithoutFieldOrToolbar() {
+        val screen = showSwitchable(EditStates.state(body = EditStates.body(note = "**swim** at the lake"), noteEditor = NoteEditorUi(TextSelection(0, 0), preview = true)))
+        assertTrue(compose.exists(EditTags.NOTE_PREVIEW))
+        node(EditTags.NOTE_MODE_PREVIEW).assertIsSelected()
+        assertFalse(compose.exists(TestTags.Compose.NOTE))
+        assertFalse(compose.exists(Ids.toolbar(MarkdownAction.BOLD)))
+        assertTrue(compose.onAllNodes(hasText("swim at the lake", substring = true) and hasAnyAncestor(hasTestTag(EditTags.NOTE_PREVIEW)), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        screen.switchTo(EditStates.state(body = EditStates.body(note = ""), noteEditor = NoteEditorUi(TextSelection(0, 0), preview = true)))
+        assertTrue(shows("Nothing to preview."))
     }
 
     @Test

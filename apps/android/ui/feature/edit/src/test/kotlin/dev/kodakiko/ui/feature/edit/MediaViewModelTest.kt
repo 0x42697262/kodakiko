@@ -37,6 +37,11 @@ class MediaViewModelTest {
 
     private val EditState.content: EditBody get() = requireNotNull(body)
 
+    private fun TestScope.save(vm: EditViewModel) {
+        vm.onAction(EditAction.Done)
+        runCurrent()
+    }
+
     @Test
     fun swipingOrTappingADotChangesThePage() = runTest {
         val (vm, screen) = open()
@@ -63,12 +68,12 @@ class MediaViewModelTest {
         vm.onAction(EditAction.OpenMediaMenu(P1))
         assertEquals(EditSheet.MediaMenu(P1, MediaKind.PHOTO, canSetCover = true), screen.value.sheet)
         vm.onAction(EditAction.SetCover(P1))
-        runCurrent()
+        save(vm)
         assertEquals(listOf(EntryEdit(mediaOrder = listOf(P1, VOX1))), h.entries.edits)
     }
 
     @Test
-    fun setAsCoverMovesTheItemFirstAndWritesTheOrderAtOnce() = runTest {
+    fun setAsCoverMovesTheItemFirstAndWritesTheOrderOnSave() = runTest {
         val (vm, screen) = open()
         vm.onAction(EditAction.PageChanged(1))
         vm.onAction(EditAction.OpenMediaMenu(VID))
@@ -77,6 +82,8 @@ class MediaViewModelTest {
         assertNull(screen.value.sheet)
         assertEquals(0, screen.value.page)
         assertEquals(listOf(VID, P1, P2), screen.value.content.pages.map { it.mediaId })
+        assertEquals(emptyList<EntryEdit>(), h.entries.edits)
+        save(vm)
         assertEquals(listOf(EntryEdit(mediaOrder = listOf(VID, P1, VOX1, P2))), h.entries.edits)
         assertEquals(listOf(VID, P1, VOX1, P2), h.entries.meta().media.map { it.mediaId })
     }
@@ -91,13 +98,15 @@ class MediaViewModelTest {
     }
 
     @Test
-    fun aCaptionIsTrimmedShownOnItsPageAndWrittenAtOnce() = runTest {
+    fun aCaptionIsTrimmedShownOnItsPageAndWrittenOnSave() = runTest {
         val (vm, screen) = open()
         vm.onAction(EditAction.EditCaption(P2))
         vm.onAction(EditAction.SaveCaption(P2, "  Sunset over the bay  "))
         runCurrent()
         assertNull(screen.value.sheet)
         assertEquals("Sunset over the bay", screen.value.content.pages.single { it.mediaId == P2 }.caption)
+        assertEquals(emptyList<EntryEdit>(), h.entries.edits)
+        save(vm)
         assertEquals(listOf(EntryEdit(captions = mapOf(P2 to "Sunset over the bay"))), h.entries.edits)
         assertEquals("Sunset over the bay", h.entries.meta().media.single { it.mediaId == P2 }.caption)
     }
@@ -108,6 +117,7 @@ class MediaViewModelTest {
         vm.onAction(EditAction.SaveCaption(P1, "   "))
         runCurrent()
         assertNull(screen.value.content.pages.first().caption)
+        save(vm)
         assertEquals(listOf(EntryEdit(captions = mapOf(P1 to ""))), h.entries.edits)
         assertNull(h.entries.meta().media.first().caption)
     }
@@ -116,13 +126,13 @@ class MediaViewModelTest {
     fun aCaptionHoldsOneTo64Characters() = runTest {
         val (vm, _) = open()
         vm.onAction(EditAction.SaveCaption(P2, "x"))
-        runCurrent()
+        save(vm)
         assertEquals("x", h.entries.meta().media.single { it.mediaId == P2 }.caption)
         vm.onAction(EditAction.SaveCaption(P2, "y".repeat(64)))
-        runCurrent()
+        save(vm)
         assertEquals("y".repeat(64), h.entries.meta().media.single { it.mediaId == P2 }.caption)
         vm.onAction(EditAction.SaveCaption(P2, "z".repeat(70)))
-        runCurrent()
+        save(vm)
         assertEquals("z".repeat(64), h.entries.meta().media.single { it.mediaId == P2 }.caption)
     }
 
@@ -141,20 +151,31 @@ class MediaViewModelTest {
     }
 
     @Test
-    fun cropFlushesThenOpensTheCropScreenForThatPhoto() = runTest {
+    fun cropOpensTheCropScreenForThatPhotoAndTheDraftFollowsTheCroppedCopy() = runTest {
         val (vm, screen) = open()
         vm.onAction(EditAction.NoteChanged("before crop", TextSelection(11, 11)))
+        vm.onAction(EditAction.SaveCaption(P2, "cropped soon"))
         vm.onAction(EditAction.OpenMediaMenu(P2))
         vm.onAction(EditAction.Crop(P2))
         runCurrent()
         assertNull(screen.value.sheet)
-        assertEquals("before crop", h.entries.meta().note)
+        assertEquals("", h.entries.meta().note)
+        assertEquals(emptyList<EntryEdit>(), h.entries.edits)
         assertEquals(listOf<EditEvent>(EditEvent.Open(Route.EntryCrop(ENTRY, P2))), screen.events)
-        assertTrue(h.log.indexOf("edit") < h.log.indexOfFirst { it.startsWith("event:") })
+        h.entries.stored[ENTRY] = h.entries.meta().copy(media = h.entries.meta().media.map { if (it.mediaId == P2) photo(CROPPED, 3000, 2000) else it })
+        vm.onAction(EditAction.ScreenVisible(true))
+        runCurrent()
+        assertEquals(listOf(P1, VID, CROPPED), screen.value.content.pages.map { it.mediaId })
+        assertEquals("cropped soon", screen.value.content.pages.last().caption)
+        assertEquals("before crop", screen.value.content.note)
+        assertEquals(listOf(P2 to CROPPED), h.originals.replacements)
+        save(vm)
+        assertEquals("before crop", h.entries.meta().note)
+        assertEquals("cropped soon", h.entries.meta().media.single { it.mediaId == CROPPED }.caption)
     }
 
     @Test
-    fun removeAsksFirstThenRemovesTheItemAtOnce() = runTest {
+    fun removeAsksFirstThenRemovesTheItemFromThePageAndWritesItOnSave() = runTest {
         val (vm, screen) = open()
         vm.onAction(EditAction.PageChanged(2))
         vm.onAction(EditAction.AskRemove(P2))
@@ -166,6 +187,8 @@ class MediaViewModelTest {
         assertEquals(0, screen.value.page)
         assertEquals(listOf(P1, VID), screen.value.content.pages.map { it.mediaId })
         assertEquals(3, screen.value.content.itemCount)
+        assertEquals(emptyList<String>(), h.entries.removed)
+        save(vm)
         assertEquals(listOf(P2), h.entries.removed)
         assertEquals(emptyList<EntryEdit>(), h.entries.edits)
     }
@@ -175,7 +198,7 @@ class MediaViewModelTest {
         val (vm, _) = open()
         vm.onAction(EditAction.NoteChanged("pending", TextSelection(7, 7)))
         vm.onAction(EditAction.Remove(VID))
-        runCurrent()
+        save(vm)
         assertEquals(listOf("removeMedia:$VID", "edit"), h.log.filter { it == "edit" || it.startsWith("removeMedia") })
         assertEquals(listOf(EntryEdit(note = "pending")), h.entries.edits)
     }
@@ -194,6 +217,7 @@ class MediaViewModelTest {
         assertEquals(EditSheet.Remove(P1, MediaKind.PHOTO, last = true), screen.value.sheet)
         vm.onAction(EditAction.Remove(P1))
         runCurrent()
+        save(vm)
         assertEquals(emptyList<String>(), h.entries.removed)
         assertEquals(listOf(P1), screen.value.content.pages.map { it.mediaId })
         assertEquals(listOf(P1), h.entries.meta().media.map { it.mediaId })
@@ -206,9 +230,10 @@ class MediaViewModelTest {
         assertEquals(EditSheet.Remove(P1, MediaKind.PHOTO, last = false), screen.value.sheet)
         vm.onAction(EditAction.Remove(P1))
         runCurrent()
-        assertEquals(listOf(P1), h.entries.removed)
         assertEquals(emptyList<EditPage>(), screen.value.content.pages)
         assertEquals(listOf(EditVoiceNote(VOX1, 20_000)), screen.value.content.voiceNotes)
+        save(vm)
+        assertEquals(listOf(P1), h.entries.removed)
     }
 
     @Test

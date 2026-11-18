@@ -77,13 +77,14 @@ class ActionsAndVoiceViewModelTest {
     }
 
     @Test
-    fun pasteReadsTheClipboardFlushesThenImportsTheImageAsANewPage() = runTest {
+    fun pasteReadsTheClipboardThenImportsTheImageAsANewPageAndKeepsTheDraft() = runTest {
         h.clipboard.image = clip
         val (vm, screen) = open()
         vm.onAction(EditAction.NoteChanged("pasting", TextSelection(7, 7)))
         vm.onAction(EditAction.Paste)
         runCurrent()
-        assertEquals(listOf("readClipboard", "edit", "importOne", "addMedia:$PASTED"), writes())
+        assertEquals(listOf("readClipboard", "importOne", "addMedia:$PASTED"), writes())
+        assertEquals("", h.entries.meta().note)
         assertEquals(ImportCall(clip, ImportSlots(used = 4, limit = 20)), h.imports.calls.single())
         assertEquals(listOf(P1, VID, P2, PASTED), screen.value.content.pages.map { it.mediaId })
         assertEquals(5, screen.value.content.itemCount)
@@ -157,7 +158,9 @@ class ActionsAndVoiceViewModelTest {
         vm.onAction(EditAction.StopRecording)
         runCurrent()
         assertNull(screen.value.recording)
-        assertEquals(listOf("recordStart", "recordStop", "edit", "importVoiceNote", "addMedia:$RECORDED"), writes())
+        assertEquals(listOf("recordStart", "recordStop", "importVoiceNote", "addMedia:$RECORDED"), writes())
+        assertEquals("talking", screen.value.content.note)
+        assertEquals("", h.entries.meta().note)
         val call = h.imports.calls.single()
         assertEquals(requireNotNull(h.recorder.result).input, call.input)
         assertEquals(VoiceNoteInfo(2_400, "audio/mp4"), call.voice)
@@ -254,13 +257,16 @@ class ActionsAndVoiceViewModelTest {
     }
 
     @Test
-    fun aVoiceNoteIsRemovedWithoutAskingAndAtOnce() = runTest {
+    fun aVoiceNoteIsRemovedWithoutAskingAndWrittenOnSave() = runTest {
         val (vm, screen) = open()
         vm.onAction(EditAction.RemoveVoice(VOX1))
         runCurrent()
         assertEquals(emptyList<EditVoiceNote>(), screen.value.content.voiceNotes)
-        assertEquals(listOf(VOX1), h.entries.removed)
+        assertEquals(emptyList<String>(), h.entries.removed)
         assertNull(screen.value.sheet)
+        vm.onAction(EditAction.Done)
+        runCurrent()
+        assertEquals(listOf(VOX1), h.entries.removed)
     }
 
     @Test
