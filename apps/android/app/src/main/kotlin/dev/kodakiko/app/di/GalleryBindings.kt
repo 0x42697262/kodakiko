@@ -3,6 +3,7 @@ package dev.kodakiko.app.di
 import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.gallery.AccountMedia
 import dev.kodakiko.app.gallery.AccountMediaDeps
@@ -219,13 +220,14 @@ object GalleryBindings {
         flushes: EditFlushes,
         recorder: AppEditRecorder,
         tray: CaptureTray,
+        deviceDeletes: PendingDeviceDeletes,
         collectionNames: CollectionNames,
         accounts: AccountService,
         shareOut: Lazy<ShareOutService>,
     ): LifecycleSteps = LifecycleSteps(
         LifecycleSteps.LifecycleSync(sync, linkUploader, exporter) { accountMode.value == AccountMode.LOCAL },
         index,
-        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, collectionNames, accounts, shareOut,
+        media, tempFiles, filter, notices, settings, entryKeys, videos, flushes, recorder, tray, deviceDeletes, collectionNames, accounts, shareOut,
     )
 
     @Provides

@@ -25,6 +25,32 @@ interface EditClipboard {
 
 fun interface EditPicks {
     suspend fun copy(uri: Uri): MediaInput?
+
+    fun imported(input: MediaInput, mediaId: String?) {}
+}
+
+interface DeviceOriginals {
+    fun deletableCount(mediaIds: Collection<String>): Int
+
+    fun replaced(oldMediaId: String, newMediaId: String)
+
+    fun keep(mediaIds: Collection<String>)
+
+    suspend fun delete(mediaIds: Collection<String>)
+
+    fun forget(mediaIds: Collection<String>)
+}
+
+object NoDeviceOriginals : DeviceOriginals {
+    override fun deletableCount(mediaIds: Collection<String>): Int = 0
+
+    override fun replaced(oldMediaId: String, newMediaId: String) = Unit
+
+    override fun keep(mediaIds: Collection<String>) = Unit
+
+    override suspend fun delete(mediaIds: Collection<String>) = Unit
+
+    override fun forget(mediaIds: Collection<String>) = Unit
 }
 
 data class RecordedVoiceNote(val input: MediaInput, val durationMs: Long, val mimeType: String)
@@ -93,6 +119,7 @@ class EditDeps(
     val flushes: EditFlushes,
     val clock: EditClock,
     val picks: EditPicks = EditPicks { null },
+    val originals: DeviceOriginals = NoDeviceOriginals,
 )
 
 class CropDeps(

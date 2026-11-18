@@ -20,6 +20,11 @@ import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.data.files.TempFiles
 import dev.kodakiko.data.files.TempPurpose
 import dev.kodakiko.domain.DeviceLocation
+import dev.kodakiko.log.DebugLog
+import dev.kodakiko.log.LogEvents
+import dev.kodakiko.log.LogFields
+import dev.kodakiko.log.LogLevel
+import dev.kodakiko.log.LogServices
 import dev.kodakiko.platform.camera.CameraFacing
 import dev.kodakiko.platform.camera.CameraSession
 import dev.kodakiko.platform.camera.PhotoResult
@@ -177,7 +182,13 @@ class AppCapturePermissions(private val permissions: ActivityPermissions) : Capt
     override suspend fun requestMicrophone(): Boolean = permissions.request(arrayOf(Manifest.permission.RECORD_AUDIO))
 }
 
-class AppCaptureFiles(private val context: Context, private val tempFiles: TempFiles, private val ioDispatcher: CoroutineDispatcher) : CaptureFiles {
+class AppCaptureFiles(
+    private val context: Context,
+    private val tempFiles: TempFiles,
+    private val deviceDeletes: PendingDeviceDeletes,
+    private val log: DebugLog,
+    private val ioDispatcher: CoroutineDispatcher,
+) : CaptureFiles {
     private val copier by lazy { UriCopier(context) }
 
     override fun phoneCameraOutput(video: Boolean): File {
@@ -191,7 +202,26 @@ class AppCaptureFiles(private val context: Context, private val tempFiles: TempF
         val temp = tempFiles.create(TempPurpose.IMPORT, extensionOf(uri))
         temp.close()
         val picked = copier.copy(uri, temp.file) ?: return@withContext null
+        rememberOriginal(uri, picked.file)
         MediaInput(MediaOrigin.PICKER, picked.file, picked.displayName, null)
+    }
+
+    override fun imported(input: MediaInput, mediaId: String?) {
+        deviceDeletes.imported(input.file, mediaId)
+    }
+
+    override fun forget(mediaIds: Collection<String>) {
+        deviceDeletes.forget(mediaIds)
+    }
+
+    private fun rememberOriginal(uri: Uri, file: File) {
+        if (!DeviceMediaUris.supported()) return
+        val mapped = DeviceMediaUris.mediaStoreUri(context, uri)
+        if (mapped != null) {
+            deviceDeletes.picked(file, mapped)
+        } else {
+            log.record(LogLevel.DEBUG, LogServices.IMPORT, LogEvents.DEVICE_ORIGINAL_UNMAPPED, mapOf(LogFields.COUNT to 1))
+        }
     }
 
     private fun extensionOf(uri: Uri): String {

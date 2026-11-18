@@ -1,5 +1,6 @@
 package dev.kodakiko.app.gallery
 
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.edit.AppEditRecorder
 import dev.kodakiko.app.edit.EditAdapterConstants
 import dev.kodakiko.app.viewer.AppVideoSource
@@ -33,6 +34,7 @@ class LifecycleSteps(
     private val flushes: EditFlushes,
     private val recorder: AppEditRecorder,
     private val tray: CaptureTray,
+    private val deviceDeletes: PendingDeviceDeletes,
     private val collectionNames: CollectionNames,
     private val accounts: AccountService,
     private val shareOut: Lazy<ShareOutService>,
@@ -47,7 +49,10 @@ class LifecycleSteps(
         LifecycleStep(LockStepNames.RELEASE_VIDEO) { videos.releaseAll() },
         LifecycleStep(LockStepNames.RELEASE_ORIGINALS) { media.releaseOriginals() },
         LifecycleStep(LockStepNames.CLEAR_THUMBNAILS) { media.clear() },
-        LifecycleStep(LockStepNames.CLEAR_TRAY) { tray.clear(true) },
+        LifecycleStep(LockStepNames.CLEAR_TRAY) {
+            deviceDeletes.clear()
+            tray.clear(true)
+        },
         LifecycleStep(LockStepNames.WIPE_TEMP) { tempFiles.wipe() },
         LifecycleStep(LockStepNames.CLEAR_INDEX) { index.clear() },
         LifecycleStep(LockStepNames.CLEAR_UI_STATE) {

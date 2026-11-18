@@ -84,6 +84,8 @@ class AppEditClipboard(
 
 class AppEditPicks(private val files: AppCaptureFiles, private val unlockedWork: UnlockedWork) : EditPicks {
     override suspend fun copy(uri: Uri): MediaInput? = unlockedWork.runUnlocked { files.copyPicked(uri) }
+
+    override fun imported(input: MediaInput, mediaId: String?) = files.imported(input, mediaId)
 }
 
 class AppEditRecorder(context: Context, private val tempFiles: TempFiles, private val ioDispatcher: CoroutineDispatcher) : EditRecorder {

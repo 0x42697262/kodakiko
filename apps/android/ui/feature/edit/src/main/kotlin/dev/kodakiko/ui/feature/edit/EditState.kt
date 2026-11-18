@@ -47,6 +47,9 @@ sealed interface EditSheet {
 
     @Immutable
     data class Unsaved(val exit: EditExit, val isNew: Boolean) : EditSheet
+
+    @Immutable
+    data class DeviceOriginals(val count: Int, val mediaIds: List<String>, val exit: EditExit, val notice: Boolean) : EditSheet
 }
 
 enum class EditExit { BACK, VIEW }
@@ -164,6 +167,10 @@ sealed interface EditAction {
     data object SaveChanges : EditAction
 
     data object DiscardChanges : EditAction
+
+    data object KeepDeviceOriginals : EditAction
+
+    data object DeleteDeviceOriginals : EditAction
 
     data class OpenLink(val url: String) : EditAction
 }

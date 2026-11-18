@@ -90,11 +90,13 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             EditAction.ViewEntry -> requestExit(EditExit.VIEW)
             EditAction.SaveChanges -> saveAndExit()
             EditAction.DiscardChanges -> discard()
+            EditAction.KeepDeviceOriginals -> keepDeviceOriginals()
+            EditAction.DeleteDeviceOriginals -> deleteDeviceOriginals()
             EditAction.Trash -> trash()
             is EditAction.PageChanged -> ui.update { it.copy(page = action.page) }
             is EditAction.ScreenVisible -> screenVisible(action.visible)
             is EditAction.OpenMediaMenu -> openMediaMenu(action.mediaId)
-            EditAction.DismissSheet -> ui.update { it.copy(sheet = null) }
+            EditAction.DismissSheet -> dismissSheet()
             is EditAction.EditCaption -> ui.update { it.copy(sheet = EditSheet.Caption(action.mediaId, it.draft?.captions?.get(action.mediaId).orEmpty())) }
             is EditAction.SaveCaption -> saveCaption(action.mediaId, action.caption)
             is EditAction.SetCover -> setCover(action.mediaId)
@@ -215,8 +217,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
     private fun done() {
         viewModelScope.launch {
             if (!save()) return@launch
-            deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
-            exitNow(EditExit.BACK)
+            savedExit(EditExit.BACK, notice = true)
         }
     }
 
@@ -225,17 +226,62 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         ui.update { it.copy(sheet = null) }
         viewModelScope.launch {
             if (!save()) return@launch
-            if (exit == EditExit.BACK) deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
-            exitNow(exit)
+            savedExit(exit, notice = exit == EditExit.BACK)
+        }
+    }
+
+    private fun savedExit(exit: EditExit, notice: Boolean) {
+        val mediaIds = ui.value.metadata?.media?.map { it.mediaId }.orEmpty()
+        val count = deps.originals.deletableCount(mediaIds)
+        if (count > 0) {
+            ui.update { it.copy(sheet = EditSheet.DeviceOriginals(count, mediaIds, exit, notice)) }
+        } else {
+            leaveSaved(exit, notice)
+        }
+    }
+
+    private fun leaveSaved(exit: EditExit, notice: Boolean) {
+        if (notice) deps.notices.value = GalleryNotice.Saved(deps.clock.nowMs())
+        exitNow(exit)
+    }
+
+    private fun dismissSheet() {
+        if (ui.value.sheet is EditSheet.DeviceOriginals) keepDeviceOriginals() else ui.update { it.copy(sheet = null) }
+    }
+
+    private fun takeDeviceOriginalsSheet(): EditSheet.DeviceOriginals? {
+        val sheet = ui.value.sheet as? EditSheet.DeviceOriginals ?: return null
+        ui.update { it.copy(sheet = null) }
+        return sheet
+    }
+
+    private fun keepDeviceOriginals() {
+        val sheet = takeDeviceOriginalsSheet() ?: return
+        deps.originals.keep(sheet.mediaIds)
+        leaveSaved(sheet.exit, sheet.notice)
+    }
+
+    private fun deleteDeviceOriginals() {
+        val sheet = takeDeviceOriginalsSheet() ?: return
+        viewModelScope.launch {
+            attempt { deps.originals.delete(sheet.mediaIds) }
+            leaveSaved(sheet.exit, sheet.notice)
         }
     }
 
     private fun discard() {
         val exit = pendingExit()
+        val current = ui.value
+        val mediaIds = current.metadata?.media?.map { it.mediaId }.orEmpty() + current.imported
         ui.update { it.copy(sheet = null) }
         viewModelScope.launch {
             val discarded = work.withLock { if (isNew) deleteNew() else removeImported() }
-            if (discarded) exitNow(exit) else ui.update { it.copy(failed = true) }
+            if (discarded) {
+                deps.originals.forget(mediaIds)
+                exitNow(exit)
+            } else {
+                ui.update { it.copy(failed = true) }
+            }
         }
     }
 
@@ -267,6 +313,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         }
         val target = cropping
         var consumed = false
+        var replacedIds: Map<String, String> = emptyMap()
         ui.update { current ->
             val previous = current.metadata
             val draft = current.draft
@@ -279,6 +326,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             val removed = before.filter { it !in after }
             val replaced = if (target != null && target in removed && added.isNotEmpty()) mapOf(target to added.first()) else emptyMap()
             consumed = replaced.isNotEmpty()
+            replacedIds = replaced
             val imported = (current.imported.map { replaced[it] ?: it } + added.filter { it !in replaced.values }).filter { it in after }.toSet()
             val wasFavorite = previous.favorite == true
             current.copy(
@@ -289,6 +337,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             )
         }
         if (consumed) cropping = null
+        replacedIds.forEach { (old, new) -> deps.originals.replaced(old, new) }
     }
 
     private suspend fun reload() {
@@ -387,7 +436,7 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
         viewModelScope.launch {
             val input = attempt { deps.clipboard.readImage() } ?: return@launch
             work.withLock {
-                if (attempt { importLocked(input) } != true) ui.update { it.copy(failed = true) }
+                if (attempt { importLocked(input) } == null) ui.update { it.copy(failed = true) }
                 reloadLocked()
             }
         }
@@ -404,19 +453,21 @@ class EditViewModel(private val deps: EditDeps, private val entryId: String, pri
             work.withLock {
                 for (uri in uris) {
                     val input = attempt { deps.picks.copy(uri) }
-                    if (input == null || attempt { importLocked(input) } != true) ui.update { it.copy(failed = true) }
+                    val mediaId = input?.let { attempt { importLocked(it) } }
+                    if (input != null) deps.picks.imported(input, mediaId)
+                    if (mediaId == null) ui.update { it.copy(failed = true) }
                 }
                 reloadLocked()
             }
         }
     }
 
-    private suspend fun importLocked(input: MediaInput): Boolean {
+    private suspend fun importLocked(input: MediaInput): String? {
         val current = deps.entries.readMetadata(entryId)
         val outcome = deps.imports.importOne(input, ImportSlots(used = current.media.size, limit = limit()))
-        if (outcome !is ImportOutcome.Imported) return false
+        if (outcome !is ImportOutcome.Imported) return null
         deps.entries.addMedia(entryId, listOf(outcome.media))
-        return true
+        return outcome.media.mediaId
     }
 
     private fun startRecording() {

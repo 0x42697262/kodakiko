@@ -4,6 +4,8 @@ import android.content.Context
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppConstants
 import dev.kodakiko.app.capture.AppCaptureFiles
+import dev.kodakiko.app.capture.AppDeviceOriginals
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.edit.ActivityShareLauncher
 import dev.kodakiko.app.edit.AppCropOriginals
 import dev.kodakiko.app.edit.AppEditClipboard
@@ -22,6 +24,7 @@ import dev.kodakiko.app.viewer.AppViewerVoice
 import dev.kodakiko.contract.encodeBytes
 import dev.kodakiko.crypto.Sodium
 import dev.kodakiko.data.files.TempFiles
+import dev.kodakiko.log.DebugLog
 import dev.kodakiko.service.account.ConfigService
 import dev.kodakiko.service.account.DiskFileStore
 import dev.kodakiko.service.account.Observable
@@ -75,6 +78,7 @@ class EditDepsFactory(
     private val notices: Observable<GalleryNotice?>,
     private val flushes: EditFlushes,
     private val picks: AppEditPicks,
+    private val originals: AppDeviceOriginals,
     private val ioDispatcher: CoroutineDispatcher,
 ) {
     fun create(): EditDeps = EditDeps(
@@ -91,6 +95,7 @@ class EditDepsFactory(
         flushes = flushes,
         clock = SystemEditClock,
         picks = picks,
+        originals = originals,
     )
 }
 
@@ -181,6 +186,16 @@ object EditBindings {
 
     @Provides
     @SingleIn(AppScope::class)
+    fun deviceOriginals(
+        context: Context,
+        holder: ActivityHolder,
+        deletes: PendingDeviceDeletes,
+        log: DebugLog,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): AppDeviceOriginals = AppDeviceOriginals(context, holder, deletes, log, ioDispatcher)
+
+    @Provides
+    @SingleIn(AppScope::class)
     fun editRecorder(context: Context, tempFiles: TempFiles, @IoDispatcher ioDispatcher: CoroutineDispatcher): AppEditRecorder =
         AppEditRecorder(context, tempFiles, ioDispatcher)
 
@@ -218,8 +233,10 @@ object EditBindings {
         notices: Observable<GalleryNotice?>,
         flushes: EditFlushes,
         picks: AppEditPicks,
+        originals: AppDeviceOriginals,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): EditDepsFactory = EditDepsFactory(context, entries, imports, index, config, settings, clipboard, recorder, media, sharing, notices, flushes, picks, ioDispatcher)
+    ): EditDepsFactory =
+        EditDepsFactory(context, entries, imports, index, config, settings, clipboard, recorder, media, sharing, notices, flushes, picks, originals, ioDispatcher)
 
     @Provides
     fun cropDeps(entries: EntriesService, imports: ImportPipeline, originals: CropOriginals, config: ConfigService): CropDeps =

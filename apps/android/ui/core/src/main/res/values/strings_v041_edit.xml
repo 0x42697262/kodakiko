@@ -7,6 +7,10 @@
     <string name="edit_unsaved_save">Save</string>
     <string name="edit_unsaved_discard">Discard</string>
     <string name="edit_unsaved_keep">Keep editing</string>
+    <string name="edit_device_originals_title">Delete %1$d from this device?</string>
+    <string name="edit_device_originals_body">Saved. The originals are still in your phone gallery. Android asks you to confirm before deleting them.</string>
+    <string name="edit_device_originals_keep">Keep</string>
+    <string name="edit_device_originals_delete">Delete</string>
     <string name="edit_note_close">Close</string>
     <string name="edit_note_copy">Copy</string>
     <string name="edit_note_code">Code</string>

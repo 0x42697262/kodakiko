@@ -45,6 +45,7 @@ internal fun EditSheets(state: EditState, body: EditBody, onAction: (EditAction)
         is EditSheet.Caption -> CaptionSheet(sheet, onAction)
         is EditSheet.Remove -> RemoveSheet(sheet, onAction)
         is EditSheet.Unsaved -> UnsavedSheet(sheet, onAction)
+        is EditSheet.DeviceOriginals -> DeviceOriginalsSheet(sheet, onAction)
         is EditSheet.ChooseTags -> ChooseTagsSheet(
             choices = sheet.tags,
             selected = body.tags,
@@ -149,6 +150,30 @@ private fun RemoveSheet(sheet: EditSheet.Remove, onAction: (EditAction) -> Unit)
                 ) {
                     Text(text = stringResource(R.string.edit_remove_confirm))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DeviceOriginalsSheet(sheet: EditSheet.DeviceOriginals, onAction: (EditAction) -> Unit) {
+    AdaptiveSheet(onDismissRequest = { onAction(EditAction.DismissSheet) }, modifier = Modifier.testTag(EditTags.DEVICE_ORIGINALS_SHEET)) {
+        SheetColumn {
+            Text(text = stringResource(R.string.edit_device_originals_title, sheet.count), style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(R.string.edit_device_originals_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Button(onClick = { onAction(EditAction.KeepDeviceOriginals) }, modifier = Modifier.fillMaxWidth().testTag(EditTags.DEVICE_ORIGINALS_KEEP)) {
+                Text(text = stringResource(R.string.edit_device_originals_keep))
+            }
+            OutlinedButton(
+                onClick = { onAction(EditAction.DeleteDeviceOriginals) },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                modifier = Modifier.fillMaxWidth().testTag(EditTags.DEVICE_ORIGINALS_DELETE),
+            ) {
+                Text(text = stringResource(R.string.edit_device_originals_delete))
             }
         }
     }
