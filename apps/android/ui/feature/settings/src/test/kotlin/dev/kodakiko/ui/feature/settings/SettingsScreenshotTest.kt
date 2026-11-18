@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import dev.kodakiko.contract.OutboxKind
 import dev.kodakiko.data.db.AppTheme
+import dev.kodakiko.data.db.ThemePreset
 import dev.kodakiko.data.media.ThumbnailModeSwitch
 import dev.kodakiko.data.secure.AccountMode
 import dev.kodakiko.service.backup.ExportPhase
@@ -111,11 +112,12 @@ class SettingsScreenshotTest {
     }
 
     @Test
-    fun appearanceThemeDialog() {
+    fun appearanceThemeChoices() {
         host(Route.SettingsAppearance)
-        tap(TestTags.Settings.THEME)
-        await(SettingsTestTags.dialog(TestTags.Settings.THEME))
-        captureScreenScreenshot("appearance/theme_dialog")
+        tap(SettingsTestTags.option(TestTags.Settings.THEME, "dark"))
+        tap(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.NORD.ordinal))
+        await(TestTags.Settings.START_SCREEN)
+        compose.onRoot().captureScreenshot("appearance/theme_choices")
     }
 
     @Test

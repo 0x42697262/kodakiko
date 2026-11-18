@@ -3,6 +3,7 @@ package dev.kodakiko.app.di
 import android.app.Application
 import dev.kodakiko.app.ActivityHolder
 import dev.kodakiko.app.AppStartup
+import dev.kodakiko.app.capture.PendingDeviceDeletes
 import dev.kodakiko.app.gallery.AppDeviceSettings
 import dev.kodakiko.app.navigation.AppNavigator
 import dev.kodakiko.app.navigation.HomeSettings
@@ -61,6 +62,8 @@ interface AppGraph : ViewModelGraph {
     val editImages: EditImages
 
     val captureTray: CaptureTray
+
+    val pendingDeviceDeletes: PendingDeviceDeletes
 
     val cameraPreview: CameraPreview
 

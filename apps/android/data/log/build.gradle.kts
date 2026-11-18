@@ -6,4 +6,5 @@ dependencies {
     api(projects.shared.log)
     api(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.junit4)
 }

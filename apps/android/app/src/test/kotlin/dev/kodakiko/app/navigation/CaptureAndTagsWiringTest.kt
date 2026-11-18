@@ -1,5 +1,6 @@
 package dev.kodakiko.app.navigation
 
+import android.net.Uri
 import android.view.WindowManager
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
@@ -41,6 +42,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
 class CaptureAndTagsWiringTest {
@@ -137,6 +139,21 @@ class CaptureAndTagsWiringTest {
         compose.waitUntil(WAIT_MS) { tray.items.isEmpty() && item.mediaKey.all { it == 0.toByte() } }
         assertEquals(emptyList<ImportedMedia>(), tray.items)
         assertEquals(generation + 1, tray.generation)
+    }
+
+    @Test
+    @Config(application = UpdatedV031App::class)
+    fun f15TheClearTrayLockStepForgetsTheDeviceOriginalsWaitingForADeleteOffer() {
+        unlock()
+        val deletes = app.graph.pendingDeviceDeletes
+        val picked = File(app.cacheDir, "picked-before-lock.jpg")
+        deletes.picked(picked, Uri.parse("content://media/external/images/media/77"))
+        deletes.imported(picked, "originalwaitingforlock")
+        assertEquals(1, deletes.uris(listOf("originalwaitingforlock")).size)
+        tap(TestTags.Gallery.MORE)
+        tap(TestTags.Lock.LOCK_NOW)
+        awaitTag(TestTags.Lock.PASSWORD)
+        compose.waitUntil(WAIT_MS) { deletes.uris(listOf("originalwaitingforlock")).isEmpty() }
     }
 
     @Test

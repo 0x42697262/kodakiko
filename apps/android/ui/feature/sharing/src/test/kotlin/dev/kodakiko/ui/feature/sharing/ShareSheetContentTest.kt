@@ -264,4 +264,36 @@ class ShareSheetContentTest {
     private companion object {
         const val WAIT_MS = 5_000L
     }
+
+    @Test
+    fun f18OneItemHidesTheItemGrid() {
+        render(sheet(tab = ShareTab.TO_APPS, apps = apps(items = pair.take(1))))
+        assertTrue(compose.exists(TestTags.Share.PICKER))
+        assertFalse(compose.exists(listItem(TestTags.Share.ITEM, 0)))
+        compose.onNodeWithTag(TestTags.Share.SEND).assert(labeled("Share 1 item · 2 MB")).assertIsEnabled()
+    }
+
+    @Test
+    fun f18TheTextOptionsHideBehindIncludeTextWhichIsOffByDefault() {
+        render(sheet(tab = ShareTab.TO_APPS))
+        compose.onNodeWithTag(TestTags.Share.INCLUDE_TEXT).assert(labeled("Include text")).assert(notChosen())
+        assertFalse(compose.exists(SharingTestTags.TEXT_NONE))
+        assertFalse(compose.exists(SharingTestTags.TEXT_CAPTIONS))
+        click(TestTags.Share.INCLUDE_TEXT)
+        compose.onNodeWithTag(TestTags.Share.INCLUDE_TEXT).assert(chosen())
+        assertTrue(compose.exists(SharingTestTags.TEXT_NONE))
+        assertTrue(compose.exists(SharingTestTags.TEXT_CAPTIONS_AND_NOTE))
+        assertEquals(emptyList<ShareSheetAction>(), actions)
+        click(SharingTestTags.TEXT_CAPTIONS)
+        click(TestTags.Share.INCLUDE_TEXT)
+        assertFalse(compose.exists(SharingTestTags.TEXT_CAPTIONS))
+        assertEquals(listOf(ShareSheetAction.ChooseText(ShareTextOption.CAPTIONS), ShareSheetAction.ChooseText(ShareTextOption.NONE)), actions)
+    }
+
+    @Test
+    fun f18AChosenTextOptionOpensWithIncludeTextOn() {
+        render(sheet(tab = ShareTab.TO_APPS, apps = apps(option = ShareTextOption.CAPTIONS_AND_NOTE)))
+        compose.onNodeWithTag(TestTags.Share.INCLUDE_TEXT).assert(chosen())
+        compose.onNodeWithTag(SharingTestTags.TEXT_CAPTIONS_AND_NOTE).assert(chosen())
+    }
 }

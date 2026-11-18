@@ -20,9 +20,11 @@ import dev.kodakiko.app.FakeAndroidKeyStore
 import dev.kodakiko.app.MainActivity
 import dev.kodakiko.app.UpdatedV031App
 import dev.kodakiko.app.V031Fixture
+import dev.kodakiko.ui.core.EditTags
 import dev.kodakiko.ui.core.TestTags
 import dev.kodakiko.ui.core.TestTags.listItem
 import org.junit.After
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +58,12 @@ class EditWiringTest {
         compose.waitForIdle()
     }
 
+    private fun tap(tag: String) {
+        awaitTag(tag)
+        compose.onNodeWithTag(tag).performClick()
+        compose.waitForIdle()
+    }
+
     private fun unlock() {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         awaitTag(TestTags.Lock.PASSWORD)
@@ -72,7 +80,7 @@ class EditWiringTest {
 
     @Test
     @Config(application = UpdatedV031App::class)
-    fun theViewersPencilOpensTheEditPageAndANoteTypedThereIsSavedWhenLeaving() {
+    fun theViewersPencilOpensTheEditPageAndANoteTypedThereIsSavedWhenBackAsksAndSaveIsChosen() {
         unlock()
         click(listItem(TestTags.Gallery.TILE, 0))
         awaitTag(TestTags.Viewer.SCREEN)
@@ -87,7 +95,12 @@ class EditWiringTest {
         compose.waitForIdle()
         compose.onNodeWithTag(TestTags.Compose.NOTE)
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("Lake day **swim**")))
+        tap(TestTags.Edit.NOTE_DONE)
+        compose.waitUntil(WAIT_MS) { !exists(EditTags.NOTE_EDITOR) }
         click(TestTags.Compose.BACK)
+        awaitTag(EditTags.UNSAVED_SHEET)
+        assertFalse(exists(TestTags.Viewer.SCREEN))
+        tap(EditTags.UNSAVED_SAVE)
         awaitTag(TestTags.Viewer.SCREEN)
         openEditPage()
         awaitTag(TestTags.Markdown.VIEW)

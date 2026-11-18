@@ -12,10 +12,13 @@ import dev.kodakiko.data.db.DeviceSettings
 import dev.kodakiko.data.db.GalleryDisplayMode
 import dev.kodakiko.data.db.GalleryGroup
 import dev.kodakiko.data.db.StartScreen
+import dev.kodakiko.data.db.ThemePreset
 import dev.kodakiko.data.db.TimeFormat
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
+import dev.kodakiko.ui.core.TestTags.listItem
 import dev.kodakiko.ui.core.navigation.Route
+import dev.kodakiko.ui.core.theme.ThemePresets
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -92,17 +95,19 @@ class AppearanceSettingsTest : PreferenceScreenHarness() {
     }
 
     @Test
-    fun theRowsFollowTheV031OrderWithDynamicColorWhenTheDeviceHasIt() {
+    fun theThemeSectionComesFirstWithDynamicColorWhenTheDeviceHasItThenTheV031Rows() {
         open()
         assertTrue(compose.showsText(text(R.string.prefs_appearance)))
+        assertTrue(compose.showsText(text(R.string.prefs_theme)))
         assertInOrder(
             listOf(
+                TestTags.Settings.THEME,
+                TestTags.Settings.DYNAMIC_COLOR,
+                listItem(TestTags.Settings.THEME_PRESET, ThemePreset.MONOCHROME.ordinal),
+                TestTags.Settings.PURE_BLACK,
                 TestTags.Settings.FULL_SCREEN,
                 TestTags.Settings.HIDE_BARS_ON_SCROLL,
-                TestTags.Settings.THEME,
                 TestTags.Settings.HAPTICS,
-                TestTags.Settings.DYNAMIC_COLOR,
-                TestTags.Settings.PURE_BLACK,
                 TestTags.Settings.TIME_FORMAT,
                 TestTags.Settings.DATE_FORMAT,
                 TestTags.Settings.RELATIVE_DATES,
@@ -114,9 +119,11 @@ class AppearanceSettingsTest : PreferenceScreenHarness() {
     @Test
     fun dynamicColorIsHiddenWhereTheDeviceCannotUseIt() {
         h.dynamicColor = false
+        h.store.set(defaults.copy(dynamicColor = true))
         open()
         assertFalse(compose.exists(TestTags.Settings.DYNAMIC_COLOR))
         assertTrue(compose.exists(TestTags.Settings.PURE_BLACK))
+        compose.onNodeWithTag(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.DEFAULT.ordinal)).assert(selected())
     }
 
     @Test
@@ -125,9 +132,9 @@ class AppearanceSettingsTest : PreferenceScreenHarness() {
         val expected = mapOf(
             TestTags.Settings.FULL_SCREEN to listOf(R.string.prefs_full_screen, R.string.prefs_full_screen_summary),
             TestTags.Settings.HIDE_BARS_ON_SCROLL to listOf(R.string.prefs_hide_bars_on_scroll, R.string.prefs_hide_bars_on_scroll_summary),
-            TestTags.Settings.THEME to listOf(R.string.prefs_theme, R.string.prefs_theme_system),
+            TestTags.Settings.THEME to listOf(R.string.prefs_theme_light, R.string.theme_mode_system, R.string.prefs_theme_dark),
             TestTags.Settings.HAPTICS to listOf(R.string.prefs_haptics, R.string.prefs_haptics_summary),
-            TestTags.Settings.DYNAMIC_COLOR to listOf(R.string.prefs_dynamic_color, R.string.prefs_dynamic_color_summary),
+            TestTags.Settings.DYNAMIC_COLOR to listOf(R.string.theme_preset_dynamic),
             TestTags.Settings.PURE_BLACK to listOf(R.string.prefs_pure_black, R.string.prefs_pure_black_summary),
             TestTags.Settings.TIME_FORMAT to listOf(R.string.prefs_time_format, R.string.prefs_time24),
             TestTags.Settings.DATE_FORMAT to listOf(R.string.prefs_date_format, R.string.prefs_date_system),
@@ -146,7 +153,6 @@ class AppearanceSettingsTest : PreferenceScreenHarness() {
         toggles(TestTags.Settings.FULL_SCREEN) { it.fullScreen }
         toggles(TestTags.Settings.HIDE_BARS_ON_SCROLL) { it.hideBarsOnScroll }
         toggles(TestTags.Settings.HAPTICS) { it.hapticFeedback }
-        toggles(TestTags.Settings.DYNAMIC_COLOR) { it.dynamicColor }
         toggles(TestTags.Settings.PURE_BLACK) { it.pureBlack }
         toggles(TestTags.Settings.RELATIVE_DATES) { it.relativeDates }
         assertEquals(defaults, h.store.value)
@@ -161,18 +167,57 @@ class AppearanceSettingsTest : PreferenceScreenHarness() {
     }
 
     @Test
-    fun themeOffersSystemLightAndDarkAndWritesTheChoice() {
+    fun themeOffersLightSystemAndDarkInARowAndWritesTheChoice() {
         open()
-        click(TestTags.Settings.THEME)
-        await(SettingsTestTags.dialog(TestTags.Settings.THEME))
-        compose.onNodeWithTag(SettingsTestTags.option(TestTags.Settings.THEME, "system")).assert(labeled(text(R.string.prefs_theme_system))).assert(selected())
-        compose.onNodeWithTag(SettingsTestTags.option(TestTags.Settings.THEME, "light")).assert(labeled(text(R.string.prefs_theme_light)))
-        compose.onNodeWithTag(SettingsTestTags.option(TestTags.Settings.THEME, "dark")).assert(labeled(text(R.string.prefs_theme_dark)))
-        tap(SettingsTestTags.option(TestTags.Settings.THEME, "dark"))
+        assertFalse(compose.exists(SettingsTestTags.dialog(TestTags.Settings.THEME)))
+        val light = SettingsTestTags.option(TestTags.Settings.THEME, "light")
+        val system = SettingsTestTags.option(TestTags.Settings.THEME, "system")
+        val dark = SettingsTestTags.option(TestTags.Settings.THEME, "dark")
+        compose.onNodeWithTag(system).assert(labeled(text(R.string.theme_mode_system))).assert(selected())
+        compose.onNodeWithTag(light).assert(labeled(text(R.string.prefs_theme_light)))
+        compose.onNodeWithTag(dark).assert(labeled(text(R.string.prefs_theme_dark)))
+        assertInOrder(listOf(light, system, dark))
+        assertEquals(compose.topOf(light), compose.topOf(dark))
+        tap(dark)
         assertOnlyChanged(defaults, defaults.copy(appTheme = AppTheme.DARK))
+        compose.onNodeWithTag(dark).assert(selected())
         compose.onNodeWithTag(TestTags.Settings.THEME).assert(contains(text(R.string.prefs_theme_dark)))
-        chooses(TestTags.Settings.THEME, "light", AppTheme.LIGHT) { it.appTheme }
-        chooses(TestTags.Settings.THEME, "system", AppTheme.SYSTEM) { it.appTheme }
+        tap(light)
+        assertEquals(AppTheme.LIGHT, h.store.value.appTheme)
+        tap(system)
+        assertEquals(AppTheme.SYSTEM, h.store.value.appTheme)
+        assertEquals(defaults, h.store.value)
+    }
+
+    @Test
+    fun everyColorThemeHasALabeledTileAndTheStoredOneIsSelected() {
+        open()
+        for (preset in ThemePreset.entries) {
+            compose.onNodeWithTag(listItem(TestTags.Settings.THEME_PRESET, preset.ordinal)).performScrollTo().assert(labeled(text(ThemePresets.label(preset))))
+        }
+        compose.onNodeWithTag(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.DEFAULT.ordinal)).assert(selected())
+        compose.onNodeWithTag(TestTags.Settings.DYNAMIC_COLOR).assert(!selected())
+    }
+
+    @Test
+    fun aColorThemeTileWritesThePresetAndTurnsDynamicColorOff() {
+        h.store.set(defaults.copy(dynamicColor = true))
+        open()
+        compose.onNodeWithTag(TestTags.Settings.DYNAMIC_COLOR).assert(selected())
+        click(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.NORD.ordinal))
+        assertEquals(defaults.copy(themePreset = ThemePreset.NORD), h.store.value)
+        compose.onNodeWithTag(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.NORD.ordinal)).assert(selected())
+        compose.onNodeWithTag(TestTags.Settings.DYNAMIC_COLOR).assert(!selected())
+    }
+
+    @Test
+    fun theDynamicTileTurnsDynamicColorOnAndKeepsThePreset() {
+        h.store.set(defaults.copy(themePreset = ThemePreset.TAKO))
+        open()
+        click(TestTags.Settings.DYNAMIC_COLOR)
+        assertEquals(defaults.copy(themePreset = ThemePreset.TAKO, dynamicColor = true), h.store.value)
+        compose.onNodeWithTag(TestTags.Settings.DYNAMIC_COLOR).assert(selected())
+        compose.onNodeWithTag(listItem(TestTags.Settings.THEME_PRESET, ThemePreset.TAKO.ordinal)).assert(!selected())
     }
 
     @Test

@@ -3,16 +3,11 @@ package dev.kodakiko.app.navigation
 import android.content.Intent
 import android.net.Uri
 import android.os.Looper
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.longClick
@@ -22,6 +17,7 @@ import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
+import androidx.core.content.FileProvider
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import dev.kodakiko.app.FakeAndroidKeyStore
@@ -41,6 +37,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,6 +53,12 @@ class SharingAndLinksWiringTest {
     private val app: KodakikoApp get() = ApplicationProvider.getApplicationContext()
 
     private var scenario: ActivityScenario<MainActivity>? = null
+
+    @Before
+    fun forgetFileProviderRootsOfEarlierTests() {
+        val cache = FileProvider::class.java.getDeclaredField(FILE_PROVIDER_CACHE).apply { isAccessible = true }
+        (cache.get(null) as MutableMap<*, *>).clear()
+    }
 
     @After
     fun tearDown() {
@@ -95,8 +98,6 @@ class SharingAndLinksWiringTest {
         compose.waitForIdle()
     }
 
-    private fun contains(text: String): SemanticsMatcher = hasText(text, substring = true) or hasAnyDescendant(hasText(text, substring = true))
-
     private fun unlock() {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         awaitTag(TestTags.Lock.PASSWORD)
@@ -110,76 +111,61 @@ class SharingAndLinksWiringTest {
         return index.query(GalleryFilter(GalleryScope.Home, GalleryView.JOURNAL, emptyList(), null, null, "")).single().entryIds.single()
     }
 
-    private fun assertToAppsOnlyWithTheFixturePhotoChecked() {
-        awaitTag(TestTags.Share.PICKER)
-        awaitTag(listItem(TestTags.Share.ITEM, 0))
-        assertFalse(exists(TAB_KODAKIKO))
-        assertFalse(exists(TAB_APPS))
-        assertFalse(exists(TestTags.ShareEntries.SHEET))
-        compose.onNodeWithTag(listItem(TestTags.Share.ITEM, 0)).assertIsOn()
-        assertFalse(exists(listItem(TestTags.Share.ITEM, 1)))
-        compose.onNodeWithTag(TestTags.Share.SEND).assert(contains("Share 1 item · ")).assertIsEnabled()
-        assertTrue(exists(TestTags.Share.LEAVES_ENCRYPTION))
-    }
-
     private fun nextChooser(): Intent? = shadowOf(app).nextStartedActivity
 
-    @Test
-    @Config(application = UpdatedV031App::class)
-    fun theViewersShareActionOpensTheShareSheetWithOnlyToAppsOnALocalAccountAndSendHandsTheDecryptedPhotoToTheChooser() {
-        unlock()
-        click(listItem(TestTags.Gallery.TILE, 0))
-        awaitTag(TestTags.Viewer.SCREEN)
-        click(TestTags.Viewer.SHARE_ACTION)
-        assertToAppsOnlyWithTheFixturePhotoChecked()
-        tap(listItem(TestTags.Share.ITEM, 0))
-        compose.onNodeWithTag(listItem(TestTags.Share.ITEM, 0)).assertIsOff()
-        compose.onNodeWithTag(TestTags.Share.SEND).assert(contains("Share 0 items · 0 B")).assertIsNotEnabled()
-        tap(listItem(TestTags.Share.ITEM, 0))
-        tap(TestTags.Share.SEND)
+    private fun assertTheFixturePhotoGoesStraightToTheChooser() {
+        var sawSheet = false
         var chooser: Intent? = null
         compose.waitUntil(SHARE_WAIT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
+            sawSheet = sawSheet || exists(TestTags.Share.PICKER) || exists(TestTags.ShareEntries.SHEET)
             chooser = nextChooser()
             chooser != null
         }
+        assertFalse(sawSheet)
         assertEquals(Intent.ACTION_CHOOSER, chooser!!.action)
         val send = requireNotNull(chooser!!.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java))
         assertEquals(Intent.ACTION_SEND, send.action)
         assertTrue(send.type, send.type!!.startsWith("image/"))
         assertNotNull(send.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java))
         assertNull(send.getStringExtra(Intent.EXTRA_TEXT))
-        back()
-        awaitGone(TestTags.Share.PICKER)
+        compose.waitUntil(WAIT_MS) { compose.runOnIdle { app.graph.navigator.routes.none { it is Route.ShareSheet } } }
+        assertFalse(exists(TestTags.Share.PICKER))
+    }
+
+    @Test
+    @Config(application = UpdatedV031App::class)
+    fun theViewersShareActionOnALocalAccountHandsTheDecryptedPhotoStraightToTheChooserAndStaysOnTheViewer() {
+        unlock()
+        click(listItem(TestTags.Gallery.TILE, 0))
+        awaitTag(TestTags.Viewer.SCREEN)
+        click(TestTags.Viewer.SHARE_ACTION)
+        assertTheFixturePhotoGoesStraightToTheChooser()
         awaitTag(TestTags.Viewer.SCREEN)
     }
 
     @Test
     @Config(application = UpdatedV031App::class)
-    fun theEditPagesShareButtonOpensTheShareSheetAndBackReturnsToTheEditPage() {
+    fun theEditPagesShareButtonOnALocalAccountGoesStraightToTheChooserAndStaysOnTheEditPage() {
         unlock()
         click(listItem(TestTags.Gallery.TILE, 0))
         awaitTag(TestTags.Viewer.SCREEN)
         click(TestTags.Viewer.EDIT)
         awaitTag(TestTags.Edit.SCREEN)
         click(TestTags.Edit.SHARE)
-        assertToAppsOnlyWithTheFixturePhotoChecked()
-        back()
-        awaitGone(TestTags.Share.PICKER)
+        assertTheFixturePhotoGoesStraightToTheChooser()
         awaitTag(TestTags.Edit.SCREEN)
     }
 
     @Test
     @Config(application = UpdatedV031App::class)
-    fun theGallerysBulkShareOpensTheShareSheetForTheSelectedEntries() {
+    fun theGallerysBulkShareOfOneEntryOnALocalAccountGoesStraightToTheChooser() {
         unlock()
         compose.onNodeWithTag(listItem(TestTags.Gallery.TILE, 0)).performTouchInput { longClick() }
         compose.waitForIdle()
         tap(TestTags.Gallery.ACTIONS)
         click(TestTags.Bulk.SHARE)
-        assertToAppsOnlyWithTheFixturePhotoChecked()
-        back()
-        awaitGone(TestTags.Share.PICKER)
+        assertTheFixturePhotoGoesStraightToTheChooser()
         awaitTag(TestTags.Gallery.SCREEN)
     }
 
@@ -240,8 +226,7 @@ class SharingAndLinksWiringTest {
         const val WAIT_MS = 15_000L
         const val SHARE_WAIT_MS = 30_000L
         const val UNLOCK_WAIT_MS = 120_000L
-        const val TAB_KODAKIKO = "sheet.tab.kodakiko"
-        const val TAB_APPS = "sheet.tab.apps"
         const val MISSING_JOURNAL = "missingjournal00000001"
+        const val FILE_PROVIDER_CACHE = "sCache"
     }
 }
