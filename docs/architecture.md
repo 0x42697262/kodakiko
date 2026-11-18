@@ -5,9 +5,9 @@ planning log, which is kept outside the repository; facts (F-XXX-NN) are in `doc
 
 ## 1. System map
 
-    ┌──────────────── Android app (Expo, native) ────────────────┐
-    │ screens -> services -> core (pure) -> adapters (native)    │
-    └──────────────┬──────────────────────────────┬──────────────┘
+    ┌──────── Android app (Kotlin, Jetpack Compose, apps/android) ────────┐
+    │ :ui:* screens -> :service:* -> :shared:* (pure) ; :data:* / :platform:* │
+    └──────────────┬──────────────────────────────┬────────────────────────┘
                    │ HTTPS (API, bearer token)    │ HTTPS (presigned S3 URLs)
                    ▼                              ▼
     ┌──────── API server (Fastify) ───────┐   ┌──── Object storage ────┐
@@ -17,13 +17,17 @@ planning log, which is kept outside the repository; facts (F-XXX-NN) are in `doc
                    ▼                              ▲
               Postgres (ciphertext rows,          │ presigned URLs
               auth, shares, quotas, sync seq)     │
-                   ▲                              │
-    ┌──────────────┴──── Web app (same Expo codebase, React Native Web) ─┐
-    │ screens -> services -> core -> adapters (web) + service worker     │
-    └────────────────────────────────────────────────────────────────────┘
+                                                  │
+    ┌──── Public link viewer (apps/link-viewer, any browser) ────┐
+    │ /s/<id>#<secret>: TypeScript + DOM page, core crypto,       │
+    │ media service worker for video; read-only, no account       │
+    └─────────────────────────────────────────────────────────────┘
 
-Remote access (D-36): devices reach the server only through a private mesh VPN (Tailscale,
-NetBird, Headscale). The apps only know an HTTPS base URL for the API and one for S3.
+Caddy serves the API, the link viewer at `/s/*` and a "Get the Android app" page everywhere else.
+There is no web app since v0.4.0 (the Expo / React Native client of v0.1–v0.3 was removed in
+v0.4.1). Remote access (D-36): devices reach the server only through a private mesh VPN (Tailscale,
+NetBird, Headscale), unless public links are opened up (operations guide §8). The app only knows
+an HTTPS base URL for the API and one for S3.
 
 ## 2. What each party can see
 
@@ -32,44 +36,50 @@ NetBird, Headscale). The apps only know an HTTPS base URL for the API and one fo
 | Object storage provider | Object sizes, object keys (opaque ids), upload/download times, client IPs via the VPN exit | Any plaintext: photos, videos, thumbnails, notes, tags, dates, locations |
 | API server / operator | Usernames, user ids, counts and sizes of entries and media, collection membership, sync timing, Argon2id parameters, salts, public keys, wrapped (encrypted) keys, hash of the login key | Password, master key, any content or metadata plaintext, tag names, entry dates |
 | Network (outside the VPN) | VPN traffic only | Everything else |
-| Device at rest (locked) | Ciphertext rows and objects; Android plain thumbnails in app-private storage (D-12) | Master key (wrapped by Android Keystore / not persisted on web unless opted in) |
+| Phone at rest (locked) | Ciphertext rows and objects; plain thumbnails in app-private storage unless encrypted thumbnails are on (D-12); the debug log (ids, counts, timings, no content) | Master key (wrapped by an Android Keystore key, [encryption.md](encryption.md#where-the-keys-live)) |
 
-## 3. Repository layout (pnpm monorepo)
+## 3. Repository layout (pnpm monorepo + Gradle build)
 
     kodakiko/
-      package.json                 private root; scripts: verify, lint, typecheck, test
+      package.json                 private root; scripts: verify, lint, typecheck, test, ui:*
       pnpm-workspace.yaml          workspace list + all pnpm policy settings (D-11, F-TOOL-01..04)
       tsconfig.base.json           strict TypeScript settings shared by every package
       eslint.config.js             shared lint rules incl. no-comments, no magic strings
+      flake.nix                    Android SDK shell (nix develop)
       apps/
-        client/                    Expo app: Android + web from one codebase (D-07)
+        android/                   Kotlin Android app (Gradle, see §4.2)
         server/                    Fastify API server
+        link-viewer/               standalone public link page (TypeScript + DOM, esbuild)
       packages/
-        core/                      pure TypeScript: crypto scheme, byte formats, domain rules,
-                                   local index, sync engine state machine. No I/O, no platform imports
+        core/                      pure TypeScript: crypto scheme, byte formats, domain rules, export
+                                   format; used by the server, the link viewer, tests and
+                                   decrypt-export, and the reference the Kotlin port is tested against
         contract/                  Zod schemas for every API request/response, route paths,
-                                   error codes. Imported by server and client
-        native-upload/             Expo native module (Kotlin): Android foreground upload service (D-33)
+                                   error codes. Imported by the server and the link viewer
       infra/
         compose/                   production, dev, test and UI-test Compose stacks
-        docker/                    api.Dockerfile, caddy.Dockerfile
+        docker/                    api.Dockerfile, caddy.Dockerfile (builds the link viewer)
         caddy/, garage/            Caddyfile and entrypoint, garage.toml
-        scripts/, systemd/         backup.sh, Garage bootstrap, CSP hashes; backup timer
+        scripts/, systemd/         backup.sh, Garage bootstrap; backup timer
       tests/
-        e2e/                       two-device client scenarios against a real server
-        ui/                        Playwright (web) and Maestro (Android) UI flows, screenshots
-      docs/                        guide, operations, design reference, build history
+        e2e/support/               Node launcher of the Kotlin end-to-end tests (apps/android/e2e)
+        ui/                        Maestro (Android) flows, the link-viewer Playwright spec, seeding
+        fixtures/                  media, v0.3.1 device fixtures, golden files for the Kotlin port,
+                                   UI strings generator
+      docs/                        guide, operations, features, design reference, ADRs
 
-Dependency direction (enforced by lint import rules; string placement in catalogs is
-a review item, not a lint rule):
+Dependency direction for the TypeScript packages (enforced by lint import rules):
 
 | Package | May import | Must not import |
 |---|---|---|
 | `packages/contract` | `zod` | anything else in the repo |
-| `packages/core` | `packages/contract` (schemas, types, `ID_PATTERN`), `zod` | React, React Native, Expo, Node built-ins, browser globals, libsodium packages (crypto arrives through the `Sodium` port) |
-| `packages/native-upload` | Expo modules API | `packages/core` |
-| `apps/server` | `contract`, `core` (domain rules shared with the client only) | `apps/client` |
-| `apps/client` | `contract`, `core`, `native-upload` | `apps/server` |
+| `packages/core` | `packages/contract` (schemas, types, `ID_PATTERN`), `zod` | Node built-ins, browser globals, libsodium packages (crypto arrives through the `Sodium` port) |
+| `apps/server` | `contract`, `core` | `apps/link-viewer` |
+| `apps/link-viewer` | `contract`, `core`, `libsodium-wrappers-sumo` | `apps/server` |
+
+The Android app shares no code with the TypeScript packages at build time. Its `:shared:*` modules
+are Kotlin ports of `packages/core` and `packages/contract`; golden files generated from the
+TypeScript code (`tests/fixtures/golden*`) and reverse checks keep both byte-identical.
 
 ## 4. Layers per app
 
@@ -100,56 +110,73 @@ external: `pg-native`. The Docker image runs `node dist/main.js`. Tests run the 
 sources through vitest. Reason: Node's type stripping does not cover every case of TypeScript
 inside linked workspace packages, and one bundled file starts faster and ships fewer files.
 
-### 4.2 Client (`apps/client`)
+### 4.2 Android app (`apps/android`)
 
-| Folder | Layer | Job |
+Package root `dev.kodakiko`; application id `com.x42697262.kodakiko` (debug and preview builds add
+`.next`). Gradle modules in layers; a module depends only on the layers below it, and feature
+modules never depend on each other (`tooling-tests` checks the Gradle files):
+
+    :app ──► :ui:feature:* ──► :ui:core
+      │            │
+      └──────► :service:* ──► :data:* / :platform:* ──► :shared:*
+
+| Layer | Modules | Job |
 |---|---|---|
-| `app/` | Entry (Expo Router routes) | Thin screens: read view-model hooks, render feature components |
-| `src/composition/` | Composition root | `createAppContext()` (async): builds the platform's adapters (Metro picks `*.native.ts` / `*.web.ts`), services, the sync engine; provided through one React context |
-| `src/config/` | Config | client constants and the server base URL resolution (web: same origin; Android: chosen at first run, `client.md` §7.1); server-provided `PublicConfigDto` validated with Zod |
-| `src/features/<feature>/` | UI | components, hooks and view-model per feature: `gallery`, `calendar`, `capture`, `entries` (edit page, note editor, crop, media menu), `viewer`, `video`, `voice`, `markdown`, `tags`, `sharing`, `links`, `link-viewer`, `settings`, `more`, `auth`, `lock`, `admin`, `sync`, `diagnostics` |
-| `src/services/` | Use cases | auth, entries, media import, index, sync, originals and thumbnails caches, video, sharing, public links, export and journal import, settings, lock, admin |
-| `src/navigation/` | Navigation | `useRouter` wrapper that drops a repeated push to the same page within 600 ms |
-| `src/ui/` | Shared UI | `Screen`, `AppBar`, `Touchable` (ripple), Paper-based `Button`, preference list, snackbar host, haptics, theme and dynamic color, system insets |
-| `src/adapters/` | Adapters | one interface per port, two files per port: `*.native.ts` and `*.web.ts` (Metro and the web bundler pick by suffix) |
-| `src/text/`, `src/keys/`, `src/constants/` | Catalogs | UI strings, ids/keys, tuning |
-| `web/sw/`, `web/workers/` | Web only | service worker for video range decryption (D-32) and the Argon2 worker, bundled with esbuild into `public/` |
+| Shared core (Kotlin Multiplatform `commonMain`, no Android or Java APIs) | `:shared:crypto` (libsodium port, sealed blobs, STREAM, recovery words, share payload), `:shared:js` (JavaScript date/text/number semantics the ports need), `:shared:contract` (DTOs, payloads, routes, errors), `:shared:account` (KDF policy, sign-up/in, key bundle, recovery, password change), `:shared:domain` (entry time, calendar, tags, entry metadata and edits), `:shared:media` (sniffing, EXIF, ISO-BMFF, capture time, metadata stripping), `:shared:index` (gallery index, filters, search, grouping), `:shared:sync` (failure classes, push plan, pull decisions, three-way merge), `:shared:export` (export layout, `entry.md`, KDKX, ZIP), `:shared:markdown` (note parser with v0.3.1's limits, plain-text copy), `:shared:log` (debug-log port and privacy-safe line format), `:shared:testing` (golden replay for tests) | Pure rules and byte formats, golden-tested against `packages/core` |
+| Data (Android I/O) | `:data:db` (SQLDelight over the v0.3.1 SQLite file, key-value store, device settings), `:data:files` (paths, encrypted object files, temp files), `:data:secure` (Keystore vault, session and global stores, v0.3.1 secure-store reader), `:data:migration` (one-time adoption of a v0.3.1 install), `:data:net` (OkHttp API client, network monitor), `:data:upload` (part uploader, upload registry; runs in the app process), `:data:media` (STREAM file reader, decrypting Media3 data source, Coil fetchers, thumbnail and originals caches, download queue, probes, thumbnail encoder), `:data:log` (debug-log file under `files/logs`) | Storage, network and media I/O, all off the main thread |
+| Platform (device features) | `:platform:camera` (CameraX), `:platform:picker` (Photo Picker, document and folder pickers, FileProvider, share intents), `:platform:audio` (voice recorder and player), `:platform:location` (one-shot position), `:platform:device` (haptics, clipboard image, secure screen, system bars, foreground tracker, notification permission) | Thin wrappers over Android APIs |
+| Services (use cases) | `:service:account`, `:service:lock`, `:service:entries` (entries, imports, capture tray), `:service:index`, `:service:sync`, `:service:sharing`, `:service:links`, `:service:backup` (export and restore), `:service:shareout` (share to apps), `:service:admin`, `:service:stats`, `:service:diagnostics` | Business logic over data and platform; an interface plus one implementation each |
+| UI | `:ui:core` (theme and color presets, Mihon-based components, settings widgets and search, `Route` keys, strings, `TestTags`, formatting, markdown view), `:ui:feature:auth`, `lock`, `gallery`, `calendar`, `viewer`, `edit`, `capture`, `tags`, `sharing`, `links`, `settings`, `more` | Compose screens: `XScreen` (ViewModel, events, navigation) + stateless `XContent` |
+| App | `:app` | `MainActivity`, Voyager navigator and home tabs, route guards, Metro `AppGraph`, adapters that implement the screens' ports over services, lock and unlock steps, crash recorder and debug-log wiring, manifest |
+| Tests | `:e2e`, `:tooling-tests` | Services against the real server; source rules, module boundaries, catalog allowlist, release build checks |
 
-Client ports and their implementations:
+Screens follow Mihon: a ViewModel exposes `StateFlow<XState>` (state classes are `@Immutable`),
+one-shot events go through a `Channel`, and dialogs are a sealed value in the state. Feature
+modules declare small ports (interfaces) for what they need; `:app` implements them over the
+services and binds everything in the Metro graph. Crypto, file, database and network work runs on
+IO dispatchers (Argon2id on its own thread); the main thread never does I/O.
 
-| Port | Android | Web |
-|---|---|---|
-| `Sodium` | `react-native-libsodium` (JSI) | `libsodium-wrappers-sumo` (WASM) |
-| `FileStore` (ciphertext objects, chunk read/write) | `expo-file-system` `File` + `FileHandle` (F-LIB-05) | OPFS (`navigator.storage.getDirectory()`) |
-| `RowStore` (ciphertext rows, outbox, cursors, settings) | `expo-sqlite` (plain; contents are ciphertext, D-37) | IndexedDB |
-| `KeyVault` (wrapped master key, lock state) | `expo-secure-store` + `expo-local-authentication` (F-LIB-13) | memory only; opt-in wrap with a non-extractable WebCrypto key in IndexedDB (D-26) |
-| `Camera` | `react-native-vision-camera` (F-LIB-06) | `getUserMedia` + `MediaRecorder` |
-| `MediaPicker` | `expo-image-picker` (Android Photo Picker, F-LIB-12) | file input, drag and drop, clipboard paste (D-20) |
-| `Uploader` | `packages/native-upload` foreground service (D-33) | in-page `fetch` queue |
-| `VideoSource` | decrypt to temp file in app cache (D-32) | service worker URL (D-32) |
-| `ThumbnailCache` | plain files in app-private storage by default, encrypted on opt-in (D-12) | encrypted in OPFS, decrypted to object URLs in memory |
-| `Http` | `fetch` with timeout and retry policy from `core` | same |
-| `ShareFiles` (share to apps, save to device) | `react-native-share` | `navigator.share({ files })`, download link |
-| `ClipboardImage` | `expo-clipboard` | DOM `paste` events |
-| `VoiceRecorder` | `expo-audio` (AAC) | `MediaRecorder` (Opus) |
-| `ImageCrop` | `expo-image-manipulator` | canvas |
-| `NetworkInfo` | Wi-Fi state | always Wi-Fi |
+Ports and their Android implementations:
+
+| Port | Implementation |
+|---|---|
+| `Sodium` | lazysodium 5.2.0 (libsodium 1.0.20 through JNA, D-110) behind an `expect`/`actual` |
+| Row store (ciphertext rows, outbox, cursors, settings) | SQLDelight on the framework SQLite, the v0.3.1 file and schema opened in place (F-KT-19) |
+| File store (ciphertext objects) | app-private files, atomic writes, positional reads (`StreamFileReader`) |
+| Key vault | Android Keystore AES-GCM keys, biometric-bound or device-credential gated (F-KT-25) |
+| Camera | CameraX (photo JPEG 0.92, MP4 video with a size cap, F-KT-27) |
+| Media picker | Android Photo Picker; documents and folders through the Storage Access Framework |
+| Uploader | `:data:upload` part uploader on OkHttp, in the app process (no foreground service yet, D-168) |
+| Video and voice playback | Media3 ExoPlayer over a decrypting `DataSource` (no plaintext file, F-KT-18) |
+| Thumbnails and originals in images | Coil 3 with decrypting fetchers, no disk cache |
+| HTTP | OkHttp 5, one shared client; redirects off for the API |
+| Share to apps | decrypted copies in `cache/share`, FileProvider, `ACTION_SEND(_MULTIPLE)` chooser |
+| Clipboard image | `ClipboardManager`, re-encoded as JPEG |
+| Voice recorder | `MediaRecorder` (AAC in `.m4a`, 10-minute cap) |
+| Image crop | Android bitmap decode and JPEG 0.92 encode |
+| Network info | `ConnectivityManager` default-network callback (online, unmetered) |
+| Delete from device (v0.4.1) | `MediaStore.createDeleteRequest` with the system confirmation (F-AND-03) |
 
 ## 5. Data flow of the main use cases
 
 ### 5.1 Capture and save an entry (offline-first, D-06)
 
-1. Camera or picker returns plaintext media files in the app's temp directory.
+1. The camera (CameraX) or the Photo Picker gives plaintext media files, copied into the app's
+   temp directory (`cache/kodakiko/<account>/tmp`).
 2. For each media item: generate thumbnail (and video poster frame) on device; read EXIF capture
    time and GPS (D-20, D-25).
-3. Encrypt each original and thumbnail into the local `FileStore` (STREAM format,
-   `docs/design/crypto.md` section 7); delete the plaintext temp files.
+3. Encrypt each original and thumbnail into the local file store (STREAM format,
+   `docs/design/crypto.md` section 7). The plaintext temp files are wiped at the next lock (and at
+   app start and unlock, in case the app was killed).
 4. Encrypt the entry metadata (note, tags, time, timezone, location, media order) with the entry
-   key; write the ciphertext row and an outbox item to `RowStore` in one transaction.
+   key; write the ciphertext row and an outbox item to the database in one transaction.
 5. Update the in-memory index; the gallery shows the entry immediately.
-6. The edit page then writes every change (note after a 600 ms pause, everything else at once)
-   as a new revision of the metadata, each with its own outbox item. Voice notes, crops and
-   pasted pictures go through the same import path as camera items.
+6. The edit page keeps changes in a draft and writes them as one new revision of the metadata
+   (with its outbox items) when the person taps Done or Save, or when the app locks (v0.4.1; v0.3.1
+   autosaved every change). Discard puts the entry back and removes media added in the session; on
+   a new entry it deletes the entry. Voice notes, crops and pasted pictures go through the same
+   import path as camera items. After a save, the app may offer to delete gallery originals from
+   the phone (Android's own confirmation, [features/capture.md](features/capture.md)).
 7. The sync engine drains the outbox when online: create entry row on the server, upload objects
    through presigned URLs (multipart for large files), confirm upload. Every step is idempotent by
    client-generated ids.
@@ -158,8 +185,9 @@ Client ports and their implementations:
 
 1. On unlock: decrypt every entry's metadata and build the in-memory index (the encrypted
    snapshot of D-46 is reserved, not built in v1).
-2. Gallery and calendar read from the index; thumbnails load from `ThumbnailCache`, downloading
-   and decrypting missing ones on demand with bounded concurrency.
+2. Gallery and calendar read from the index; thumbnails load through the Coil fetchers and the
+   thumbnail cache, downloading and decrypting missing ones on demand (6 thumbnails and 2 originals
+   at a time).
 
 ### 5.3 Sync pull
 
@@ -168,6 +196,18 @@ Client ports and their implementations:
 2. Server returns changed rows (ciphertext) ordered by a monotonic sequence, bounded page size,
    `hasMore` flag (F-ENTE-17, but sequence instead of timestamp).
 3. Client stores rows, decrypts metadata into the index, advances cursors.
+
+### 5.4 Lock and unlock
+
+1. Before the account state turns locked, an open edit page is saved (5 s limit) and unlocked
+   work (in-flight crypto, sharing and link writes) is cancelled and joined.
+2. Then the lock steps run in order: cancel export, stop sync, cancel downloads, release video,
+   release originals, clear thumbnails, clear the capture tray, wipe temp files, clear the index,
+   clear UI state, clear collection names, clear the account, flush edits, wipe keys; then temp
+   files are wiped once more. A failed step is logged and skipped; the last one always runs.
+3. Unlock steps: load settings (and wipe temp files), start sync, build the index, sweep orphan
+   files, enforce the originals cache cap, refresh the account. Each step's duration goes to the
+   debug log when it is on ([features/lock.md](features/lock.md)).
 
 ## 6. Cross-cutting rules
 
@@ -187,10 +227,13 @@ Client ports and their implementations:
 
 | Layer | Where | Runs |
 |---|---|---|
-| Unit | `*/test/*.test.ts` in each package | `pnpm verify` (with lint and typecheck) |
+| Kotlin unit, Compose and screenshot tests | `apps/android/**/src/test`, `commonTest`/`jvmTest` | `./gradlew verify` |
+| Golden replays | `tests/fixtures/golden*` read by the `:shared:*` tests | `./gradlew verify` |
+| TypeScript unit | `*/test/*.test.ts` in each package | `pnpm verify` (with lint and typecheck) |
 | Server integration | `apps/server/test/integration` | Postgres and Garage from the test stack |
-| Client scenarios | `tests/e2e` | Two simulated devices against a real server |
-| UI flows | `tests/ui/web/specs/U-NN-*.spec.ts`, `tests/ui/android/flows` | Playwright on desktop and phone viewports; Maestro on the emulator |
+| End-to-end | `apps/android/e2e` | `./gradlew e2e`: two simulated devices on the Kotlin services against a real server |
+| Device tests | `src/androidTest`, `src/androidDeviceTest` | on the emulator |
+| UI flows | `tests/ui/android/flows`, `tests/ui/web/specs/U-18-link-viewer.spec.ts` | Maestro on the emulator; Playwright for the link viewer |
 
 The flow catalog (U-01 …) is in [testing.md](testing.md#flow-catalog); behaviors in
 [behaviors.md](behaviors.md).

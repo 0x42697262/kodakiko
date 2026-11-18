@@ -68,7 +68,7 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `@aws-sdk/client-s3` | 3.1161.0 | bucket adapter (F-TOOL-10) |
 | `@aws-sdk/s3-request-presigner` | 3.1161.0 | presigned URLs |
 
-`@fastify/cors` was removed in review 1: the web app calls the API on its own origin
+`@fastify/cors` was removed in review 1: the link viewer calls the API on its own origin
 (deployment.md §2), and the Android app is not subject to CORS.
 
 ### Removed client packages
@@ -109,8 +109,8 @@ Pinned by commit SHA (release workflow); each release was older than 7 days when
 |---|---|---|---|
 | `actions/checkout` | v7.0.1 (2026-07-20) | `3d3c42e5aac5ba805825da76410c181273ba90b1` | `android-release.yml`, `kotlin.yml`, `ts.yml` |
 | `actions/setup-node` | v7.1.0 (2026-10-08) | `949feb2413d6458794dcd2491c4babbbce0c15c1` | `android-release.yml`, `kotlin.yml`, `ts.yml` |
-| `actions/setup-java` | v6.2.0 (2026-11-04) | `77dd5b2ce225ea11469928ac317850245a74ae78` | `android-release.yml` |
-| `gradle/actions/setup-gradle` | v6.4.1 (2026-10-28; pinned 2026-11-14) | `8da46b539cd8fe6ab27ca75128919a18d757604c` | `android-release.yml` (Gradle dependency and build cache; written on `main`, read by tag builds) |
+| `actions/setup-java` | v6.2.0 (2026-11-04) | `77dd5b2ce225ea11469928ac317850245a74ae78` | `android-release.yml`, `kotlin.yml` |
+| `gradle/actions/setup-gradle` | v6.4.1 (2026-10-28; pinned 2026-11-14) | `8da46b539cd8fe6ab27ca75128919a18d757604c` | `android-release.yml`, `kotlin.yml` (Gradle dependency and build cache; written on `main`, read by tag and pull-request builds) |
 
 ### Deliberately excluded
 
@@ -123,10 +123,13 @@ Pinned by commit SHA (release workflow); each release was older than 7 days when
 | Any BIP-39 library | word list committed as data (crypto.md §5.6) |
 | `typescript` 7.x | breaks `typescript-eslint` (F-TOOL-11) |
 
-## Kotlin client allowlist (v0.4.0, D-106, ADR 11)
+## Kotlin client allowlist (Android app, `apps/android`, D-106, ADR 11)
 
-Branch `feat/v0.4.0-kotlin`. Chosen 2026-11-14 (task K002) from Maven Central, Google Maven and
+The Android app's libraries, chosen 2026-11-14 (task K002) from Maven Central, Google Maven and
 the Gradle plugin portal metadata; release date = `Last-Modified` of the version's POM (F-KT-11).
+The app's Settings › About › Open source licenses list is generated from the tables of this section
+by `node apps/android/tools/licenses/emit-licenses.ts` (rows whose artifact ships in the release
+build, D-156/D-160; `pnpm verify` runs it with `--check`).
 
 ### Kotlin version rule
 
@@ -317,6 +320,27 @@ hash truncated (F-KT-15), and its JVM jar bundles libsodium 1.0.19 against 1.0.2
 | `sh.calvin.reorderable:reorderable` | 3.1.0 | 2026-04-20 | Apache-2.0 | Drag-reorder in the tag editor (as Mihon) |
 | `com.mikepenz:aboutlibraries-core`, `aboutlibraries-compose-m3` | 15.3.0 | 2026-10-13 | Apache-2.0 | Licenses screen |
 
+### Adapted code, palettes and icons (not libraries)
+
+| Source | License | Where it is used |
+|---|---|---|
+| [Mihon](https://github.com/mihonapp/mihon) | Apache-2.0 | UI code adapted from Mihon (theme, components, settings widgets, screens); each adapted file starts with the two-line attribution header (guidelines §4.1); Settings › About shows the attribution |
+| Mihon's color schemes (via akon-money) | Apache-2.0 | The thirteen extra theme presets in Appearance (Green Apple, Lavender, Midnight Dusk, Nord, Strawberry, Tako, Teal & Turquoise, Tidal Wave, Tokyo Night, Yin & Yang, Yotsuba, Monochrome, Catppuccin), in `ui/core/.../theme/colorscheme/ColorSchemeConstants.kt` |
+| [Catppuccin](https://github.com/catppuccin/catppuccin) palette (via Mihon) | MIT | The Catppuccin theme preset's colors |
+| Google Material icons | Apache-2.0 | The 24 dp vector drawables `ic_*.xml` in `:ui:core` (settings, edit page, debug log icons) |
+
+### Allowlisted but not in the catalog
+
+These rows above are allowed but no module uses them in v0.4.1, so they are not in
+`libs.versions.toml` and not in the APK: the serialization and `com.android.test` plugins,
+`androidx.baselineprofile`, AboutLibraries (plugin, `aboutlibraries-core`, `-compose-m3`; the license
+list is generated instead), `kotlinx-datetime`, `kotlinx-io-core`, `okio` (direct), `org.jetbrains:markdown`
+(`:shared:markdown` has its own parser that matches v0.3.1's marked output), Compose `ui-tooling` and
+`ui-tooling-preview`, `material3-adaptive-navigation-suite`, `core-splashscreen`, `profileinstaller`
+(direct), SQLDelight `coroutines-extensions` and `sqlite-driver`, `coil-compose`, telephoto, and the
+test/debug rows `kotest-property`, Turbine, Espresso, UI Automator, Macrobenchmark, Konsist (module
+rules are `tooling-tests` that read the Gradle files) and LeakCanary.
+
 ### Kotlin test and debug tooling
 
 | Artifact | Version | Released | License | Purpose |
@@ -345,7 +369,7 @@ Tool, not a dependency: Maestro (already used for Android flows).
 |---|---|
 | JitPack and anything only there (Mihon's `unifile`, its SubsamplingScaleImageView fork) | Unpinned builds from Git; `androidx.documentfile` and telephoto cover the needs |
 | `androidx.compose:compose-bom-beta` / material3 1.5.0-rc01 | Not stable; Mihon's `MaterialExpressiveTheme` is adapted to `MaterialTheme` until material3 1.5.0 stable is ≥ 7 days old (F-KT-03) |
-| `androidx.compose.material:material-icons-extended` | Frozen at 1.7.8 (2025-02-12) and large; the needed Material Symbols are copied as `ImageVector` source (Apache-2.0), as Mihon's icon modules do |
+| `androidx.compose.material:material-icons-extended` | Frozen at 1.7.8 (2025-02-12) and large; the needed Material icons are copied as 24 dp vector drawables (`ui/core/src/main/res/drawable/ic_*.xml`, Apache-2.0) |
 | Navigation 3 | D-107 chose Voyager |
 | detekt | Source rules are tooling tests (D-111) |
 | `io.github.fornewid:material-motion-compose-core` (Mihon's `materialSharedAxisX`) | Not needed: the shared-axis screen transition is rebuilt with plain Compose slide + fade (spike K004) |

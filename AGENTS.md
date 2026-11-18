@@ -1,9 +1,11 @@
 # AGENTS.md — Kodakiko
 
-Kodakiko is an end-to-end encrypted photo and video journal: entries with photos, videos, voice
-notes and a markdown note; tags; gallery and calendar; sharing and public links; an Android app and
-a web app from one Expo codebase, with a self-hosted server. It is implemented and released
-(see `APP_VERSION` in `apps/client/app.config.ts`).
+Kodakiko is an end-to-end encrypted photo and video journal: entries with photos, videos, voice notes
+and a markdown note; tags; gallery and calendar; sharing and public links; a native Android app in
+Kotlin (Jetpack Compose, Mihon-based UI, `apps/android`) and a self-hosted TypeScript server
+(`apps/server`). Public links open in the standalone link viewer (`apps/link-viewer`) served by
+Caddy. There is no web app. It is implemented and released (see `app-version-name` in
+`apps/android/gradle/libs.versions.toml`).
 
 ## Read first
 
@@ -16,47 +18,57 @@ a web app from one Expo codebase, with a self-hosted server. It is implemented a
 ## How changes are made
 
 1. **Test first.** Write the tests for the change, run them, and see them fail for the expected
-   reason (a missing module or a wrong result, not a broken setup). Then implement until they
-   pass. A bug fix starts with a failing test that reproduces it.
-2. **Tests are not weakened.** Existing tests are never deleted, skipped (`.skip`, `.todo`,
-   `test.fixme`, commented out, excluded by config) or loosened (weaker assertions, longer
-   timeouts, broader matchers) to make code pass. When the programmer changes a behavior, the test
-   changes with it, and the feature doc says what changed.
-3. **Verify.** `pnpm verify` must pass; run the UI flows the change touches (`docs/testing.md`).
-   Anything not run, or only checkable on a phone, is reported as UNVERIFIED.
+   reason (a missing class or a wrong result, not a broken setup). Then implement until they
+   pass. A bug fix starts with a failing test that reproduces it. (The code-first exception of
+   D-165 covered only the v0.4.1 phone-feedback batch; it is over.)
+2. **Tests are not weakened.** Existing tests are never deleted, skipped (`@Ignore`, `.skip`,
+   commented out, excluded by config) or loosened (weaker assertions, longer timeouts, broader
+   matchers, re-recorded screenshots without a reviewed reason) to make code pass. When the
+   programmer changes a behavior, the test changes with it, and the feature doc says what changed.
+3. **Verify.** `./gradlew verify` (in `apps/android`) and `pnpm verify` must pass; run the UI flows
+   the change touches (`docs/testing.md`). Anything not run, or only checkable on a phone, is
+   reported as UNVERIFIED.
 4. **Docs with the code.** Update `docs/features/<area>.md` (and the guide, if users see the change)
    in the same change, in its own commit.
-5. **Dependencies:** only packages in the `pnpm-workspace.yaml` catalog (`"catalog:"` in the
-   package) or, for the Kotlin client, the Gradle catalog `apps/android/gradle/libs.versions.toml`;
-   released at least 7 days earlier, each listed with its reason in `docs/dependencies.md`.
+5. **Dependencies:** Kotlin libraries only from the Gradle catalog
+   `apps/android/gradle/libs.versions.toml`, TypeScript packages only from the `pnpm-workspace.yaml`
+   catalog (`"catalog:"` in the package); released at least 7 days earlier, each listed with its
+   reason in `docs/dependencies.md`.
 
 ## Code rules (details in the guidelines)
 
-- No explanatory comments; no magic numbers or strings outside constants modules (ESLint enforces
-  both). Strings in `apps/client/src/text/en.ts`, test ids in `src/keys/`, tuning in
-  `src/constants/`.
-- `packages/core` stays pure (no React, Expo, Node or browser APIs). A new area under
-  `packages/core/src/` gets an `index.ts` barrel and one `export *` line in
-  `packages/core/src/index.ts`; consumers import only from `@kodakiko/core`.
-- Client platform code: `name.native.ts` + `name.web.ts` + `name.ts` (declaration); a platform file
-  never imports its own base name, shared code goes in `name-shared.ts`.
-- Raw `Pressable` only inside `apps/client/src/ui/`; use `Touchable`.
+### Android app (`apps/android`)
 
-### Kotlin client (v0.4.0, branch `feat/v0.4.0-kotlin`, `apps/android/`)
-
-- Module map, layers and rules: ADR 0011 and the v0.4.0 plan (`docs/planning/v0.4.0/architecture.md`,
-  local). Shared logic lives in Kotlin Multiplatform `:shared:*` modules (`commonMain`, no Android
-  or Java APIs); Android I/O in `:data:*`/`:platform:*`; business logic in `:service:*`; UI in
-  `:ui:*`. Feature modules never depend on each other.
-- No explanatory comments. The only allowed comment is the two-line attribution header on files
-  adapted from Mihon: `// Adapted from https://github.com/mihonapp/mihon` and
+- Module map and layers: `docs/architecture.md` (ADR 0011). Shared logic lives in Kotlin
+  Multiplatform `:shared:*` modules (`commonMain`, no Android or Java APIs); Android I/O in
+  `:data:*` and `:platform:*`; business logic in `:service:*`; UI in `:ui:core` and
+  `:ui:feature:*`; wiring in `:app`. A module depends only on lower layers, and feature modules
+  never depend on each other (`tooling-tests` checks it).
+- No comments. The only allowed comment is the two-line attribution header on files adapted from
+  Mihon: `// Adapted from https://github.com/mihonapp/mihon` and
   `// Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, Apache-2.0`.
-- No magic values: tuning in `*Constants.kt` objects, UI strings in `strings.xml` (English), test
-  ids in `TestTags` (same strings as the Expo app's ids).
+- No magic values: numbers, durations and color literals in `*Constants.kt` objects; UI text in
+  string resources (`ui/core/src/main/res/values/`: `strings.xml` is generated from the v0.3.1 text
+  and checked by `node tests/fixtures/ui-strings/emit-android.ts --check`; new text goes in
+  `strings_v040.xml`, edit-page text of v0.4.1 in `strings_v041_edit.xml`); test ids in
+  `TestTags` (`:ui:core`, plus `:app` for shell ids). `tooling-tests` rejects comments, magic
+  numbers and literal UI text.
+- Screens follow Mihon: a stateful `XScreen` with its ViewModel and a stateless `XContent`, which
+  is what the Compose and Roborazzi tests render. UI state classes are `@Immutable`.
 - Secrets are `ByteArray`, wiped after use; a password or passphrase may arrive as `String` from a
-  text field (Compose) and is converted once at the core API boundary. No I/O on the main thread.
-- Dependencies only from `apps/android/gradle/libs.versions.toml`, listed in `docs/dependencies.md`.
-- `./gradlew verify` (in `apps/android`) must pass next to `pnpm verify`.
+  text field and is converted once at the core API boundary. No I/O on the main thread.
+- `./gradlew verify` must pass next to `pnpm verify`.
+
+### TypeScript (`apps/server`, `apps/link-viewer`, `packages/*`)
+
+- No explanatory comments; no magic numbers or strings outside constants modules (ESLint enforces
+  both).
+- `packages/core` stays pure (no Node or browser APIs). A new area under `packages/core/src/` gets
+  an `index.ts` barrel and one `export *` line in `packages/core/src/index.ts`; consumers import
+  only from `@kodakiko/core`.
+
+### Everywhere
+
 - Never print, log or commit secrets. American English everywhere.
 
 ## Working with the programmer
