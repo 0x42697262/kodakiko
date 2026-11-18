@@ -2,16 +2,20 @@
 
 Signing up, signing in, recovery, password change, sessions and account deletion. The crypto
 behind it is in [../encryption.md](../encryption.md) and [../design/crypto.md](../design/crypto.md).
-Code: `packages/core/src/account/`, `apps/server/src/services/` (auth, accounts, invites),
-`apps/client/src/services/auth-service.ts`, `apps/client/src/features/auth/`.
+Code: `:shared:account` (KDF policy, sign-up/in material, recovery, password change),
+`:service:account` (`AuthService`: account state, sign-up/in, unlock, recovery, sign-out),
+`:ui:feature:auth` (Welcome, sign-up, sign-in, recover, recovery key, cancel deletion),
+`:ui:feature:settings` (Settings › Account), `:app` (`settings/AccountAdapters.kt`,
+`log/LoggingAuthService.kt`), and on the server `apps/server/src/services/` (auth, accounts,
+invites).
 
 ## Starting out
 
-**Welcome** (Android): an "Invite link or server address" field and Continue, or **Use without a
+**Welcome:** an "Invite link or server address" field and Continue, or **Use without a
 server** ([local-mode.md](local-mode.md)). The address must be `https://` and answer as a Kodakiko
 server ("That address isn't a Kodakiko server."; unreachable: "Can't reach the server. Check your
-connection or VPN, then try again."). The web app always uses the server it is served from and
-offers Sign In and I Have an Invite.
+connection or VPN, then try again."). There is no web app since v0.4.0; a browser only opens public
+links ([public-links.md](public-links.md)).
 
 ## Sign-up
 
@@ -42,8 +46,10 @@ offers Sign In and I Have an Invite.
 - After 10 failures within 60 minutes for a username, each attempt waits longer (1 s doubling, up
   to 30 s). Rate limits answer "Too many attempts. Wait a minute and try again."
 - A session token (`kdk_s_…`, the server keeps its SHA-256) expires after 30 days without use.
-  Web: **Keep me signed in on this browser** stores it beyond the tab. The key bundle (wrapped keys)
-  is downloaded and unwrapped on the device.
+  It is kept in the app's own encrypted store on the phone. The key bundle (wrapped keys) is
+  downloaded and unwrapped on the device.
+- Unlock start and end (method, outcome, error class, duration) go to the
+  [debug log](settings.md#debug-log); usernames, passwords and keys never do.
 
 ## Recovery and password change
 
@@ -70,12 +76,19 @@ objects.
 
 Username, server host, storage used ("Using 340 KB of 100 GB"), the security code (for sharing),
 **Server and keys** ([settings.md](settings.md#server-and-keys)), Change Password…, Show Recovery
-Key…, Delete Account…. On Android, **Change Server…** signs out ("(n) unsynced changes on this device
-will be lost.") and returns to Welcome. Local-only accounts get **Connect a Server…** and **Erase This
+Key…, Delete Account… (in the error color). Since v0.4.1 the rows that open something have icons
+(Connect a Server, Server and keys, Change Password, Show Recovery Key, Delete Account).
+**Change Server…** signs out ("(n) unsynced changes on this device will be lost.") and returns to
+Welcome. Local-only accounts get **Connect a Server…** and **Erase This
 Journal…** instead.
 
 ## Sign-out
 
-Gallery ⋮ › Sign Out (hidden for local-only accounts) locks, ends the session on the server and
-deletes this device's copy of the journal. With unsynced changes the lock screen's Sign Out asks
-first.
+Gallery ⋮ › Sign Out and the last row of Settings (hidden for local-only accounts) lock, end the
+session on the server and delete this device's copy of the journal. With changes still waiting to
+upload, Settings asks "Sign out? Unsynced changes on this device will be lost." first; the lock
+screen's Sign Out always asks.
+
+## Checked only on a phone
+
+The biometric prompt during the first unlock after updating from v0.3.1 ([lock.md](lock.md)).

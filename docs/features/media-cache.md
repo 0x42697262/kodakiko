@@ -1,8 +1,9 @@
 # Thumbnails, originals and downloads
 
 Which encrypted files live on the device, when they are downloaded and when they are removed.
-Code: `apps/client/src/services/thumbnails/`, `services/originals/`, `services/downloads/`,
-`adapters/filestore/`, `adapters/network/`.
+Code: `:data:media` (`ThumbnailCache`, `OriginalCache`, `DownloadQueue`, `StreamFileReader`, Coil
+fetchers), `:data:files` (paths, atomic writes, orphan sweep, temp files), `:data:net`
+(`NetworkMonitor`), `:app` (`gallery/AccountMedia.kt`, `CoilGalleryThumbnails.kt`).
 
 ## Thumbnails
 
@@ -12,22 +13,28 @@ network.
 - A visible tile without a local thumbnail downloads it at once; after each sync pass every
   missing thumbnail of a readable, not trashed entry is downloaded in the background, on any
   network.
-- **Plain mode** (Android default): after a download the thumbnail is decrypted into app-private
+- **Plain mode** (default): after a download the thumbnail is decrypted into app-private
   storage (`thumbs-plain/<mediaId>.webp`) and the encrypted copy is deleted, so only one copy
   exists. **Encrypt thumbnails** (Settings › Security) keeps the server's encrypted copy instead and
-  decrypts in memory; the web always works this way. Switching mode converts every thumbnail in the
+  decrypts in memory (the 300 most recent stay decoded in memory until lock). Switching mode converts every thumbnail in the
   background and shows "Updating thumbnails… (done)/(total)".
-- Thumbnails are never evicted.
+- Thumbnails are never evicted. Images reach the screen through Coil with no disk cache and no
+  network fetcher of its own; decrypted thumbnails live in memory only and are dropped at lock.
 
 ## Originals
 
-- Opening a photo, playing a video, sharing or exporting downloads the original if it is not local;
+- Opening a photo, playing a video, sharing to apps or exporting downloads the original if it is
+  not local;
   the viewer shows a progress ring and swaps to the original when it arrives, or "Couldn't download
   the original. Showing preview." with Retry.
-- **Original cache size** (Data and storage; Android default 2 GiB, web 1 GiB, or no limit) caps
+- Photos are decoded straight from the encrypted file and videos play through a decrypting reader
+  ([viewer.md](viewer.md#full-screen-player)); no decrypted copy of an original is written.
+- **Original cache size** (Data and storage; default 2 GiB, or no limit) caps
   the space used by downloaded originals. When it is exceeded the least recently opened originals
   are deleted first. Originals of kept-offline entries and originals not uploaded yet are never
-  deleted.
+  deleted. The cap is enforced at unlock, after each download that opens an original, and two
+  minutes after share to apps fetched originals (v0.4.1, [sharing.md](sharing.md#share-to-apps)).
+  Local-only journals never evict (the phone holds the only copy).
 - **Keep Offline** (viewer ⋮) pins an entry: its originals download in the background, on Wi-Fi
   only, and stay. **Clear cached originals** removes every downloaded original that can be fetched
   again.
@@ -38,13 +45,14 @@ network.
 
 - One queue per priority (opened > visible > background); up to 6 thumbnails and 2 originals at a
   time; the same object requested twice downloads once.
-- Each download asks the API for a fresh presigned URL (`GET /objects/{id}/download`), writes into
-  a `.partial` file (Android `File.createDownloadTask`, so large files never pass through JS memory;
-  web streams `fetch` into OPFS), checks the size and renames it. Timeout 10 minutes; network
-  errors and 5xx are retried 3 times (2 s, 8 s, 30 s) with a new URL each time.
+- Each download asks the API for a fresh presigned URL (`GET /objects/{id}/download`), streams the
+  response (OkHttp) into a `.partial` file, checks the size and renames it. Timeout 10 minutes;
+  network errors and 5xx are retried 3 times (2 s, 8 s, 30 s) with a new URL each time.
 - A 404 (object replaced or entry deleted) marks the object unavailable; a later pull that brings
   a replacement resets it.
 - Background downloads pause while offline and stop on lock and sign-out.
+- With the [debug log](settings.md#debug-log) on, each download (object id, bytes, duration,
+  outcome) and each abort is recorded.
 
 ## Network rules
 
@@ -56,14 +64,20 @@ network.
 | Uploads larger than **Large means** (default 100 MiB) | Wi-Fi only while **Large uploads on Wi-Fi only** is on |
 | Inline video that is not on the device | Wi-Fi only unless **Autoplay on mobile data** is on |
 
-Wi-Fi and Ethernet count as Wi-Fi (`expo-network`); the web always counts as Wi-Fi.
+Wi-Fi and Ethernet count as Wi-Fi; "online" means Android reports the network as validated
+(`NetworkMonitor`).
 
 ## Local storage layout
 
-| Platform | Encrypted objects | Plain thumbnails | Database |
-|---|---|---|---|
-| Android | `Paths.document/kodakiko/<account>/objects/<objectId>.kdks` | `…/thumbs-plain/` | `expo-sqlite` (rows are ciphertext) |
-| Web | OPFS, per account | — | IndexedDB |
+All in app-private storage, at the same places v0.3.1 used, so an update keeps everything:
+
+| What | Where |
+|---|---|
+| Encrypted objects | `files/kodakiko/<account hash>/objects/<objectId>.kdks` |
+| Plain thumbnails | `files/kodakiko/<account hash>/thumbs-plain/<mediaId>.webp` |
+| Database (rows are ciphertext) | `files/SQLite/kodakiko-<account hash>.db` (SQLite, WAL) |
+| Debug log | `files/logs/debug.log` ([settings.md](settings.md#debug-log)) |
+| Plaintext temp files | the app cache (`cache/`, incl. `cache/share/`), wiped at start, unlock and lock |
 
 Object files not known to the database (from an import killed halfway) are swept at unlock.
 

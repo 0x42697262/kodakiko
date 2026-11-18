@@ -200,7 +200,7 @@ Ports and their Android implementations:
 ### 5.4 Lock and unlock
 
 1. Before the account state turns locked, an open edit page is saved (5 s limit) and unlocked
-   work (in-flight crypto, sharing and link writes) is cancelled and joined.
+   work (in-flight crypto, sharing and link writes) is canceled and joined.
 2. Then the lock steps run in order: cancel export, stop sync, cancel downloads, release video,
    release originals, clear thumbnails, clear the capture tray, wipe temp files, clear the index,
    clear UI state, clear collection names, clear the account, flush edits, wipe keys; then temp

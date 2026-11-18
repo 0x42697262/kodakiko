@@ -23,6 +23,9 @@ contract in `packages/contract/src/`. Every endpoint: [../design/api.md](../desi
   `FEATURE_DISABLED`, `STORAGE_UNAVAILABLE`), never internal messages.
 - `GET /api/v1/config` publishes what clients need: limits, flags, sign-up mode, trash days,
   deletion grace days.
+- The server is unchanged by v0.4.0 and v0.4.1: the Kotlin app speaks the same API as v0.3.1, so a
+  v0.3.1 server needs no update. Caddy, not the API, serves the link viewer page and the "Get the
+  Android app" page ([../operations.md](../operations.md)).
 
 ## Configuration (selected)
 
@@ -71,7 +74,9 @@ Cross-field rules are checked at boot (for example the upload limit must fit 10,
   readers.
 - Two S3 clients: one on the internal endpoint for server calls, one on the public endpoint for
   presigning. Idempotent calls are retried (3 attempts, jittered); create and complete never are.
-- `apply-bucket-cors` sets the bucket's CORS rule for the web origin.
+- `apply-bucket-cors` sets the bucket's CORS rule for the server's public origin (`PUBLIC_BASE_URL`),
+  so the public link page ([public-links.md](public-links.md)) can download from presigned URLs.
+  The Android app needs no CORS.
 
 ## Jobs
 
