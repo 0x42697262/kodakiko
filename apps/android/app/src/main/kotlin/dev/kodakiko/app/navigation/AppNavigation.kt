@@ -93,7 +93,7 @@ private fun ScreenTransition(
     val slideDistance = with(LocalDensity.current) { NavigationConstants.SLIDE_DISTANCE.roundToPx() }
     val items = voyager.items
     val overlay = voyager.lastItem.takeIf { isOverlay(it) && items.size > 1 }
-    val base = if (overlay != null) items[items.size - 2] else voyager.lastItem
+    val base = if (overlay != null) items[items.lastIndex - 1] else voyager.lastItem
     AnimatedContent(
         targetState = base,
         transitionSpec = {
