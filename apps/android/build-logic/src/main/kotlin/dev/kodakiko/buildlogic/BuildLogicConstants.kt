@@ -11,6 +11,9 @@ internal object BuildLogicConstants {
     const val JVM_TEST_TASK = "jvmTest"
     const val ANDROID_DEVICE_TEST_SOURCE_SET = "androidDeviceTest"
     const val INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
+    const val COMPOSE_REPORTS_PROPERTY = "kodakiko.composeReports"
+    const val COMPOSE_REPORTS_DIR = "compose-reports"
+    const val COMPOSE_STABILITY_CONFIG = "stability_config.conf"
     val LINT_VERSION_CHECKS = setOf("NewerVersionAvailable", "GradleDependency", "AndroidGradlePluginVersion")
     val ROBOLECTRIC_JVM_ARGS = listOf("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED")
 }

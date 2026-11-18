@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -114,6 +115,7 @@ class AppCaptureCamera(private val tempFiles: TempFiles, private val ioDispatche
     }
 }
 
+@Stable
 class AppCameraPreview(private val camera: AppCaptureCamera) : CameraPreview {
     @Composable
     override fun Content(facing: CameraFacing, modifier: Modifier) {
