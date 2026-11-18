@@ -116,6 +116,7 @@ fun ShareSheetScreen(viewModel: ShareSheetViewModel) {
             }
         }
     }
+    if (state.direct) return
     AdaptiveSheet(onDismissRequest = { viewModel.onAction(ShareSheetAction.Dismiss) }) {
         ShareSheetContent(state = state, onAction = viewModel::onAction)
     }

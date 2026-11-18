@@ -70,6 +70,7 @@ data class ShareSheetState(
     val tab: ShareTab,
     val kodakiko: InKodakikoState,
     val apps: ToAppsState,
+    val direct: Boolean = false,
 )
 
 sealed interface ShareSheetAction {
@@ -138,6 +139,7 @@ class ShareSheetViewModel(private val deps: SharingDeps, private val entryIds: L
                     busy = false,
                     failed = false,
                 ),
+                direct = !kodakiko && entryIds.size == SharingConstants.DIRECT_SHARE_ENTRIES,
             ),
         )
         state = mutableState.asStateFlow()
@@ -182,8 +184,9 @@ class ShareSheetViewModel(private val deps: SharingDeps, private val entryIds: L
                 .onSuccess { items ->
                     val chosen = items.map { it.media.mediaId }.toSet()
                     updateApps { it.copy(items = items, chosen = chosen, selection = deps.shareOut.selection(items, chosen)) }
+                    if (mutableState.value.direct) shareDirectly(items, chosen)
                 }
-                .onFailure { updateApps { it.copy(failed = true) } }
+                .onFailure { mutableState.update { it.copy(direct = false, apps = it.apps.copy(failed = true)) } }
         }
     }
 
@@ -203,6 +206,16 @@ class ShareSheetViewModel(private val deps: SharingDeps, private val entryIds: L
             val failed = attempt { deps.shareOut.share(items, apps.chosen, apps.option) }.isFailure
             updateApps { it.copy(busy = false, failed = failed) }
         }
+    }
+
+    private suspend fun shareDirectly(items: List<SharePickItem>, chosen: Set<String>) {
+        if (chosen.isEmpty()) {
+            mutableState.update { it.copy(direct = false) }
+            return
+        }
+        attempt { deps.shareOut.share(items, chosen, ShareTextOption.NONE) }
+            .onSuccess { channel.trySend(ShareSheetEvent.Close) }
+            .onFailure { mutableState.update { it.copy(direct = false, apps = it.apps.copy(failed = true)) } }
     }
 
     private fun addTo() {

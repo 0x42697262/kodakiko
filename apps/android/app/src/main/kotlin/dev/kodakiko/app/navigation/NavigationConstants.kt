@@ -13,6 +13,7 @@ object NavigationConstants {
     const val TAB_NAVIGATOR_KEY = "homeTabs"
     const val TAB_STATE_KEY = "currentTab"
     const val TRANSITION_STATE_KEY = "transition"
+    const val OVERLAY_STATE_KEY = "overlay"
     const val TRANSITION_LABEL = "transition"
     const val TAB_CONTENT_LABEL = "tabContent"
     const val STATE_SUBSCRIPTION_MS = 5_000L

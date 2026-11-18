@@ -91,8 +91,11 @@ private fun ScreenTransition(
     modifier: Modifier = Modifier,
 ) {
     val slideDistance = with(LocalDensity.current) { NavigationConstants.SLIDE_DISTANCE.roundToPx() }
+    val items = voyager.items
+    val overlay = voyager.lastItem.takeIf { isOverlay(it) && items.size > 1 }
+    val base = if (overlay != null) items[items.size - 2] else voyager.lastItem
     AnimatedContent(
-        targetState = voyager.lastItem,
+        targetState = base,
         transitionSpec = {
             RouteTransitions.contentTransform(
                 navigator.lastTransition ?: RouteTransition(TransitionKind.SLIDE, forward = true),
@@ -106,4 +109,11 @@ private fun ScreenTransition(
             screen.Content()
         }
     }
+    overlay?.let { screen ->
+        voyager.saveableState(NavigationConstants.OVERLAY_STATE_KEY, screen) {
+            screen.Content()
+        }
+    }
 }
+
+private fun isOverlay(screen: Screen): Boolean = (screen as? RouteScreen)?.route is Route.ShareSheet
