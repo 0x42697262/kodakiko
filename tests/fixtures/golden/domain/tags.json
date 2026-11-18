@@ -1,0 +1,980 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "normalizeTag: lowercases and trims",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "  Family "
+      },
+      "result": "family"
+    },
+    {
+      "name": "normalizeTag: collapses whitespace runs to one space",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "road \t  trip\n2026"
+      },
+      "result": "road trip 2026"
+    },
+    {
+      "name": "normalizeTag: applies NFKC (full-width letters)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "ＦＡＭＩＬＹ"
+      },
+      "result": "family"
+    },
+    {
+      "name": "normalizeTag: applies NFKC (a decomposed accent)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "é"
+      },
+      "result": "é"
+    },
+    {
+      "name": "normalizeTag: rejects empty input",
+      "fn": "normalizeTag",
+      "args": {
+        "input": ""
+      },
+      "result": null
+    },
+    {
+      "name": "normalizeTag: rejects blank input",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "   "
+      },
+      "result": null
+    },
+    {
+      "name": "normalizeTag: accepts exactly TAG_MAX_CHARS after normalization",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "result": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "name": "normalizeTag: rejects input longer than TAG_MAX_CHARS after normalization",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "result": null
+    },
+    {
+      "name": "normalizeTag: is idempotent (first pass)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "  Mixed   Case "
+      },
+      "result": "mixed case"
+    },
+    {
+      "name": "normalizeTag: is idempotent (second pass)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "mixed case"
+      },
+      "result": "mixed case"
+    },
+    {
+      "name": "normalizeTag: edge: NFKC expands a ligature",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "ﬁsh"
+      },
+      "result": "fish"
+    },
+    {
+      "name": "normalizeTag: edge: NFKC can make a short input long enough to be rejected",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿"
+      },
+      "result": null
+    },
+    {
+      "name": "normalizeTag: edge: the length limit counts UTF-16 code units (32 emoji)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊"
+      },
+      "result": "🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊"
+    },
+    {
+      "name": "normalizeTag: edge: the length limit counts UTF-16 code units (33 emoji)",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊"
+      },
+      "result": null
+    },
+    {
+      "name": "normalizeTag: edge: dotted capital I lowercases to i + U+0307",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "İstanbul"
+      },
+      "result": "i̇stanbul"
+    },
+    {
+      "name": "normalizeTag: edge: no-break spaces and the ideographic space become spaces",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "a  b　c"
+      },
+      "result": "a b c"
+    },
+    {
+      "name": "normalizeTag: edge: trim removes a byte order mark",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "﻿tag﻿"
+      },
+      "result": "tag"
+    },
+    {
+      "name": "normalizeTag: edge: the information separator U+001F is not whitespace",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "a\u001fb"
+      },
+      "result": "a\u001fb"
+    },
+    {
+      "name": "normalizeTag: edge: line and paragraph separators are whitespace",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "a  b"
+      },
+      "result": "a b"
+    },
+    {
+      "name": "normalizeTag: edge: a zero-width space is not whitespace",
+      "fn": "normalizeTag",
+      "args": {
+        "input": "a​b"
+      },
+      "result": "a​b"
+    },
+    {
+      "name": "sortTags: orders already sorted by code unit",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "a",
+          "b"
+        ]
+      },
+      "result": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "sortTags: orders unsorted by code unit",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "b",
+          "a",
+          "c"
+        ]
+      },
+      "result": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    {
+      "name": "sortTags: orders code unit order puts digits before letters by code unit",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "a",
+          "1",
+          "B"
+        ]
+      },
+      "result": [
+        "1",
+        "B",
+        "a"
+      ]
+    },
+    {
+      "name": "sortTags: orders empty by code unit",
+      "fn": "sortTags",
+      "args": {
+        "tags": []
+      },
+      "result": []
+    },
+    {
+      "name": "sortTags: does not change its input",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "b",
+          "a"
+        ]
+      },
+      "result": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "sortTags: edge: an astral character sorts before U+FFFD (UTF-16 order, not code point order)",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "�",
+          "🌊",
+          "z"
+        ]
+      },
+      "result": [
+        "z",
+        "🌊",
+        "�"
+      ]
+    },
+    {
+      "name": "sortTags: edge: accented letters sort after ASCII",
+      "fn": "sortTags",
+      "args": {
+        "tags": [
+          "é",
+          "f",
+          "e"
+        ]
+      },
+      "result": [
+        "e",
+        "f",
+        "é"
+      ]
+    },
+    {
+      "name": "addTag: adds a plain tag and returns the sorted list",
+      "fn": "addTag",
+      "args": {
+        "tags": [],
+        "raw": "family"
+      },
+      "result": {
+        "tags": [
+          "family"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: adds a tag that needs normalizing and returns the sorted list",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "b"
+        ],
+        "raw": "  Road   Trip "
+      },
+      "result": {
+        "tags": [
+          "b",
+          "road trip"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: adds a tag that sorts first and returns the sorted list",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "b",
+          "c"
+        ],
+        "raw": "a"
+      },
+      "result": {
+        "tags": [
+          "a",
+          "b",
+          "c"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: adds a full-width tag and returns the sorted list",
+      "fn": "addTag",
+      "args": {
+        "tags": [],
+        "raw": "ＦＡＭＩＬＹ"
+      },
+      "result": {
+        "tags": [
+          "family"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: rejects empty text and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "raw": ""
+      },
+      "result": {
+        "tags": [
+          "a"
+        ],
+        "rejected": "empty"
+      }
+    },
+    {
+      "name": "addTag: rejects blank text and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "raw": "   "
+      },
+      "result": {
+        "tags": [
+          "a"
+        ],
+        "rejected": "empty"
+      }
+    },
+    {
+      "name": "addTag: rejects text over the limit and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "raw": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "result": {
+        "tags": [
+          "a"
+        ],
+        "rejected": "tooLong"
+      }
+    },
+    {
+      "name": "addTag: rejects a duplicate and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "raw": "a"
+      },
+      "result": {
+        "tags": [
+          "a"
+        ],
+        "rejected": "duplicate"
+      }
+    },
+    {
+      "name": "addTag: rejects a duplicate after normalizing and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "road trip"
+        ],
+        "raw": " ROAD  trip"
+      },
+      "result": {
+        "tags": [
+          "road trip"
+        ],
+        "rejected": "duplicate"
+      }
+    },
+    {
+      "name": "addTag: rejects a full list and leaves the list unchanged",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "raw": "one more"
+      },
+      "result": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "rejected": "tooMany"
+      }
+    },
+    {
+      "name": "addTag: accepts a tag of exactly the maximum length",
+      "fn": "addTag",
+      "args": {
+        "tags": [],
+        "raw": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "result": {
+        "tags": [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: accepts the last free slot",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "raw": "zzz"
+      },
+      "result": {
+        "tags": [
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49",
+          "zzz"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "addTag: reports a duplicate before a full list",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "raw": "tag-00"
+      },
+      "result": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "rejected": "duplicate"
+      }
+    },
+    {
+      "name": "addTag: edge: an empty check comes before a full list",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "raw": " "
+      },
+      "result": {
+        "tags": [
+          "tag-00",
+          "tag-01",
+          "tag-02",
+          "tag-03",
+          "tag-04",
+          "tag-05",
+          "tag-06",
+          "tag-07",
+          "tag-08",
+          "tag-09",
+          "tag-10",
+          "tag-11",
+          "tag-12",
+          "tag-13",
+          "tag-14",
+          "tag-15",
+          "tag-16",
+          "tag-17",
+          "tag-18",
+          "tag-19",
+          "tag-20",
+          "tag-21",
+          "tag-22",
+          "tag-23",
+          "tag-24",
+          "tag-25",
+          "tag-26",
+          "tag-27",
+          "tag-28",
+          "tag-29",
+          "tag-30",
+          "tag-31",
+          "tag-32",
+          "tag-33",
+          "tag-34",
+          "tag-35",
+          "tag-36",
+          "tag-37",
+          "tag-38",
+          "tag-39",
+          "tag-40",
+          "tag-41",
+          "tag-42",
+          "tag-43",
+          "tag-44",
+          "tag-45",
+          "tag-46",
+          "tag-47",
+          "tag-48",
+          "tag-49"
+        ],
+        "rejected": "empty"
+      }
+    },
+    {
+      "name": "addTag: edge: an unsorted input list is sorted after an addition",
+      "fn": "addTag",
+      "args": {
+        "tags": [
+          "c",
+          "a"
+        ],
+        "raw": "b"
+      },
+      "result": {
+        "tags": [
+          "a",
+          "b",
+          "c"
+        ],
+        "rejected": null
+      }
+    },
+    {
+      "name": "removeTag: removes a present tag",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a",
+          "b",
+          "c"
+        ],
+        "tag": "b"
+      },
+      "result": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "name": "removeTag: removes a tag typed in another case",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a",
+          "b"
+        ],
+        "tag": " B "
+      },
+      "result": [
+        "a"
+      ]
+    },
+    {
+      "name": "removeTag: removes an absent tag",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "tag": "z"
+      },
+      "result": [
+        "a"
+      ]
+    },
+    {
+      "name": "removeTag: removes blank text",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "tag": " "
+      },
+      "result": [
+        "a"
+      ]
+    },
+    {
+      "name": "removeTag: removes the only tag",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a"
+        ],
+        "tag": "a"
+      },
+      "result": []
+    },
+    {
+      "name": "removeTag: edge: removes every copy of a repeated tag",
+      "fn": "removeTag",
+      "args": {
+        "tags": [
+          "a",
+          "b",
+          "a"
+        ],
+        "tag": "a"
+      },
+      "result": [
+        "b"
+      ]
+    }
+  ]
+}

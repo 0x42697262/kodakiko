@@ -1,0 +1,3425 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "planEntryExport: names the folder from the local time and numbers media with extensions from the MIME type",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: crosses midnight and months by the entry offset (into the next year)",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-12-31T23:30:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2027/01/2027-01-01_0130_AbCdEfGh/",
+        "noteFile": "2027/01/2027-01-01_0130_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2027-01-01T01:30:00+02:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-12-31T23:30:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: crosses midnight and months by the entry offset (back into February)",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-03-01T02:00:00.000Z",
+          "utcOffsetMinutes": -300,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/02/2026-02-28_2100_AbCdEfGh/",
+        "noteFile": "2026/02/2026-02-28_2100_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-02-28T21:00:00-05:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-03-01T02:00:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: writes the note after the front matter in entry.md",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: every known MIME type, then the bin fallback for unknown, upper-case and empty types",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "photo",
+              "mimeType": "image/png",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "photo",
+              "mimeType": "image/webp",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000003",
+              "kind": "photo",
+              "mimeType": "image/heic",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 4000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000004",
+              "kind": "photo",
+              "mimeType": "image/heif",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 5000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000005",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 6000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000006",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 7000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000007",
+              "kind": "video",
+              "mimeType": "video/webm",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 8000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000008",
+              "kind": "audio",
+              "mimeType": "audio/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 9000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000009",
+              "kind": "audio",
+              "mimeType": "audio/webm",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 10000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000010",
+              "kind": "audio",
+              "mimeType": "audio/ogg",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 11000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000011",
+              "kind": "photo",
+              "mimeType": "image/gif",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 12000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000012",
+              "kind": "photo",
+              "mimeType": "IMAGE/JPEG",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 13000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000013",
+              "kind": "photo",
+              "mimeType": "",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 14000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.png, kind: photo }, { file: 003.webp, kind: photo }, { file: 004.heic, kind: photo }, { file: 005.heif, kind: photo }, { file: 006.mp4, kind: video }, { file: 007.mov, kind: video }, { file: 008.webm, kind: video }, { file: 009.m4a, kind: audio }, { file: 010.weba, kind: audio }, { file: 011.ogg, kind: audio }, { file: 012.bin, kind: photo }, { file: 013.bin, kind: photo }, { file: 014.bin, kind: photo }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.png",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.webp",
+            "plaintextBytes": 3000
+          },
+          {
+            "mediaId": "M000000000000000000003",
+            "fileName": "004.heic",
+            "plaintextBytes": 4000
+          },
+          {
+            "mediaId": "M000000000000000000004",
+            "fileName": "005.heif",
+            "plaintextBytes": 5000
+          },
+          {
+            "mediaId": "M000000000000000000005",
+            "fileName": "006.mp4",
+            "plaintextBytes": 6000
+          },
+          {
+            "mediaId": "M000000000000000000006",
+            "fileName": "007.mov",
+            "plaintextBytes": 7000
+          },
+          {
+            "mediaId": "M000000000000000000007",
+            "fileName": "008.webm",
+            "plaintextBytes": 8000
+          },
+          {
+            "mediaId": "M000000000000000000008",
+            "fileName": "009.m4a",
+            "plaintextBytes": 9000
+          },
+          {
+            "mediaId": "M000000000000000000009",
+            "fileName": "010.weba",
+            "plaintextBytes": 10000
+          },
+          {
+            "mediaId": "M000000000000000000010",
+            "fileName": "011.ogg",
+            "plaintextBytes": 11000
+          },
+          {
+            "mediaId": "M000000000000000000011",
+            "fileName": "012.bin",
+            "plaintextBytes": 12000
+          },
+          {
+            "mediaId": "M000000000000000000012",
+            "fileName": "013.bin",
+            "plaintextBytes": 13000
+          },
+          {
+            "mediaId": "M000000000000000000013",
+            "fileName": "014.bin",
+            "plaintextBytes": 14000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an entry id shorter than eight characters",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY1",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_ENTRY1/",
+        "noteFile": "2026/11/2026-11-11_1405_ENTRY1/entry.md",
+        "noteText": "---\nid: ENTRY1\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an offset of +05:45",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 345,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1850_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1850_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T18:50:00+05:45\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an offset of -03:30",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": -210,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_0935_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_0935_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T09:35:00-03:30\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an offset of +14:00 into the next day",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 840,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-12_0305_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-12_0305_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-12T03:05:00+14:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an offset of -12:00",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": -720,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_0105_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_0105_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T01:05:00-12:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a zero offset is written as +00:00",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1305_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1305_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T13:05:00+00:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a takenAtUtc without milliseconds",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: seconds are kept and fractions dropped in the date line, the folder uses hours and minutes only",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:59.999Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1305_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1305_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T13:05:59+00:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:59.999Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a takenAtUtc with an explicit offset",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T15:05:00+02:00",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      },
+      "metadataValid": false
+    },
+    {
+      "name": "planEntryExport: edge: an empty note",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\n\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a note that already ends with a newline and has CRLF lines",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "one\r\ntwo\n",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\none\r\ntwo\n\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a note with a front matter fence inside",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "---\nid: fake\n---",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\n---\nid: fake\n---\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a favorite entry",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z",
+          "favorite": true
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "noteFile": "2026/11/2026-11-11_1405_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nfavorite: true\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "2026-11-11T13:05:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a local time before the year 0000 gives an extended-year folder",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "0000-01-01T00:30:00.000Z",
+          "utcOffsetMinutes": -60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "/000001/-000001-12_31T23_AbCdEfGh/",
+        "noteFile": "/000001/-000001-12_31T23_AbCdEfGh/entry.md",
+        "noteText": "---\nid: AbCdEfGh12345678901234\ndate: -000001-12T31T23:30-01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n\nLunch at the beach.\n",
+        "media": [
+          {
+            "mediaId": "M000000000000000000000",
+            "fileName": "001.jpg",
+            "plaintextBytes": 1000
+          },
+          {
+            "mediaId": "M000000000000000000001",
+            "fileName": "002.mp4",
+            "plaintextBytes": 2000
+          },
+          {
+            "mediaId": "M000000000000000000002",
+            "fileName": "003.mov",
+            "plaintextBytes": 3000
+          }
+        ],
+        "mtime": "0000-01-01T00:30:00.000Z"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: an unparsable takenAtUtc throws",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "not a date",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "Invalid time value"
+      },
+      "metadataValid": false
+    },
+    {
+      "name": "frontMatter: writes id, local date with offset, tags, location and media",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: omits a missing location and quotes awkward tags",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "a: b",
+            "say \"hi\"",
+            " padded",
+            "🌊 sea",
+            "back\\slash"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [\"a: b\", \"say \\\"hi\\\"\", \" padded\", 🌊 sea, back\\slash]\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: favorite true is written, favorite false is omitted (true)",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z",
+          "favorite": true
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nfavorite: true\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: favorite true is written, favorite false is omitted (false)",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z",
+          "favorite": false
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: no tags",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: []\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: coordinates are rounded with toFixed(5), keeping the sign of tiny negatives",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": -0.000001,
+            "longitude": 1.000005,
+            "accuracyMeters": 3,
+            "source": "device"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: -0.00000, longitude: 1.00001, source: device }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: coordinates whose binary value lies just below a half round down, others round up to the next integer",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 0.0000025,
+            "longitude": 179.999995,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 0.00000, longitude: 180.00000, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: coordinates at the limits and zero",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": -90,
+            "longitude": 0,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: -90.00000, longitude: 0.00000, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: quoted original names and captions, an audio item",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "a: b {c}.jpg",
+              "caption": "Sunset, \"late\" \\ 🌅"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "audio",
+              "mimeType": "audio/webm",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "plain.weba",
+              "caption": "plain caption"
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"a: b {c}.jpg\", kind: photo, caption: \"Sunset, \\\"late\\\" \\\\ 🌅\" }, { file: 002.weba, original_name: plain.weba, kind: audio, caption: plain caption }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: whitespace rules for tags (inner newline not quoted, leading tab and no-break space quoted)",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": 60,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "line\nbreak",
+            "\ttab",
+            " nbsp",
+            "end ",
+            "mid space"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T14:05:00+01:00\ntags: [line\nbreak, \"\ttab\", \" nbsp\", \"end \", mid space]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "frontMatter: edge: a negative offset with minutes",
+      "fn": "frontMatter",
+      "args": {
+        "entryId": "AbCdEfGh12345678901234",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-11T13:05:00.000Z",
+          "utcOffsetMinutes": -570,
+          "timeZone": null,
+          "note": "Lunch at the beach.",
+          "tags": [
+            "beach",
+            "family"
+          ],
+          "location": {
+            "latitude": 37.3861,
+            "longitude": -122.0839,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "M000000000000000000000",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 1000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG_1234.JPG"
+            },
+            {
+              "mediaId": "M000000000000000000001",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 2000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "M000000000000000000002",
+              "kind": "video",
+              "mimeType": "video/quicktime",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 3000,
+              "thumbnail": {
+                "width": 4,
+                "height": 4,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T13:06:00.000Z",
+          "editedAtUtc": "2026-11-11T13:06:00.000Z"
+        }
+      },
+      "result": "---\nid: AbCdEfGh12345678901234\ndate: 2026-11-11T03:35:00-09:30\ntags: [beach, family]\nlocation: { latitude: 37.38610, longitude: -122.08390, source: exif }\nmedia: [{ file: 001.jpg, original_name: IMG_1234.JPG, kind: photo }, { file: 002.mp4, kind: video }, { file: 003.mov, kind: video }]\n---\n"
+    },
+    {
+      "name": "yamlQuote: \"plain\" → plain",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "plain"
+      },
+      "result": "plain"
+    },
+    {
+      "name": "yamlQuote: \"a:b\" → \"a:b\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a:b"
+      },
+      "result": "\"a:b\""
+    },
+    {
+      "name": "yamlQuote: \"#tag\" → \"#tag\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "#tag"
+      },
+      "result": "\"#tag\""
+    },
+    {
+      "name": "yamlQuote: \"[x]\" → \"[x]\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "[x]"
+      },
+      "result": "\"[x]\""
+    },
+    {
+      "name": "yamlQuote: \"it's\" → \"it's\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "it's"
+      },
+      "result": "\"it's\""
+    },
+    {
+      "name": "yamlQuote: \"\" → \"\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": ""
+      },
+      "result": "\"\""
+    },
+    {
+      "name": "yamlQuote: \"trailing \" → \"trailing \"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "trailing "
+      },
+      "result": "\"trailing \""
+    },
+    {
+      "name": "yamlQuote: \"q\\\"\\\\\" → \"q\\\"\\\\\"",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "q\"\\"
+      },
+      "result": "\"q\\\"\\\\\""
+    },
+    {
+      "name": "yamlQuote: edge: an opening brace",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "{a"
+      },
+      "result": "\"{a\""
+    },
+    {
+      "name": "yamlQuote: edge: a closing brace",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a}"
+      },
+      "result": "\"a}\""
+    },
+    {
+      "name": "yamlQuote: edge: a comma",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a,b"
+      },
+      "result": "\"a,b\""
+    },
+    {
+      "name": "yamlQuote: edge: a closing bracket",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a]"
+      },
+      "result": "\"a]\""
+    },
+    {
+      "name": "yamlQuote: edge: a lone double quote",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "\""
+      },
+      "result": "\"\\\"\""
+    },
+    {
+      "name": "yamlQuote: edge: a backslash alone is not a reason to quote",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a\\b"
+      },
+      "result": "a\\b"
+    },
+    {
+      "name": "yamlQuote: edge: a leading space",
+      "fn": "yamlQuote",
+      "args": {
+        "value": " a"
+      },
+      "result": "\" a\""
+    },
+    {
+      "name": "yamlQuote: edge: a leading tab",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "\ta"
+      },
+      "result": "\"\ta\""
+    },
+    {
+      "name": "yamlQuote: edge: a trailing newline",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a\n"
+      },
+      "result": "\"a\n\""
+    },
+    {
+      "name": "yamlQuote: edge: an inner newline is not quoted or escaped",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a\nb"
+      },
+      "result": "a\nb"
+    },
+    {
+      "name": "yamlQuote: edge: a leading no-break space",
+      "fn": "yamlQuote",
+      "args": {
+        "value": " a"
+      },
+      "result": "\" a\""
+    },
+    {
+      "name": "yamlQuote: edge: a leading byte order mark",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "﻿a"
+      },
+      "result": "\"﻿a\""
+    },
+    {
+      "name": "yamlQuote: edge: a trailing line separator",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a "
+      },
+      "result": "\"a \""
+    },
+    {
+      "name": "yamlQuote: edge: a leading next-line U+0085 is not whitespace",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a"
+      },
+      "result": "a"
+    },
+    {
+      "name": "yamlQuote: edge: a leading zero-width space is not whitespace",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "​a"
+      },
+      "result": "​a"
+    },
+    {
+      "name": "yamlQuote: edge: a leading dash is not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "- item"
+      },
+      "result": "- item"
+    },
+    {
+      "name": "yamlQuote: edge: YAML keywords are not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "true"
+      },
+      "result": "true"
+    },
+    {
+      "name": "yamlQuote: edge: numbers are not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "123"
+      },
+      "result": "123"
+    },
+    {
+      "name": "yamlQuote: edge: emoji and non-ASCII are not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "🌊 Café"
+      },
+      "result": "🌊 Café"
+    },
+    {
+      "name": "yamlQuote: edge: a single space",
+      "fn": "yamlQuote",
+      "args": {
+        "value": " "
+      },
+      "result": "\" \""
+    },
+    {
+      "name": "yamlQuote: edge: a percent sign, ampersand, star, pipe and greater-than are not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "%&*|>!@`"
+      },
+      "result": "%&*|>!@`"
+    },
+    {
+      "name": "yamlQuote: edge: a full-width colon is not quoted",
+      "fn": "yamlQuote",
+      "args": {
+        "value": "a：b"
+      },
+      "result": "a：b"
+    },
+    {
+      "name": "EXPORT_TEXT: edge: readme",
+      "fn": "EXPORT_TEXT.readme",
+      "args": {
+        "date": "2026-11-11"
+      },
+      "result": "Kodakiko journal export, 2026-11-11.\n\nEach entry is a folder named YEAR/MONTH/DATE_TIME_ID/. It holds entry.md (the note, with the\ndate, tags, location and media list at the top) and the photos and videos numbered 001, 002, ...\n\nThese files are NOT encrypted. Store them somewhere safe.\n"
+    },
+    {
+      "name": "EXPORT_TEXT: edge: missingHeader",
+      "fn": "EXPORT_TEXT.missingHeader",
+      "args": {},
+      "result": "These items could not be exported:"
+    },
+    {
+      "name": "EXPORT_TEXT: edge: missingLine",
+      "fn": "EXPORT_TEXT.missingLine",
+      "args": {
+        "folder": "2026/11/2026-11-11_1405_AbCdEfGh/",
+        "file": "002.mp4",
+        "reason": "The file could not be downloaded."
+      },
+      "result": "2026/11/2026-11-11_1405_AbCdEfGh/002.mp4\tThe file could not be downloaded."
+    },
+    {
+      "name": "constants: edge: layout constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "EXPORT_NOTE_FILE": "entry.md",
+        "EXPORT_README_FILE": "README.txt",
+        "EXPORT_MISSING_FILE": "MISSING.txt",
+        "EXPORT_FALLBACK_EXTENSION": "bin",
+        "EXPORT_EXTENSIONS": {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp",
+          "image/heic": "heic",
+          "image/heif": "heif",
+          "video/mp4": "mp4",
+          "video/quicktime": "mov",
+          "video/webm": "webm",
+          "audio/mp4": "m4a",
+          "audio/webm": "weba",
+          "audio/ogg": "ogg"
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - extendedWaitUntil:
     visible:

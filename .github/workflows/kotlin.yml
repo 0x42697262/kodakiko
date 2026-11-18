@@ -1,0 +1,71 @@
+name: Kotlin
+
+on:
+  pull_request:
+    paths:
+      - 'apps/android/**'
+      - 'docs/dependencies.md'
+      - 'packages/core/**'
+      - '.github/workflows/kotlin.yml'
+  push:
+    branches: [main, 'feat/**']
+    paths:
+      - 'apps/android/**'
+      - 'docs/dependencies.md'
+      - 'packages/core/**'
+      - '.github/workflows/kotlin.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kotlin-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ANDROID_PLATFORM: android-37.0
+  BUILD_TOOLS: 37.0.0
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;$ANDROID_PLATFORM" "build-tools;$BUILD_TOOLS"
+
+      - name: Host libsodium for Robolectric tests
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
+
+      - name: Gradle verify
+        working-directory: apps/android
+        run: ./gradlew verify
+
+      - run: corepack enable
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Reverse judge over the Kotlin artifacts
+        run: pnpm --filter @kodakiko/core exec vitest run test/kotlin-artifacts.test.ts

@@ -1,0 +1,138 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "plain-words",
+      "inputs": {
+        "username": "alice",
+        "userId": "hYaHiImKi4yNjo-QkZKTlA",
+        "masterKeyByRecovery": "01bdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4b1a640e5fab476c6899d6c63b1695ac1fe5a8a1ebadabd0f68886b60aab473315b86a8612150c287d7779daabc9b03eb",
+        "wordsInput": "cement couple skate false pencil noodle regret shine coral maze mimic half fat breeze thought chef depth tiger exhibit leader advice patrol artist more",
+        "newPassword": "a brand new passphrase 2026",
+        "randomSeed": 601,
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "deviceLabel": "Pixel 8"
+      },
+      "outputs": {
+        "normalizedWords": [
+          "cement",
+          "couple",
+          "skate",
+          "false",
+          "pencil",
+          "noodle",
+          "regret",
+          "shine",
+          "coral",
+          "maze",
+          "mimic",
+          "half",
+          "fat",
+          "breeze",
+          "thought",
+          "chef",
+          "depth",
+          "tiger",
+          "exhibit",
+          "leader",
+          "advice",
+          "patrol",
+          "artist",
+          "more"
+        ],
+        "recoveryKey": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+        "masterKey": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324",
+        "randomDraws": [
+          16,
+          24
+        ],
+        "passwordBytes": "61206272616e64206e657720706173737068726173652032303236",
+        "salt": "595a5b5c5d5e5f606162636465666768",
+        "kek": "25de1c34ba9bf69a098a2991b224b160aed334a5417984f0464241c87779c17d",
+        "loginKey": "4da367ea1b683e56737f7d837b25502047b0022d626978d70b96dc38a7dac117",
+        "recoveryLoginKey": "369841f586dc380d3617063a2d7983de2118f2cac37934eca4099dfd83f0962a",
+        "masterKeyByKek": "01696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f800b965e7dd2b88f497d18f6c9e753b1d24c0302e68d4fbe014c6e2c2395bb91aa25228b8769b7a9271a47037049a07d62",
+        "request": {
+          "username": "alice",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "deviceLabel": "Pixel 8",
+          "salt": "WVpbXF1eX2BhYmNkZWZnaA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "TaNn6htoPlZzf32DeyVQIEewAi1iaXjXC5bcOKfawRc",
+          "masterKeyByKek": "AWlqa2xtbm9wcXJzdHV2d3h5ent8fX5_gAuWXn3SuI9JfRj2yedTsdJMAwLmjU--AUxuLCOVu5GqJSKLh2m3qScaRwNwSaB9Yg"
+        }
+      }
+    },
+    {
+      "name": "messy-words-non-ascii-password",
+      "inputs": {
+        "username": "alice",
+        "userId": "hYaHiImKi4yNjo-QkZKTlA",
+        "masterKeyByRecovery": "01bdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4b1a640e5fab476c6899d6c63b1695ac1fe5a8a1ebadabd0f68886b60aab473315b86a8612150c287d7779daabc9b03eb",
+        "wordsInput": "  CEMENT \t\n ｃｏｕｐｌｅ \t\n skate \t\n FALSE \t\n ｐｅｎｃｉｌ \t\n noodle \t\n REGRET \t\n ｓｈｉｎｅ \t\n coral \t\n MAZE \t\n ｍｉｍｉｃ \t\n half \t\n FAT \t\n ｂｒｅｅｚｅ \t\n thought \t\n CHEF \t\n ｄｅｐｔｈ \t\n tiger \t\n EXHIBIT \t\n ｌｅａｄｅｒ \t\n advice \t\n PATROL \t\n ａｒｔｉｓｔ \t\n more\n",
+        "newPassword": "Neues Pässwört 🌸 東京 é",
+        "randomSeed": 602,
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "deviceLabel": "Pixel 8"
+      },
+      "outputs": {
+        "normalizedWords": [
+          "cement",
+          "couple",
+          "skate",
+          "false",
+          "pencil",
+          "noodle",
+          "regret",
+          "shine",
+          "coral",
+          "maze",
+          "mimic",
+          "half",
+          "fat",
+          "breeze",
+          "thought",
+          "chef",
+          "depth",
+          "tiger",
+          "exhibit",
+          "leader",
+          "advice",
+          "patrol",
+          "artist",
+          "more"
+        ],
+        "recoveryKey": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+        "masterKey": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324",
+        "randomDraws": [
+          16,
+          24
+        ],
+        "passwordBytes": "4e657565732050c3a4737377c3b6727420f09f8cb820e69db1e4baac20c3a9",
+        "salt": "5a5b5c5d5e5f60616263646566676869",
+        "kek": "c6adfb045aa79c038922c324b90657845541032ca8a3631cc6fef806df306bff",
+        "loginKey": "d154c8ecc5d8b6d11f6667a7eeb3e9c1e390fb51c21e79574bd4ce2436120aef",
+        "recoveryLoginKey": "369841f586dc380d3617063a2d7983de2118f2cac37934eca4099dfd83f0962a",
+        "masterKeyByKek": "016a6b6c6d6e6f707172737475767778797a7b7c7d7e7f8081ae0951d2b499f474538fccbfd3a018dcd7031bb11146b9104d357e2495293b4e4853914ffad60f55ac74161fd2c8c719",
+        "request": {
+          "username": "alice",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "deviceLabel": "Pixel 8",
+          "salt": "WltcXV5fYGFiY2RlZmdoaQ",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "0VTI7MXYttEfZmen7rPpweOQ-1HCHnlXS9TOJDYSCu8",
+          "masterKeyByKek": "AWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-Aga4JUdK0mfR0U4_Mv9OgGNzXAxuxEUa5EE01fiSVKTtOSFORT_rWD1WsdBYf0sjHGQ"
+        }
+      }
+    }
+  ]
+}

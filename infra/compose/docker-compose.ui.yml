@@ -35,9 +35,9 @@ services:
   caddy-ui:
     image: caddy:2@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03
     volumes:
-      - ./ui/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${UI_CADDYFILE:-./ui/Caddyfile}:/etc/caddy/Caddyfile:ro
       - ../caddy/snippets:/etc/caddy/snippets:ro
-      - ../../apps/client/dist:/srv/web:ro
+      - ${UI_WEB_ROOT:-../../apps/client/dist}:/srv/web:ro
     ports:
       - '127.0.0.1:9580:9580'
     environment:

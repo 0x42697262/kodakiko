@@ -23,12 +23,14 @@ const BASH_RULES: readonly { readonly pattern: RegExp; readonly reason: string }
 	{ pattern: /\bdocker\s+(rm|rmi|kill)\b/, reason: "removing docker containers/images directly is not allowed; use the project's compose files" },
 	{ pattern: /\bdocker\b[^|;&]*\bcompose\b(?![^|;&]*-p\s+kodakiko-)[^|;&]*\bdown\b[^|;&]*(-v|--volumes)\b/, reason: "`docker compose down -v` is only allowed with `-p kodakiko-…` projects" },
 	{ pattern: />\s*\/dev\/(sd|nvme|hd)/, reason: "writing to block devices is not allowed" },
+	{ pattern: /\bgradlew?\s[^|;&]*(--write-verification-metadata|--write-locks|--update-locks|--refresh-dependencies|\bwrapper\b)/, reason: "changing Gradle dependency verification, locks or the wrapper is reserved for Opus; stop and ask" },
+	{ pattern: /\b(sdkmanager|avdmanager)\b/, reason: "installing Android SDK packages or emulators is reserved for the programmer; stop and ask" },
 	{ pattern: /\brm\b[^|;&]*\s--no-preserve-root\b/, reason: "not allowed" },
 ];
 
 const RM_RECURSIVE = /\brm\s+((-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)\b[^|;&]*)/;
 const RM_ALLOWED_TARGET =
-	/^(\.\/)?((apps|packages|tests|tools)\/[\w.@/-]+\/)?(node_modules|dist|build|\.expo|coverage|reports|tmp|android)\/?$|^\/tmp\/kodakiko[\w.-]*(\/[\w.@/-]*)?$/;
+	/^(\.\/)?((apps|packages|tests|tools)\/[\w.@/-]+\/)?(node_modules|dist|build|\.expo|\.gradle|\.kotlin|coverage|reports|tmp|android)\/?$|^\/tmp\/kodakiko[\w.-]*(\/[\w.@/-]*)?$/;
 
 const PROTECTED_WRITE_PATHS: readonly RegExp[] = [
 	/^docs\//,
@@ -36,6 +38,8 @@ const PROTECTED_WRITE_PATHS: readonly RegExp[] = [
 	/^\.pi\//,
 	/^\.git(\/|$)/,
 	/^pnpm-workspace\.yaml$/,
+	/^apps\/android\/gradle\/(libs\.versions\.toml|verification-metadata\.xml|wrapper\/)/,
+	/^apps\/android\/gradle\.lockfile$|^apps\/android\/(.+\/)?gradle\.lockfile$/,
 	/(^|\/)\.env(?!\.example$|\.ui$|\.[\w-]+\.example$)(\.[\w.-]+)?$/,
 ];
 
@@ -45,7 +49,7 @@ function checkRecursiveRm(command: string): string | null {
 	const targets = (match[1] ?? "").split(/\s+/).filter((part) => part.length > 0 && !part.startsWith("-"));
 	if (targets.length === 0) return "rm -r without a target";
 	const bad = targets.filter((target) => !RM_ALLOWED_TARGET.test(target));
-	return bad.length === 0 ? null : `recursive rm is only allowed on build output (node_modules, dist, build, .expo, coverage, reports, tmp, android) inside the repository or /tmp/kodakiko*: ${bad.join(" ")}`;
+	return bad.length === 0 ? null : `recursive rm is only allowed on build output (node_modules, dist, build, .expo, .gradle, .kotlin, coverage, reports, tmp, android) inside the repository or /tmp/kodakiko*: ${bad.join(" ")}`;
 }
 
 function checkPath(cwd: string, path: string): string | null {
@@ -60,7 +64,7 @@ function checkPath(cwd: string, path: string): string | null {
 
 const REDIRECT_TARGET = /(?:^|[^<>&0-9=-])(?:[0-9]?>{1,2}|&>)\s*(?!&)([^\s;&|<>()]+)|\btee\s+(?:-a\s+)?([^\s;&|<>()]+)/g;
 const FILE_MUTATORS = /\b(mv|cp|ln|install|truncate|touch|sed\s+-i|perl\s+-p?i)\b([^|;&\n]*)/g;
-const PROTECTED_TOKEN = /(^|[\s'"=])(\.\/)?(docs\/|AGENTS\.md\b|\.pi\/|\.git\/|pnpm-workspace\.yaml\b|~\/|\/(?!tmp\/|dev\/null)[\w.-]+\/)/;
+const PROTECTED_TOKEN = /(^|[\s'"=])(\.\/)?(docs\/|AGENTS\.md\b|\.pi\/|\.git\/|pnpm-workspace\.yaml\b|apps\/android\/gradle\/|~\/|\/(?!tmp\/|dev\/null)[\w.-]+\/)/;
 
 const HEREDOC = /<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n\s*\2\s*(?=\n|$)/g;
 

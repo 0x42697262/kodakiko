@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import {
+  LINK_VIEWER_SPEC,
   WEB_EXPECT_TIMEOUT_MS,
   WEB_ORIGIN,
   WEB_REPORT_DIRECTORY,
@@ -9,6 +10,7 @@ import {
 
 export default defineConfig({
   testDir: './specs',
+  testIgnore: LINK_VIEWER_SPEC,
   globalSetup: './global-setup.ts',
   globalTeardown: './global-teardown.ts',
   workers: 1,

@@ -1,0 +1,6090 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "buildNewEntryMetadata: takes the earliest media time with its offset",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: sets the creation and edit times to now, the note and sorted tags",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: uses the location of the earliest media that has one, as source exif",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            {
+              "latitude": 48.8584,
+              "longitude": 2.2945
+            },
+            {
+              "latitude": 52.52,
+              "longitude": 13.405
+            }
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 52.52,
+          "longitude": 13.405,
+          "accuracyMeters": null,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: skips media without a location even when they are the earliest",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            {
+              "latitude": 48.8584,
+              "longitude": 2.2945
+            },
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945,
+          "accuracyMeters": null,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: prefers a media location over the device location",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            {
+              "latitude": 48.8584,
+              "longitude": 2.2945
+            },
+            null
+          ],
+          "deviceLocation": {
+            "point": {
+              "latitude": 1.5,
+              "longitude": 2.5
+            },
+            "accuracyMeters": 12
+          },
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945,
+          "accuracyMeters": null,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: falls back to the device location with its accuracy, source device",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": {
+            "point": {
+              "latitude": 1.5,
+              "longitude": 2.5
+            },
+            "accuracyMeters": 12
+          },
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 1.5,
+          "longitude": 2.5,
+          "accuracyMeters": 12,
+          "source": "device"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: has no location when there is neither",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": null,
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": null,
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: returns metadata that the contract schema accepts",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: normalizes, deduplicates and sorts the tags",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            " Beach ",
+            "family",
+            "BEACH",
+            "Road   Trip"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "beach",
+          "family",
+          "road trip"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: refuses an empty tag",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "ok",
+            "   "
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "A tag is empty or too long after normalizing."
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: refuses a tag over the length limit",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "A tag is empty or too long after normalizing."
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: edge: no media times throws",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "At least one capture time is required."
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: edge: equal times keep the first one",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 60,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            {
+              "latitude": 52.52,
+              "longitude": 13.405
+            },
+            {
+              "latitude": 48.8584,
+              "longitude": 2.2945
+            }
+          ],
+          "deviceLocation": null,
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 52.52,
+          "longitude": 13.405,
+          "accuracyMeters": null,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "buildNewEntryMetadata: edge: the device location without accuracy",
+      "fn": "buildNewEntryMetadata",
+      "args": {
+        "draft": {
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "times": [
+            {
+              "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            },
+            {
+              "capturedAtUtc": "2026-05-01T07:00:00.000Z",
+              "utcOffsetMinutes": 120,
+              "source": "exif"
+            }
+          ],
+          "note": "Picnic",
+          "tags": [
+            "b",
+            "a"
+          ],
+          "mediaLocations": [
+            null,
+            null
+          ],
+          "deviceLocation": {
+            "point": {
+              "latitude": 1.5,
+              "longitude": 2.5
+            },
+            "accuracyMeters": null
+          },
+          "timeZone": "Europe/Paris",
+          "nowUtc": "2026-11-11T12:00:00.000Z"
+        }
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T07:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "Picnic",
+        "tags": [
+          "a",
+          "b"
+        ],
+        "location": {
+          "latitude": 1.5,
+          "longitude": 2.5,
+          "accuracyMeters": null,
+          "source": "device"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: changes only the fields that are present and stamps the edit time",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "note": "after"
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "after",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: replaces the tags",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "tags": [
+            "a",
+            "z"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a",
+          "z"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: replaces the time but keeps the zone label",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "time": {
+            "takenAtUtc": "2026-05-02T10:00:00.000Z",
+            "utcOffsetMinutes": 120
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-02T10:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: normalizes, deduplicates and sorts edited tags",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "tags": [
+            "Zoo",
+            "apple",
+            " ZOO "
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "apple",
+          "zoo"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses an edit with an empty tag",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "tags": [
+            ""
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "A tag is empty or too long after normalizing."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses an edit with a tag over the length limit",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "tags": [
+            "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "A tag is empty or too long after normalizing."
+      }
+    },
+    {
+      "name": "applyEntryEdit: sets the location",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "location": {
+            "latitude": 48.8584,
+            "longitude": 2.2945,
+            "accuracyMeters": null,
+            "source": "exif"
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945,
+          "accuracyMeters": null,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: clears the location",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": {
+            "latitude": 48.8584,
+            "longitude": 2.2945,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-12T08:00:00.000Z"
+        },
+        "edit": {
+          "location": null
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: reorders the media by the given permutation",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "CCCCCCCCCCCCCCCCCCCCCC",
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "BBBBBBBBBBBBBBBBBBBBBB"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses a media order with an id that is missing",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "BBBBBBBBBBBBBBBBBBBBBB"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "The media order must list every media item exactly once."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses a media order with an unknown id",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "BBBBBBBBBBBBBBBBBBBBBB",
+            "DDDDDDDDDDDDDDDDDDDDDD"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "The media order must list every media item exactly once."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses a media order with a repeated id",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "BBBBBBBBBBBBBBBBBBBBBB"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "The media order must list every media item exactly once."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses a media order with an extra id",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "AAAAAAAAAAAAAAAAAAAAAA",
+            "BBBBBBBBBBBBBBBBBBBBBB",
+            "CCCCCCCCCCCCCCCCCCCCCC",
+            "AAAAAAAAAAAAAAAAAAAAAA"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "The media order must list every media item exactly once."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses a media order with no ids",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": []
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "The media order must list every media item exactly once."
+      }
+    },
+    {
+      "name": "applyEntryEdit: appends added media after the current ones",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "addMedia": [
+            {
+              "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: removes one media item and keeps the rest in order",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "removeMediaId": "BBBBBBBBBBBBBBBBBBBBBB"
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses to remove the last media item",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "removeMediaId": "AAAAAAAAAAAAAAAAAAAAAA"
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "An entry must keep at least one photo or video."
+      }
+    },
+    {
+      "name": "applyEntryEdit: refuses to remove a media item that is not in the entry",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "removeMediaId": "DDDDDDDDDDDDDDDDDDDDDD"
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "error": "InvalidEditError",
+        "message": "That media item is not part of this entry."
+      }
+    },
+    {
+      "name": "applyEntryEdit: does not change the input",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "note": "x",
+          "tags": [],
+          "removeMediaId": "AAAAAAAAAAAAAAAAAAAAAA"
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "x",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: returns metadata that the contract schema accepts",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "note": "x",
+          "tags": [
+            "q"
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "x",
+        "tags": [
+          "q"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: edge: an order, a removal and an addition apply in that order",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "mediaOrder": [
+            "CCCCCCCCCCCCCCCCCCCCCC",
+            "BBBBBBBBBBBBBBBBBBBBBB",
+            "AAAAAAAAAAAAAAAAAAAAAA"
+          ],
+          "removeMediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+          "addMedia": [
+            {
+              "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: edge: removing the last media item while adding one is allowed",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "removeMediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+          "addMedia": [
+            {
+              "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ]
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: edge: an empty edit only stamps the edit time",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {},
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: captions: sets and trims a caption",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "captions": {
+            "AAAAAAAAAAAAAAAAAAAAAA": "  Sunset  "
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null,
+            "caption": "Sunset"
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: captions: clears a caption with empty text",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null,
+              "caption": "Sunset"
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-12T08:00:00.000Z"
+        },
+        "edit": {
+          "captions": {
+            "AAAAAAAAAAAAAAAAAAAAAA": ""
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: captions: ignores captions for media that are not in the entry",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "captions": {
+            "unknown": "x"
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: captions edge: blank text clears a caption",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null,
+              "caption": "Sunset"
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-12T08:00:00.000Z"
+        },
+        "edit": {
+          "captions": {
+            "AAAAAAAAAAAAAAAAAAAAAA": " \t "
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: captions edge: a caption applies to media added in the same edit",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-05-01T08:00:00.000Z",
+          "utcOffsetMinutes": 120,
+          "timeZone": "Europe/Paris",
+          "note": "before",
+          "tags": [
+            "a"
+          ],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            },
+            {
+              "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-11T12:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z"
+        },
+        "edit": {
+          "addMedia": [
+            {
+              "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 100,
+              "height": 80,
+              "durationMs": null,
+              "originalPlaintextBytes": 10,
+              "thumbnail": {
+                "width": 10,
+                "height": 8,
+                "mimeType": "image/webp",
+                "plaintextBytes": 5
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "captions": {
+            "EEEEEEEEEEEEEEEEEEEEEE": "new"
+          }
+        },
+        "nowUtc": "2026-11-12T08:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "timeZone": "Europe/Paris",
+        "note": "before",
+        "tags": [
+          "a"
+        ],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "AAAAAAAAAAAAAAAAAAAAAA",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "BBBBBBBBBBBBBBBBBBBBBB",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "CCCCCCCCCCCCCCCCCCCCCC",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          },
+          {
+            "mediaId": "EEEEEEEEEEEEEEEEEEEEEE",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 100,
+            "height": 80,
+            "durationMs": null,
+            "originalPlaintextBytes": 10,
+            "thumbnail": {
+              "width": 10,
+              "height": 8,
+              "mimeType": "image/webp",
+              "plaintextBytes": 5
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null,
+            "caption": "new"
+          }
+        ],
+        "createdAtUtc": "2026-11-11T12:00:00.000Z",
+        "editedAtUtc": "2026-11-12T08:00:00.000Z"
+      }
+    },
+    {
+      "name": "applyEntryEdit: favorites: sets the flag through an edit",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "edit": {
+          "favorite": true
+        },
+        "nowUtc": "2026-11-11T12:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z",
+        "favorite": true
+      }
+    },
+    {
+      "name": "applyEntryEdit: favorites: keeps the flag otherwise",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z",
+          "favorite": true
+        },
+        "edit": {
+          "note": "x"
+        },
+        "nowUtc": "2026-11-11T12:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "x",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z",
+        "favorite": true
+      }
+    },
+    {
+      "name": "applyEntryEdit: favorites: clears the flag through an edit",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-11T12:00:00.000Z",
+          "favorite": true
+        },
+        "edit": {
+          "favorite": false
+        },
+        "nowUtc": "2026-11-11T12:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z"
+      }
+    },
+    {
+      "name": "favorites: accepts metadata with and without the favorite flag",
+      "fn": "applyEntryEdit",
+      "args": {
+        "current": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "edit": {},
+        "nowUtc": "2026-11-11T12:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-11T12:00:00.000Z",
+        "favorite": true
+      }
+    },
+    {
+      "name": "favorites: merges the flag three ways: the local side set it",
+      "fn": "mergeMetadata",
+      "args": {
+        "ancestor": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "local": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "server": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "nowUtc": "2026-11-14T10:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-14T10:00:00.000Z",
+        "favorite": true
+      }
+    },
+    {
+      "name": "favorites: merges the flag three ways: the server side cleared it",
+      "fn": "mergeMetadata",
+      "args": {
+        "ancestor": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "local": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "server": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "nowUtc": "2026-11-14T10:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-14T10:00:00.000Z"
+      }
+    },
+    {
+      "name": "favorites: merges the flag three ways: nobody has it",
+      "fn": "mergeMetadata",
+      "args": {
+        "ancestor": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "local": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "server": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "nowUtc": "2026-11-14T10:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-14T10:00:00.000Z"
+      }
+    },
+    {
+      "name": "favorites: edge: merges the flag three ways: the server side set it",
+      "fn": "mergeMetadata",
+      "args": {
+        "ancestor": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "local": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "server": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "nowUtc": "2026-11-14T10:00:00.000Z"
+      },
+      "result": {
+        "schemaVersion": 1,
+        "takenAtUtc": "2026-11-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "timeZone": null,
+        "note": "",
+        "tags": [],
+        "location": null,
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "kind": "photo",
+            "mimeType": "image/jpeg",
+            "width": 10,
+            "height": 10,
+            "durationMs": null,
+            "originalPlaintextBytes": 100,
+            "thumbnail": {
+              "width": 10,
+              "height": 10,
+              "mimeType": "image/webp",
+              "plaintextBytes": 10
+            },
+            "capturedAtUtc": null,
+            "originalFileName": null
+          }
+        ],
+        "createdAtUtc": "2026-11-01T08:00:00.000Z",
+        "editedAtUtc": "2026-11-14T10:00:00.000Z",
+        "favorite": true
+      }
+    },
+    {
+      "name": "favorites: treats a favorite change as a real change",
+      "fn": "metadataEquivalent",
+      "args": {
+        "left": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z"
+        },
+        "right": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        }
+      },
+      "result": false
+    },
+    {
+      "name": "favorites: treats equal favorite flags as equivalent",
+      "fn": "metadataEquivalent",
+      "args": {
+        "left": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        },
+        "right": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T08:00:00.000Z",
+          "utcOffsetMinutes": 0,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T08:00:00.000Z",
+          "editedAtUtc": "2026-11-01T08:00:00.000Z",
+          "favorite": true
+        }
+      },
+      "result": true
+    },
+    {
+      "name": "favorites: filters favorites with the tri-state attribute: include a favorite",
+      "fn": "attributesMatch",
+      "args": {
+        "entry": {
+          "isOwn": true,
+          "collectionIds": [
+            "home"
+          ],
+          "hasVideo": false,
+          "notePreview": "",
+          "mediaCount": 1,
+          "pending": false,
+          "favorite": true
+        },
+        "filters": {
+          "favorite": "include"
+        },
+        "homeCollectionId": "home"
+      },
+      "result": true
+    },
+    {
+      "name": "favorites: filters favorites with the tri-state attribute: include a non-favorite",
+      "fn": "attributesMatch",
+      "args": {
+        "entry": {
+          "isOwn": true,
+          "collectionIds": [
+            "home"
+          ],
+          "hasVideo": false,
+          "notePreview": "",
+          "mediaCount": 1,
+          "pending": false
+        },
+        "filters": {
+          "favorite": "include"
+        },
+        "homeCollectionId": "home"
+      },
+      "result": false
+    },
+    {
+      "name": "favorites: filters favorites with the tri-state attribute: exclude a non-favorite",
+      "fn": "attributesMatch",
+      "args": {
+        "entry": {
+          "isOwn": true,
+          "collectionIds": [
+            "home"
+          ],
+          "hasVideo": false,
+          "notePreview": "",
+          "mediaCount": 1,
+          "pending": false
+        },
+        "filters": {
+          "favorite": "exclude"
+        },
+        "homeCollectionId": "home"
+      },
+      "result": true
+    },
+    {
+      "name": "favorites: edge: filters favorites with the tri-state attribute: exclude a favorite",
+      "fn": "attributesMatch",
+      "args": {
+        "entry": {
+          "isOwn": true,
+          "collectionIds": [
+            "home"
+          ],
+          "hasVideo": false,
+          "notePreview": "",
+          "mediaCount": 1,
+          "pending": false,
+          "favorite": true
+        },
+        "filters": {
+          "favorite": "exclude"
+        },
+        "homeCollectionId": "home"
+      },
+      "result": false
+    },
+    {
+      "name": "favorites: edge: filters favorites with the tri-state attribute: off",
+      "fn": "attributesMatch",
+      "args": {
+        "entry": {
+          "isOwn": true,
+          "collectionIds": [
+            "home"
+          ],
+          "hasVideo": false,
+          "notePreview": "",
+          "mediaCount": 1,
+          "pending": false
+        },
+        "filters": {
+          "favorite": "off"
+        },
+        "homeCollectionId": "home"
+      },
+      "result": true
+    },
+    {
+      "name": "limits: keeps MIN_OBJECT_BYTES equal to the smallest STREAM object",
+      "fn": "MIN_OBJECT_BYTES",
+      "args": {},
+      "result": {
+        "MIN_OBJECT_BYTES": 40,
+        "STREAM_MIN_OBJECT_BYTES": 40
+      }
+    }
+  ]
+}

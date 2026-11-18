@@ -1,0 +1,91 @@
+plugins {
+    id("kodakiko.spotless")
+}
+
+dependencyLocking {
+    lockAllConfigurations()
+}
+
+tasks.register("verify") {
+    group = "verification"
+    description = "Runs every check of the Kotlin client: formatting, tooling tests, unit tests and lint."
+    dependsOn(gradle.includedBuild("build-logic").task(":spotlessCheck"))
+    dependsOn(
+        provider {
+            allprojects.filter { it.plugins.hasPlugin("com.diffplug.spotless") }.map { "${it.path.removeSuffix(":")}:spotlessCheck" }
+        },
+    )
+    dependsOn(
+        ":tooling-tests:test",
+        ":shared:crypto:jvmTest",
+        ":shared:crypto:testAndroidHostTest",
+        ":shared:js:jvmTest",
+        ":shared:js:testAndroidHostTest",
+        ":shared:contract:jvmTest",
+        ":shared:contract:testAndroidHostTest",
+        ":shared:account:jvmTest",
+        ":shared:account:testAndroidHostTest",
+        ":shared:testing:jvmTest",
+        ":shared:testing:testAndroidHostTest",
+        ":shared:media:jvmTest",
+        ":shared:media:testAndroidHostTest",
+        ":shared:domain:jvmTest",
+        ":shared:domain:testAndroidHostTest",
+        ":shared:index:jvmTest",
+        ":shared:index:testAndroidHostTest",
+        ":shared:sync:jvmTest",
+        ":shared:sync:testAndroidHostTest",
+        ":shared:export:jvmTest",
+        ":shared:export:testAndroidHostTest",
+        ":shared:markdown:jvmTest",
+        ":shared:markdown:testAndroidHostTest",
+        ":shared:log:jvmTest",
+        ":shared:log:testAndroidHostTest",
+        ":data:db:testDebugUnitTest",
+        ":data:files:testDebugUnitTest",
+        ":data:migration:testDebugUnitTest",
+        ":data:upload:testDebugUnitTest",
+        ":data:media:testDebugUnitTest",
+        ":data:log:testDebugUnitTest",
+        ":data:net:testDebugUnitTest",
+        ":platform:device:testDebugUnitTest",
+        ":platform:location:testDebugUnitTest",
+        ":platform:camera:testDebugUnitTest",
+        ":platform:picker:testDebugUnitTest",
+        ":service:account:testDebugUnitTest",
+        ":service:lock:testDebugUnitTest",
+        ":service:index:testDebugUnitTest",
+        ":service:entries:testDebugUnitTest",
+        ":service:sync:testDebugUnitTest",
+        ":service:sharing:testDebugUnitTest",
+        ":service:links:testDebugUnitTest",
+        ":service:admin:testDebugUnitTest",
+        ":service:stats:testDebugUnitTest",
+        ":service:diagnostics:testDebugUnitTest",
+        ":service:shareout:testDebugUnitTest",
+        ":service:backup:testDebugUnitTest",
+        ":ui:core:testDebugUnitTest",
+        ":ui:feature:auth:testDebugUnitTest",
+        ":ui:feature:lock:testDebugUnitTest",
+        ":ui:feature:gallery:testDebugUnitTest",
+        ":ui:feature:calendar:testDebugUnitTest",
+        ":ui:feature:viewer:testDebugUnitTest",
+        ":ui:feature:edit:testDebugUnitTest",
+        ":ui:feature:capture:testDebugUnitTest",
+        ":ui:feature:tags:testDebugUnitTest",
+        ":ui:feature:sharing:testDebugUnitTest",
+        ":ui:feature:links:testDebugUnitTest",
+        ":ui:feature:settings:testDebugUnitTest",
+        ":ui:feature:more:testDebugUnitTest",
+        ":app:testDebugUnitTest",
+        ":app:testReleaseUnitTest",
+        ":app:testPreviewUnitTest",
+        ":app:lintRelease",
+    )
+}
+
+tasks.register("e2e") {
+    group = "verification"
+    description = "Runs the end-to-end tests of the Kotlin services against the docker test stack."
+    dependsOn(":e2e:testDebugUnitTest")
+}

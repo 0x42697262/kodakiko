@@ -9,7 +9,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
     "test": "vitest run --passWithNoTests",
-    "decrypt-export": "node scripts/decrypt-export.ts"
+    "decrypt-export": "node scripts/decrypt-export.ts",
+    "generate-goldens": "node scripts/generate-goldens.ts"
   },
   "dependencies": {
     "@kodakiko/contract": "workspace:*",

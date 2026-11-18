@@ -1,0 +1,30 @@
+{
+  auto_https off
+}
+
+http://:9580 {
+  handle /api/* {
+    reverse_proxy host.docker.internal:9582
+  }
+  handle /health/* {
+    reverse_proxy host.docker.internal:9582
+  }
+  handle /s/* {
+    import snippets/security-headers.caddy
+    header Cache-Control "no-cache"
+    root * /srv/web
+    rewrite * /viewer.html
+    file_server
+  }
+  handle /media-sw.js {
+    import snippets/security-headers.caddy
+    header Cache-Control "no-cache"
+    root * /srv/web
+    file_server
+  }
+  handle {
+    import snippets/security-headers.caddy
+    root * /srv/web
+    file_server
+  }
+}

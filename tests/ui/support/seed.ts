@@ -1,7 +1,6 @@
 import sodiumLibrary from 'libsodium-wrappers-sumo';
 import type { Sodium } from '@kodakiko/core';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import {
   createTestAuthContext,
   createTestClientContext,
@@ -14,45 +13,17 @@ import {
   UI_TEST_PASSWORD,
   USERS_ME_DELETE_PATH,
   WEB_ORIGIN,
-  INVITE_EXPIRES_DAYS,
-  INVITE_FRAGMENT_PREFIX,
-  INVITE_URL_PATTERN,
-  SERVER_CLI,
-  SERVER_ENV_FILE,
-  COMPOSE_UP_TIMEOUT_MS,
-  FIXTURES_DIRECTORY,
+  FIXTURES_MEDIA_DIRECTORY,
   SEED_SETTLE_DEADLINE_MS,
   SEED_SETTLE_POLL_MS,
   type FixtureName,
 } from './constants.ts';
+import { hostFetch } from './host-fetch.ts';
+import { seedInvite, type InviteRole } from './invites.ts';
 import { fromRoot } from './paths.ts';
-import { run } from './process.ts';
-import { serverEnvironment } from './stack.ts';
 import { STACK_TEXT } from './text.ts';
 
-export type InviteRole = 'member' | 'admin';
-
-export type SeededInvite = { readonly url: string; readonly token: string };
-
-export async function seedInvite(role: InviteRole): Promise<SeededInvite> {
-  const { stdout } = await run(
-    'node',
-    [
-      `--env-file=${SERVER_ENV_FILE}`,
-      SERVER_CLI,
-      'create-invite',
-      '--role',
-      role,
-      '--expires-days',
-      INVITE_EXPIRES_DAYS,
-    ],
-    { cwd: fromRoot(), env: serverEnvironment(), timeoutMs: COMPOSE_UP_TIMEOUT_MS },
-  );
-  const url = INVITE_URL_PATTERN.exec(stdout)?.[0];
-  if (url === undefined) throw new Error(STACK_TEXT.inviteUrlMissing);
-  const token = new URL(url).hash.slice(INVITE_FRAGMENT_PREFIX.length);
-  return { url, token };
-}
+export { seedInvite, type InviteRole, type SeededInvite } from './invites.ts';
 
 export type SeedAccountOptions = {
   readonly username: string;
@@ -86,7 +57,7 @@ export async function seedAccount(options: SeedAccountOptions): Promise<SeededAc
   const invite = await seedInvite(options.role ?? 'member');
   const context = createTestAuthContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
   });
   const { recoveryWords } = await context.auth.signUp({
@@ -130,7 +101,7 @@ function pause(milliseconds: number): Promise<void> {
 
 async function fixtureFile(name: FixtureName) {
   try {
-    return { bytes: new Uint8Array(await readFile(join(FIXTURES_DIRECTORY, name))), fileName: name };
+    return { bytes: new Uint8Array(await readFile(fromRoot(FIXTURES_MEDIA_DIRECTORY, name))), fileName: name };
   } catch {
     throw new Error(STACK_TEXT.seedMediaMissing(name));
   }
@@ -163,7 +134,7 @@ export async function seedEntriesFromFiles(
 ): Promise<readonly { entryId: string }[]> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
     clock: SYSTEM_CLOCK,
   });
@@ -220,7 +191,7 @@ export async function seedShare(
 ): Promise<SeededShare> {
   const context = await createTestClientContext({
     baseUrl: WEB_ORIGIN,
-    fetcher: fetch,
+    fetcher: hostFetch,
     sodium: await createNodeSodium(),
     clock: SYSTEM_CLOCK,
   });

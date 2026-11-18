@@ -45,7 +45,7 @@ catalogMode: strict
 | Package | Version | Used by | Purpose | Audit status |
 |---|---|---|---|---|
 | `react-native-libsodium` | 1.7.0 | client (native) | libsodium via JSI (F-LIB-01/02) | wrapper unaudited; libsodium 1.0.21 inside is audited lineage (F-LIB-04). Mitigation: shared known-answer vectors incl. Argon2id (crypto.md §10) |
-| `libsodium-wrappers-sumo` | 0.8.4 | client (web), core tests | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
+| `libsodium-wrappers-sumo` | 0.8.4 | client (web), core tests, link viewer (`apps/link-viewer`: page and media service worker; no Argon2id there) | libsodium WASM; sumo for Argon2id (F-LIB-03) | libsodium audited (F-LIB-04) |
 
 The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1).
 
@@ -58,9 +58,9 @@ The server uses **no** crypto package (`node:crypto` only, architecture.md §4.1
 | `eslint` | 10.14.0 | lint |
 | `typescript-eslint` | 8.72.1 | TypeScript lint rules |
 | `prettier` | 3.9.10 | formatting |
-| `esbuild` | 0.28.2 | server bundle (architecture.md §4.1), service worker bundle (storage.md §5) |
+| `esbuild` | 0.28.2 | server bundle (architecture.md §4.1), service worker bundle (storage.md §5), link viewer bundles (`apps/link-viewer/build.ts`: page script, media service worker, stylesheet) |
 | `@types/node` | 22.20.5 | server and scripts |
-| `zod` | 4.6.7 | runtime dependency of contract, core, server, client |
+| `zod` | 4.6.7 | runtime dependency of contract, core, server, client, link viewer (jitless under the CSP) |
 
 ### Server
 
@@ -186,6 +186,241 @@ Pinned by commit SHA (release workflow); each release was older than 7 days when
 | Any SRP library | ADR 3 |
 | Any BIP-39 library | word list committed as data (crypto.md §5.6) |
 | `typescript` 7.x | breaks `typescript-eslint` (F-TOOL-11) |
+
+## Kotlin client allowlist (v0.4.0, D-106, ADR 11)
+
+Branch `feat/v0.4.0-kotlin`. Chosen 2026-11-14 (task K002) from Maven Central, Google Maven and
+the Gradle plugin portal metadata; release date = `Last-Modified` of the version's POM (F-KT-11).
+
+### Kotlin version rule
+
+- Every version is the **newest stable release published at least 7 days before 2026-11-14**
+  (cutoff 2026-11-07). Newer releases seen on that day are listed under "too new" and are not used.
+- Stable = no `alpha`, `beta`, `rc`, `dev`, `eap`, `M`, `SNAPSHOT`. Exceptions are named in the
+  row with their reason.
+- The catalog is `apps/android/gradle/libs.versions.toml`; a module may only use catalog entries.
+  Versions of one family (Kotlin plugins, Compose via BOM, CameraX, Media3, SQLDelight, Metro,
+  Voyager, Coil) move together.
+- Repositories: `google()`, `mavenCentral()`, `gradlePluginPortal()` (plugins only). **No JitPack**
+  and no other repository.
+- Gradle dependency verification (`gradle/verification-metadata.xml`, sha256) and dependency
+  locking are on (K012). The Gradle wrapper is checked by `gradle/actions/wrapper-validation`.
+- JDK: the installed JDK 21 runs Gradle; bytecode target 17 (as Mihon). No toolchain download.
+- Licenses allowed for shipped code: Apache-2.0, MIT, BSD-2/3-Clause, MPL-2.0 (file-level copyleft,
+  unmodified use). EPL-2.0 is allowed for test-only artifacts (JUnit). JNA is dual
+  Apache-2.0/LGPL-2.1; we use it under Apache-2.0.
+
+### Catalog coordinates (machine-checked)
+
+`CatalogAllowlistTest` (apps/android tooling tests) requires every library and plugin in
+`apps/android/gradle/libs.versions.toml` to appear below with the same version (`bom` = version
+from the Compose BOM, no version in the catalog). The tables after this block give dates, licenses
+and reasons. Added 2026-11-14 for M1 (same 7-day rule): `junit:junit` 4.13.2 (2021-02-13, EPL-1.0,
+test only: Robolectric and instrumented tests run on JUnit 4), `org.junit.platform:junit-platform-launcher`
+6.1.3 (JUnit family, needed on the JVM test runtime by Gradle 9), the Kotlin Compose compiler and
+Gradle plugin artifacts used by `build-logic` (Kotlin family), Compose UI artifacts (BOM).
+
+```
+plugin org.jetbrains.kotlin.multiplatform 2.4.21
+plugin org.jetbrains.kotlin.jvm 2.4.21
+plugin org.jetbrains.kotlin.plugin.compose 2.4.21
+plugin org.jetbrains.kotlin.plugin.serialization 2.4.21
+plugin com.android.application 9.5.1
+plugin com.android.library 9.5.1
+plugin com.android.kotlin.multiplatform.library 9.5.1
+plugin com.android.test 9.5.1
+plugin app.cash.sqldelight 2.4.1
+plugin dev.zacsweers.metro 1.5.2
+plugin com.diffplug.spotless 8.11.0
+plugin androidx.baselineprofile 1.5.0
+plugin com.mikepenz.aboutlibraries.plugin.android 15.3.0
+plugin io.github.takahirom.roborazzi 1.77.0
+lib org.jetbrains.kotlin:kotlin-gradle-plugin 2.4.21
+lib org.jetbrains.kotlin:compose-compiler-gradle-plugin 2.4.21
+lib org.jetbrains.kotlin:kotlin-serialization 2.4.21
+lib com.android.tools.build:gradle 9.5.1
+lib com.diffplug.spotless:spotless-plugin-gradle 8.11.0
+lib com.pinterest.ktlint:ktlint-cli 1.8.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-core 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-android 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-coroutines-test 1.11.0
+lib org.jetbrains.kotlinx:kotlinx-serialization-json 1.12.0
+lib org.jetbrains.kotlinx:kotlinx-datetime 0.8.0
+lib org.jetbrains.kotlinx:kotlinx-io-core 0.9.2
+lib com.squareup.okio:okio 3.18.2
+lib org.jetbrains:markdown 0.7.18
+lib com.goterl:lazysodium-android 5.2.0
+lib com.goterl:lazysodium-java 5.2.0
+lib net.java.dev.jna:jna 5.19.1
+lib androidx.compose:compose-bom 2026.09.00
+lib androidx.compose.ui:ui bom
+lib androidx.compose.ui:ui-tooling-preview bom
+lib androidx.compose.ui:ui-tooling bom
+lib androidx.compose.ui:ui-test-junit4 bom
+lib androidx.compose.ui:ui-test-manifest bom
+lib androidx.compose.foundation:foundation bom
+lib androidx.compose.material3:material3 bom
+lib androidx.compose.material3:material3-adaptive-navigation-suite bom
+lib androidx.activity:activity-compose 1.13.0
+lib androidx.lifecycle:lifecycle-viewmodel-compose 2.11.0
+lib androidx.lifecycle:lifecycle-runtime-compose 2.11.0
+lib androidx.lifecycle:lifecycle-process 2.11.0
+lib androidx.core:core-ktx 1.19.1
+lib androidx.core:core-splashscreen 1.2.0
+lib androidx.biometric:biometric 1.1.0
+lib androidx.documentfile:documentfile 1.1.0
+lib androidx.profileinstaller:profileinstaller 1.4.1
+lib androidx.media3:media3-exoplayer 1.11.1
+lib androidx.media3:media3-ui-compose 1.11.1
+lib androidx.media3:media3-ui 1.11.1
+lib androidx.camera:camera-core 1.6.2
+lib androidx.camera:camera-camera2 1.6.2
+lib androidx.camera:camera-lifecycle 1.6.2
+lib androidx.camera:camera-video 1.6.2
+lib androidx.camera:camera-compose 1.6.2
+lib cafe.adriel.voyager:voyager-navigator 2.2.21-1.10.3
+lib cafe.adriel.voyager:voyager-tab-navigator 2.2.21-1.10.3
+lib cafe.adriel.voyager:voyager-transitions 2.2.21-1.10.3
+lib dev.zacsweers.metro:runtime 1.5.2
+lib dev.zacsweers.metro:metrox-viewmodel-compose 1.5.2
+lib com.squareup.okhttp3:okhttp 5.5.1
+lib app.cash.sqldelight:android-driver 2.4.1
+lib app.cash.sqldelight:coroutines-extensions 2.4.1
+lib io.coil-kt.coil3:coil 3.6.3
+lib io.coil-kt.coil3:coil-compose 3.6.3
+lib me.saket.telephoto:zoomable-image-coil3 0.19.0
+lib sh.calvin.reorderable:reorderable 3.1.0
+lib com.mikepenz:aboutlibraries-core 15.3.0
+lib com.mikepenz:aboutlibraries-compose-m3 15.3.0
+lib org.jetbrains.kotlin:kotlin-test 2.4.21
+lib org.junit.jupiter:junit-jupiter 6.1.3
+lib org.junit.platform:junit-platform-launcher 6.1.3
+lib junit:junit 4.13.2
+lib io.kotest:kotest-assertions-core 6.2.6
+lib io.kotest:kotest-property 6.2.6
+lib app.cash.turbine:turbine 1.2.1
+lib com.squareup.okhttp3:mockwebserver3 5.5.1
+lib app.cash.sqldelight:sqlite-driver 2.4.1
+lib org.robolectric:robolectric 4.17
+lib io.github.takahirom.roborazzi:roborazzi 1.77.0
+lib io.github.takahirom.roborazzi:roborazzi-compose 1.77.0
+lib androidx.test:runner 1.7.0
+lib androidx.test.ext:junit 1.3.0
+lib androidx.test.espresso:espresso-core 3.7.0
+lib androidx.test.espresso:espresso-intents 3.7.0
+lib androidx.test.uiautomator:uiautomator 2.4.1
+lib androidx.benchmark:benchmark-macro-junit4 1.5.0
+lib com.lemonappdev:konsist 0.18.1
+lib com.squareup.leakcanary:leakcanary-android 2.14
+```
+
+### Build and plugins
+
+| Artifact | Version | Released | License | Purpose |
+|---|---|---|---|---|
+| Gradle wrapper | 9.9.0 | 2026-11-06 | Apache-2.0 | Build tool (9.9.1 of 2026-11-10 is too new; Mihon uses 9.9.1) |
+| `org.jetbrains.kotlin` plugins: `multiplatform`, `android`, `plugin.compose`, `plugin.serialization` (`kotlin-gradle-plugin`) | 2.4.21 | 2026-10-08 | Apache-2.0 | Kotlin compiler, Compose compiler, serialization (as Mihon) |
+| `com.android.tools.build:gradle` (AGP: `application`, `library`, `kotlin.multiplatform.library`, `test`) | 9.5.1 | 2026-11-05 | Apache-2.0 | Android build (as Mihon) |
+| `app.cash.sqldelight` gradle plugin | 2.4.1 | 2026-10-06 | Apache-2.0 | DB code generation |
+| `dev.zacsweers.metro` gradle plugin | 1.5.2 | 2026-11-03 | Apache-2.0 | Compile-time DI (as Mihon) |
+| `com.diffplug.spotless` | 8.11.0 | 2026-11-02 | Apache-2.0 | Format check (as Mihon) |
+| `com.pinterest.ktlint:ktlint-cli` (via Spotless) | 1.8.0 | 2025-11-14 | MIT | Kotlin style (as Mihon) |
+| ~~`io.gitlab.arturbosch.detekt`~~ | — | — | — | **Removed (D-111):** the no-comments and no-magic-number rules are tooling tests in `apps/android/tooling-tests` (own Kotlin lexer), so detekt's Kotlin 2.4 compatibility risk (F-KT-10) is avoided |
+| `androidx.baselineprofile` | 1.5.0 | 2026-09-09 | Apache-2.0 | Baseline profiles |
+| `com.mikepenz.aboutlibraries.plugin.android` | 15.3.0 | 2026-10-13 | Apache-2.0 | License list for About (Mihon attribution) |
+| `io.github.takahirom.roborazzi` | 1.77.0 | 2026-10-22 | Apache-2.0 | Screenshot tests (1.79.0 too new) |
+
+### Kotlin and KMP libraries (shared core)
+
+| Artifact | Version | Released | License | Purpose |
+|---|---|---|---|---|
+| `org.jetbrains.kotlinx:kotlinx-coroutines-core` / `-android` / `-test` | 1.11.0 | 2026-05-07 | Apache-2.0 | Coroutines |
+| `org.jetbrains.kotlinx:kotlinx-serialization-json` | 1.12.0 | 2026-10-19 | Apache-2.0 | JSON (contract, payloads, settings). 1.13.0 (2026-11-11) too new; Mihon uses it |
+| `org.jetbrains.kotlinx:kotlinx-datetime` | 0.8.0 | 2026-05-07 | Apache-2.0 | Time in `commonMain` (not the `-0.6.x-compat` variant) |
+| `org.jetbrains.kotlinx:kotlinx-io-core` | 0.9.2 | 2026-10-30 | Apache-2.0 | Byte I/O in `commonMain` (`ByteSource`, zip). 0.9.3 too new |
+| `com.squareup.okio:okio` | 3.18.2 | 2026-09-04 | Apache-2.0 | File/stream I/O (Android, OkHttp) |
+| `org.jetbrains:markdown` | 0.7.18 | 2026-10-15 | Apache-2.0 | GFM parser for `:shared:markdown` (we render the AST ourselves to keep today's restrictions) |
+
+### Crypto (chosen by spike K003, D-110)
+
+| Artifact | Version | Released | License | Purpose |
+|---|---|---|---|---|
+| `com.goterl:lazysodium-android` (androidMain) | 5.2.0 | 2025-05-31 | MPL-2.0 (libsodium ISC) | libsodium 1.0.20 for Android behind our `Sodium` `expect`/`actual`; its transitive JNA **jar** is excluded |
+| `com.goterl:lazysodium-java` (jvmMain, tests) | 5.2.0 | 2025-05-30 | MPL-2.0 | Same libsodium 1.0.20 on the JVM. Ships Java 21 class files: JVM test tasks run on the installed JDK 21 (toolchain, no download); our bytecode stays 17 |
+| `net.java.dev.jna:jna` | 5.19.1 (`@aar` on Android, jar on JVM) | 2026-06-12 | Apache-2.0 (dual LGPL-2.1) | JNA runtime for lazysodium |
+| transitive: `com.goterl:resource-loader` 2.0.2/2.1.0, `org.slf4j:slf4j-api` (JVM only), `androidx.core:core-ktx` | as resolved | — | Apache-2.0 / MIT | Accepted as lazysodium's own dependencies |
+
+Spike K003 evidence (2026-11-14): 38/38 vectors on JVM and on the emulator; Argon2id 256 MiB × 16
+in ~2.5 s on the emulator; adds ~0.83–0.87 MB of native code + jars per ABI before R8; every
+`.so` is 16 KB page aligned. `com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings` 0.9.5 was
+rejected: its `PasswordHash.pwhash(String, …)` passes the UTF-16 length, so non-ASCII passwords
+hash truncated (F-KT-15), and its JVM jar bundles libsodium 1.0.19 against 1.0.20 on Android.
+
+### AndroidX, Compose and Android libraries
+
+| Artifact | Version | Released | License | Purpose |
+|---|---|---|---|---|
+| `androidx.compose:compose-bom` | 2026.09.00 | 2026-09-09 | Apache-2.0 | Compose versions (UI/foundation 1.12.1, material3 1.4.0). See F-KT-03 for Mihon's Expressive theme |
+| `androidx.compose.material3:material3`, `material3-adaptive-navigation-suite` | 1.4.0 (BOM) | 2025-09-24 | Apache-2.0 | Material 3 components, NavigationSuiteScaffold |
+| `androidx.activity:activity-compose` | 1.13.0 | 2026-03-11 | Apache-2.0 | Compose activity, edge to edge |
+| `androidx.lifecycle:lifecycle-viewmodel-compose`, `lifecycle-runtime-compose`, `lifecycle-process` | 2.11.0 | 2026-06-17 | Apache-2.0 | ViewModels, lifecycle, process foreground/background (auto-lock) |
+| `androidx.core:core-ktx` | 1.19.1 | 2026-09-23 | Apache-2.0 | Core APIs, FileProvider, WindowInsetsControllerCompat |
+| `androidx.core:core-splashscreen` | 1.2.0 | 2025-11-05 | Apache-2.0 | Splash screen (as Mihon) |
+| `androidx.biometric:biometric` | 1.1.0 | 2021-01-27 | Apache-2.0 | BiometricPrompt + CryptoObject (legacy MK pickup, new vault). Last **stable**; 1.4.0-beta01 exists, Mihon uses 1.2.0-alpha05 (F-KT-05) |
+| `androidx.documentfile:documentfile` | 1.1.0 | 2025-05-07 | Apache-2.0 | SAF folder writes (export) |
+| `androidx.profileinstaller:profileinstaller` | 1.4.1 | 2024-10-02 | Apache-2.0 | Installs baseline profiles |
+| `androidx.media3:media3-exoplayer`, `media3-ui-compose`, `media3-ui` | 1.11.1 | 2026-09-11 | Apache-2.0 | Video and voice playback, decrypting DataSource |
+| `androidx.camera:camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-video`, `camera-compose` | 1.6.2 | 2026-08-26 | Apache-2.0 (camera-core also BSD-3-Clause) | Built-in camera |
+| transitive: `androidx.media3:media3-muxer`/`-common`/`-container` 1.9.0, `com.google.guava:guava` 32.0.1-android, `com.google.dagger:dagger` 2.59, `androidx.camera:camera-camera2-pipe`, `org.jetbrains.kotlinx:atomicfu` | as resolved | — | Apache-2.0 | Accepted as CameraX's own dependencies (pinned by the lockfiles and verification metadata) |
+| `cafe.adriel.voyager:voyager-navigator`, `voyager-tab-navigator`, `voyager-transitions` | 2.2.21-1.10.3 | 2026-06-08 | MIT | Navigation (D-107, as Mihon; Maven Central) |
+| `dev.zacsweers.metro:runtime`, `metrox-viewmodel-compose` | 1.5.2 | 2026-11-03 | Apache-2.0 | DI runtime + ViewModel factory (as Mihon) |
+| `com.squareup.okhttp3:okhttp` | 5.5.1 | 2026-10-22 | Apache-2.0 | HTTP (API, presigned PUT/GET, uploads) |
+| `app.cash.sqldelight:android-driver`, `coroutines-extensions` | 2.4.1 | 2026-10-06 | Apache-2.0 | Database over the framework SQLite (opens the v0.3.1 file in place) |
+| `io.coil-kt.coil3:coil`, `coil-compose` | 3.6.3 | 2026-09-18 | Apache-2.0 | Image loading with our decrypting fetchers (no `coil-network-*`) |
+| `me.saket.telephoto:zoomable-image-coil3` | 0.19.0 | 2026-04-02 | Apache-2.0 | Pinch/double-tap zoom in the viewer |
+| `sh.calvin.reorderable:reorderable` | 3.1.0 | 2026-04-20 | Apache-2.0 | Drag-reorder in the tag editor (as Mihon) |
+| `com.mikepenz:aboutlibraries-core`, `aboutlibraries-compose-m3` | 15.3.0 | 2026-10-13 | Apache-2.0 | Licenses screen |
+
+### Kotlin test and debug tooling
+
+| Artifact | Version | Released | License | Purpose |
+|---|---|---|---|---|
+| `org.jetbrains.kotlin:kotlin-test` | 2.4.21 | 2026-10-08 | Apache-2.0 | KMP `commonTest` |
+| `org.junit.jupiter:junit-jupiter` | 6.1.3 | 2026-08-07 | EPL-2.0 (test only) | JVM unit tests (as Mihon) |
+| `io.kotest:kotest-assertions-core`, `kotest-property` | 6.2.6 | 2026-10-14 | Apache-2.0 | Assertions, property tests (6.2.7 too new) |
+| `app.cash.turbine:turbine` | 1.2.1 | 2025-06-11 | Apache-2.0 | Flow tests |
+| `com.squareup.okhttp3:mockwebserver3` | 5.5.1 | 2026-10-22 | Apache-2.0 | HTTP tests |
+| `app.cash.sqldelight:sqlite-driver` | 2.4.1 | 2026-10-06 | Apache-2.0 | JVM tests over the v0.3.1 fixture database |
+| `org.robolectric:robolectric` | 4.17 | 2026-09-10 | MIT | JVM Android tests (4.18 too new) |
+| `io.github.takahirom.roborazzi:roborazzi`, `roborazzi-compose` | 1.77.0 | 2026-10-22 | Apache-2.0 | Screenshot tests |
+| `androidx.compose.ui:ui-test-junit4`, `ui-test-manifest` | 1.12.1 (BOM) | 2026-09-09 | Apache-2.0 | Compose UI tests |
+| `androidx.test:runner` 1.7.0, `androidx.test.ext:junit` 1.3.0, `androidx.test.espresso:espresso-intents` 3.7.0 | as listed | 2025-07-30 | Apache-2.0 | Instrumented tests, intent checks (share, pickers) |
+| `androidx.test.uiautomator:uiautomator` | 2.4.1 | 2026-11-04 | Apache-2.0 | Macrobenchmark journeys |
+| `androidx.benchmark:benchmark-macro-junit4` | 1.5.0 | 2026-09-09 | Apache-2.0 | Macrobenchmark + baseline profile generation |
+| `com.lemonappdev:konsist` | 0.18.1 | 2026-10-10 | Apache-2.0 | Architecture rules (module boundaries, strings/test tags) |
+| `com.squareup.leakcanary:leakcanary-android` (debug only) | 2.14 | 2024-04-18 | Apache-2.0 | Leak checks (as Mihon; 3.0 is alpha) |
+| `gradle/actions/wrapper-validation` | v6.4.1 `8da46b539cd8fe6ab27ca75128919a18d757604c` | 2026-10-28 | MIT | CI wrapper check (same release as `setup-gradle`) |
+
+Tool, not a dependency: Maestro (already used for Android flows).
+
+### Kotlin: deliberately excluded
+
+| Artifact | Reason |
+|---|---|
+| JitPack and anything only there (Mihon's `unifile`, its SubsamplingScaleImageView fork) | Unpinned builds from Git; `androidx.documentfile` and telephoto cover the needs |
+| `androidx.compose:compose-bom-beta` / material3 1.5.0-rc01 | Not stable; Mihon's `MaterialExpressiveTheme` is adapted to `MaterialTheme` until material3 1.5.0 stable is ≥ 7 days old (F-KT-03) |
+| `androidx.compose.material:material-icons-extended` | Frozen at 1.7.8 (2025-02-12) and large; the needed Material Symbols are copied as `ImageVector` source (Apache-2.0), as Mihon's icon modules do |
+| Navigation 3 | D-107 chose Voyager |
+| detekt | Source rules are tooling tests (D-111) |
+| `io.github.fornewid:material-motion-compose-core` (Mihon's `materialSharedAxisX`) | Not needed: the shared-axis screen transition is rebuilt with plain Compose slide + fade (spike K004) |
+| `com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings` | Rejected in spike K003 (F-KT-15) |
+| Hilt, Dagger, Koin | Metro (compile-time) |
+| Room, DataStore, SharedPreferences for settings | The v0.3.1 database and `settings.device` JSON are adopted as they are (P3) |
+| `androidx.sqlite:sqlite-bundled`, `com.eygraber:sqldelight-androidx-driver` | The framework SQLite opens the legacy file; no second SQLite build in the APK |
+| `com.mikepenz:multiplatform-markdown-renderer` | Renders HTML-ish features we refuse (images, tables); own renderer over `org.jetbrains:markdown` |
+| `io.mockk:mockk` | Fakes behind interfaces (guidelines §12) |
+| Firebase, Crashlytics, any telemetry | E2EE journal: no third-party telemetry |
+| `androidx.exifinterface` | `:shared:media` already parses EXIF (ported, tested) |
 
 ## CI gates (guidelines 12, D-11)
 

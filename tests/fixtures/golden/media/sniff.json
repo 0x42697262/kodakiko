@@ -1,0 +1,588 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "constant: reads a window of 64 bytes",
+      "fn": "SNIFF_HEADER_BYTES",
+      "args": {},
+      "result": 64
+    },
+    {
+      "name": "sniffFormat: recognizes JPEG",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "ffd8ffe000104a464946"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/jpeg",
+        "container": "jpeg"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes PNG",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "89504e470d0a1a0a0000000d"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/png",
+        "container": "png"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes WebP",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "52494646240000005745425056503820"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/webp",
+        "container": "webp"
+      }
+    },
+    {
+      "name": "sniffFormat: refuses a RIFF file that is not WebP",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "5249464624000000415649204c495354"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand heic as image/heic",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970686569630000000068656963"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heic",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand heix as image/heic",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970686569780000000068656978"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heic",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand heim as image/heic",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479706865696d000000006865696d"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heic",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand heis as image/heic",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970686569730000000068656973"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heic",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand hevc as image/heif",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970686576630000000068657663"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand hevx as image/heif",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970686576780000000068657678"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand mif1 as image/heif",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479706d696631000000006d696631"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes a HEIF file with major brand msf1 as image/heif",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479706d736631000000006d736631"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: treats a file whose major brand is mif1 as an image",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000018667479706d696631000000006d6966316d696166"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: checks compatible brands before MP4 brands",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000018667479706d703432000000006d7034326d696631"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/heif",
+        "container": "heif"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes QuickTime movies",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970717420200000000071742020"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/quicktime",
+        "container": "mov"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"isom\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797069736f6d0000000069736f6d"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"iso2\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797069736f320000000069736f32"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"iso4\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797069736f340000000069736f34"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"iso5\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797069736f350000000069736f35"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"iso6\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797069736f360000000069736f36"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"mp41\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479706d703431000000006d703431"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"mp42\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479706d703432000000006d703432"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"avc1\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970617663310000000061766331"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"M4V \"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000014667479704d345620000000004d345620"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"dash\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970646173680000000064617368"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"3gp4\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970336770340000000033677034"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"3gp5\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970336770350000000033677035"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand \"3g2a\"",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970336732610000000033673261"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes an MP4 file with major brand isom and only MP4 compatible brands",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000206674797069736f6d0000000069736f6d69736f32617663316d703431"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: recognizes WebM",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "1a45dfa39f428681"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/webm",
+        "container": "webm"
+      }
+    },
+    {
+      "name": "sniffFormat: refuses an ftyp box with an unknown brand",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000001466747970616263640000000061626364"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses empty and truncated headers without throwing (empty)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": ""
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses empty and truncated headers without throwing (two JPEG bytes)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "ffd8"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses empty and truncated headers without throwing (seven PNG bytes)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "89504e470d0a1a"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses empty and truncated headers without throwing (ftyp only)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "66747970"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 1)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "2101c54fd1d01ab22574cb378aaef5b10808911933b9eb4ff229a5e4db3e57140128e0f4fae27e07f11a4327b7e94554ad853bb3ccd5b4d4d454d38d6d2600c7"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 2)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "420282061a2359b62a3bca3d09243efebfff359b88e88a99e764043520d9c377d17b3d6a22a7e5dd548515b622035c344cf39a704caaf783607991f9cd8f7cc2"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 3)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "63034749cbf343040f4f010a838acb4fb7f7a482bb5161d6154da1d1fbe79463d053dd9ed8459bdaa59f569195ea1960e176a1c3807f4357b42d4274a0a97c05"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 4)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "8404040c3467f953a045fcee2b748e7a5a2d98a98b21320e890835860146a1f47a2202c811ad3e5dc3751a1d6a672ab661d0d89c4a10977a1640bd2ae332a368"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 5)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "a505c143e5b7e3e1853137d9a1da7bcb522509b0b898d9417b219062da78f6e07b0ae23ceb4f405a326f593add8e6fe2cc55e32f86c523aec2146ea78e14a3af"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 6)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "c606860a2e44a0e58a7e36d32250b084e5d2ad3203c9b8976e6c31b3219f6283ab593fa2330adb8097f00fab486476822d2342ec06ba60f976392cd32ebddfaa"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 7)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "e7074345ff94ba57af0afde4a8fe4535edda3c2b307053d89c459457faa13597aa71df56c9e8a58766ea4c8cff8d33d680a6795fca6fd42da26dff5e439bdf6d"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 8)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0808297a8c0cfcd7f2e5a08fc452c5bff42509cb97039d232615ee2dfdb52be518ff647b3279c0e232f60758919924ce1981f7e34cadb73d7137f3ea5442b1d3"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 9)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "2909ec355ddce665d7916bb84efc300efc2d98d2a4ba766cd43c4bc9268b7cf119d7848fc89bbee5c3ec447f2670619ab404cc50807803e9a56320673964b114"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: refuses random bytes (seed 10)",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "4a0aab7c962fa561d8de6ab2cd76fb414bda3c501feb17bac171ea18dd6ce892c984591110de253f667312eeb39a78fa55726d93000740be114e621399cdcd11"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: edge: only the first three JPEG bytes",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "ffd8ff"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/jpeg",
+        "container": "jpeg"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: a compatible HEIF brand past the 64-byte window is ignored",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000486674797069736f6d0000000069736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d69736f6d6d696631"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: the 64-byte window is applied to a longer input",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "ffd8ffe000104a46494600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/jpeg",
+        "container": "jpeg"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: brands beyond the declared ftyp size are ignored",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000106674797069736f6d000000006d696631"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: an ftyp size of 0 reads only the major brand",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "00000000667479706d7034320000000068656963"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: a 12-byte ftyp with an MP4 major brand",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "0000000c6674797069736f6d"
+      },
+      "result": {
+        "kind": "video",
+        "mimeType": "video/mp4",
+        "container": "mp4"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: the major brand is matched case-sensitively",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "000000146674797049534f4d0000000049534f4d"
+      },
+      "result": null
+    },
+    {
+      "name": "sniffFormat: edge: RIFF and WEBP without a chunk",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "524946460400000057454250"
+      },
+      "result": {
+        "kind": "photo",
+        "mimeType": "image/webp",
+        "container": "webp"
+      }
+    },
+    {
+      "name": "sniffFormat: edge: RIFF cut before the WEBP tag",
+      "fn": "sniffFormat",
+      "args": {
+        "header": "5249464604000000574542"
+      },
+      "result": null
+    }
+  ]
+}

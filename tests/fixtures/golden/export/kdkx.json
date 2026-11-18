@@ -1,0 +1,1113 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "createKdkxWriter: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (empty)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 801,
+        "plaintextSeed": 811,
+        "plaintextSize": 0,
+        "operations": [
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "2122232425262728292a2b2c2d2e2f30",
+        "key": "c498604d8164d2d5ee440a57511e6bfb0cc3fca63f247fb07c701b72b677033a",
+        "header": "4b444b580100000002008000002122232425262728292a2b2c2d2e2f304b444b53011400003132333435363738393a3b3c3d3e3f40",
+        "operations": [
+          {
+            "chunkSize": 16
+          }
+        ],
+        "file": {
+          "file": "export/kdkx/empty.kdkx",
+          "size": 69,
+          "sha256": "a0cb18cf3b7c093fd6d3020329c799639f6c1d65a4fddf10aceb86529d429d82"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (5 bytes)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 802,
+        "plaintextSeed": 812,
+        "plaintextSize": 5,
+        "operations": [
+          {
+            "op": "push",
+            "size": 3
+          },
+          {
+            "op": "push",
+            "size": 2
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "22232425262728292a2b2c2d2e2f3031",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa",
+        "header": "4b444b5801000000020080000022232425262728292a2b2c2d2e2f30314b444b530114000032333435363738393a3b3c3d3e3f4041",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSize": 21
+          }
+        ],
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (exact chunk)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 803,
+        "plaintextSeed": 813,
+        "plaintextSize": 1048576,
+        "operations": [
+          {
+            "op": "push",
+            "size": 3
+          },
+          {
+            "op": "push",
+            "size": 1048573
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "232425262728292a2b2c2d2e2f303132",
+        "key": "ef905dcc3353afffb2fd1a095381dff466768ae2a9bc03c742c55aed8930e3fe",
+        "header": "4b444b58010000000200800000232425262728292a2b2c2d2e2f3031324b444b5301140000333435363738393a3b3c3d3e3f404142",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSize": 1048592
+          }
+        ],
+        "file": {
+          "size": 1048645,
+          "sha256": "425d8287a49255e1ccbca32f2de952cedef1fe902b67de6172585c22efb0c1bf"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (two chunks plus 7 bytes)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 804,
+        "plaintextSeed": 814,
+        "plaintextSize": 2097159,
+        "operations": [
+          {
+            "op": "push",
+            "size": 3
+          },
+          {
+            "op": "push",
+            "size": 2097156
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "2425262728292a2b2c2d2e2f30313233",
+        "key": "00db94c18e149a22b6c79cf17079c9f4c189b1108446042f90b8b47299c3d232",
+        "header": "4b444b580100000002008000002425262728292a2b2c2d2e2f303132334b444b53011400003435363738393a3b3c3d3e3f40414243",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": [
+              1048592,
+              1048592
+            ]
+          },
+          {
+            "chunkSize": 23
+          }
+        ],
+        "file": {
+          "size": 2097260,
+          "sha256": "5df8c98c0f69d2822f98b11055d8363631ab6ea706846b7c5b5a292f28e65868"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: rejects a wrong passphrase, a flipped byte and a truncated file (the source file)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 805,
+        "plaintextSeed": 815,
+        "plaintextSize": 1048586,
+        "operations": [
+          {
+            "op": "push",
+            "size": 1048586
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "25262728292a2b2c2d2e2f3031323334",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1",
+        "header": "4b444b5801000000020080000025262728292a2b2c2d2e2f30313233344b444b530114000035363738393a3b3c3d3e3f4041424344",
+        "operations": [
+          {
+            "chunkSizes": [
+              1048592
+            ]
+          },
+          {
+            "chunkSize": 26
+          }
+        ],
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: edge: one piece of exactly one chunk is held back until finish (same bytes as the exact-chunk case)",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 803,
+        "plaintextSeed": 813,
+        "plaintextSize": 1048576,
+        "operations": [
+          {
+            "op": "push",
+            "size": 1048576
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "232425262728292a2b2c2d2e2f303132",
+        "key": "ef905dcc3353afffb2fd1a095381dff466768ae2a9bc03c742c55aed8930e3fe",
+        "header": "4b444b58010000000200800000232425262728292a2b2c2d2e2f3031324b444b5301140000333435363738393a3b3c3d3e3f404142",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSize": 1048592
+          }
+        ],
+        "file": {
+          "size": 1048645,
+          "sha256": "425d8287a49255e1ccbca32f2de952cedef1fe902b67de6172585c22efb0c1bf"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: edge: a chunk is emitted only once more than one chunk is pending",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 806,
+        "plaintextSeed": 816,
+        "plaintextSize": 1048577,
+        "operations": [
+          {
+            "op": "push",
+            "size": 1048575
+          },
+          {
+            "op": "push",
+            "size": 1
+          },
+          {
+            "op": "push",
+            "size": 1
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "262728292a2b2c2d2e2f303132333435",
+        "key": "2497c8c0b57543ebc87ed14b2a1364737f62bad02290bce2725c31f015438591",
+        "header": "4b444b58010000000200800000262728292a2b2c2d2e2f3031323334354b444b5301140000363738393a3b3c3d3e3f404142434445",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": [
+              1048592
+            ]
+          },
+          {
+            "chunkSize": 17
+          }
+        ],
+        "file": {
+          "size": 1048662,
+          "sha256": "a06e353ad7e6656516c6982359abf3f8e3b11474c996b0b65c1bdbfe298d2bee"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: edge: empty pieces and a non-ASCII passphrase without normalization",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "Pässwört é ﬁ 🌸",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 807,
+        "plaintextSeed": 817,
+        "plaintextSize": 5,
+        "operations": [
+          {
+            "op": "push",
+            "size": 0
+          },
+          {
+            "op": "push",
+            "size": 5
+          },
+          {
+            "op": "push",
+            "size": 0
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "2728292a2b2c2d2e2f30313233343536",
+        "key": "c75664c73290bfb14bd0d2499576d034271123b0452ace6d33e6c4dc124334ca",
+        "header": "4b444b580100000002008000002728292a2b2c2d2e2f303132333435364b444b53011400003738393a3b3c3d3e3f40414243444546",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSize": 21
+          }
+        ],
+        "file": {
+          "file": "export/kdkx/non-ascii-passphrase.kdkx",
+          "size": 74,
+          "sha256": "b86fa236a2e82ece707fde715f38120e9d22f1c05b9f0f467ad5fce961de4dc3"
+        }
+      }
+    },
+    {
+      "name": "createKdkxWriter: edge: push and finish after finish throw and do not change the output",
+      "fn": "createKdkxWriter",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "kdf": {
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        },
+        "randomSeed": 808,
+        "plaintextSeed": 818,
+        "plaintextSize": 6,
+        "operations": [
+          {
+            "op": "push",
+            "size": 5
+          },
+          {
+            "op": "finish"
+          },
+          {
+            "op": "push",
+            "size": 1
+          },
+          {
+            "op": "finish"
+          }
+        ]
+      },
+      "result": {
+        "randomDraws": [
+          16,
+          16
+        ],
+        "salt": "28292a2b2c2d2e2f3031323334353637",
+        "key": "740bf9654e44111759b958b76a805b17c4d4a09dd77e661709ef79c478a6b665",
+        "header": "4b444b5801000000020080000028292a2b2c2d2e2f30313233343536374b444b530114000038393a3b3c3d3e3f4041424344454647",
+        "operations": [
+          {
+            "chunkSizes": []
+          },
+          {
+            "chunkSize": 21
+          },
+          {
+            "error": "MalformedObjectError",
+            "message": "Not a Kodakiko encrypted export, or the file is damaged."
+          },
+          {
+            "error": "MalformedObjectError",
+            "message": "Not a Kodakiko encrypted export, or the file is damaged."
+          }
+        ],
+        "file": {
+          "file": "export/kdkx/after-finish.kdkx",
+          "size": 74,
+          "sha256": "f292c3cd5e2c47d58e10828c5e989ef63f98c48a59606d8673562a5d9bd5c9f7"
+        }
+      }
+    },
+    {
+      "name": "deriveKdkxKey: edge: an ASCII passphrase",
+      "fn": "deriveKdkxKey",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "params": {
+          "salt": "35363738393a3b3c3d3e3f4041424344",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        }
+      },
+      "result": "2519faedd5cb76caf5fc9e7c3813c24d61ca215c39086ace35ab2ae5bd565d1a"
+    },
+    {
+      "name": "deriveKdkxKey: edge: a non-ASCII passphrase is UTF-8 encoded without NFKC",
+      "fn": "deriveKdkxKey",
+      "args": {
+        "passphrase": "Pässwört é ﬁ 🌸",
+        "params": {
+          "salt": "35363738393a3b3c3d3e3f4041424344",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        }
+      },
+      "result": "384c9ee858ddac45e234fec4d91a2009b9d269ea8928547808462845ec921c61"
+    },
+    {
+      "name": "deriveKdkxKey: edge: an empty passphrase",
+      "fn": "deriveKdkxKey",
+      "args": {
+        "passphrase": "",
+        "params": {
+          "salt": "363738393a3b3c3d3e3f404142434445",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608
+        }
+      },
+      "result": "73108fe36debf4715c4982ec7b7df2021532201752d7091909698c8fa0c6f59a"
+    },
+    {
+      "name": "deriveKdkxKey: edge: opsLimit 3",
+      "fn": "deriveKdkxKey",
+      "args": {
+        "passphrase": "a long export passphrase",
+        "params": {
+          "salt": "35363738393a3b3c3d3e3f4041424344",
+          "opsLimit": 3,
+          "memLimitBytes": 8388608
+        }
+      },
+      "result": "4cbd0720611c34ca692be08a60d1e98a584fa3d8472d3f3aef32edf1ad3e514d"
+    },
+    {
+      "name": "readKdkxParams: edge: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (empty)",
+      "fn": "readKdkxParams",
+      "args": {
+        "file": {
+          "file": "export/kdkx/empty.kdkx",
+          "size": 69,
+          "sha256": "a0cb18cf3b7c093fd6d3020329c799639f6c1d65a4fddf10aceb86529d429d82"
+        }
+      },
+      "result": {
+        "opsLimit": 2,
+        "memLimitBytes": 8388608,
+        "salt": "2122232425262728292a2b2c2d2e2f30"
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (5 bytes)",
+      "fn": "readKdkxParams",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        }
+      },
+      "result": {
+        "opsLimit": 2,
+        "memLimitBytes": 8388608,
+        "salt": "22232425262728292a2b2c2d2e2f3031"
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: rejects a wrong passphrase, a flipped byte and a truncated file (the source file)",
+      "fn": "readKdkxParams",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        }
+      },
+      "result": {
+        "opsLimit": 2,
+        "memLimitBytes": 8388608,
+        "salt": "25262728292a2b2c2d2e2f3031323334"
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: the smallest accepted size with big-endian u32 limits is not range-checked",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "4b444b5801ffffffff010203040d0e0f101112131415161718191a1b1c00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "opsLimit": 4294967295,
+        "memLimitBytes": 16909060,
+        "salt": "0d0e0f101112131415161718191a1b1c"
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: one byte below the smallest size",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "4b444b580100000002008000000d0e0f101112131415161718191a1b1c000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: version 2",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "4b444b580200000002008000000d0e0f101112131415161718191a1b1c00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: version 0",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "4b444b580000000002008000000d0e0f101112131415161718191a1b1c00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: a STREAM object magic",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "4b444b530100000002008000000d0e0f101112131415161718191a1b1c00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "readKdkxParams: edge: lowercase magic",
+      "fn": "readKdkxParams",
+      "args": {
+        "bytes": "6b646b780100000002008000000d0e0f101112131415161718191a1b1c00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "isKdkx: tells a .kdkx part from a zip",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "504b0304"
+      },
+      "result": false
+    },
+    {
+      "name": "isKdkx: edge: empty bytes",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": ""
+      },
+      "result": false
+    },
+    {
+      "name": "isKdkx: edge: three magic bytes",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "4b444b"
+      },
+      "result": false
+    },
+    {
+      "name": "isKdkx: edge: the magic alone is enough",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "4b444b58"
+      },
+      "result": true
+    },
+    {
+      "name": "isKdkx: edge: the magic followed by anything",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "4b444b586a756e6b"
+      },
+      "result": true
+    },
+    {
+      "name": "isKdkx: edge: lowercase magic",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "6b646b78"
+      },
+      "result": false
+    },
+    {
+      "name": "isKdkx: edge: a STREAM object header",
+      "fn": "isKdkx",
+      "args": {
+        "bytes": "4b444b53"
+      },
+      "result": false
+    },
+    {
+      "name": "isKdkx: edge: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (empty)",
+      "fn": "isKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/empty.kdkx",
+          "size": 69,
+          "sha256": "a0cb18cf3b7c093fd6d3020329c799639f6c1d65a4fddf10aceb86529d429d82"
+        }
+      },
+      "result": true
+    },
+    {
+      "name": "isKdkx: edge: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (5 bytes)",
+      "fn": "isKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        }
+      },
+      "result": true
+    },
+    {
+      "name": "isKdkx: edge: rejects a wrong passphrase, a flipped byte and a truncated file (the source file)",
+      "fn": "isKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        }
+      },
+      "result": true
+    },
+    {
+      "name": "decryptKdkx: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (empty)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/empty.kdkx",
+          "size": 69,
+          "sha256": "a0cb18cf3b7c093fd6d3020329c799639f6c1d65a4fddf10aceb86529d429d82"
+        },
+        "mutations": [],
+        "passphrase": "a long export passphrase",
+        "key": "c498604d8164d2d5ee440a57511e6bfb0cc3fca63f247fb07c701b72b677033a"
+      },
+      "result": {
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "decryptKdkx: round-trips empty, small, exact-chunk and multi-chunk payloads written in uneven pieces (5 bytes)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "size": 5,
+        "sha256": "39a2c3bac3922fb73297c603451441165245297bee1c24cfe3f8419d61b96329"
+      }
+    },
+    {
+      "name": "decryptKdkx: rejects a wrong passphrase, a flipped byte and a truncated file (the source file)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "size": 1048586,
+        "sha256": "56b3684492424ac8fcfd0dc8c94c72a727e551fcb5f06f5d89a5d1901bc351f7"
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: empty pieces and a non-ASCII passphrase without normalization",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/non-ascii-passphrase.kdkx",
+          "size": 74,
+          "sha256": "b86fa236a2e82ece707fde715f38120e9d22f1c05b9f0f467ad5fce961de4dc3"
+        },
+        "mutations": [],
+        "passphrase": "Pässwört é ﬁ 🌸",
+        "key": "c75664c73290bfb14bd0d2499576d034271123b0452ace6d33e6c4dc124334ca"
+      },
+      "result": {
+        "size": 5,
+        "sha256": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
+      }
+    },
+    {
+      "name": "decryptKdkx: rejects a wrong passphrase, a flipped byte and a truncated file (wrong passphrase)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [],
+        "passphrase": "not the passphrase",
+        "key": "c74b56c1fe5453c4898ba87dd023df72988d9bba6ba97201334502c6a90c1167"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: rejects a wrong passphrase, a flipped byte and a truncated file (flipped byte)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [
+          {
+            "op": "xor",
+            "offset": 1048651,
+            "value": 1
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: rejects a wrong passphrase, a flipped byte and a truncated file (truncated)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [
+          {
+            "op": "truncate",
+            "length": 524383
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: truncated at a chunk boundary (the last full chunk is not final)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [
+          {
+            "op": "truncate",
+            "length": 1048645
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a final piece shorter than the tag",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [
+          {
+            "op": "truncate",
+            "length": 1048655
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a file holding only the header is too short",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "truncate",
+            "length": 53
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: an appended byte",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "append",
+            "bytes": "00"
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a damaged STREAM magic",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "xor",
+            "offset": 29,
+            "value": 1
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "The stored file is not in the expected format."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a changed version byte",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "set",
+            "offset": 4,
+            "bytes": "02"
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "error": "MalformedObjectError",
+        "message": "Not a Kodakiko encrypted export, or the file is damaged."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: the KDKX prefix is not authenticated (changed opsLimit, original key)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "set",
+            "offset": 5,
+            "bytes": "00000009"
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "size": 5,
+        "sha256": "39a2c3bac3922fb73297c603451441165245297bee1c24cfe3f8419d61b96329"
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: the STREAM header is authenticated (changed nonce prefix byte)",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/five-bytes.kdkx",
+          "size": 74,
+          "sha256": "4e58a9a4cf45f87532d92643802e869d8148a5b1b92a5732ed2df8ed98393612"
+        },
+        "mutations": [
+          {
+            "op": "xor",
+            "offset": 52,
+            "value": 1
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "01ff8b08a9acac0622a9fa439ba386ccd4e98ef689dcd894816217374d1e2afa"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a flipped byte in the first chunk of a multi-chunk file",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/chunk-plus-10.kdkx",
+          "size": 1048671,
+          "sha256": "2ad3118596096acc0646ede83fa4ed40d136fb838691e46ae732185a9bc2c4c4"
+        },
+        "mutations": [
+          {
+            "op": "xor",
+            "offset": 53,
+            "value": 1
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "6b9e8218235cc5211079de8b3f749663b66117bb78ca5c7d1888fc2a79f7fdd1"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "decryptKdkx: edge: a flipped tag byte of an empty payload",
+      "fn": "decryptKdkx",
+      "args": {
+        "file": {
+          "file": "export/kdkx/empty.kdkx",
+          "size": 69,
+          "sha256": "a0cb18cf3b7c093fd6d3020329c799639f6c1d65a4fddf10aceb86529d429d82"
+        },
+        "mutations": [
+          {
+            "op": "xor",
+            "offset": 68,
+            "value": 1
+          }
+        ],
+        "passphrase": "a long export passphrase",
+        "key": "c498604d8164d2d5ee440a57511e6bfb0cc3fca63f247fb07c701b72b677033a"
+      },
+      "result": {
+        "error": "DecryptionError",
+        "message": "The data could not be decrypted."
+      }
+    },
+    {
+      "name": "constants: edge: KDKX constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "KDKX_EXTENSION": ".kdkx",
+        "KDKX_CHUNK_BYTES": 1048576,
+        "KDKX_SALT_BYTES": 16
+      }
+    }
+  ]
+}

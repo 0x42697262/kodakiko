@@ -1,0 +1,88 @@
+package dev.kodakiko.data.db
+
+internal fun collectionRow(
+    id: String,
+    kind: String,
+    ownerId: String,
+    ownerUsername: String,
+    role: String,
+    keyMaterial: ByteArray,
+    metadataBlob: ByteArray,
+    metaUpdatedAt: String,
+    serverLastSeq: Long,
+    cursorSeq: Long,
+): CollectionRow = CollectionRow(
+    id,
+    wireValueOf(kind),
+    ownerId,
+    ownerUsername,
+    wireValueOf(role),
+    keyMaterial,
+    metadataBlob,
+    metaUpdatedAt,
+    serverLastSeq,
+    cursorSeq,
+)
+
+internal fun entryRow(
+    id: String,
+    ownerId: String,
+    purpose: String,
+    revision: Long,
+    metadataBlob: ByteArray,
+    baseMetadataBlob: ByteArray?,
+    baseRevision: Long?,
+    serverPendingBlob: ByteArray?,
+    serverPendingRevision: Long?,
+    trashedAt: String?,
+    createdAt: String,
+    updatedAt: String,
+    localState: String,
+): EntryRow = EntryRow(
+    id,
+    ownerId,
+    wireValueOf(purpose),
+    revision,
+    metadataBlob,
+    baseMetadataBlob,
+    baseRevision,
+    serverPendingBlob,
+    serverPendingRevision,
+    trashedAt,
+    createdAt,
+    updatedAt,
+    wireValueOf(localState),
+)
+
+internal fun objectRow(
+    id: String,
+    mediaId: String,
+    variant: String,
+    sizeBytes: Long,
+    plaintextSize: Long,
+    localState: String,
+    uploadState: String,
+    uploadJobId: String?,
+    lastAccessAt: Long,
+): ObjectRow = ObjectRow(
+    id,
+    mediaId,
+    wireValueOf(variant),
+    sizeBytes,
+    plaintextSize,
+    wireValueOf(localState),
+    wireValueOf(uploadState),
+    uploadJobId,
+    lastAccessAt,
+)
+
+internal fun outboxRow(
+    id: Long,
+    kind: String,
+    payload: String,
+    state: String,
+    createdAt: Long,
+    attempts: Long,
+    nextAttemptAt: Long,
+    lastErrorCode: String?,
+): OutboxRow = OutboxRow(id, kind, JsonCodec.decode(payload), wireValueOf(state), createdAt, attempts, nextAttemptAt, lastErrorCode)

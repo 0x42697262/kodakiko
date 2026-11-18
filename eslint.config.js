@@ -16,6 +16,7 @@ export default tseslint.config(
       '**/.expo/**',
       '**/coverage/**',
       'apps/client/android/**',
+      'apps/android/**',
       'apps/client/ios/**',
       'apps/client/expo-env.d.ts',
       'apps/client/public/workers/**',

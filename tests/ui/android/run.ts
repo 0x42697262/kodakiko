@@ -1,47 +1,45 @@
-import { spawn, type ChildProcess } from 'node:child_process';
-import { closeSync, mkdirSync, openSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import {
   ADB_COMMAND,
   ADB_DEVICES_HEADER,
   ADB_DEVICE_STATE,
+  ADB_INSTALL_ARGUMENTS,
   ADB_TIMEOUT_MS,
-  APP_ID,
-  APP_SETTLE_MS,
   ANDROID_API_ENV_OVERRIDES,
+  ANDROID_DEBUG_APK,
   ANDROID_EMULATOR_HINT,
   ANDROID_FLOWS_SOURCE_DIRECTORY,
+  ANDROID_PROJECT_DIRECTORY,
   ANDROID_PROJECT_NAME,
   ANDROID_REPORTS_DIRECTORY,
   ANDROID_WEB_ORIGIN,
-  CLIENT_ANDROID_DIRECTORY,
-  CLIENT_METRO_SCRIPT,
-  CLIENT_PACKAGE,
-  CLIENT_PREBUILD_SCRIPT,
+  APP_ID,
+  APP_ID_VARIABLE,
+  APP_SETTLE_MS,
+  CADDY_START,
+  CADDY_STOP,
   DEFAULT_SERVER_INPUT_NAME,
   ENV_NAMES,
   FLAG_ON,
+  GRADLE_BUILD_ARGUMENTS,
   GRADLE_COMMAND,
-  GRADLE_INSTALL_TASK,
   GRADLE_TIMEOUT_MS,
+  JAVA_COMMAND,
+  JAVA_HOME_BINARY,
   JAVA_MIN_MAJOR,
   JAVA_VERSION_PATTERN,
+  LEGACY_APP_ID,
   MAESTRO_HOME_DIRECTORY,
   MAESTRO_JUNIT_FORMAT,
+  MAESTRO_OUTPUT_SUFFIX,
   MAESTRO_RELATIVE_BINARY,
   MAESTRO_TIMEOUT_MS,
   MAESTRO_VERSION,
-  METRO_LOG_FILE,
-  METRO_READY_MS,
-  METRO_RUNNING_STATUS,
-  METRO_STATUS_URL,
-  METRO_STOP_SIGNAL,
-  READY_POLL_MS,
+  NICE_ARGUMENTS,
+  NICE_COMMAND,
   REPORTS_DIRECTORY,
-  BUILD_TIMEOUT_MS,
-  CADDY_START,
-  CADDY_STOP,
 } from '../support/constants.ts';
 import { fromRoot } from '../support/paths.ts';
 import { run } from '../support/process.ts';
@@ -52,7 +50,7 @@ import { ANDROID_TEXT } from '../support/text.ts';
 const SOURCE_FLOWS_DIRECTORY = fromRoot(ANDROID_FLOWS_SOURCE_DIRECTORY);
 const REQUESTED_ARGUMENTS_START = 2;
 
-let metroProcess: ChildProcess | null = null;
+const APP_UNDER_TEST = process.env[ENV_NAMES.appId] ?? APP_ID;
 
 function pause(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -78,7 +76,9 @@ async function connectedDevices(): Promise<readonly string[]> {
 
 async function javaMajor(): Promise<number | null> {
   try {
-    const { stderr, stdout } = await run('java', ['-version'], {
+    const javaHome = process.env[ENV_NAMES.javaHome];
+    const java = javaHome === undefined ? JAVA_COMMAND : join(javaHome, JAVA_HOME_BINARY);
+    const { stderr, stdout } = await run(java, ['-version'], {
       cwd: fromRoot(),
       timeoutMs: ADB_TIMEOUT_MS,
     });
@@ -91,6 +91,7 @@ async function javaMajor(): Promise<number | null> {
 
 async function checkEnvironment(): Promise<readonly string[]> {
   const problems: string[] = [];
+  if (APP_UNDER_TEST === LEGACY_APP_ID) problems.push(ANDROID_TEXT.legacyAppId(LEGACY_APP_ID));
   try {
     const devices = await connectedDevices();
     if (devices.length === 0) problems.push(ANDROID_TEXT.noDevice(ANDROID_EMULATOR_HINT));
@@ -110,52 +111,14 @@ async function checkEnvironment(): Promise<readonly string[]> {
 }
 
 async function buildApp(): Promise<void> {
-  await run('pnpm', ['--filter', CLIENT_PACKAGE, CLIENT_PREBUILD_SCRIPT], {
-    cwd: fromRoot(),
-    timeoutMs: BUILD_TIMEOUT_MS,
-  });
-  await run(GRADLE_COMMAND, [GRADLE_INSTALL_TASK], {
-    cwd: fromRoot(CLIENT_ANDROID_DIRECTORY),
+  await run(NICE_COMMAND, [...NICE_ARGUMENTS, GRADLE_COMMAND, ...GRADLE_BUILD_ARGUMENTS], {
+    cwd: fromRoot(ANDROID_PROJECT_DIRECTORY),
     timeoutMs: GRADLE_TIMEOUT_MS,
   });
 }
 
-async function metroIsRunning(): Promise<boolean> {
-  try {
-    const response = await fetch(METRO_STATUS_URL);
-    return (await response.text()) === METRO_RUNNING_STATUS;
-  } catch {
-    return false;
-  }
-}
-
-async function startMetro(): Promise<void> {
-  mkdirSync(fromRoot(REPORTS_DIRECTORY, ANDROID_REPORTS_DIRECTORY), { recursive: true });
-  const log = openSync(fromRoot(REPORTS_DIRECTORY, ANDROID_REPORTS_DIRECTORY, METRO_LOG_FILE), 'w');
-  metroProcess = spawn('pnpm', ['--filter', CLIENT_PACKAGE, CLIENT_METRO_SCRIPT], {
-    cwd: fromRoot(),
-    env: { ...process.env, [ENV_NAMES.nonInteractive]: FLAG_ON, [ENV_NAMES.uiTestMode]: FLAG_ON },
-    stdio: ['ignore', log, log],
-    detached: true,
-  });
-  closeSync(log);
-  const deadline = Date.now() + METRO_READY_MS;
-  while (Date.now() < deadline) {
-    if (await metroIsRunning()) return;
-    await pause(READY_POLL_MS);
-  }
-  throw new Error(ANDROID_TEXT.metroTimeout);
-}
-
-function stopMetro(): void {
-  const child = metroProcess;
-  metroProcess = null;
-  if (child?.pid === undefined) return;
-  try {
-    process.kill(-child.pid, METRO_STOP_SIGNAL);
-  } catch {
-    child.kill(METRO_STOP_SIGNAL);
-  }
+async function installApp(): Promise<void> {
+  await adb([...ADB_INSTALL_ARGUMENTS, fromRoot(ANDROID_DEBUG_APK)]);
 }
 
 async function loadSidecar(id: string): Promise<Sidecar> {
@@ -181,6 +144,8 @@ async function runPart(
       MAESTRO_JUNIT_FORMAT,
       '--output',
       fromRoot(REPORTS_DIRECTORY, ANDROID_REPORTS_DIRECTORY, `${part.file}.xml`),
+      '--test-output-dir',
+      fromRoot(REPORTS_DIRECTORY, ANDROID_REPORTS_DIRECTORY, `${part.file}${MAESTRO_OUTPUT_SUFFIX}`),
     ],
     { cwd: SOURCE_FLOWS_DIRECTORY, timeoutMs: MAESTRO_TIMEOUT_MS },
   );
@@ -193,14 +158,18 @@ async function runPart(
 async function runFlow(id: string): Promise<boolean> {
   const sidecar = await loadSidecar(id);
   const seeded = (await sidecar.seed?.(ANDROID_PROJECT_NAME)) ?? {};
-  const environment = { [DEFAULT_SERVER_INPUT_NAME]: ANDROID_WEB_ORIGIN, ...seeded };
-  await adb(['shell', 'am', 'force-stop', APP_ID]);
+  const environment = {
+    [DEFAULT_SERVER_INPUT_NAME]: ANDROID_WEB_ORIGIN,
+    ...seeded,
+    [APP_ID_VARIABLE]: APP_UNDER_TEST,
+  };
+  await adb(['shell', 'am', 'force-stop', APP_UNDER_TEST]);
   await pause(APP_SETTLE_MS);
   for (const part of sidecar.parts) {
     try {
       await runPart(part, environment);
-    } catch {
-      process.stderr.write(`${ANDROID_TEXT.flowFailed(id, part.file)}\n`);
+    } catch (error) {
+      process.stderr.write(`${ANDROID_TEXT.flowFailed(id, part.file)}\n${String(error)}\n`);
       await startCaddy().catch(() => undefined);
       return false;
     }
@@ -211,6 +180,7 @@ async function runFlow(id: string): Promise<boolean> {
 
 async function runFlows(requested: readonly string[]): Promise<readonly string[]> {
   const ids = selectFlowIds(await findFlowIds(SOURCE_FLOWS_DIRECTORY), requested);
+  mkdirSync(fromRoot(REPORTS_DIRECTORY, ANDROID_REPORTS_DIRECTORY), { recursive: true });
   const failed: string[] = [];
   for (const id of ids) {
     if (!(await runFlow(id))) failed.push(id);
@@ -225,13 +195,14 @@ async function main(requested: readonly string[]): Promise<number> {
     return 1;
   }
   let failed: readonly string[] = [];
+  if (process.env[ENV_NAMES.skipBuild] !== FLAG_ON) {
+    await buildApp();
+    await installApp();
+  }
   try {
     await startStack({ build: false, apiEnvOverrides: ANDROID_API_ENV_OVERRIDES });
-    if (process.env[ENV_NAMES.skipBuild] !== FLAG_ON) await buildApp();
-    await startMetro();
     failed = await runFlows(requested);
   } finally {
-    stopMetro();
     await stopStack();
   }
   process.stdout.write(
@@ -241,7 +212,6 @@ async function main(requested: readonly string[]): Promise<number> {
 }
 
 process.once('SIGINT', () => {
-  stopMetro();
   stopStack().finally(() => process.exit(1));
 });
 

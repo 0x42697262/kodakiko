@@ -1,0 +1,760 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "resolveCaptureTime: prefers EXIF with its own offset over every other source",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+02:00",
+          "containerCreationUtc": "2026-04-01T00:00:00.000Z",
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: reads EXIF without an offset as local time at the device offset",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": -300
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T15:00:00.000Z",
+        "utcOffsetMinutes": -300,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: handles a negative EXIF offset with a half hour",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "-03:30",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T13:30:00.000Z",
+        "utcOffsetMinutes": -210,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: rolls the date over when the offset moves the time across midnight",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:12:31 23:30:00",
+          "exifOffset": "-02:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2027-01-01T01:30:00.000Z",
+        "utcOffsetMinutes": -120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: falls back to the device offset when the EXIF offset is not valid",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "bogus",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the container creation time (UTC, device offset) when EXIF is not valid",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "garbage",
+          "exifOffset": null,
+          "containerCreationUtc": "2026-05-01T08:00:00.000Z",
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "container"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: treats the zero EXIF date as missing",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "0000:00:00 00:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-03-01T00:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "file"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the file modified time when nothing is embedded",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-03-01T00:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "file"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses now when no other source exists",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: accepts the EXIF offset +14:00 at the limit",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+14:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-04-30T20:00:00.000Z",
+        "utcOffsetMinutes": 840,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: accepts the EXIF offset -14:00 at the limit",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "-14:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-02T00:00:00.000Z",
+        "utcOffsetMinutes": -840,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the device offset for the out-of-range EXIF offset +14:01",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+14:01",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the device offset for the out-of-range EXIF offset -14:01",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "-14:01",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the device offset for the out-of-range EXIF offset +99:00",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+99:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: uses the device offset for the out-of-range EXIF offset -23:59",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "-23:59",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an EXIF offset with minutes 60 uses the device offset",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+05:60",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T09:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an EXIF offset +00:00 is used",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "+00:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T10:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an EXIF offset -00:00 is 0",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "-00:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 120
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T10:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: February 30 in EXIF is not a date",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:02:30 10:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-03-01T00:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "file"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: February 29 in a leap year",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2028:02:29 23:59:59",
+          "exifOffset": "+00:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2028-02-29T23:59:59.000Z",
+        "utcOffsetMinutes": 0,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: hour 24 in EXIF is not a time",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 24:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: second 60 in EXIF is not a time",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 23:59:60",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: EXIF years 0000 to 0099 are refused (Date.UTC maps them to 19xx)",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "0050:06:15 12:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: EXIF year 0100 is accepted",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "0100:06:15 12:00:00",
+          "exifOffset": "+00:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "0100-06-15T12:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: EXIF year 9999 crossing into 10000",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "9999:12:31 23:30:00",
+          "exifOffset": "-01:00",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "+010000-01-01T00:30:00.000Z",
+        "utcOffsetMinutes": -60,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: EXIF with surrounding spaces is refused",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": " 2026:05:01 10:00:00",
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an empty EXIF offset uses the device offset",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": "2026:05:01 10:00:00",
+          "exifOffset": "",
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T09:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "exif"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: the container time is normalized to milliseconds",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": "2026-05-01T08:00:00Z",
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "container"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: a container time with an offset is converted to UTC",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": "2026-05-01T10:00:00+02:00",
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "container"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: a date-only container time is UTC midnight",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": "2026-05-01",
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T00:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "container"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an unparsable container time falls back to the file time",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": "garbage",
+          "fileModifiedUtc": "2026-03-01T00:00:00.000Z",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-03-01T00:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "file"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: an unparsable file time falls back to now",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": "garbage",
+          "nowUtc": "2026-11-12T10:00:00.000Z",
+          "deviceOffsetMinutes": 60
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "resolveCaptureTime: edge: nowUtc is returned verbatim",
+      "fn": "resolveCaptureTime",
+      "args": {
+        "input": {
+          "exifDateTimeOriginal": null,
+          "exifOffset": null,
+          "containerCreationUtc": null,
+          "fileModifiedUtc": null,
+          "nowUtc": "2026-11-12T10:00:00Z",
+          "deviceOffsetMinutes": -720
+        }
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00Z",
+        "utcOffsetMinutes": -720,
+        "source": "now"
+      }
+    },
+    {
+      "name": "earliestTime: picks the time with the smallest capturedAtUtc",
+      "fn": "earliestTime",
+      "args": {
+        "times": [
+          {
+            "capturedAtUtc": "2026-05-02T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "source": "exif"
+          },
+          {
+            "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+            "utcOffsetMinutes": 120,
+            "source": "container"
+          },
+          {
+            "capturedAtUtc": "2026-05-03T08:00:00.000Z",
+            "utcOffsetMinutes": 60,
+            "source": "now"
+          }
+        ]
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 120,
+        "source": "container"
+      }
+    },
+    {
+      "name": "earliestTime: returns the only time of a single-item list",
+      "fn": "earliestTime",
+      "args": {
+        "times": [
+          {
+            "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+            "utcOffsetMinutes": 60,
+            "source": "now"
+          }
+        ]
+      },
+      "result": {
+        "capturedAtUtc": "2026-11-12T10:00:00.000Z",
+        "utcOffsetMinutes": 60,
+        "source": "now"
+      }
+    },
+    {
+      "name": "earliestTime: edge: an empty list throws",
+      "fn": "earliestTime",
+      "args": {
+        "times": []
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "At least one capture time is required."
+      }
+    },
+    {
+      "name": "earliestTime: edge: the first of two equal times wins",
+      "fn": "earliestTime",
+      "args": {
+        "times": [
+          {
+            "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "source": "file"
+          },
+          {
+            "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+            "utcOffsetMinutes": 60,
+            "source": "exif"
+          }
+        ]
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "source": "file"
+      }
+    },
+    {
+      "name": "earliestTime: edge: times are compared as instants, not strings",
+      "fn": "earliestTime",
+      "args": {
+        "times": [
+          {
+            "capturedAtUtc": "2026-05-01T08:00:00.000Z",
+            "utcOffsetMinutes": 0,
+            "source": "file"
+          },
+          {
+            "capturedAtUtc": "2026-05-01T07:59:59.999Z",
+            "utcOffsetMinutes": 0,
+            "source": "container"
+          }
+        ]
+      },
+      "result": {
+        "capturedAtUtc": "2026-05-01T07:59:59.999Z",
+        "utcOffsetMinutes": 0,
+        "source": "container"
+      }
+    },
+    {
+      "name": "deviceOffsetMinutes: is the negated timezone offset of the date (-120)",
+      "fn": "deviceOffsetMinutes",
+      "args": {
+        "timezoneOffsetMinutes": -120
+      },
+      "result": 120
+    },
+    {
+      "name": "deviceOffsetMinutes: is the negated timezone offset of the date (300)",
+      "fn": "deviceOffsetMinutes",
+      "args": {
+        "timezoneOffsetMinutes": 300
+      },
+      "result": -300
+    },
+    {
+      "name": "deviceOffsetMinutes: is the negated timezone offset of the date (0)",
+      "fn": "deviceOffsetMinutes",
+      "args": {
+        "timezoneOffsetMinutes": 0
+      },
+      "result": 0
+    }
+  ]
+}

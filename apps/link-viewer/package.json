@@ -1,0 +1,22 @@
+{
+  "name": "@kodakiko/link-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kodakiko/contract": "workspace:*",
+    "@kodakiko/core": "workspace:*",
+    "libsodium-wrappers-sumo": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "esbuild": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

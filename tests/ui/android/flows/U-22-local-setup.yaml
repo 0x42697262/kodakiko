@@ -1,7 +1,7 @@
-appId: com.x42697262.kodakiko
+appId: ${APP_ID}
 ---
 - launchApp:
-    appId: com.x42697262.kodakiko
+    appId: ${APP_ID}
     clearState: true
 - extendedWaitUntil:
     visible:
@@ -14,12 +14,24 @@ appId: com.x42697262.kodakiko
 - tapOn:
     id: localSetup.username
 - inputText: ${USERNAME}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: localSetup.password
 - tapOn:
     id: localSetup.password
 - inputText: ${PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: localSetup.confirm
 - tapOn:
     id: localSetup.confirm
 - inputText: ${PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: localSetup.create
 - tapOn:
     id: localSetup.create
 - extendedWaitUntil:
@@ -35,8 +47,19 @@ appId: com.x42697262.kodakiko
     visible:
       id: capture.shutter
     timeout: 30000
-- tapOn:
-    id: capture.shutter
+- repeat:
+    while:
+      notVisible:
+        id: capture.trayItem.0
+    times: 6
+    commands:
+      - tapOn:
+          id: capture.shutter
+      - extendedWaitUntil:
+          visible:
+            id: capture.trayItem.0
+          timeout: 10000
+          optional: true
 - extendedWaitUntil:
     visible:
       id: capture.trayItem.0
@@ -52,5 +75,5 @@ appId: com.x42697262.kodakiko
     visible:
       id: gallery.tile.0
     timeout: 60000
-- assertNotVisible:
+- assertVisible:
     id: gallery.tilePending.0

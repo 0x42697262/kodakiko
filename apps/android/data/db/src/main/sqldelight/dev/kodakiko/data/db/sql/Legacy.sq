@@ -1,0 +1,203 @@
+CREATE TABLE kv (key TEXT PRIMARY KEY NOT NULL, value BLOB NOT NULL);
+
+CREATE TABLE collections (
+    id TEXT PRIMARY KEY NOT NULL,
+    kind TEXT NOT NULL,
+    ownerId TEXT NOT NULL,
+    ownerUsername TEXT NOT NULL,
+    role TEXT NOT NULL,
+    keyMaterial BLOB NOT NULL,
+    metadataBlob BLOB NOT NULL,
+    metaUpdatedAt TEXT NOT NULL,
+    serverLastSeq INTEGER NOT NULL,
+    cursorSeq INTEGER NOT NULL
+  );
+
+CREATE TABLE entries (
+    id TEXT PRIMARY KEY NOT NULL,
+    ownerId TEXT NOT NULL,
+    purpose TEXT NOT NULL,
+    revision INTEGER NOT NULL,
+    metadataBlob BLOB NOT NULL,
+    baseMetadataBlob BLOB,
+    baseRevision INTEGER,
+    serverPendingBlob BLOB,
+    serverPendingRevision INTEGER,
+    trashedAt TEXT,
+    createdAt TEXT NOT NULL,
+    updatedAt TEXT NOT NULL,
+    localState TEXT NOT NULL
+  );
+
+CREATE INDEX entries_localState_idx ON entries (localState);
+
+CREATE TABLE memberships (
+    collectionId TEXT NOT NULL,
+    entryId TEXT NOT NULL,
+    entryKeyWrap BLOB NOT NULL,
+    seq INTEGER NOT NULL,
+    PRIMARY KEY (collectionId, entryId)
+  );
+
+CREATE INDEX memberships_entryId_idx ON memberships (entryId);
+
+CREATE TABLE media (
+    id TEXT PRIMARY KEY NOT NULL,
+    entryId TEXT NOT NULL,
+    mediaKeyWrap BLOB NOT NULL
+  );
+
+CREATE INDEX media_entryId_idx ON media (entryId);
+
+CREATE TABLE objects (
+    id TEXT PRIMARY KEY NOT NULL,
+    mediaId TEXT NOT NULL,
+    variant TEXT NOT NULL,
+    sizeBytes INTEGER NOT NULL,
+    plaintextSize INTEGER NOT NULL,
+    localState TEXT NOT NULL,
+    uploadState TEXT NOT NULL,
+    uploadJobId TEXT,
+    lastAccessAt INTEGER NOT NULL
+  );
+
+CREATE INDEX objects_mediaId_idx ON objects (mediaId);
+
+CREATE INDEX objects_localState_lastAccessAt_idx ON objects (localState, lastAccessAt);
+
+CREATE INDEX objects_uploadState_idx ON objects (uploadState);
+
+CREATE TABLE outbox (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kind TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    state TEXT NOT NULL,
+    createdAt INTEGER NOT NULL,
+    attempts INTEGER NOT NULL,
+    nextAttemptAt INTEGER NOT NULL,
+    lastErrorCode TEXT
+  );
+
+CREATE INDEX outbox_state_nextAttemptAt_idx ON outbox (state, nextAttemptAt);
+
+CREATE TABLE pins (entryId TEXT PRIMARY KEY NOT NULL, pinnedAt INTEGER NOT NULL);
+
+kvGet:
+SELECT value FROM kv WHERE key = ?;
+
+kvSet:
+INSERT OR REPLACE INTO kv (key, value) VALUES (?, ?);
+
+kvDelete:
+DELETE FROM kv WHERE key = ?;
+
+collectionGet:
+SELECT * FROM collections WHERE id = ?;
+
+collectionPut:
+INSERT OR REPLACE INTO collections (id, kind, ownerId, ownerUsername, role, keyMaterial, metadataBlob, metaUpdatedAt, serverLastSeq, cursorSeq) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+collectionDelete:
+DELETE FROM collections WHERE id = ?;
+
+collectionAll:
+SELECT * FROM collections;
+
+entryGet:
+SELECT * FROM entries WHERE id = ?;
+
+entryPut:
+INSERT OR REPLACE INTO entries (id, ownerId, purpose, revision, metadataBlob, baseMetadataBlob, baseRevision, serverPendingBlob, serverPendingRevision, trashedAt, createdAt, updatedAt, localState) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+entryDelete:
+DELETE FROM entries WHERE id = ?;
+
+entryAll:
+SELECT * FROM entries;
+
+entryByLocalState:
+SELECT * FROM entries WHERE localState IN ?;
+
+membershipGet:
+SELECT * FROM memberships WHERE collectionId = ? AND entryId = ?;
+
+membershipPut:
+INSERT OR REPLACE INTO memberships (collectionId, entryId, entryKeyWrap, seq) VALUES (?, ?, ?, ?);
+
+membershipDelete:
+DELETE FROM memberships WHERE collectionId = ? AND entryId = ?;
+
+membershipAll:
+SELECT * FROM memberships;
+
+membershipByEntry:
+SELECT * FROM memberships WHERE entryId = ?;
+
+membershipByCollection:
+SELECT * FROM memberships WHERE collectionId = ?;
+
+mediaGet:
+SELECT * FROM media WHERE id = ?;
+
+mediaPut:
+INSERT OR REPLACE INTO media (id, entryId, mediaKeyWrap) VALUES (?, ?, ?);
+
+mediaDelete:
+DELETE FROM media WHERE id = ?;
+
+mediaAll:
+SELECT * FROM media;
+
+mediaByEntry:
+SELECT * FROM media WHERE entryId = ?;
+
+objectGet:
+SELECT * FROM objects WHERE id = ?;
+
+objectPut:
+INSERT OR REPLACE INTO objects (id, mediaId, variant, sizeBytes, plaintextSize, localState, uploadState, uploadJobId, lastAccessAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+objectDelete:
+DELETE FROM objects WHERE id = ?;
+
+objectAll:
+SELECT * FROM objects;
+
+objectByMedia:
+SELECT * FROM objects WHERE mediaId = ?;
+
+objectPresentOriginalsByAccess:
+SELECT * FROM objects WHERE localState = ? AND variant = ? ORDER BY lastAccessAt ASC, id ASC;
+
+outboxInsert:
+INSERT INTO outbox (kind, payload, state, createdAt, attempts, nextAttemptAt, lastErrorCode) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+outboxDue:
+SELECT * FROM outbox WHERE state = ? AND nextAttemptAt <= ? ORDER BY nextAttemptAt ASC, id ASC LIMIT ?;
+
+outboxUpdate:
+UPDATE outbox SET kind = ?, payload = ?, state = ?, createdAt = ?, attempts = ?, nextAttemptAt = ?, lastErrorCode = ? WHERE id = ?;
+
+outboxDelete:
+DELETE FROM outbox WHERE id = ?;
+
+outboxCountByState:
+SELECT state, COUNT(*) AS count FROM outbox GROUP BY state;
+
+outboxAll:
+SELECT * FROM outbox ORDER BY id ASC;
+
+pinGet:
+SELECT * FROM pins WHERE entryId = ?;
+
+pinPut:
+INSERT OR REPLACE INTO pins (entryId, pinnedAt) VALUES (?, ?);
+
+pinDelete:
+DELETE FROM pins WHERE entryId = ?;
+
+pinAll:
+SELECT * FROM pins;

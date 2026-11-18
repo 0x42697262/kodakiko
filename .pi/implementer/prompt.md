@@ -16,15 +16,20 @@ Hard rules:
    fail for the expected reason, then implement until they pass.
 3. Existing tests are never deleted, skipped, loosened or rewritten to fit the code. Extra
    tests are fine; list them in your report.
-4. Never add a package that is not in the `pnpm-workspace.yaml` catalog, and never remove or
-   upgrade one. Adding a catalog package that your task names to a `package.json` as `"catalog:"`
-   (then `pnpm install`) is allowed. `pnpm add`/`npx`/global installs stay blocked.
-5. Never edit `docs/`, `AGENTS.md`, `.pi/`, `pnpm-workspace.yaml` or `.git/`; never commit, push,
+4. Dependencies come only from the catalogs, which you never edit: TypeScript packages from the
+   `pnpm-workspace.yaml` catalog (`"catalog:"` in a `package.json`, then `pnpm install`), Kotlin
+   libraries and plugins from `apps/android/gradle/libs.versions.toml` (`libs.…` in a module's
+   `build.gradle.kts`). Never add, remove or upgrade a catalog entry, the Gradle wrapper,
+   dependency locks or verification metadata. `pnpm add`/`npx`/global installs stay blocked.
+5. Never edit `docs/`, `AGENTS.md`, `.pi/`, `pnpm-workspace.yaml`, `apps/android/gradle/` or `.git/`; never commit, push,
    reset, checkout, restore, stash or clean with git; never delete anything except build output.
    A guard enforces this; if a command is blocked, do not try to get around it — report it.
-6. Disk space is tight (a few GB free). After every Android build or `ui:android` run, delete the
-   native intermediates with `pnpm --filter @kodakiko/client clean:android` (reinstall nothing; the
-   APK stays installed on the emulator). Check `df -h /` before a build; below 4 GB free, stop and ask.
+6. Disk space is tight (a few GB free). After an Expo Android build or `ui:android` run, delete the
+   native intermediates with `pnpm --filter @kodakiko/client clean:android`. After a Kotlin build,
+   run `./gradlew clean` in `apps/android` when the task is done (keep `~/.gradle`; the APK stays
+   installed on the emulator). Run Gradle with the Android SDK and JDK 17 from `nix develop`
+   (`docs/development.md`) and the system `adb`. Check `df -h /` before a build; below 4 GB free,
+   stop and ask.
 7. Never print, log or write secrets. Mark anything you could not verify UNVERIFIED.
 
 End every turn (finished or stopped) with this report, in ADHD-friendly form (short, numbered,

@@ -1,0 +1,526 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "localDateOf: utc",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-11-11"
+    },
+    {
+      "name": "localTimeOf: utc",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "14:05"
+    },
+    {
+      "name": "localDateOf: a positive offset crossing midnight",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T23:30:00.000Z",
+        "utcOffsetMinutes": 60
+      },
+      "result": "2026-11-12"
+    },
+    {
+      "name": "localTimeOf: a positive offset crossing midnight",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T23:30:00.000Z",
+        "utcOffsetMinutes": 60
+      },
+      "result": "00:30"
+    },
+    {
+      "name": "localDateOf: a negative offset crossing midnight",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-11-12T00:30:00.000Z",
+        "utcOffsetMinutes": -120
+      },
+      "result": "2026-11-11"
+    },
+    {
+      "name": "localTimeOf: a negative offset crossing midnight",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-11-12T00:30:00.000Z",
+        "utcOffsetMinutes": -120
+      },
+      "result": "22:30"
+    },
+    {
+      "name": "localDateOf: the leap day",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2028-02-29T12:00:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2028-02-29"
+    },
+    {
+      "name": "localTimeOf: the leap day",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2028-02-29T12:00:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "12:00"
+    },
+    {
+      "name": "localDateOf: the day after the leap day",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2028-02-29T23:59:00.000Z",
+        "utcOffsetMinutes": 1
+      },
+      "result": "2028-03-01"
+    },
+    {
+      "name": "localTimeOf: the day after the leap day",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2028-02-29T23:59:00.000Z",
+        "utcOffsetMinutes": 1
+      },
+      "result": "00:00"
+    },
+    {
+      "name": "localDateOf: 23:59 local",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-06-01T23:59:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-06-01"
+    },
+    {
+      "name": "localTimeOf: 23:59 local",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-06-01T23:59:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "23:59"
+    },
+    {
+      "name": "localDateOf: offset +14:00 into the next year",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-12-31T10:00:00.000Z",
+        "utcOffsetMinutes": 840
+      },
+      "result": "2027-01-01"
+    },
+    {
+      "name": "localTimeOf: offset +14:00 into the next year",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-12-31T10:00:00.000Z",
+        "utcOffsetMinutes": 840
+      },
+      "result": "00:00"
+    },
+    {
+      "name": "localDateOf: offset -12:00 into the previous day",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-01-01T11:59:00.000Z",
+        "utcOffsetMinutes": -720
+      },
+      "result": "2025-12-31"
+    },
+    {
+      "name": "localTimeOf: offset -12:00 into the previous day",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-01-01T11:59:00.000Z",
+        "utcOffsetMinutes": -720
+      },
+      "result": "23:59"
+    },
+    {
+      "name": "localDateOf: an offset with minutes",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-03-01T18:30:00.000Z",
+        "utcOffsetMinutes": 345
+      },
+      "result": "2026-03-02"
+    },
+    {
+      "name": "localTimeOf: an offset with minutes",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-03-01T18:30:00.000Z",
+        "utcOffsetMinutes": 345
+      },
+      "result": "00:15"
+    },
+    {
+      "name": "localDateOf: edge: an input without milliseconds",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-11-11"
+    },
+    {
+      "name": "localTimeOf: edge: an input without milliseconds",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "14:05"
+    },
+    {
+      "name": "localDateOf: edge: an input with an explicit offset",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05:00+02:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-11-11"
+    },
+    {
+      "name": "localTimeOf: edge: an input with an explicit offset",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "2026-11-11T14:05:00+02:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": "12:05"
+    },
+    {
+      "name": "localDateOf: edge: the year 0000",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "0000-01-01T00:30:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "0000-01-01"
+    },
+    {
+      "name": "localTimeOf: edge: the year 0000",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "0000-01-01T00:30:00.000Z",
+        "utcOffsetMinutes": 0
+      },
+      "result": "00:30"
+    },
+    {
+      "name": "localDateOf: edge: an unparsable input throws",
+      "fn": "localDateOf",
+      "args": {
+        "takenAtUtc": "not a date",
+        "utcOffsetMinutes": 0
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "Invalid time value"
+      }
+    },
+    {
+      "name": "localTimeOf: edge: an unparsable input throws",
+      "fn": "localTimeOf",
+      "args": {
+        "takenAtUtc": "not a date",
+        "utcOffsetMinutes": 0
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "Invalid time value"
+      }
+    },
+    {
+      "name": "localPartsToUtc: converts a plain time",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "14:05",
+        "utcOffsetMinutes": 60
+      },
+      "result": "2026-11-11T13:05:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: converts utc",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "00:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-11-11T00:00:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: converts the leap day",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2028-02-29",
+        "time": "23:59",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2028-02-29T23:59:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: converts offset +14:00",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01",
+        "time": "00:00",
+        "utcOffsetMinutes": 840
+      },
+      "result": "2025-12-31T10:00:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: converts offset -12:00",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-12-31",
+        "time": "23:59",
+        "utcOffsetMinutes": -720
+      },
+      "result": "2027-01-01T11:59:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: refuses a date that does not exist",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-02-30",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a leap day in a common year",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2027-02-29",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses month 13",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-13-01",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses day 00",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-00",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a date without padding",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-1-1",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a date with other separators",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026/01/01",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses hour 24",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01",
+        "time": "24:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses minute 60",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01",
+        "time": "12:60",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a time without padding",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01",
+        "time": "9:05",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a time with seconds",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01",
+        "time": "09:05:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses empty fields",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "",
+        "time": "",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a date with trailing text",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-01-01x",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: refuses a result outside the years 0000 to 9999",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "9999-12-31",
+        "time": "23:59",
+        "utcOffsetMinutes": -720
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: edge: refuses a result before the year 0000",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "0000-01-01",
+        "time": "00:00",
+        "utcOffsetMinutes": 60
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: edge: accepts the first minute of the year 0000",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "0000-01-01",
+        "time": "00:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": "0000-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: edge: accepts a two-digit year without mapping it to 19xx",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "0050-06-15",
+        "time": "12:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": "0050-06-15T12:00:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: edge: accepts the last minute of the year 9999",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "9999-12-31",
+        "time": "23:59",
+        "utcOffsetMinutes": 0
+      },
+      "result": "9999-12-31T23:59:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: edge: refuses non-ASCII digits",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "２０２６-01-01",
+        "time": "10:00",
+        "utcOffsetMinutes": 0
+      },
+      "result": null
+    },
+    {
+      "name": "localPartsToUtc: round-trips localDateOf and localTimeOf at offset 0",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "14:05",
+        "utcOffsetMinutes": 0
+      },
+      "result": "2026-11-11T14:05:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: round-trips localDateOf and localTimeOf at offset 60",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "15:05",
+        "utcOffsetMinutes": 60
+      },
+      "result": "2026-11-11T14:05:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: round-trips localDateOf and localTimeOf at offset -300",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "09:05",
+        "utcOffsetMinutes": -300
+      },
+      "result": "2026-11-11T14:05:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: round-trips localDateOf and localTimeOf at offset 840",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-12",
+        "time": "04:05",
+        "utcOffsetMinutes": 840
+      },
+      "result": "2026-11-11T14:05:00.000Z"
+    },
+    {
+      "name": "localPartsToUtc: round-trips localDateOf and localTimeOf at offset -720",
+      "fn": "localPartsToUtc",
+      "args": {
+        "date": "2026-11-11",
+        "time": "02:05",
+        "utcOffsetMinutes": -720
+      },
+      "result": "2026-11-11T14:05:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,1034 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "readVideoMetadata: reads the creation time of an mvhd version 0",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-the-creation-time-of-an-mvhd-version-0.bin",
+          "size": 136,
+          "sha256": "cb59b7944643b1d310d47de454150268a7e54e399049163058d5f8439c609534"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads the creation time of an mvhd version 1",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-the-creation-time-of-an-mvhd-version-1.bin",
+          "size": 148,
+          "sha256": "6e351335480a13bd218c41043b7205d6ec59c68f5c8614ddae49840c6f8cd9fd"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: treats a creation time of 0 as unknown",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-treats-a-creation-time-of-0-as-unknown.bin",
+          "size": 132,
+          "sha256": "fc7980147b235285c71b409ad2354fd9d35b9de0e75bf543f40d246f11252e0d"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: finds moov after an mdat that comes first",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-finds-moov-after-an-mdat-that-comes-first.bin",
+          "size": 1140,
+          "sha256": "de0a03a2e724acf4cd4d1d0c04bbc790cf8157e4cd6abde4eb3680588ef623eb"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: returns empty fields when a box of size 0 extends to the end and no moov was seen",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-returns-empty-fields-when-a-box-of-size-0-extends-to-the-end-and-no-moov-w.bin",
+          "size": 27,
+          "sha256": "ff065a314c6df2423853d6b247c8a6fbb5fae0cdb291587cd577e04e306e3201"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: finds moov within the walk limit",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-finds-moov-within-the-walk-limit.bin",
+          "size": 252,
+          "sha256": "52e60a521c9e8783b29bcb68aa18da7e54153666b891cb72e38dcd5803a90b2c"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: gives up after the box walk limit",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-gives-up-after-the-box-walk-limit.bin",
+          "size": 972,
+          "sha256": "a392cd731c890d3beaa419766ab255b6f7a3c082deec4a78bb08940b16ecc3d8"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads ©xyz without altitude",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-xyz-without-altitude.bin",
+          "size": 170,
+          "sha256": "459994ef1ffa274e11740b7be3a9fbf6d30a2a77418e7e80c0af24f3e722ce12"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": {
+          "latitude": 37.3861,
+          "longitude": -122.0839
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads ©xyz with altitude",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-xyz-with-altitude.bin",
+          "size": 176,
+          "sha256": "40b21e258cbea64035300356bb23a5a2e2f0da33a5f259e2891c84b175a56f34"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": {
+          "latitude": 37.3861,
+          "longitude": -122.0839
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads the Apple location key in keys/ilst (full box: true)",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-the-apple-location-key-in-keys-ilst-full-box-true.bin",
+          "size": 360,
+          "sha256": "667f0be02171c058ec5ba30a5e54a2572fee088f78db3979f8c10769d5788a5e"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads the Apple location key in keys/ilst (full box: false)",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-the-apple-location-key-in-keys-ilst-full-box-false.bin",
+          "size": 356,
+          "sha256": "b12dc0fa3e6d5b0266f3c5b3bfaa310a4ebd8dd7882c43cd8888566cf2b6b177"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: ignores Apple metadata without the location key",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-ignores-apple-metadata-without-the-location-key.bin",
+          "size": 150,
+          "sha256": "e504c0d64fee3f1a96becf288bfec98960211ee96da886b9ad13db5f1d4746d9"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: returns no location for ©xyz text that is not ISO 6709",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-returns-no-location-for-xyz-text-that-is-not-iso-6709.bin",
+          "size": 58,
+          "sha256": "6214779d3344733dcf22356e6904c5d0ae7f0492b47ef267eb5cd6b0196b7a61"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: flags a moov box that claims more bytes than the file holds",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-flags-a-moov-box-that-claims-more-bytes-than-the-file-holds.bin",
+          "size": 112,
+          "sha256": "9ca217a56b95bd1f7fd17994d896f2dbbba9871be84b0d6bdd350c579600df8f"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readVideoMetadata: flags a box whose size is smaller than its header",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-flags-a-box-whose-size-is-smaller-than-its-header.bin",
+          "size": 24,
+          "sha256": "ac4ad06ea6f770bc4ec6369b2fedbb5be8ab9a0edc02347935f812da2c8af5e7"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readVideoMetadata: does not throw on random bytes",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-does-not-throw-on-random-bytes.bin",
+          "size": 2048,
+          "sha256": "5387e489cfbde3e69f2a608a7607392af91026f6655b543adef7176226bda696"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readVideoMetadata: does not throw on an empty file",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-0.bin",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: skips a 2 MB Apple key name without throwing and still finds a later location key",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "size": 2000214,
+          "sha256": "8256607c7c89897f2e342344f8e6a31101de11d66f8cca40325da1f20fbad04a",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 89,
+              "file": "media/inputs/video-skips-a-2-mb-apple-key-name-without-throwing-and-still-finds-a-later-locat.bin"
+            },
+            {
+              "offset": 89,
+              "size": 2000000,
+              "fill": 120
+            },
+            {
+              "offset": 2000089,
+              "size": 125,
+              "file": "media/inputs/video-skips-a-2-mb-apple-key-name-without-throwing-and-still-finds-a-later-locat-2.bin"
+            }
+          ]
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": {
+          "latitude": 48.8584,
+          "longitude": 2.2945
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: ignores ©xyz text longer than the ISO 6709 limit",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-ignores-xyz-text-longer-than-the-iso-6709-limit.bin",
+          "size": 163,
+          "sha256": "57ff88cf9211ca516c4be1bd61a2373d0de7f51ccaaae8eb99d33548b06fd3d9"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: ignores Apple location text longer than the ISO 6709 limit",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-ignores-apple-location-text-longer-than-the-iso-6709-limit.bin",
+          "size": 276,
+          "sha256": "0b899f9d9ea34208108fd142353b6f13a9bcfb6230d172d3157eea01acaa1cd2"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: returns no creation time when the year is above 9999",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-returns-no-creation-time-when-the-year-is-above-9999.bin",
+          "size": 144,
+          "sha256": "0512556e427c2e31bca5916ca75ffa9f112d180b438742bd32fbe25db68fce4c"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads a 0 degree rotation from the video tkhd",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-a-0-degree-rotation-from-the-video-tkhd.bin",
+          "size": 197,
+          "sha256": "1f70e44ccb7445d8c43e22424a9afe0f471eddc8f64c5fc9f4403490c0363424"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads a 90 degree rotation from the video tkhd",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-a-90-degree-rotation-from-the-video-tkhd.bin",
+          "size": 197,
+          "sha256": "6ef0c414e0f64fc871944d8037593d0a1c72d9cb26a3600a2f46d57116b8481e"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 90,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads a 180 degree rotation from the video tkhd",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-a-180-degree-rotation-from-the-video-tkhd.bin",
+          "size": 197,
+          "sha256": "9664f1ae16aae817fe0781289f9fc796efc66d0ab6f6a2e0927c69561a36b67f"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 180,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads a 270 degree rotation from the video tkhd",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-a-270-degree-rotation-from-the-video-tkhd.bin",
+          "size": 197,
+          "sha256": "3ec3005ccadebefc9f12b4e1d316897d287704c84f7d5f01f04297dea9485460"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 270,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reads the rotation from a version 1 tkhd",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reads-the-rotation-from-a-version-1-tkhd.bin",
+          "size": 209,
+          "sha256": "62abdd52dd670bd43ecb06159dcb9eb2a767c9400225f73e879d7c81181490bd"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 90,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: uses the first video track and ignores an audio track before it",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-uses-the-first-video-track-and-ignores-an-audio-track-before-it.bin",
+          "size": 543,
+          "sha256": "40632788e611ca8a4be5fdd0e313cdb85d4341c649eb5c5d1ad574d73827e409"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 90,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: treats a matrix that is not a quarter turn as no rotation",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-treats-a-matrix-that-is-not-a-quarter-turn-as-no-rotation.bin",
+          "size": 197,
+          "sha256": "48747a8d5d5cada0e2b76a8a1a42b566c98b047a893d63611777644c99def70c"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: reports no rotation when there is no video track",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-reports-no-rotation-when-there-is-no-video-track.bin",
+          "size": 197,
+          "sha256": "2a8f8fa3e82bc3023f11f84ccc0a2d4835e157345d09081bd1ef7f6a395d2923"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a creation time of 1 second is 1904-01-01T00:00:01Z",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-creation-time-of-1-second-is-1904-01-01t00-00-01z.bin",
+          "size": 132,
+          "sha256": "ad1fd8566da7f76aae8ba1451465225aead382ab88d00cee0bf7b12baf73eb1a"
+        }
+      },
+      "result": {
+        "creationUtc": "1904-01-01T00:00:01.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: the first location wins (©xyz before Apple metadata)",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-the-first-location-wins-xyz-before-apple-metadata.bin",
+          "size": 217,
+          "sha256": "5698e54d76e45fec2156ffe4af5843996c2668b5d2cf9a52c54bcce1f24f725b"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": {
+          "latitude": 37.3861,
+          "longitude": -122.0839
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a moov with size 0 extends to the end of the file",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-moov-with-size-0-extends-to-the-end-of-the-file.bin",
+          "size": 132,
+          "sha256": "e198d29a2719091e59c90f52396960c97dc1978f471d36f92acb466c8147ee18"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a malformed child inside moov flags the file",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-malformed-child-inside-moov-flags-the-file.bin",
+          "size": 140,
+          "sha256": "1799ede2d9f805610895448a70494e842df2c07a383e5096ece0f5e7a08bb753"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a moov without ftyp is still read",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-moov-without-ftyp-is-still-read.bin",
+          "size": 116,
+          "sha256": "56a6352df05c2cfcc3cc89c996df8cbc75556a68388ef1b17a3b9a02c3ed7d07"
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a video track without tkhd has rotation 0",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-video-track-without-tkhd-has-rotation-0.bin",
+          "size": 60,
+          "sha256": "e11d723254d00fe1c7a98391f28fa85575bcfee0ca99b2b955c38221ace29044"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: a video tkhd cut before the matrix flags the file",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-a-video-tkhd-cut-before-the-matrix-flags-the-file.bin",
+          "size": 121,
+          "sha256": "11d2eb7dbcfbab6d5114474cbfe3c6e9704cf8d8ae6233edffcbeca1b22b204d"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readVideoMetadata: edge: ©xyz with an altitude and no trailing slash",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/video-edge-xyz-with-an-altitude-and-no-trailing-slash.bin",
+          "size": 65,
+          "sha256": "434bba75eb97f8725d30cdc4a6f71fa8d478403645228dffb1ae28ed97eb5a33"
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": {
+          "latitude": -33.8688,
+          "longitude": 151.2093
+        },
+        "rotationDegrees": 0,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readVideoMetadata: finds moov after a 50 MiB mdat without reading the mdat",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "size": 52428944,
+          "sha256": "432b3646fda9ef5fa85d2b1e31005694f0154baa40e26e8e9a20ec7f04896bc7",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 28,
+              "file": "media/inputs/video-finds-moov-after-a-50-mib-mdat-without-reading-the-mdat-part1.bin"
+            },
+            {
+              "offset": 28,
+              "size": 52428803,
+              "fill": 0
+            },
+            {
+              "offset": 52428831,
+              "size": 113,
+              "file": "media/inputs/video-finds-moov-after-a-50-mib-mdat-without-reading-the-mdat-part2.bin"
+            }
+          ]
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      },
+      "readStats": {
+        "reads": 4,
+        "bytesRequested": 156,
+        "largestRead": 108,
+        "furthestOffset": 52428944
+      }
+    },
+    {
+      "name": "readVideoMetadata: follows a 64-bit box size",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "size": 52428960,
+          "sha256": "63b66c7978c62c6baad6bc8c3bc95cfbc21c35d64cc40edb7f6195faa7e83d70",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 32,
+              "file": "media/inputs/video-follows-a-64-bit-box-size-part1.bin"
+            },
+            {
+              "offset": 32,
+              "size": 52428803,
+              "fill": 0
+            },
+            {
+              "offset": 52428835,
+              "size": 125,
+              "file": "media/inputs/video-follows-a-64-bit-box-size-part2.bin"
+            }
+          ]
+        }
+      },
+      "result": {
+        "creationUtc": "2026-05-01T08:00:00.000Z",
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": false
+      },
+      "readStats": {
+        "reads": 4,
+        "bytesRequested": 168,
+        "largestRead": 120,
+        "furthestOffset": 52428960
+      }
+    },
+    {
+      "name": "readVideoMetadata: refuses a moov box larger than the limit without reading it",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "size": 8389648,
+          "sha256": "c5364612dc5775c875e3d5410e7f65c31dd19dd0a22b45331c5eaba7756dae63",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 24,
+              "file": "media/inputs/video-refuses-a-moov-box-larger-than-the-limit-without-reading-it-part1.bin"
+            },
+            {
+              "offset": 24,
+              "size": 8389624,
+              "fill": 0
+            }
+          ]
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      },
+      "readStats": {
+        "reads": 2,
+        "bytesRequested": 32,
+        "largestRead": 16,
+        "furthestOffset": 32
+      }
+    },
+    {
+      "name": "readVideoMetadata: returns malformed instead of throwing when the source fails",
+      "fn": "readVideoMetadata",
+      "args": {
+        "source": {
+          "failing": {
+            "size": 1000,
+            "message": "disk gone"
+          }
+        }
+      },
+      "result": {
+        "creationUtc": null,
+        "location": null,
+        "rotationDegrees": 0,
+        "malformed": true
+      }
+    },
+    {
+      "name": "constant: exports the review limits (KEYS_NAME_MAX_BYTES)",
+      "fn": "KEYS_NAME_MAX_BYTES",
+      "args": {},
+      "result": 256
+    },
+    {
+      "name": "constant: exports the review limits (ISO6709_MAX_BYTES)",
+      "fn": "ISO6709_MAX_BYTES",
+      "args": {},
+      "result": 64
+    },
+    {
+      "name": "parseIso6709: parses +37.3861-122.0839/",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839/"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: parses +37.3861-122.0839+012.0/",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839+012.0/"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: parses +48.8584+002.2945/",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+48.8584+002.2945/"
+      },
+      "result": {
+        "latitude": 48.8584,
+        "longitude": 2.2945
+      }
+    },
+    {
+      "name": "parseIso6709: parses -33.8688+151.2093/",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "-33.8688+151.2093/"
+      },
+      "result": {
+        "latitude": -33.8688,
+        "longitude": 151.2093
+      }
+    },
+    {
+      "name": "parseIso6709: parses +48.8584+002.2945+035.000/",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+48.8584+002.2945+035.000/"
+      },
+      "result": {
+        "latitude": 48.8584,
+        "longitude": 2.2945
+      }
+    },
+    {
+      "name": "parseIso6709: refuses \"\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": ""
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: refuses \"abc\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "abc"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: refuses \"+95.0000+002.0000/\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+95.0000+002.0000/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: refuses \"+45.0000+190.0000/\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+45.0000+190.0000/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: refuses \"+45.0000/\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+45.0000/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: refuses \"/\"",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: trailing NULs are removed",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839/\u0000\u0000"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: edge: surrounding whitespace is trimmed",
+      "fn": "parseIso6709",
+      "args": {
+        "text": " \t+37.3861-122.0839/\n"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: edge: no trailing slash",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: edge: integer degrees",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37-122/"
+      },
+      "result": {
+        "latitude": 37,
+        "longitude": -122
+      }
+    },
+    {
+      "name": "parseIso6709: edge: the limits 90 and 180 are accepted",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "-90.0000+180.0000/"
+      },
+      "result": {
+        "latitude": -90,
+        "longitude": 180
+      }
+    },
+    {
+      "name": "parseIso6709: edge: a missing sign is refused",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "37.3861-122.0839/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: a three-digit latitude is refused",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+037.3861-122.0839/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: a trailing CRS suffix is refused",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839CRSWGS_84/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: 64 characters are allowed",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.3861-122.0839+000000000000000000000000000000000000000000000/"
+      },
+      "result": {
+        "latitude": 37.3861,
+        "longitude": -122.0839
+      }
+    },
+    {
+      "name": "parseIso6709: edge: 65 characters are refused before trimming",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "                                               +48.8584+002.2945/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: a dot without fraction digits is refused",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "+37.-122.0839/"
+      },
+      "result": null
+    },
+    {
+      "name": "parseIso6709: edge: negative zero latitude",
+      "fn": "parseIso6709",
+      "args": {
+        "text": "-00.0000+010.0000/"
+      },
+      "result": {
+        "latitude": 0,
+        "longitude": 10
+      }
+    }
+  ]
+}

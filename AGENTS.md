@@ -27,8 +27,8 @@ a web app from one Expo codebase, with a self-hosted server. It is implemented a
 4. **Docs with the code.** Update `docs/features/<area>.md` (and the guide, if users see the change)
    in the same change, in its own commit.
 5. **Dependencies:** only packages in the `pnpm-workspace.yaml` catalog (`"catalog:"` in the
-   package), released at least 7 days earlier, each listed with its reason in
-   `docs/dependencies.md`.
+   package) or, for the Kotlin client, the Gradle catalog `apps/android/gradle/libs.versions.toml`;
+   released at least 7 days earlier, each listed with its reason in `docs/dependencies.md`.
 
 ## Code rules (details in the guidelines)
 
@@ -41,6 +41,22 @@ a web app from one Expo codebase, with a self-hosted server. It is implemented a
 - Client platform code: `name.native.ts` + `name.web.ts` + `name.ts` (declaration); a platform file
   never imports its own base name, shared code goes in `name-shared.ts`.
 - Raw `Pressable` only inside `apps/client/src/ui/`; use `Touchable`.
+
+### Kotlin client (v0.4.0, branch `feat/v0.4.0-kotlin`, `apps/android/`)
+
+- Module map, layers and rules: ADR 0011 and the v0.4.0 plan (`docs/planning/v0.4.0/architecture.md`,
+  local). Shared logic lives in Kotlin Multiplatform `:shared:*` modules (`commonMain`, no Android
+  or Java APIs); Android I/O in `:data:*`/`:platform:*`; business logic in `:service:*`; UI in
+  `:ui:*`. Feature modules never depend on each other.
+- No explanatory comments. The only allowed comment is the two-line attribution header on files
+  adapted from Mihon: `// Adapted from https://github.com/mihonapp/mihon` and
+  `// Copyright 2015 Javier Tomás, 2024 Mihon Open Source Project, Apache-2.0`.
+- No magic values: tuning in `*Constants.kt` objects, UI strings in `strings.xml` (English), test
+  ids in `TestTags` (same strings as the Expo app's ids).
+- Secrets are `ByteArray`, wiped after use; a password or passphrase may arrive as `String` from a
+  text field (Compose) and is converted once at the core API boundary. No I/O on the main thread.
+- Dependencies only from `apps/android/gradle/libs.versions.toml`, listed in `docs/dependencies.md`.
+- `./gradlew verify` (in `apps/android`) must pass next to `pnpm verify`.
 - Never print, log or commit secrets. American English everywhere.
 
 ## Working with the programmer

@@ -1,0 +1,658 @@
+{
+  "format": 1,
+  "generator": "apps/client/scripts/generate-golden-client.ts",
+  "cases": [
+    {
+      "name": "writeArchive: stored and deflated files of one entry plus a README",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "2026/11/2026-11-02_1000_AbCdEfGh/entry.md",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/note.bin",
+              "size": 182,
+              "sha256": "92bd9bb7c2e80e7dab340b65c963b4a8d5108cadaa8bd10a24bbf542e49147ca"
+            }
+          },
+          {
+            "name": "2026/11/2026-11-02_1000_AbCdEfGh/001.jpg",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/photo.bin",
+              "size": 4096,
+              "sha256": "cded097282d39bc0808c039c1e8770885aed5808d91270abf6b45ef6bd29a566"
+            }
+          },
+          {
+            "name": "README.txt",
+            "mtime": "2026-11-13T09:30:15.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/readme.bin",
+              "size": 69,
+              "sha256": "ae3d5c6b5622892d1716fdd8c843d51a19b676ff04f31d259af64bf3d7a8c292"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/entry-stored-and-deflated.zip",
+          "size": 4778,
+          "sha256": "28888a9774eca892229bb370cb60e99dc57686b438cfed2db8c95f92567e1bd8"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: stored files only, as the export writes media",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "2026/11/2026-11-02_1000_AbCdEfGh/001.jpg",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/photo.bin",
+              "size": 4096,
+              "sha256": "cded097282d39bc0808c039c1e8770885aed5808d91270abf6b45ef6bd29a566"
+            }
+          },
+          {
+            "name": "2026/11/2026-11-02_1000_AbCdEfGh/Café 🌸.txt",
+            "mtime": "2026-11-02T10:00:01.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/nonascii.bin",
+              "size": 26,
+              "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+            }
+          },
+          {
+            "name": "README.txt",
+            "mtime": "2026-11-13T09:30:15.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/readme.bin",
+              "size": 69,
+              "sha256": "ae3d5c6b5622892d1716fdd8c843d51a19b676ff04f31d259af64bf3d7a8c292"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/stored-only.zip",
+          "size": 4683,
+          "sha256": "b9bb04f8f394a3d1ff4c6eb7afde9d5c24921558e248d4a8ecf7b48e98d07c5d"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: empty files, stored and deflated",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "empty-stored.txt",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/empty.bin",
+              "size": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          },
+          {
+            "name": "empty-deflated.md",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/empty.bin",
+              "size": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/empty-files.zip",
+          "size": 274,
+          "sha256": "a33279ff16c929357a5c7a408306b7f3445ace49a771266d94148de4615f99b0"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: non-ASCII file names",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "2026/11/Café 東京 🌸/entry.md",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/nonascii.bin",
+              "size": 26,
+              "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+            }
+          },
+          {
+            "name": "Ünïcødé/ß é.txt",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/nonascii.bin",
+              "size": 26,
+              "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/non-ascii-names.zip",
+          "size": 373,
+          "sha256": "c74f12c11e897bff406f7c42d075c4ca1157396a665800dd4b003f33828da396"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: a deflated file larger than 1 MiB",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "large.txt",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/large.bin",
+              "size": 1048577,
+              "sha256": "80e1ff47a17075c7c34be4e61c7154661fe73798263979d36c1f81208c3e5aa0"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/large-deflated.zip",
+          "size": 3776,
+          "sha256": "3635ab2408d751cb9ea80556813fa6c18622add7a461cc233b9e4ebf93f2e87b"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: mtimes before 1980 and after 2099 are clamped, seconds are halved",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "mtime/1970-01-01T00:00:00.000Z.txt",
+            "mtime": "1970-01-01T00:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/mtime-1970-01-01t00-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "43fa26170e9fe2d37547b680298b46ebc67f7c543505cd2d4ee5e17d7c692076"
+            }
+          },
+          {
+            "name": "mtime/1979-12-31T23:59:59.999Z.txt",
+            "mtime": "1979-12-31T23:59:59.999Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/mtime-1979-12-31t23-59-59-999z-txt.bin",
+              "size": 31,
+              "sha256": "f6b2f69b9e321f03e5760a7fdf710710772d0eae11149fa08cad4dfd717a4ea0"
+            }
+          },
+          {
+            "name": "mtime/1980-01-01T00:00:00.000Z.txt",
+            "mtime": "1980-01-01T00:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/mtime-1980-01-01t00-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "0145165959c4330c623351327db75079f11aefa0c8d9b3ccbfcc3bf2ee467ef1"
+            }
+          },
+          {
+            "name": "mtime/1980-01-01T12:00:00.000Z.txt",
+            "mtime": "1980-01-01T12:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/mtime-1980-01-01t12-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "52db68b356b17493797882114ff9d05199f3b7638fca56338fdd693cb000a6e5"
+            }
+          },
+          {
+            "name": "mtime/2026-03-04T05:06:07.890Z.txt",
+            "mtime": "2026-03-04T05:06:07.890Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/mtime-2026-03-04t05-06-07-890z-txt.bin",
+              "size": 31,
+              "sha256": "ecfd49431f6bc5d761140e8e5781698f5bbc228727deb203ec6d5f7704d9cc5c"
+            }
+          },
+          {
+            "name": "mtime/2026-12-31T23:59:58.000Z.txt",
+            "mtime": "2026-12-31T23:59:58.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/mtime-2026-12-31t23-59-58-000z-txt.bin",
+              "size": 31,
+              "sha256": "32e50bb96d3f9380a9f325c33089c208e05309c658a070eb854d0b46d52f71c0"
+            }
+          },
+          {
+            "name": "mtime/2099-12-31T12:00:00.000Z.txt",
+            "mtime": "2099-12-31T12:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/mtime-2099-12-31t12-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "b64cdc7c4628e0db8ffaa5e3c19d8b6353666fad4083e3c539fd9cc6c9129aee"
+            }
+          },
+          {
+            "name": "mtime/2099-12-31T23:59:59.000Z.txt",
+            "mtime": "2099-12-31T23:59:59.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/mtime-2099-12-31t23-59-59-000z-txt.bin",
+              "size": 31,
+              "sha256": "799ced76d11e162798d04dbbbd674fa618bc4a0891998ed15ea8f741054ede87"
+            }
+          },
+          {
+            "name": "mtime/2100-01-01T00:00:00.000Z.txt",
+            "mtime": "2100-01-01T00:00:00.000Z",
+            "compress": false,
+            "content": {
+              "file": "archive/files/mtime-2100-01-01t00-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "a887ae654b6d0d5f197febf4f28d2009a0eb8688334d373c179cf9532addea85"
+            }
+          },
+          {
+            "name": "mtime/2150-06-01T00:00:00.000Z.txt",
+            "mtime": "2150-06-01T00:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/mtime-2150-06-01t00-00-00-000z-txt.bin",
+              "size": 31,
+              "sha256": "9d6657291bd3143be2a46962a62ed0618f0a6c4062553b98ab946f0843b02dc1"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/mtime-clamping.zip",
+          "size": 1931,
+          "sha256": "0ed6678fcdfb4667037e06664934bfd14378afb77a3f4717e39f585ec396931c"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: a deflated file that does not shrink",
+      "fn": "writeArchive",
+      "args": {
+        "files": [
+          {
+            "name": "noise.bin",
+            "mtime": "2026-11-02T10:00:00.000Z",
+            "compress": true,
+            "content": {
+              "file": "archive/files/incompressible.bin",
+              "size": 512,
+              "sha256": "dafbfc602957f3bf7e6e39bf7ce77a3853c42cb638c8ec0ef75123c6b9775ddb"
+            }
+          }
+        ]
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/incompressible-deflated.zip",
+          "size": 672,
+          "sha256": "b458078933f012b505cbe0322bc8f3e2aff71458023e86edd84c987886c8d358"
+        }
+      }
+    },
+    {
+      "name": "writeArchive: no files",
+      "fn": "writeArchive",
+      "args": {
+        "files": []
+      },
+      "result": {
+        "zip": {
+          "file": "archive/files/no-files.zip",
+          "size": 22,
+          "sha256": "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85"
+        }
+      }
+    },
+    {
+      "name": "readArchive: stored and deflated files of one entry plus a README",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/entry-stored-and-deflated.zip",
+          "size": 4778,
+          "sha256": "28888a9774eca892229bb370cb60e99dc57686b438cfed2db8c95f92567e1bd8"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "2026/11/2026-11-02_1000_AbCdEfGh/001.jpg",
+          "size": 4096,
+          "sha256": "cded097282d39bc0808c039c1e8770885aed5808d91270abf6b45ef6bd29a566"
+        },
+        {
+          "name": "2026/11/2026-11-02_1000_AbCdEfGh/entry.md",
+          "size": 182,
+          "sha256": "92bd9bb7c2e80e7dab340b65c963b4a8d5108cadaa8bd10a24bbf542e49147ca"
+        },
+        {
+          "name": "README.txt",
+          "size": 69,
+          "sha256": "ae3d5c6b5622892d1716fdd8c843d51a19b676ff04f31d259af64bf3d7a8c292"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: stored files only, as the export writes media",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/stored-only.zip",
+          "size": 4683,
+          "sha256": "b9bb04f8f394a3d1ff4c6eb7afde9d5c24921558e248d4a8ecf7b48e98d07c5d"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "2026/11/2026-11-02_1000_AbCdEfGh/001.jpg",
+          "size": 4096,
+          "sha256": "cded097282d39bc0808c039c1e8770885aed5808d91270abf6b45ef6bd29a566"
+        },
+        {
+          "name": "2026/11/2026-11-02_1000_AbCdEfGh/Café 🌸.txt",
+          "size": 26,
+          "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+        },
+        {
+          "name": "README.txt",
+          "size": 69,
+          "sha256": "ae3d5c6b5622892d1716fdd8c843d51a19b676ff04f31d259af64bf3d7a8c292"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: empty files, stored and deflated",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/empty-files.zip",
+          "size": 274,
+          "sha256": "a33279ff16c929357a5c7a408306b7f3445ace49a771266d94148de4615f99b0"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "empty-deflated.md",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "empty-stored.txt",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: non-ASCII file names",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/non-ascii-names.zip",
+          "size": 373,
+          "sha256": "c74f12c11e897bff406f7c42d075c4ca1157396a665800dd4b003f33828da396"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "2026/11/Café 東京 🌸/entry.md",
+          "size": 26,
+          "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+        },
+        {
+          "name": "Ünïcødé/ß é.txt",
+          "size": 26,
+          "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: a deflated file larger than 1 MiB",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/large-deflated.zip",
+          "size": 3776,
+          "sha256": "3635ab2408d751cb9ea80556813fa6c18622add7a461cc233b9e4ebf93f2e87b"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "large.txt",
+          "size": 1048577,
+          "sha256": "80e1ff47a17075c7c34be4e61c7154661fe73798263979d36c1f81208c3e5aa0"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: mtimes before 1980 and after 2099 are clamped, seconds are halved",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/mtime-clamping.zip",
+          "size": 1931,
+          "sha256": "0ed6678fcdfb4667037e06664934bfd14378afb77a3f4717e39f585ec396931c"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "mtime/1970-01-01T00:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "43fa26170e9fe2d37547b680298b46ebc67f7c543505cd2d4ee5e17d7c692076"
+        },
+        {
+          "name": "mtime/1979-12-31T23:59:59.999Z.txt",
+          "size": 31,
+          "sha256": "f6b2f69b9e321f03e5760a7fdf710710772d0eae11149fa08cad4dfd717a4ea0"
+        },
+        {
+          "name": "mtime/1980-01-01T00:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "0145165959c4330c623351327db75079f11aefa0c8d9b3ccbfcc3bf2ee467ef1"
+        },
+        {
+          "name": "mtime/1980-01-01T12:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "52db68b356b17493797882114ff9d05199f3b7638fca56338fdd693cb000a6e5"
+        },
+        {
+          "name": "mtime/2026-03-04T05:06:07.890Z.txt",
+          "size": 31,
+          "sha256": "ecfd49431f6bc5d761140e8e5781698f5bbc228727deb203ec6d5f7704d9cc5c"
+        },
+        {
+          "name": "mtime/2026-12-31T23:59:58.000Z.txt",
+          "size": 31,
+          "sha256": "32e50bb96d3f9380a9f325c33089c208e05309c658a070eb854d0b46d52f71c0"
+        },
+        {
+          "name": "mtime/2099-12-31T12:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "b64cdc7c4628e0db8ffaa5e3c19d8b6353666fad4083e3c539fd9cc6c9129aee"
+        },
+        {
+          "name": "mtime/2099-12-31T23:59:59.000Z.txt",
+          "size": 31,
+          "sha256": "799ced76d11e162798d04dbbbd674fa618bc4a0891998ed15ea8f741054ede87"
+        },
+        {
+          "name": "mtime/2100-01-01T00:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "a887ae654b6d0d5f197febf4f28d2009a0eb8688334d373c179cf9532addea85"
+        },
+        {
+          "name": "mtime/2150-06-01T00:00:00.000Z.txt",
+          "size": 31,
+          "sha256": "9d6657291bd3143be2a46962a62ed0618f0a6c4062553b98ab946f0843b02dc1"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: a deflated file that does not shrink",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/incompressible-deflated.zip",
+          "size": 672,
+          "sha256": "b458078933f012b505cbe0322bc8f3e2aff71458023e86edd84c987886c8d358"
+        }
+      },
+      "producer": "writeArchive",
+      "result": [
+        {
+          "name": "noise.bin",
+          "size": 512,
+          "sha256": "dafbfc602957f3bf7e6e39bf7ce77a3853c42cb638c8ec0ef75123c6b9775ddb"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: no files",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/no-files.zip",
+          "size": 22,
+          "sha256": "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85"
+        }
+      },
+      "producer": "writeArchive",
+      "result": []
+    },
+    {
+      "name": "readArchive: zipSync, all files stored (level 0), sizes in the local headers",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/zipsync-stored.zip",
+          "size": 4363,
+          "sha256": "49e0add400a1df5c7bf0ce6919f0fc1247e8bec9403276cb31bff6a7e83a7170"
+        }
+      },
+      "producer": "zipSync",
+      "result": [
+        {
+          "name": "a.txt",
+          "size": 69,
+          "sha256": "ae3d5c6b5622892d1716fdd8c843d51a19b676ff04f31d259af64bf3d7a8c292"
+        },
+        {
+          "name": "b/c.bin",
+          "size": 4096,
+          "sha256": "83de65f4894b8ee5bbf2cd17d8736c144bb74227af8b6bc686703939d0747b9d"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: zipSync level 9 with a directory entry, a file comment, an extra field, Unix attributes and a non-ASCII name",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/zipsync-best-directory-extra.zip",
+          "size": 527,
+          "sha256": "f1d7a1ea2a822c5c08d13b9859cf12e5a5ff9b8225d1b081742b38e70c0b5fb0"
+        }
+      },
+      "producer": "zipSync",
+      "result": [
+        {
+          "name": "folder/",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "folder/Café 東京 🌸.md",
+          "size": 26,
+          "sha256": "fce836a78f076965f3760d4b3b7c2cc4310d89240ede4e3f8bdbf0216c4b3d43"
+        },
+        {
+          "name": "note.md",
+          "size": 182,
+          "sha256": "92bd9bb7c2e80e7dab340b65c963b4a8d5108cadaa8bd10a24bbf542e49147ca"
+        }
+      ]
+    },
+    {
+      "name": "readArchive: zipSync with per-file levels, an empty file and a large file at level 1",
+      "fn": "readArchive",
+      "args": {
+        "zip": {
+          "file": "archive/files/zipsync-mixed-levels.zip",
+          "size": 8046,
+          "sha256": "b3e083d5bbd1079ad36f277b1d2e98dcf34f30427045ff87b7489e618485268d"
+        }
+      },
+      "producer": "zipSync",
+      "result": [
+        {
+          "name": "empty.txt",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "large.txt",
+          "size": 1048577,
+          "sha256": "80e1ff47a17075c7c34be4e61c7154661fe73798263979d36c1f81208c3e5aa0"
+        },
+        {
+          "name": "stored.jpg",
+          "size": 4096,
+          "sha256": "cded097282d39bc0808c039c1e8770885aed5808d91270abf6b45ef6bd29a566"
+        }
+      ]
+    },
+    {
+      "name": "constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "EXPORT_MTIME_MIN": "1980-01-01T12:00:00.000Z",
+        "EXPORT_MTIME_MAX": "2099-12-31T12:00:00.000Z",
+        "timeZone": "UTC"
+      }
+    }
+  ]
+}

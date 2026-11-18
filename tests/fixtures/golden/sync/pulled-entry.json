@@ -1,0 +1,168 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "decidePulledEntry: inserts an entry that is absent locally",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": null,
+        "pulledRevision": 1
+      },
+      "result": "insert"
+    },
+    {
+      "name": "decidePulledEntry: overwrites a synced entry when pulled >= base (equal)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "synced",
+          "baseRevision": 3
+        },
+        "pulledRevision": 3
+      },
+      "result": "overwrite"
+    },
+    {
+      "name": "decidePulledEntry: overwrites a synced entry when pulled >= base (greater)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "synced",
+          "baseRevision": 3
+        },
+        "pulledRevision": 4
+      },
+      "result": "overwrite"
+    },
+    {
+      "name": "decidePulledEntry: keeps the pending change when pulled >= base (greater)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_update",
+          "baseRevision": 3
+        },
+        "pulledRevision": 4
+      },
+      "result": "updateTrashOnly"
+    },
+    {
+      "name": "decidePulledEntry: keeps the pending change when pulled >= base (equal)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_update",
+          "baseRevision": 3
+        },
+        "pulledRevision": 3
+      },
+      "result": "updateTrashOnly"
+    },
+    {
+      "name": "decidePulledEntry: keeps a pending create when any revision is pulled",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_create",
+          "baseRevision": 0
+        },
+        "pulledRevision": 1
+      },
+      "result": "updateTrashOnly"
+    },
+    {
+      "name": "decidePulledEntry: rejects a rollback for every local state (synced)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "synced",
+          "baseRevision": 5
+        },
+        "pulledRevision": 4
+      },
+      "result": "rejectRollback"
+    },
+    {
+      "name": "decidePulledEntry: rejects a rollback for every local state (pending_update)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_update",
+          "baseRevision": 5
+        },
+        "pulledRevision": 4
+      },
+      "result": "rejectRollback"
+    },
+    {
+      "name": "decidePulledEntry: rejects a rollback for every local state (pending_create)",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_create",
+          "baseRevision": 5
+        },
+        "pulledRevision": 4
+      },
+      "result": "rejectRollback"
+    },
+    {
+      "name": "decidePulledEntry: edge: absent locally with revision 0",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": null,
+        "pulledRevision": 0
+      },
+      "result": "insert"
+    },
+    {
+      "name": "decidePulledEntry: edge: synced at revision 0 pulled 0",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "synced",
+          "baseRevision": 0
+        },
+        "pulledRevision": 0
+      },
+      "result": "overwrite"
+    },
+    {
+      "name": "decidePulledEntry: edge: pending create pulled 0",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_create",
+          "baseRevision": 0
+        },
+        "pulledRevision": 0
+      },
+      "result": "updateTrashOnly"
+    },
+    {
+      "name": "decidePulledEntry: edge: a large revision jump on a synced entry",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "synced",
+          "baseRevision": 1
+        },
+        "pulledRevision": 1000000
+      },
+      "result": "overwrite"
+    },
+    {
+      "name": "decidePulledEntry: edge: a rollback by one on a large revision",
+      "fn": "decidePulledEntry",
+      "args": {
+        "local": {
+          "localState": "pending_update",
+          "baseRevision": 1000000
+        },
+        "pulledRevision": 999999
+      },
+      "result": "rejectRollback"
+    }
+  ]
+}

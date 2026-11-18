@@ -1,0 +1,1310 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "planEntryExport: reads back everything the exporter wrote",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY1",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": -330,
+          "timeZone": null,
+          "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter",
+          "tags": [
+            "beach",
+            "trip-2026"
+          ],
+          "location": {
+            "latitude": 52.52,
+            "longitude": -13.405,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG \"1\", final.jpg"
+            },
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z",
+          "favorite": true
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_0200_ENTRY1/",
+        "noteFile": "2026/11/2026-11-01_0200_ENTRY1/entry.md",
+        "noteText": "---\nid: ENTRY1\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nfavorite: true\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          },
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+            "fileName": "002.mp4",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: reads back everything the exporter wrote",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY1\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nfavorite: true\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n"
+      },
+      "result": {
+        "id": "ENTRY1",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": -330,
+        "tags": [
+          "beach",
+          "trip-2026"
+        ],
+        "favorite": true,
+        "location": {
+          "latitude": 52.52,
+          "longitude": -13.405,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": "IMG \"1\", final.jpg",
+            "kind": "photo"
+          },
+          {
+            "file": "002.mp4",
+            "originalName": null,
+            "kind": "video"
+          }
+        ],
+        "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter"
+      }
+    },
+    {
+      "name": "planEntryExport: handles no tags, no location, no favorite and an empty note",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY2",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": -330,
+          "timeZone": null,
+          "note": "",
+          "tags": [],
+          "location": null,
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG \"1\", final.jpg"
+            },
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_0200_ENTRY2/",
+        "noteFile": "2026/11/2026-11-01_0200_ENTRY2/entry.md",
+        "noteText": "---\nid: ENTRY2\ndate: 2026-11-01T02:00:00-05:30\ntags: []\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          },
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+            "fileName": "002.mp4",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: handles no tags, no location, no favorite and an empty note",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY2\ndate: 2026-11-01T02:00:00-05:30\ntags: []\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n\n"
+      },
+      "result": {
+        "id": "ENTRY2",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": -330,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": "IMG \"1\", final.jpg",
+            "kind": "photo"
+          },
+          {
+            "file": "002.mp4",
+            "originalName": null,
+            "kind": "video"
+          }
+        ],
+        "note": ""
+      }
+    },
+    {
+      "name": "planEntryExport: writes captions and reads them back with audio items",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY3",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": -330,
+          "timeZone": null,
+          "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter",
+          "tags": [
+            "beach",
+            "trip-2026"
+          ],
+          "location": {
+            "latitude": 52.52,
+            "longitude": -13.405,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null,
+              "caption": "Sunset, \"late\""
+            },
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm03",
+              "kind": "audio",
+              "mimeType": "audio/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 4000,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_0200_ENTRY3/",
+        "noteFile": "2026/11/2026-11-01_0200_ENTRY3/entry.md",
+        "noteText": "---\nid: ENTRY3\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, kind: photo, caption: \"Sunset, \\\"late\\\"\" }, { file: 002.m4a, kind: audio }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          },
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm03",
+            "fileName": "002.m4a",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: writes captions and reads them back with audio items",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY3\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, kind: photo, caption: \"Sunset, \\\"late\\\"\" }, { file: 002.m4a, kind: audio }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n"
+      },
+      "result": {
+        "id": "ENTRY3",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": -330,
+        "tags": [
+          "beach",
+          "trip-2026"
+        ],
+        "favorite": false,
+        "location": {
+          "latitude": 52.52,
+          "longitude": -13.405,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": null,
+            "kind": "photo",
+            "caption": "Sunset, \"late\""
+          },
+          {
+            "file": "002.m4a",
+            "originalName": null,
+            "kind": "audio"
+          }
+        ],
+        "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: reads back awkward tags, quoted names and captions with escapes",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY4",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": -330,
+          "timeZone": null,
+          "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter",
+          "tags": [
+            "a: b",
+            "say \"hi\"",
+            " padded",
+            "back\\slash",
+            "🌊"
+          ],
+          "location": {
+            "latitude": 52.52,
+            "longitude": -13.405,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm00",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "x{y}.jpg",
+              "caption": "c\\\"d"
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_0200_ENTRY4/",
+        "noteFile": "2026/11/2026-11-01_0200_ENTRY4/entry.md",
+        "noteText": "---\nid: ENTRY4\ndate: 2026-11-01T02:00:00-05:30\ntags: [\"a: b\", \"say \\\"hi\\\"\", \" padded\", back\\slash, 🌊]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"x{y}.jpg\", kind: photo, caption: \"c\\\\\\\"d\" }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm00",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: reads back awkward tags, quoted names and captions with escapes",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY4\ndate: 2026-11-01T02:00:00-05:30\ntags: [\"a: b\", \"say \\\"hi\\\"\", \" padded\", back\\slash, 🌊]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"x{y}.jpg\", kind: photo, caption: \"c\\\\\\\"d\" }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n"
+      },
+      "result": {
+        "id": "ENTRY4",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": -330,
+        "tags": [
+          "a: b",
+          "say \"hi\"",
+          " padded",
+          "back\\slash",
+          "🌊"
+        ],
+        "favorite": false,
+        "location": {
+          "latitude": 52.52,
+          "longitude": -13.405,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": "x{y}.jpg",
+            "kind": "photo",
+            "caption": "c\\\"d"
+          }
+        ],
+        "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a note with leading and trailing blank lines",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY5",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": -330,
+          "timeZone": null,
+          "note": "\n\nmiddle\n\n",
+          "tags": [
+            "beach",
+            "trip-2026"
+          ],
+          "location": {
+            "latitude": 52.52,
+            "longitude": -13.405,
+            "accuracyMeters": null,
+            "source": "exif"
+          },
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG \"1\", final.jpg"
+            },
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_0200_ENTRY5/",
+        "noteFile": "2026/11/2026-11-01_0200_ENTRY5/entry.md",
+        "noteText": "---\nid: ENTRY5\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n\n\nmiddle\n\n\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          },
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+            "fileName": "002.mp4",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a note with leading and trailing blank lines",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY5\ndate: 2026-11-01T02:00:00-05:30\ntags: [beach, trip-2026]\nlocation: { latitude: 52.52000, longitude: -13.40500, source: exif }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n\n\nmiddle\n\n\n"
+      },
+      "result": {
+        "id": "ENTRY5",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": -330,
+        "tags": [
+          "beach",
+          "trip-2026"
+        ],
+        "favorite": false,
+        "location": {
+          "latitude": 52.52,
+          "longitude": -13.405,
+          "source": "exif"
+        },
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": "IMG \"1\", final.jpg",
+            "kind": "photo"
+          },
+          {
+            "file": "002.mp4",
+            "originalName": null,
+            "kind": "video"
+          }
+        ],
+        "note": "\n\nmiddle\n\n"
+      }
+    },
+    {
+      "name": "planEntryExport: edge: a positive offset with minutes and a negative coordinate rounding",
+      "fn": "planEntryExport",
+      "args": {
+        "entryId": "ENTRY6",
+        "metadata": {
+          "schemaVersion": 1,
+          "takenAtUtc": "2026-11-01T07:30:00.000Z",
+          "utcOffsetMinutes": 345,
+          "timeZone": null,
+          "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter",
+          "tags": [
+            "beach",
+            "trip-2026"
+          ],
+          "location": {
+            "latitude": -0.000001,
+            "longitude": 1.000005,
+            "accuracyMeters": null,
+            "source": "device"
+          },
+          "media": [
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+              "kind": "photo",
+              "mimeType": "image/jpeg",
+              "width": 10,
+              "height": 10,
+              "durationMs": null,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": "IMG \"1\", final.jpg"
+            },
+            {
+              "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+              "kind": "video",
+              "mimeType": "video/mp4",
+              "width": 10,
+              "height": 10,
+              "durationMs": 1000,
+              "originalPlaintextBytes": 100,
+              "thumbnail": {
+                "width": 10,
+                "height": 10,
+                "mimeType": "image/webp",
+                "plaintextBytes": 10
+              },
+              "capturedAtUtc": null,
+              "originalFileName": null
+            }
+          ],
+          "createdAtUtc": "2026-11-01T07:30:00.000Z",
+          "editedAtUtc": "2026-11-01T07:30:00.000Z"
+        }
+      },
+      "result": {
+        "folder": "2026/11/2026-11-01_1315_ENTRY6/",
+        "noteFile": "2026/11/2026-11-01_1315_ENTRY6/entry.md",
+        "noteText": "---\nid: ENTRY6\ndate: 2026-11-01T13:15:00+05:45\ntags: [beach, trip-2026]\nlocation: { latitude: -0.00000, longitude: 1.00001, source: device }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n",
+        "media": [
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm01",
+            "fileName": "001.jpg",
+            "plaintextBytes": 100
+          },
+          {
+            "mediaId": "mmmmmmmmmmmmmmmmmmmm02",
+            "fileName": "002.mp4",
+            "plaintextBytes": 100
+          }
+        ],
+        "mtime": "2026-11-01T07:30:00.000Z"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a positive offset with minutes and a negative coordinate rounding",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: ENTRY6\ndate: 2026-11-01T13:15:00+05:45\ntags: [beach, trip-2026]\nlocation: { latitude: -0.00000, longitude: 1.00001, source: device }\nmedia: [{ file: 001.jpg, original_name: \"IMG \\\"1\\\", final.jpg\", kind: photo }, { file: 002.mp4, kind: video }]\n---\n\n# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter\n"
+      },
+      "result": {
+        "id": "ENTRY6",
+        "takenAtUtc": "2026-11-01T07:30:00.000Z",
+        "utcOffsetMinutes": 345,
+        "tags": [
+          "beach",
+          "trip-2026"
+        ],
+        "favorite": false,
+        "location": {
+          "latitude": 0,
+          "longitude": 1.00001,
+          "source": "device"
+        },
+        "media": [
+          {
+            "file": "001.jpg",
+            "originalName": "IMG \"1\", final.jpg",
+            "kind": "photo"
+          },
+          {
+            "file": "002.mp4",
+            "originalName": null,
+            "kind": "video"
+          }
+        ],
+        "note": "# Title\n\nA line with: colons, \"quotes\" and #hash.\n---\nnot front matter"
+      }
+    },
+    {
+      "name": "parseEntryNote: rejects text without front matter",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "just a note"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: the minimal accepted note (no tags, media or location keys)",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: CRLF line endings are rejected",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\r\nid: X\r\ndate: 2026-11-01T02:00:00+00:00\r\n---\r\n\r\nbody\r\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a missing closing fence",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a closing fence at the very end without a newline",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a closing fence followed by end of text",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": ""
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an empty front matter has no date",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\n---\nbody"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a missing date",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a date without an offset",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00Z\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a date with milliseconds",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00.000+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an offset of -00:00",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00-00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: offset minutes above 59 are accepted",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+01:99\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-10-31T23:21:00.000Z",
+        "utcOffsetMinutes": 159,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: February 30 rolls over into March",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-02-30T12:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-03-02T12:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: hour 24:00:00 means the next midnight",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-01-01T24:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-01-02T00:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: day 32 throws a RangeError from toISOString",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-01-32T12:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "Invalid time value"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: minute 60 throws a RangeError from toISOString",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-01-01T12:60:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "RangeError",
+        "message": "Invalid time value"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a missing id",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\ndate: 2026-11-01T02:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an empty id is kept",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid:\ndate: 2026-11-01T02:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: keys and values are trimmed, the last duplicate wins, lines without a key are skipped",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\n  id :  first  \nid: second\n: orphan\nno colon\ndate:2026-11-01T02:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "second",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: tags that are not a list",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: beach\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an empty tags value is not a list",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags:\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an empty location value is null",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation:\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: trailing text after a list is ignored, empty items are kept",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [ , x] junk\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [
+          "",
+          "x"
+        ],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a tab is not skipped but trimmed from an unquoted scalar",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [\ta]\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [
+          "a"
+        ],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: tags with nested lists",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [a, [b]]\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: unquoted tags are trimmed, quoted tags unescaped",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [  spaced  ,\"q\\\"uote\", \"back\\\\slash\" , \"a\\nb\"]\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [
+          "spaced",
+          "q\"uote",
+          "back\\slash",
+          "anb"
+        ],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: an unterminated quoted tag",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [\"open]\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a list without a closing bracket",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [a, b\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a list item separated by a semicolon",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\ntags: [a; b]\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [
+          "a; b"
+        ],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: favorite other than true is false",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nfavorite: yes\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a location that is a plain string is null",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: somewhere\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a location that is a list is null",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: [1, 2]\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a location with a non-numeric latitude gives NaN",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: { latitude: north, longitude: 1e2, source: x }\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": {
+          "latitude": {
+            "$number": "NaN"
+          },
+          "longitude": 100,
+          "source": "x"
+        },
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a location number with spaces and hex",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: { latitude: 0x10, longitude: , source: exif }\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": {
+          "latitude": 16,
+          "longitude": 0,
+          "source": "exif"
+        },
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a location without a source",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: { latitude: 1, longitude: 2 }\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a map without a colon",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nlocation: { latitude }\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a media item with an unknown kind",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nmedia: [{ file: 001.pdf, kind: document }]\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a media item that is not a map",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nmedia: [001.jpg]\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a media item without a file",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nmedia: [{ kind: photo }]\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a media item with extra keys and an empty caption",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\nmedia: [{ file: a.jpg, kind: video, extra: 1, caption: \"\" }]\n---\n\nbody\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [
+          {
+            "file": "a.jpg",
+            "originalName": null,
+            "kind": "video",
+            "caption": ""
+          }
+        ],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a body without the blank line after the fence",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\nbody\n\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body\n"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a body without a trailing newline",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\n\nbody"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "body"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: only the first closing fence ends the front matter",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\n\na\n---\nb\n"
+      },
+      "result": {
+        "id": "X",
+        "takenAtUtc": "2026-11-01T02:00:00.000Z",
+        "utcOffsetMinutes": 0,
+        "tags": [],
+        "favorite": false,
+        "location": null,
+        "media": [],
+        "note": "a\n---\nb"
+      }
+    },
+    {
+      "name": "parseEntryNote: edge: a leading byte order mark is rejected",
+      "fn": "parseEntryNote",
+      "args": {
+        "source": "﻿---\nid: X\ndate: 2026-11-01T02:00:00+00:00\n---\n\nbody\n"
+      },
+      "result": {
+        "error": "InvalidEntryNoteError",
+        "message": "This file is not an entry from a Kodakiko export."
+      }
+    }
+  ]
+}

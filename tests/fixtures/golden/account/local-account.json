@@ -1,0 +1,118 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "fresh-local-account",
+      "inputs": {
+        "password": "Pässwörd été 東京 🌸 ﬁ２",
+        "username": "juergen.k",
+        "stored": {
+          "userId": "hoeIiYqLjI2Oj5CRkpOUlQ",
+          "kdfParams": {
+            "salt": "f6f7f8f9fafbfcfdfeff000102030405",
+            "opsLimit": 2,
+            "memLimitBytes": 8388608
+          },
+          "masterKeyByKek": "01a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdff667f9e4942acf5338d8b3809b7f8dfd4e9acf53ca638e9ea5907cabb38782996053a4404983e3f88608c00ff5a9f6b",
+          "masterKeyByRecovery": "01bebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d589bc1e85b349cc2d6db2545b0374cc7b53dd282a1d202d512b02e2f553d8575b45ca151d5fdaef6fc39adcca781c169d",
+          "recoveryKeyByMaster": "01d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebeced4431dc1250ff9db3ac0434e115c996db12a15a284d021817309235c5bf1bf83d9e04bb44a42280fd3bbf0cc09180c9c2",
+          "publicKey": "7728cf59234819bffd6d95e519290b88a3005c255db48b14420507a0aef6761a",
+          "privateKeyByMaster": "01eeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff00010203040577a7720599a4909c74a59f8521ffc5f19edf9f2d7517b89b2fa0b09811b8f0b3be973d41a7336b283005807728d13b05",
+          "homeCollection": {
+            "id": "lpeYmZqbnJ2en6ChoqOkpQ",
+            "keyByOwner": "01060708090a0b0c0d0e0f101112131415161718191a1b1c1d6a3c39f57a3f2408ef0fba004cde6b8c2e335d50ca1d512d8837c9a932341f283045869ca415942d8a3d2d100d115da9",
+            "metadataBlob": "011e1f202122232425262728292a2b2c2d2e2f3031323334359eba718fb1304fcce9a2faf5dc838ad908edee13b669736d73c2fa80a2cb1dede5beb338eb8d22288b4440626f0dbfd1c239947639a55b77a4fda1d86eae8b32f4e55974e7e4ebba72c501ab3f08e024a6db8d67f116a11faaf1f21e9306a0a04076ce2c771ba2b5fe53cc7f901efe77749b1e2631f1f4de668f6ad2c985ed32249eeb3c2798f449b2667f7d63866f1b82219733722939943a4c878d26ed008876eb35f57e4dbb6bd42eb41437296ed59c50bba6f00de77b1e90620ad9d291cccc6907cbc5f744b3e1db1727a57bbe2d2a547e1ef78928dfbc7851f6d902039b27a1b943daabeab765bf42070801b3affae4b11fdb43791732258cbc8c8e6b85669982e8098057ca2c63ee6e5b10c655"
+          }
+        },
+        "inviteToken": "kdk_i_9_j5-vv8_f7_AAECAwQFBgcICQoLDA0ODxAREhMUFRY",
+        "deviceLabel": "Galaxy Tab S9 — Küche"
+      },
+      "outputs": {
+        "passwordBytes": "50c3a4737377c3b6726420c3a974c3a920e69db1e4baac20f09f8cb820666932",
+        "kek": "beb6b765b4d52879f6f36a8a53e113a74dc00fc85608667e2c52479de2ed7a2b",
+        "loginKey": "7a7ccd934e6c61ce546c90c24b1c70ce77da1306d8cc97c72ba63157c2714ad4",
+        "masterKey": "060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425",
+        "recoveryKey": "262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445",
+        "recoveryLoginKey": "c13695792908569062bdac95571dc7a33265f0ebe25eabe9365c58296c2a60d7",
+        "request": {
+          "userId": "hoeIiYqLjI2Oj5CRkpOUlQ",
+          "username": "juergen.k",
+          "inviteToken": "kdk_i_9_j5-vv8_f7_AAECAwQFBgcICQoLDA0ODxAREhMUFRY",
+          "deviceLabel": "Galaxy Tab S9 — Küche",
+          "salt": "9vf4-fr7_P3-_wABAgMEBQ",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "enzNk05sYc5UbJDCSxxwznfaEwbYzJfHK6YxV8JxStQ",
+          "recoveryLoginKey": "wTaVeSkIVpBivayVVx3HozJl8OviXqvpNlxYKWwqYNc",
+          "publicKey": "dyjPWSNIGb_9bZXlGSkLiKMAXCVdtIsUQgUHoK72dho",
+          "masterKeyByKek": "AaanqKmqq6ytrq-wsbKztLW2t7i5uru8vf9mf55JQqz1M42LOAm3-N_U6az1PKY46epZB8q7OHgplgU6RASYPj-IYIwA_1qfaw",
+          "masterKeyByRecovery": "Ab6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1Ym8HoWzScwtbbJUWwN0zHtT3SgqHSAtUSsC4vVT2FdbRcoVHV_a72_DmtzKeBwWnQ",
+          "recoveryKeyByMaster": "AdbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7UQx3BJQ_52zrAQ04RXJltsSoVooTQIYFzCSNcW_G_g9ngS7RKQigP07vwzAkYDJwg",
+          "privateKeyByMaster": "Ae7v8PHy8_T19vf4-fr7_P3-_wABAgMEBXencgWZpJCcdKWfhSH_xfGe358tdRe4my-gsJgRuPCzvpc9QaczaygwBYB3KNE7BQ",
+          "homeCollection": {
+            "id": "lpeYmZqbnJ2en6ChoqOkpQ",
+            "keyByOwner": "AQYHCAkKCwwNDg8QERITFBUWFxgZGhscHWo8OfV6PyQI7w-6AEzea4wuM11Qyh1RLYg3yakyNB8oMEWGnKQVlC2KPS0QDRFdqQ",
+            "metadataBlob": "AR4fICEiIyQlJicoKSorLC0uLzAxMjM0NZ66cY-xME_M6aL69dyDitkI7e4TtmlzbXPC-oCiyx3t5b6zOOuNIiiLREBibw2_0cI5lHY5pVt3pP2h2G6uizL05Vl05-TrunLFAas_COAkptuNZ_EWoR-q8fIekwagoEB2zix3G6K1_lPMf5Ae_nd0mx4mMfH03maPatLJhe0yJJ7rPCeY9EmyZn99Y4ZvG4IhlzNyKTmUOkyHjSbtAIh26zX1fk27a9QutBQ3KW7VnFC7pvAN53sekGIK2dKRzMxpB8vF90Sz4dsXJ6V7vi0qVH4e94ko37x4UfbZAgObJ6G5Q9qr6rdlv0IHCAGzr_rksR_bQ3kXMiWMvIyOa4VmmYLoCYBXyixj7m5bEMZV"
+          }
+        }
+      }
+    },
+    {
+      "name": "local-account-after-password-change",
+      "inputs": {
+        "password": "Ünïcødé passphrase 🌊 ２０２６",
+        "username": "alice",
+        "stored": {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "kdfParams": {
+            "salt": "bdbebfc0c1c2c3c4c5c6c7c8c9cacbcc",
+            "opsLimit": 2,
+            "memLimitBytes": 8388608
+          },
+          "masterKeyByKek": "01cdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e42d0c7f53571cc37fd11d59eab7a0de4af15d383e7c9b4f6c685a98e09a18f1228f1731ef167e1a88161211b73ee65917",
+          "masterKeyByRecovery": "01bdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4b1a640e5fab476c6899d6c63b1695ac1fe5a8a1ebadabd0f68886b60aab473315b86a8612150c287d7779daabc9b03eb",
+          "recoveryKeyByMaster": "01d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebec4bc6125ce6f2384d15fd338cc1a3335886b6e9596b90ebd10377d3543e80edb6d56e4db2aad5a976a036824965e82470",
+          "publicKey": "ad6c082b1b7d59403617c495d135151af3dd8936fc6c3e07de914b55c8b64f5d",
+          "privateKeyByMaster": "01edeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030408e16a7fcd0b97283b0ccb90cb235f2ac6875c9488d572d4b9b968172a85dc2772dc6290f322c50981d574f74eea3aeb",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "0105060708090a0b0c0d0e0f101112131415161718191a1b1c8e59cf1b3fa341146b57032f55011bbce5bde8a0b56b67a60d78c187fd99b6bbfd1ce3d9ed236052fb7d7716d19d4d3e",
+            "metadataBlob": "011d1e1f202122232425262728292a2b2c2d2e2f3031323334588aef251d97a8698a32701978378bf42925669bee853bf3cf9d5fe619114ac8718b612c0e7a8989d45a1f893866d0dc565f1d7f37efc9d5c3f662f542ddda390ba8d6cd539cdf51de2efe86f5c30b38e7979851eba0c664120a3f0a00553bc317863cf6ea3036f2620e03ad6a4b568311a6feba06294fae5966cb74e96fdd95ac609c85bf5b4cda06f8707599efc0a84c6c02ed969f412f8b4b7d88985041857d66d5c3276fb59954aad8101b98f28ecae009b7c8a002905dfc37cfbf268fc95630181c16c29fe5d46eeaaf672d908014110114790b60657ce977bd2cee79eacc4adb8ac47edfbf9f8283d1c668b4583348d16cf5e9df9aac71fd24e50294d2a58ac7853ac6fd0e52896284d1c5ca08"
+          }
+        },
+        "inviteToken": null,
+        "deviceLabel": "Pixel 8"
+      },
+      "outputs": {
+        "passwordBytes": "c39c6ec3af63c3b864c3a9207061737370687261736520f09f8c8a2032303236",
+        "kek": "509d22bb7a0993a5de81ba96d4bf3420ef7f607d87112af5b00307cd5f493ee4",
+        "loginKey": "93b2db4189b7484f02c338e577171dfd37539f49a7cd0285ae3b0b2852e1f9b7",
+        "masterKey": "05060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2021222324",
+        "recoveryKey": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+        "recoveryLoginKey": "369841f586dc380d3617063a2d7983de2118f2cac37934eca4099dfd83f0962a",
+        "request": {
+          "userId": "hYaHiImKi4yNjo-QkZKTlA",
+          "username": "alice",
+          "inviteToken": null,
+          "deviceLabel": "Pixel 8",
+          "salt": "vb6_wMHCw8TFxsfIycrLzA",
+          "opsLimit": 2,
+          "memLimitBytes": 8388608,
+          "loginKey": "k7LbQYm3SE8Cwzjldxcd_TdTn0mnzQKFrjsLKFLh-bc",
+          "recoveryLoginKey": "NphB9YbcOA02FwY6LXmD3iEY8srDeTTspAmd_YPwlio",
+          "publicKey": "rWwIKxt9WUA2F8SV0TUVGvPdiTb8bD4H3pFLVci2T10",
+          "masterKeyByKek": "Ac3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5C0Mf1NXHMN_0R1Z6reg3krxXTg-fJtPbGhamOCaGPEijxcx7xZ-GogWEhG3PuZZFw",
+          "masterKeyByRecovery": "Ab2-v8DBwsPExcbHyMnKy8zNzs_Q0dLT1LGmQOX6tHbGiZ1sY7FpWsH-Wooeutq9D2iIa2CqtHMxW4aoYSFQwofXd52qvJsD6w",
+          "recoveryKeyByMaster": "AdXW19jZ2tvc3d7f4OHi4-Tl5ufo6err7EvGElzm8jhNFf0zjMGjM1iGtulZa5Dr0QN301Q-gO221W5NsqrVqXagNoJJZegkcA",
+          "privateKeyByMaster": "Ae3u7_Dx8vP09fb3-Pn6-_z9_v8AAQIDBAjhan_NC5coOwzLkMsjXyrGh1yUiNVy1Lm5aBcqhdwnctxikPMixQmB1XT3Tuo66w",
+          "homeCollection": {
+            "id": "lZaXmJmam5ydnp-goaKjpA",
+            "keyByOwner": "AQUGBwgJCgsMDQ4PEBESExQVFhcYGRobHI5Zzxs_o0EUa1cDL1UBG7zlveigtWtnpg14wYf9mba7_Rzj2e0jYFL7fXcW0Z1NPg",
+            "metadataBlob": "AR0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNFiK7yUdl6hpijJwGXg3i_QpJWab7oU788-dX-YZEUrIcYthLA56iYnUWh-JOGbQ3FZfHX8378nVw_Zi9ULd2jkLqNbNU5zfUd4u_ob1wws455eYUeugxmQSCj8KAFU7wxeGPPbqMDbyYg4DrWpLVoMRpv66BilPrllmy3Tpb92VrGCchb9bTNoG-HB1me_AqExsAu2Wn0Evi0t9iJhQQYV9ZtXDJ2-1mVSq2BAbmPKOyuAJt8igApBd_DfPvyaPyVYwGBwWwp_l1G7qr2ctkIAUEQEUeQtgZXzpd70s7nnqzErbisR-37-fgoPRxmi0WDNI0Wz16d-arHH9JOUClNKliseFOsb9DlKJYoTRxcoI"
+          }
+        }
+      }
+    }
+  ]
+}

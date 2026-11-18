@@ -1,0 +1,1154 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "parseTiffExif: reads date, offset, GPS and orientation (little-endian)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-reads-date-offset-gps-and-orientation-little-endian.bin",
+          "size": 210,
+          "sha256": "2b19c9bcbff69985f910e9a2643a5dfce88c0aff74884328077a0f5ec3b26c29"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: negates southern and western coordinates (little-endian)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-negates-southern-and-western-coordinates-little-endian.bin",
+          "size": 128,
+          "sha256": "d8b9b7f2a03477d531b55f4058e6212826f76f688ed50eebbf3cdfddd8a97615"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": {
+          "latitude": -33.8688,
+          "longitude": -70.6693
+        },
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: reads date, offset, GPS and orientation (big-endian)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-reads-date-offset-gps-and-orientation-big-endian.bin",
+          "size": 210,
+          "sha256": "6364de8367ebc391ea5831d1658c32b79f0ca535635fee946bd6ca0bd318ac5f"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: negates southern and western coordinates (big-endian)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-negates-southern-and-western-coordinates-big-endian.bin",
+          "size": 128,
+          "sha256": "33f1e767ec535345fa6ed9b3ec3c543e1c8eeb7ab6d26b5d045fd2372e370a2a"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": {
+          "latitude": -33.8688,
+          "longitude": -70.6693
+        },
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: returns empty fields for a TIFF block without tags",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-returns-empty-fields-for-a-tiff-block-without-tags.bin",
+          "size": 14,
+          "sha256": "5b8de6f08055194ef790df081c2b76fa7920469750fd5ff47e6a209a7b3c716a"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: rejects the exact 0,0 point and keeps the other fields",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-rejects-the-exact-0-0-point-and-keeps-the-other-fields.bin",
+          "size": 178,
+          "sha256": "1536fbafb7c25333900f71d89e9a22528e35e4983657ae9a3bf0a609175a8cb0"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: rejects latitudes beyond 90 degrees (91)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-rejects-latitudes-beyond-90-degrees-91.bin",
+          "size": 128,
+          "sha256": "7e0f85e14523e34fdeba7eec3764dbe53e29e1ff3c69c44285617154a3e34055"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: rejects latitudes beyond 90 degrees (-91)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-rejects-latitudes-beyond-90-degrees-91-2.bin",
+          "size": 128,
+          "sha256": "fcc062b8502ca25841c7d0f1f66a64c5c9da890c5be4a3627cadc00315ada12b"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: rejects longitudes beyond 180 degrees (181)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-rejects-longitudes-beyond-180-degrees-181.bin",
+          "size": 128,
+          "sha256": "dbf3db7aeb9327061cf6d47b241c5abe3508fc0194336ac41556629f17213c24"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: rejects longitudes beyond 180 degrees (-181)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-rejects-longitudes-beyond-180-degrees-181-2.bin",
+          "size": 128,
+          "sha256": "4c1fa7f01ae5fd5b09ddd6d61e5573e38a5bf69210d4db75780260df773b5c37"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: turns a date that does not match YYYY:MM:DD HH:MM:SS into null (dashes)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-turns-a-date-that-does-not-match-yyyy-mm-dd-hh-mm-ss-into-null-dashes.bin",
+          "size": 64,
+          "sha256": "a98c5b3995465c02aa11c78b2ee3d6f3b5a8c5d28d493c9b306673c27c6bcc8e"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: turns a date that does not match YYYY:MM:DD HH:MM:SS into null (blank)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-turns-a-date-that-does-not-match-yyyy-mm-dd-hh-mm-ss-into-null-blank.bin",
+          "size": 64,
+          "sha256": "570144c4c70fa8983f1abd917cacc377a14514766c505a9a7e2b6d5bf0dc0d13"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: turns a date that does not match YYYY:MM:DD HH:MM:SS into null (word)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-turns-a-date-that-does-not-match-yyyy-mm-dd-hh-mm-ss-into-null-word.bin",
+          "size": 54,
+          "sha256": "d101757a462a097b47bd4d56d9c8a7413e04743efa1182adf563961259a37f39"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: turns an offset that does not match the sign-hours-minutes format into null (word)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-turns-an-offset-that-does-not-match-the-sign-hours-minutes-format-into-null.bin",
+          "size": 50,
+          "sha256": "f387832d556619c3df80545284a5822716f1a80cb2926fc9f7131be5b5119565"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: turns an offset that does not match the sign-hours-minutes format into null (+2)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-turns-an-offset-that-does-not-match-the-sign-hours-minutes-format-into-null-2.bin",
+          "size": 44,
+          "sha256": "ccb6da7299c1cdb0d970e18ca4ca5142d4d055ae5cf795334f62cad82a7292ef"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: keeps a valid negative offset",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-keeps-a-valid-negative-offset.bin",
+          "size": 52,
+          "sha256": "f220b203cb80cb49125e4d5cc372405097f00dc74cf7d6f2ffcf029c30a5413a"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": "-03:30",
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a truncated block as malformed without throwing (length 0)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-0.bin",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a truncated block as malformed without throwing (length 4)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-4.bin",
+          "size": 4,
+          "sha256": "75a2a13326b2a4a0b2265dbc2d0a91bfc7b540f0b10b5b9abd2a3fc9d7b83016"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a truncated block as malformed without throwing (length 12)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-12.bin",
+          "size": 12,
+          "sha256": "c3a4170821ca77e4aadc250b4fd1149ad606736cf5677f3a7fdd7312084a1d1a"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a truncated block as malformed without throwing (length 200)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-200.bin",
+          "size": 200,
+          "sha256": "1a31dafd4649f5a8e4d9ea4a4f33c4b0ecc97bb4a3ee5657b61d83ade63285b5"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": null,
+        "orientation": 6,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a wrong byte order marker or magic number as malformed (byte order)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-wrong-byte-order-marker-or-magic-number-as-malformed-byte-order.bin",
+          "size": 210,
+          "sha256": "65189ce469b29586582df5653c2b9785e017bd2e4cc8702329de5e00e0e1cd56"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags a wrong byte order marker or magic number as malformed (magic)",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-a-wrong-byte-order-marker-or-magic-number-as-malformed-magic.bin",
+          "size": 210,
+          "sha256": "411cfa06e251dea666a5472c37e715c8332d5fb3e77f767b10b051ce2818b00c"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: flags an IFD that claims more entries than the data holds as malformed",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-flags-an-ifd-that-claims-more-entries-than-the-data-holds-as-malformed.bin",
+          "size": 26,
+          "sha256": "d2f022ab11221c76a2d9908ebb5a8d63c6f33a19a72a1b928967b8e204d02602"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "parseTiffExif: terminates when the sub-IFD pointers point back at IFD0",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-terminates-when-the-sub-ifd-pointers-point-back-at-ifd0.bin",
+          "size": 50,
+          "sha256": "7cd7c1b0d08a30e06e4cea782e64f9bd80a066e568407f871a5e33883a519837"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: returns null for an ASCII value of 200,000 bytes without throwing",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "size": 200058,
+          "sha256": "93ace999c888d01de389c81b73f8356993755e8abd2004f2cad12f5ef8778391",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 56,
+              "file": "media/inputs/tiff-returns-null-for-an-ascii-value-of-200-000-bytes-without-throwing-part1.bin"
+            },
+            {
+              "offset": 56,
+              "size": 200000,
+              "fill": 120
+            },
+            {
+              "offset": 200056,
+              "size": 2,
+              "file": "media/inputs/tiff-returns-null-for-an-ascii-value-of-200-000-bytes-without-throwing-part2.bin"
+            }
+          ]
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: orientation 9 is out of range",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-orientation-9-is-out-of-range.bin",
+          "size": 26,
+          "sha256": "d5dabe28db57d4aa8dae2980f428a2d445c48f0a8781ff019fbbe3194573e1ab"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: orientation 0 is out of range",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-orientation-0-is-out-of-range.bin",
+          "size": 26,
+          "sha256": "46ea91b0e0d0392359336285c372f7ae9a5a8651df288035d97a633ba28f199f"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: orientation 1 big-endian",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-orientation-1-big-endian.bin",
+          "size": 26,
+          "sha256": "77c32de481efca0a5549bee050f5512d298397e8f132c434c41d65115082a966"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": 1,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: a date with an impossible month still matches the pattern",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-a-date-with-an-impossible-month-still-matches-the-pattern.bin",
+          "size": 64,
+          "sha256": "912871756daaffde49ccd7d798db6c624734b34bac89b396000fd97619beaa16"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:13:45 99:99:99",
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: an ASCII value of exactly 64 bytes is read and trailing NULs are removed",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-an-ascii-value-of-exactly-64-bytes-is-read-and-trailing-nuls-are-remov.bin",
+          "size": 108,
+          "sha256": "51b9519e7ebd9c8428cc8b53d4f73b18ef00249e06c9ec6a2cf474791bf17f71"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: an ASCII value of 65 bytes is ignored",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-an-ascii-value-of-65-bytes-is-ignored.bin",
+          "size": 110,
+          "sha256": "eb9b4db5524bdbd199aaa570bcf6f51003ba9454b387c316b396dd6d61df7fe4"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: a NUL inside the date is kept and fails the pattern",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-a-nul-inside-the-date-is-kept-and-fails-the-pattern.bin",
+          "size": 66,
+          "sha256": "f3fe0c0b80fbc7c9cf1571899abd4598640308c0ca2f77f70f9bcf72497257d4"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "parseTiffExif: edge: an offset with minutes 99 matches the pattern",
+      "fn": "parseTiffExif",
+      "args": {
+        "tiff": {
+          "file": "media/inputs/tiff-edge-an-offset-with-minutes-99-matches-the-pattern.bin",
+          "size": 52,
+          "sha256": "03ce77facfda6f8b57c8f6ccb5ddc16be5d2572877667f60176bb970d4fee543"
+        }
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": "+05:99",
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "constant: exports the ASCII limit",
+      "fn": "EXIF_ASCII_MAX_BYTES",
+      "args": {},
+      "result": 64
+    },
+    {
+      "name": "readImageMetadata: returns malformed instead of throwing when the source fails (jpeg)",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "failing": {
+            "size": 1000,
+            "message": "disk gone"
+          }
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: returns malformed instead of throwing when the source fails (png)",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "failing": {
+            "size": 1000,
+            "message": "disk gone"
+          }
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: returns malformed instead of throwing when the source fails (webp)",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "failing": {
+            "size": 1000,
+            "message": "disk gone"
+          }
+        },
+        "container": "webp"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: finds the Exif APP1 after an APP0",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-finds-the-exif-app1-after-an-app0.bin",
+          "size": 316,
+          "sha256": "49ec563594df353afa95b756b8a2e68c87bb5fbeba8455bf4a42eed1c90b6572"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: skips an XMP APP1 that comes before the Exif APP1",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-skips-an-xmp-app1-that-comes-before-the-exif-app1.bin",
+          "size": 279,
+          "sha256": "60c4efe130e4c58bd55308dc75bcaca2254baae0432529071214830b048fbe32"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: returns empty fields for a JPEG without EXIF",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-returns-empty-fields-for-a-jpeg-without-exif.bin",
+          "size": 64,
+          "sha256": "acb228d4142ff8852c3d693cb95ac695a8743080211678fc406ee8fa0452e805"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: stops at the start of scan and ignores an APP1 after it",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-stops-at-the-start-of-scan-and-ignores-an-app1-after-it.bin",
+          "size": 268,
+          "sha256": "9363660a077c72046c37ff0836b7ca506cca8ac9e8a5b3741c13347df33e05ba"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: flags a JPEG cut inside the Exif segment as malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-flags-a-jpeg-cut-inside-the-exif-segment-as-malformed.bin",
+          "size": 60,
+          "sha256": "b69d9fe87e5c052e5c37caf32a8a4293d7364fa683985b120dec0cf562fa6f79"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: flags bytes that are not a JPEG as malformed without throwing",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-flags-bytes-that-are-not-a-jpeg-as-malformed-without-throwing.bin",
+          "size": 512,
+          "sha256": "5fa6c0db4deea566c0b010056eb7cf805c5548956d38d3892d1bf7c375fa4156"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: reads the eXIf chunk",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/png-reads-the-exif-chunk.bin",
+          "size": 295,
+          "sha256": "f11b9997be74c9bc9958a96e8aef3f2d2f1394a8ebb73168acf9716d4c3d8d04"
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: returns empty fields for a PNG without eXIf",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/png-returns-empty-fields-for-a-png-without-exif.bin",
+          "size": 73,
+          "sha256": "aa59e4c49c1a4e3443c1acc5a5194b7e073164029b4723eaffd977b2bce88257"
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: flags a PNG cut inside the eXIf chunk as malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/png-flags-a-png-cut-inside-the-exif-chunk-as-malformed.bin",
+          "size": 60,
+          "sha256": "00b6a0b0f2a59205fec8d4a558d1f37ac17193a1f461a67f40d72f9cbd0bb886"
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: reads the EXIF chunk",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/webp-reads-the-exif-chunk.bin",
+          "size": 266,
+          "sha256": "15cb70ef2d2ebbc11538f365e981a80d6408027874bfdda54e84296546b9b7bf"
+        },
+        "container": "webp"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: skips a leading Exif identifier inside the EXIF chunk",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/webp-skips-a-leading-exif-identifier-inside-the-exif-chunk.bin",
+          "size": 272,
+          "sha256": "02fac1cac5ed3447ddd62d9db6fdbd127b2eb506cea5a729ec04c87ec742c47f"
+        },
+        "container": "webp"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: returns empty fields for a WebP without EXIF",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/webp-returns-empty-fields-for-a-webp-without-exif.bin",
+          "size": 48,
+          "sha256": "516a8eeb928b7776e9967fa515272b99094d5f78b62e033dfa9d109ec7223fa2"
+        },
+        "container": "webp"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: an empty JPEG file is malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/tiff-flags-a-truncated-block-as-malformed-without-throwing-length-0.bin",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a JPEG with a restart marker before the Exif APP1",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-edge-a-jpeg-with-a-restart-marker-before-the-exif-app1.bin",
+          "size": 236,
+          "sha256": "548e7648fd0870c95150dd946fb36fa9c2a442ee8a79ceb95384eac5cd4e5aff"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": "2026:05:01 10:00:00",
+        "offsetTimeOriginal": "+02:00",
+        "gps": {
+          "latitude": 48.8584,
+          "longitude": 2.2944999999999998
+        },
+        "orientation": 6,
+        "malformed": false
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a JPEG with an Exif APP1 whose TIFF is broken",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-edge-a-jpeg-with-an-exif-app1-whose-tiff-is-broken.bin",
+          "size": 28,
+          "sha256": "c6072c3a34f2286fd3d9aca773e93e5c5073d98c6c6f2210052379ca0432b2d6"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a JPEG segment length below 2 is malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/jpeg-edge-a-jpeg-segment-length-below-2-is-malformed.bin",
+          "size": 6,
+          "sha256": "780806275d97563cce1485a1bd48f4398ca42c7d0cf279b63d00a4a67ab7cd43"
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a PNG with the wrong signature is malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/png-edge-a-png-with-the-wrong-signature-is-malformed.bin",
+          "size": 19,
+          "sha256": "489baaca15fce73d4caac161bb66e2c6030a3b183830a55fa18b4052cfda66e9"
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a WebP with the wrong form type is malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/webp-edge-a-webp-with-the-wrong-form-type-is-malformed.bin",
+          "size": 12,
+          "sha256": "922ea5480746befe4b665f6501b81f63b35f895a87199d126cc534c84fcf2928"
+        },
+        "container": "webp"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: edge: a JPEG file passed as PNG is malformed",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "file": "media/inputs/png-edge-a-jpeg-file-passed-as-png-is-malformed.bin",
+          "size": 252,
+          "sha256": "512274247db62e7385e69d1181fdff345e00e3d258363565858c319a01e0d5ce"
+        },
+        "container": "png"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": true
+      }
+    },
+    {
+      "name": "readImageMetadata: never reads beyond the scan limit and misses an Exif segment past it",
+      "fn": "readImageMetadata",
+      "args": {
+        "source": {
+          "size": 325254,
+          "sha256": "963f132523c11d250f49221e228fc1a90a554e6670b20ee0713fadae209e1483",
+          "segments": [
+            {
+              "offset": 0,
+              "size": 6,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part1.bin"
+            },
+            {
+              "offset": 6,
+              "size": 65000,
+              "fill": 0
+            },
+            {
+              "offset": 65006,
+              "size": 4,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part2.bin"
+            },
+            {
+              "offset": 65010,
+              "size": 65000,
+              "fill": 0
+            },
+            {
+              "offset": 130010,
+              "size": 4,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part2.bin"
+            },
+            {
+              "offset": 130014,
+              "size": 65000,
+              "fill": 0
+            },
+            {
+              "offset": 195014,
+              "size": 4,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part2.bin"
+            },
+            {
+              "offset": 195018,
+              "size": 65000,
+              "fill": 0
+            },
+            {
+              "offset": 260018,
+              "size": 4,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part2.bin"
+            },
+            {
+              "offset": 260022,
+              "size": 65000,
+              "fill": 0
+            },
+            {
+              "offset": 325022,
+              "size": 232,
+              "file": "media/inputs/jpeg-never-reads-beyond-the-scan-limit-and-misses-an-exif-segment-past-it-part6.bin"
+            }
+          ]
+        },
+        "container": "jpeg"
+      },
+      "result": {
+        "dateTimeOriginal": null,
+        "offsetTimeOriginal": null,
+        "gps": null,
+        "orientation": null,
+        "malformed": false
+      },
+      "readStats": {
+        "reads": 1,
+        "bytesRequested": 262144,
+        "largestRead": 262144,
+        "furthestOffset": 262144
+      }
+    }
+  ]
+}

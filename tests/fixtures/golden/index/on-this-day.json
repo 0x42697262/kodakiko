@@ -1,0 +1,1498 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "GalleryIndex.onThisDay: on this day: same MM-DD in earlier years, grouped by years ago, newest first (home scope)",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "this-year",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "this-year-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2026-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2026-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-a",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-a-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-b",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-b-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T18:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "three",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "three-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2023-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2023-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "other-day",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "other-day-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-12T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-12",
+                "monthDay": "11-12"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "trashed",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": true,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "trashed-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "shared",
+                "isOwn": true,
+                "collectionIds": [
+                  "shared-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "shared-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "one-b",
+              "one-a"
+            ]
+          },
+          {
+            "yearsAgo": 3,
+            "entryIds": [
+              "three"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: on this day: same MM-DD in earlier years, grouped by years ago, newest first (collection scope)",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "this-year",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "this-year-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2026-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2026-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-a",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-a-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-b",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-b-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T18:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "three",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "three-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2023-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2023-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "other-day",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "other-day-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-12T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-12",
+                "monthDay": "11-12"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "trashed",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": true,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "trashed-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "shared",
+                "isOwn": true,
+                "collectionIds": [
+                  "shared-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "shared-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "collection",
+                "collectionId": "shared-collection"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 2,
+            "entryIds": [
+              "shared"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: on this day: same MM-DD in earlier years, grouped by years ago, newest first (a day without entries)",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "this-year",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "this-year-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2026-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2026-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-a",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-a-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "one-b",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "one-b-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T18:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "three",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "three-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2023-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2023-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "other-day",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "other-day-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-12T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-12",
+                "monthDay": "11-12"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "trashed",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": true,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "trashed-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "shared",
+                "isOwn": true,
+                "collectionIds": [
+                  "shared-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "shared-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-06-01",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        []
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: upsert moves an entry to its new day and month-day",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "x",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "x-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "x",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "x-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-12T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-12",
+                "monthDay": "11-12"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-12",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [],
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "x"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: edge: leap day matches only 02-29",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "2024",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "2024-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-02-29T12:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-02-29",
+                "monthDay": "02-29"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "2020",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "2020-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2020-02-29T12:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2020-02-29",
+                "monthDay": "02-29"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "feb-28",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "feb-28-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-02-28T12:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-02-28",
+                "monthDay": "02-28"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "mar-01",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "mar-01-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-03-01T12:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-03-01",
+                "monthDay": "03-01"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2028-02-29",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2027-02-28",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2027-03-01",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 4,
+            "entryIds": [
+              "2024"
+            ]
+          },
+          {
+            "yearsAgo": 8,
+            "entryIds": [
+              "2020"
+            ]
+          }
+        ],
+        [
+          {
+            "yearsAgo": 2,
+            "entryIds": [
+              "feb-28"
+            ]
+          }
+        ],
+        [
+          {
+            "yearsAgo": 2,
+            "entryIds": [
+              "mar-01"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: edge: groups sort numerically and future or same-year entries are skipped",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "ten",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "ten-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2016-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2016-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "two",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "two-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "thirty-six",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "thirty-six-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "1990-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "1990-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "future",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "future-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2027-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2027-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "today",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "today-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2026-11-11T23:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2026-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 2,
+            "entryIds": [
+              "two"
+            ]
+          },
+          {
+            "yearsAgo": 10,
+            "entryIds": [
+              "ten"
+            ]
+          },
+          {
+            "yearsAgo": 36,
+            "entryIds": [
+              "thirty-six"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: edge: month-day and year come from the local date, not UTC",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "east",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "east-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-10T23:30:00.000Z",
+                "utcOffsetMinutes": 60,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "west",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "west-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-12T02:00:00.000Z",
+                "utcOffsetMinutes": -300,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "new-year",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "new-year-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-12-31T23:30:00.000Z",
+                "utcOffsetMinutes": 60,
+                "localDate": "2026-01-01",
+                "monthDay": "01-01"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "utc-11-11",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "utc-11-11-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T23:30:00.000Z",
+                "utcOffsetMinutes": 60,
+                "localDate": "2025-11-12",
+                "monthDay": "11-12"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2027-01-01",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "west",
+              "east"
+            ]
+          }
+        ],
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "new-year"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: edge: ties within a group break by id; unreadable, pending and foreign entries count",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "b",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "b-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-05-05T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-05-05",
+                "monthDay": "05-05"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "a",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": true,
+                "tags": [],
+                "coverMediaId": "a-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-05-05T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-05-05",
+                "monthDay": "05-05"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "c",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "c-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": true,
+                "takenAtUtc": "2025-05-05T09:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-05-05",
+                "monthDay": "05-05"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "d",
+                "isOwn": false,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "d-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-05-05T07:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-05-05",
+                "monthDay": "05-05"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "elsewhere",
+                "isOwn": true,
+                "collectionIds": [
+                  "other-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "elsewhere-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-05-05T10:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-05-05",
+                "monthDay": "05-05"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-05-05",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-05-05",
+              {
+                "kind": "collection",
+                "collectionId": "other-collection"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "c",
+              "a",
+              "b",
+              "d"
+            ]
+          }
+        ],
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "elsewhere"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "GalleryIndex.onThisDay: edge: removed and cleared entries disappear",
+      "fn": "GalleryIndex.onThisDay",
+      "args": {
+        "homeCollectionId": "home-collection",
+        "setup": [
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "kept",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "kept-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2025-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2025-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          },
+          {
+            "method": "upsert",
+            "args": [
+              {
+                "id": "gone",
+                "isOwn": true,
+                "collectionIds": [
+                  "home-collection"
+                ],
+                "trashed": false,
+                "unreadable": false,
+                "tags": [],
+                "coverMediaId": "gone-media",
+                "mediaCount": 1,
+                "hasVideo": false,
+                "notePreview": "",
+                "pending": false,
+                "takenAtUtc": "2024-11-11T08:00:00.000Z",
+                "utcOffsetMinutes": 0,
+                "localDate": "2024-11-11",
+                "monthDay": "11-11"
+              },
+              ""
+            ]
+          }
+        ],
+        "calls": [
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "remove",
+            "args": [
+              "gone"
+            ]
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          },
+          {
+            "method": "clear",
+            "args": []
+          },
+          {
+            "method": "onThisDay",
+            "args": [
+              "2026-11-11",
+              {
+                "kind": "home"
+              }
+            ]
+          }
+        ]
+      },
+      "result": [
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "kept"
+            ]
+          },
+          {
+            "yearsAgo": 2,
+            "entryIds": [
+              "gone"
+            ]
+          }
+        ],
+        null,
+        [
+          {
+            "yearsAgo": 1,
+            "entryIds": [
+              "kept"
+            ]
+          }
+        ],
+        null,
+        []
+      ]
+    }
+  ]
+}

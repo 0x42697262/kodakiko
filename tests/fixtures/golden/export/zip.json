@@ -1,0 +1,822 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "planParts: splits greedily by bytes and lets an entry span two parts",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "a",
+            "path": "a/entry.md",
+            "bytes": 100
+          },
+          {
+            "entryId": "a",
+            "path": "a/001.jpg",
+            "bytes": 5000
+          },
+          {
+            "entryId": "a",
+            "path": "a/002.jpg",
+            "bytes": 5000
+          },
+          {
+            "entryId": "b",
+            "path": "b/entry.md",
+            "bytes": 100
+          }
+        ],
+        "partMaxBytes": 7148,
+        "partMaxFiles": 65000
+      },
+      "result": [
+        [
+          {
+            "entryId": "a",
+            "path": "a/entry.md",
+            "bytes": 100
+          },
+          {
+            "entryId": "a",
+            "path": "a/001.jpg",
+            "bytes": 5000
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/002.jpg",
+            "bytes": 5000
+          },
+          {
+            "entryId": "b",
+            "path": "b/entry.md",
+            "bytes": 100
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: splits by file count",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/3",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/4",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 9007199254740991,
+        "partMaxFiles": 2
+      },
+      "result": [
+        [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/3",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/4",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: returns no parts for an empty journal",
+      "fn": "planParts",
+      "args": {
+        "files": [],
+        "partMaxBytes": 1000,
+        "partMaxFiles": 10
+      },
+      "result": []
+    },
+    {
+      "name": "planParts: edge: a file exactly filling the part (bytes plus overhead equal the limit) stays",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1000
+          },
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 2024,
+        "partMaxFiles": 10
+      },
+      "result": [
+        [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1000
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: one byte over the limit starts a new part",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1001
+          },
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 2024,
+        "partMaxFiles": 10
+      },
+      "result": [
+        [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1001
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: a file larger than a part gets a part of its own",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 10
+          },
+          {
+            "entryId": "a",
+            "path": "a/big",
+            "bytes": 1000000
+          },
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 10
+          }
+        ],
+        "partMaxBytes": 3072,
+        "partMaxFiles": 10
+      },
+      "result": [
+        [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 10
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/big",
+            "bytes": 1000000
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 10
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: zero-byte files still count the overhead",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "z",
+            "path": "z/0",
+            "bytes": 0
+          },
+          {
+            "entryId": "z",
+            "path": "z/1",
+            "bytes": 0
+          },
+          {
+            "entryId": "z",
+            "path": "z/2",
+            "bytes": 0
+          },
+          {
+            "entryId": "z",
+            "path": "z/3",
+            "bytes": 0
+          }
+        ],
+        "partMaxBytes": 3072,
+        "partMaxFiles": 10
+      },
+      "result": [
+        [
+          {
+            "entryId": "z",
+            "path": "z/0",
+            "bytes": 0
+          },
+          {
+            "entryId": "z",
+            "path": "z/1",
+            "bytes": 0
+          },
+          {
+            "entryId": "z",
+            "path": "z/2",
+            "bytes": 0
+          }
+        ],
+        [
+          {
+            "entryId": "z",
+            "path": "z/3",
+            "bytes": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: a file limit of one",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 9007199254740991,
+        "partMaxFiles": 1
+      },
+      "result": [
+        [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: a file limit of zero still puts one file in each part",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 9007199254740991,
+        "partMaxFiles": 0
+      },
+      "result": [
+        [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/2",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: a byte limit of zero still puts one file in each part",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          },
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 0,
+        "partMaxFiles": 10
+      },
+      "result": [
+        [
+          {
+            "entryId": "x",
+            "path": "x/0",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "x",
+            "path": "x/1",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: the byte and file limits apply together",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 10
+          },
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 10
+          },
+          {
+            "entryId": "a",
+            "path": "a/3",
+            "bytes": 10
+          },
+          {
+            "entryId": "a",
+            "path": "a/4",
+            "bytes": 5000
+          }
+        ],
+        "partMaxBytes": 3072,
+        "partMaxFiles": 2
+      },
+      "result": [
+        [
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 10
+          },
+          {
+            "entryId": "a",
+            "path": "a/2",
+            "bytes": 10
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/3",
+            "bytes": 10
+          }
+        ],
+        [
+          {
+            "entryId": "a",
+            "path": "a/4",
+            "bytes": 5000
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: the default 3.75 GiB limit with files near 1 GiB",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "v",
+            "path": "v/001.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/002.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/003.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/004.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/005.mp4",
+            "bytes": 1073740800
+          }
+        ],
+        "partMaxBytes": 4026531840,
+        "partMaxFiles": 65000
+      },
+      "result": [
+        [
+          {
+            "entryId": "v",
+            "path": "v/001.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/002.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/003.mp4",
+            "bytes": 1073740800
+          }
+        ],
+        [
+          {
+            "entryId": "v",
+            "path": "v/004.mp4",
+            "bytes": 1073740800
+          },
+          {
+            "entryId": "v",
+            "path": "v/005.mp4",
+            "bytes": 1073740800
+          }
+        ]
+      ]
+    },
+    {
+      "name": "planParts: edge: input order is kept, not sorted",
+      "fn": "planParts",
+      "args": {
+        "files": [
+          {
+            "entryId": "b",
+            "path": "b/2",
+            "bytes": 1
+          },
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1
+          },
+          {
+            "entryId": "b",
+            "path": "b/1",
+            "bytes": 1
+          }
+        ],
+        "partMaxBytes": 9007199254740991,
+        "partMaxFiles": 2
+      },
+      "result": [
+        [
+          {
+            "entryId": "b",
+            "path": "b/2",
+            "bytes": 1
+          },
+          {
+            "entryId": "a",
+            "path": "a/1",
+            "bytes": 1
+          }
+        ],
+        [
+          {
+            "entryId": "b",
+            "path": "b/1",
+            "bytes": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "partFileName: names parts with two-digit numbers",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": 3
+      },
+      "result": "kodakiko-export-2026-11-11-part03.zip"
+    },
+    {
+      "name": "partFileName: edge: part 1",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": 1
+      },
+      "result": "kodakiko-export-2026-11-11-part01.zip"
+    },
+    {
+      "name": "partFileName: edge: part 10",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": 10
+      },
+      "result": "kodakiko-export-2026-11-11-part10.zip"
+    },
+    {
+      "name": "partFileName: edge: part 100 has three digits",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": 100
+      },
+      "result": "kodakiko-export-2026-11-11-part100.zip"
+    },
+    {
+      "name": "partFileName: edge: part 0",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": 0
+      },
+      "result": "kodakiko-export-2026-11-11-part00.zip"
+    },
+    {
+      "name": "partFileName: edge: a negative part number is not padded past its sign",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "2026-11-11",
+        "partNumber": -1
+      },
+      "result": "kodakiko-export-2026-11-11-part-1.zip"
+    },
+    {
+      "name": "partFileName: edge: the date string is used as given",
+      "fn": "partFileName",
+      "args": {
+        "exportDate": "any text",
+        "partNumber": 7
+      },
+      "result": "kodakiko-export-any text-part07.zip"
+    },
+    {
+      "name": "clampZipDate: clamps ZIP dates into 1980-2099 (before 1980)",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1970-01-01T00:00:00Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: clamps ZIP dates into 1980-2099 (after 2099)",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2150-06-01T00:00:00Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: clamps ZIP dates into 1980-2099 (inside)",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2026-01-01T00:00:00Z"
+      },
+      "result": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: midnight 1980-01-01 is before the noon minimum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1980-01-01T00:00:00.000Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: one millisecond before the minimum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1980-01-01T11:59:59.999Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: exactly the minimum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1980-01-01T12:00:00.000Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: one millisecond after the minimum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1980-01-01T12:00:00.001Z"
+      },
+      "result": "1980-01-01T12:00:00.001Z"
+    },
+    {
+      "name": "clampZipDate: edge: the last DOS day 2107-12-31 is clamped to 2099",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2107-12-31T23:59:58.000Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: after the DOS range (2108)",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2108-01-01T00:00:00.000Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: the end of 2099 is after the noon maximum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2099-12-31T23:59:59.000Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: exactly the maximum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2099-12-31T12:00:00.000Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: one millisecond before the maximum",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "2099-12-31T11:59:59.999Z"
+      },
+      "result": "2099-12-31T11:59:59.999Z"
+    },
+    {
+      "name": "clampZipDate: edge: 1979-12-31",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "1979-12-31T23:59:59.000Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: an extended negative year",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "-000001-01-01T00:00:00.000Z"
+      },
+      "result": "1980-01-01T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: the latest JS date",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "+275760-09-13T00:00:00.000Z"
+      },
+      "result": "2099-12-31T12:00:00.000Z"
+    },
+    {
+      "name": "clampZipDate: edge: an invalid date is returned unchanged",
+      "fn": "clampZipDate",
+      "args": {
+        "date": "not a date"
+      },
+      "result": "Invalid Date"
+    },
+    {
+      "name": "constants: splits by file count (EXPORT_PART_MAX_FILES) and the other part constants",
+      "fn": "constants",
+      "args": {},
+      "result": {
+        "EXPORT_FILE_OVERHEAD_BYTES": 1024,
+        "EXPORT_PART_MAX_FILES": 65000,
+        "EXPORT_PART_MAX_BYTES": 4026531840,
+        "EXPORT_WEB_MEMORY_PART_MAX_BYTES": 1073741824,
+        "EXPORT_MTIME_MIN": "1980-01-01T12:00:00.000Z",
+        "EXPORT_MTIME_MAX": "2099-12-31T12:00:00.000Z"
+      }
+    }
+  ]
+}

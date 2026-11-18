@@ -1,0 +1,3703 @@
+{
+  "format": 1,
+  "generator": "packages/core/scripts/generate-goldens.ts",
+  "cases": [
+    {
+      "name": "monthGrid: always returns 6 rows of 7 cells (2026-02)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-02",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-01-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-01",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-08",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: always returns 6 rows of 7 cells (2026-11)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-11",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-10-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-12",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-11-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-29",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-06",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: always returns 6 rows of 7 cells (2015-02)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2015-02",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2015-01-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-01-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-01-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-01-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-01-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-01-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2015-02-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2015-02-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2015-02-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2015-02-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-02-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-01",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2015-03-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2015-03-08",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: always returns 6 rows of 7 cells (2024-09)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2024-09",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2024-08-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-08-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-08-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-08-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-08-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-08-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-09-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-09-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-09-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-09-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-09-29",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-09-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-10-06",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: covers February in a leap year",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2024-02",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2024-01-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-01-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-01-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-04",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-02-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-11",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-02-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-18",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-02-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-25",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-02-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-02-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-03",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2024-03-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2024-03-10",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: covers February in a non-leap year",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-02",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-01-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-01-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-02-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-02-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-01",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-08",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: pads a month that begins on Sunday with the previous month (Monday start)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-11",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-10-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-12",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-11-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-29",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-06",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: fills the trailing cells with the next month",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-11",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-10-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-12",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-11-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-29",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-06",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: marks exactly today",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-11",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-10-26",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-27",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-01",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-08",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-12",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-11-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-15",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-22",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-29",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-06",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: starts a month that begins on Monday in the first cell (Monday start)",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-06",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-06-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-07",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-06-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-14",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-06-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-21",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-06-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-28",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-06-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-06-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-05",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-07-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-10",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-11",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-07-12",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: starts on Sunday when weekStartsOn is 0",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-11",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 0
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-11-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-12",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-11-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-14",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-21",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-28",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-12-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-10",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-11",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-12",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: marks exactly today, not in another month",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-10",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-09-28",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-09-29",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-09-30",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-04",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-10-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-11",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-10-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-18",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-10-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-25",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-10-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-10-31",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-01",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-11-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-11-08",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: edge: today in the leading days of the next grid",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-12",
+        "todayLocalDate": "2026-11-30",
+        "weekStartsOn": 1
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-11-30",
+            "inMonth": false,
+            "isToday": true
+          },
+          {
+            "localDate": "2026-12-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-06",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-12-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-13",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-12-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-20",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-12-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-27",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-12-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-12-31",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-03",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2027-01-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2027-01-10",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: edge: the first month of the year 0001",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "0001-01",
+        "todayLocalDate": "0001-01-01",
+        "weekStartsOn": 0
+      },
+      "result": [
+        [
+          {
+            "localDate": "0000-12-31",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-01",
+            "inMonth": true,
+            "isToday": true
+          },
+          {
+            "localDate": "0001-01-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-06",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "0001-01-07",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-13",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "0001-01-14",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-20",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "0001-01-21",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-27",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "0001-01-28",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-01-31",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-03",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "0001-02-04",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "0001-02-10",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "monthGrid: edge: a month that begins on Sunday with a Sunday start",
+      "fn": "monthGrid",
+      "args": {
+        "yearMonth": "2026-03",
+        "todayLocalDate": "2026-11-12",
+        "weekStartsOn": 0
+      },
+      "result": [
+        [
+          {
+            "localDate": "2026-03-01",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-02",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-03",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-04",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-05",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-06",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-07",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-08",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-09",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-10",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-11",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-12",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-13",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-14",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-15",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-16",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-17",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-18",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-19",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-20",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-21",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-22",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-23",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-24",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-25",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-26",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-27",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-28",
+            "inMonth": true,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-03-29",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-30",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-03-31",
+            "inMonth": true,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-01",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-02",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-03",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-04",
+            "inMonth": false,
+            "isToday": false
+          }
+        ],
+        [
+          {
+            "localDate": "2026-04-05",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-06",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-07",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-08",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-09",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-10",
+            "inMonth": false,
+            "isToday": false
+          },
+          {
+            "localDate": "2026-04-11",
+            "inMonth": false,
+            "isToday": false
+          }
+        ]
+      ]
+    },
+    {
+      "name": "addMonths: moves forward within a year",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-05",
+        "delta": 1
+      },
+      "result": "2026-06"
+    },
+    {
+      "name": "addMonths: moves backward within a year",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-05",
+        "delta": -4
+      },
+      "result": "2026-01"
+    },
+    {
+      "name": "addMonths: wraps December to January",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-12",
+        "delta": 1
+      },
+      "result": "2027-01"
+    },
+    {
+      "name": "addMonths: wraps January back to December",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2027-01",
+        "delta": -1
+      },
+      "result": "2026-12"
+    },
+    {
+      "name": "addMonths: moves back almost two years",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-11",
+        "delta": -23
+      },
+      "result": "2024-12"
+    },
+    {
+      "name": "addMonths: edge: a zero delta",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-11",
+        "delta": 0
+      },
+      "result": "2026-11"
+    },
+    {
+      "name": "addMonths: edge: exactly one year forward",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-11",
+        "delta": 12
+      },
+      "result": "2027-11"
+    },
+    {
+      "name": "addMonths: edge: exactly one year back",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-01",
+        "delta": -12
+      },
+      "result": "2025-01"
+    },
+    {
+      "name": "addMonths: edge: into the year 0000",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "0001-01",
+        "delta": -1
+      },
+      "result": "0000-12"
+    },
+    {
+      "name": "addMonths: edge: many years forward",
+      "fn": "addMonths",
+      "args": {
+        "yearMonth": "2026-11",
+        "delta": 1201
+      },
+      "result": "2126-12"
+    },
+    {
+      "name": "yearMonthOf: takes the year and month of a local date",
+      "fn": "yearMonthOf",
+      "args": {
+        "localDate": "2026-11-09"
+      },
+      "result": "2026-11"
+    },
+    {
+      "name": "yearMonthOf: edge: a value shorter than YYYY-MM is returned as is",
+      "fn": "yearMonthOf",
+      "args": {
+        "localDate": "2026"
+      },
+      "result": "2026"
+    },
+    {
+      "name": "isValidYearMonth: \"2026-11\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026-11"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidYearMonth: \"0001-01\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "0001-01"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidYearMonth: \"0000-12\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "0000-12"
+      },
+      "result": true
+    },
+    {
+      "name": "isValidYearMonth: \"2026-13\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026-13"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"2026-00\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026-00"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"2026-1\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026-1"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"26-11\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "26-11"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"2026/11\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026/11"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"2026-11-01\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "2026-11-01"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": ""
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \" 2026-11\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": " 2026-11"
+      },
+      "result": false
+    },
+    {
+      "name": "isValidYearMonth: \"２０２６-11\"",
+      "fn": "isValidYearMonth",
+      "args": {
+        "value": "２０２６-11"
+      },
+      "result": false
+    }
+  ]
+}

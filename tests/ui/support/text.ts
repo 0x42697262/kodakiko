@@ -23,6 +23,9 @@ export const STACK_TEXT = Object.freeze({
   seedImportRefused: (name: string, reason: string) => `Importing ${name} was refused: ${reason}`,
   serverRequestFailed: (path: string, status: number) => `GET ${path} answered ${status}.`,
   homeCollectionMissing: 'The server lists no home collection for the account.',
+  linkSeedFailed: (method: string, path: string, status: number, body: string) =>
+    `${method} ${path} answered ${status} while seeding a public link: ${body}`,
+  linkSeedUploadFailed: (status: number) => `Uploading a public link object answered ${status}.`,
 });
 
 export const ANDROID_TEXT = Object.freeze({
@@ -34,8 +37,8 @@ export const ANDROID_TEXT = Object.freeze({
   maestroMissing: (path: string) =>
     `Maestro is not installed at ${path}. Run: pnpm --filter @kodakiko/ui-tests install:maestro`,
   javaMissing: (minMajor: number) => `Java ${minMajor} or newer is required (java -version).`,
-  metroTimeout:
-    'Metro did not report packager-status:running in time. See tests/ui/reports/android/metro.log.',
+  legacyAppId: (appId: string) =>
+    `Refusing to run flows against ${appId}: that is the installed v0.3.1 app. Use the .next debug build.`,
   flowFailed: (id: string, file: string) => `Flow ${id} failed in ${file}.`,
   flowPassed: (id: string) => `Flow ${id} passed.`,
   summaryFailed: (ids: readonly string[]) => `Failed flows: ${ids.join(', ')}`,

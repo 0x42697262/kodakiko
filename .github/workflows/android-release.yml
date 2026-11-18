@@ -1,6 +1,6 @@
 name: Android release
 
-# Tag pushes build, sign and publish the release APK.
+# Tag pushes build, sign and publish the release APK of the Kotlin client (apps/android).
 # Pushes to main that touch the Android build run the same build without signing or publishing,
 # only to fill the Gradle cache: GitHub lets a tag run read caches from the default branch, but a
 # cache saved by one tag run is not visible to the next tag.
@@ -9,10 +9,7 @@ on:
     tags: ['v*']
     branches: [main]
     paths:
-      - 'apps/client/**'
-      - 'packages/**'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
+      - 'apps/android/**'
       - '.github/workflows/android-release.yml'
 
 permissions:
@@ -23,23 +20,34 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NDK_VERSION: 27.0.12077973
-  CMAKE_VERSION: 3.22.1
   ANDROID_PLATFORM: android-37.0
   BUILD_TOOLS: 37.0.0
-  ABI: arm64-v8a
+  APK: apps/android/app/build/outputs/apk/release/app-release.apk
 
 jobs:
   apk:
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+
+      - name: Tag matches the app version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="$(sed -n 's/^app-version-name = "\(.*\)"$/\1/p' apps/android/gradle/libs.versions.toml)"
+          if [ -z "$version" ] || [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match app-version-name '$version' in apps/android/gradle/libs.versions.toml" >&2
+            exit 1
+          fi
 
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: |
+            17
+            21
 
       - run: corepack enable
 
@@ -55,33 +63,30 @@ jobs:
           # Written only on main (the action's default); tag builds read it.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Tag matches the app version
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          version="$(node --input-type=module -e "const c = (await import('./apps/client/app.config.ts')).default; console.log(c.version)")"
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match app.config.ts version $version" >&2
-            exit 1
-          fi
-
       - run: pnpm verify
 
       - name: Android SDK packages
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "ndk;$NDK_VERSION" "cmake;$CMAKE_VERSION" "platforms;$ANDROID_PLATFORM" "build-tools;$BUILD_TOOLS"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;$ANDROID_PLATFORM" "build-tools;$BUILD_TOOLS"
 
-      - run: pnpm --filter @kodakiko/client prebuild:android
+      - name: Host libsodium for Robolectric tests
+        if: startsWith(github.ref, 'refs/tags/')
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
+
+      - name: Gradle verify
+        if: startsWith(github.ref, 'refs/tags/')
+        working-directory: apps/android
+        run: ./gradlew verify
 
       - name: Warm the Gradle cache (main, unsigned, not published)
         if: github.ref == 'refs/heads/main'
-        working-directory: apps/client/android
-        run: ./gradlew assembleRelease --build-cache -PreactNativeArchitectures="$ABI"
+        working-directory: apps/android
+        run: ./gradlew :app:assembleRelease --build-cache
 
       - name: Build signed release APK
         if: startsWith(github.ref, 'refs/tags/')
-        working-directory: apps/client/android
+        working-directory: apps/android
         shell: bash
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -94,8 +99,7 @@ jobs:
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$keystore"
           log="$RUNNER_TEMP/gradle.log"
           set +e
-          ./gradlew assembleRelease --build-cache \
-            -PreactNativeArchitectures="$ABI" \
+          ./gradlew :app:assembleRelease --build-cache \
             -Pandroid.injected.signing.store.file="$keystore" \
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
@@ -115,8 +119,7 @@ jobs:
       - name: Check the signature is not the debug key
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          apk=apps/client/android/app/build/outputs/apk/release/app-release.apk
-          signer="$("$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" verify --print-certs "$apk" | grep 'certificate DN')"
+          signer="$("$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" verify --print-certs "$APK" | grep 'certificate DN')"
           echo "$signer"
           if printf '%s' "$signer" | grep -q 'CN=Android Debug'; then
             echo "The APK is signed with the debug key" >&2
@@ -128,8 +131,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          name="kodakiko-${GITHUB_REF_NAME}-${ABI}.apk"
+          name="kodakiko-${GITHUB_REF_NAME}.apk"
           mkdir -p release
-          cp apps/client/android/app/build/outputs/apk/release/app-release.apk "release/$name"
+          cp "$APK" "release/$name"
           (cd release && sha256sum "$name" > "$name.sha256")
           gh release create "$GITHUB_REF_NAME" release/* --title "Kodakiko $GITHUB_REF_NAME" --generate-notes
