@@ -799,6 +799,7 @@ object TestTags {
     }
 
     object Viewer {
+        const val FULL_SCREEN_PHOTO = "viewer.fullScreenPhoto"
         const val ADD_MEDIA = "viewer.addMedia"
         const val BACK = "viewer.back"
         const val CAPTION = "viewer.caption"

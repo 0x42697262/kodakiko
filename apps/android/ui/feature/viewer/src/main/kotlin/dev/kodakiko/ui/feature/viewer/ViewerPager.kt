@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -61,6 +62,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import dev.kodakiko.contract.MediaKind
 import dev.kodakiko.ui.core.R
 import dev.kodakiko.ui.core.TestTags
@@ -75,14 +78,37 @@ internal fun ViewerPager(entryId: String, pages: List<ViewerPage>, page: Int, zo
     val windowHeight = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val height = min(maxWidth * ViewerConstants.PAGE_ASPECT, windowHeight * ViewerConstants.PAGE_MAX_SCREEN_SHARE)
+        var fullScreen by rememberSaveable { mutableStateOf(false) }
         key(pages.map { it.mediaId }) {
-            PagerBody(entryId, pages, page, zoomed, video, height, onAction)
+            PagerBody(entryId, pages, page, zoomed, video, height, onAction, fullScreen = false) { fullScreen = true }
+        }
+        if (fullScreen) {
+            Dialog(
+                onDismissRequest = { fullScreen = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+            ) {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Black).testTag(TestTags.Viewer.FULL_SCREEN_PHOTO)) {
+                    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                        PagerBody(entryId, pages, page, zoomed, video, maxHeight, onAction, fullScreen = true) { fullScreen = false }
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun PagerBody(entryId: String, pages: List<ViewerPage>, page: Int, zoomed: Boolean, video: InlineVideoUi?, height: Dp, onAction: (ViewerAction) -> Unit) {
+private fun PagerBody(
+    entryId: String,
+    pages: List<ViewerPage>,
+    page: Int,
+    zoomed: Boolean,
+    video: InlineVideoUi?,
+    height: Dp,
+    onAction: (ViewerAction) -> Unit,
+    fullScreen: Boolean,
+    onPhotoTap: () -> Unit,
+) {
     val pagerState = rememberPagerState(initialPage = page.coerceIn(0, pages.lastIndex)) { pages.size }
     val currentPage by rememberUpdatedState(page)
     val currentOnAction by rememberUpdatedState(onAction)
@@ -103,11 +129,15 @@ private fun PagerBody(entryId: String, pages: List<ViewerPage>, page: Int, zoome
     ) { index ->
         val item = pages[index]
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(ViewerDimens.TILE_CORNER))
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .testTag(listItem(TestTags.Viewer.PAGE, index)),
+            modifier = if (fullScreen) {
+                Modifier.fillMaxSize()
+            } else {
+                Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(ViewerDimens.TILE_CORNER))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .testTag(listItem(TestTags.Viewer.PAGE, index))
+            },
         ) {
             when (item.kind) {
                 MediaKind.PHOTO -> PhotoPage(
@@ -117,6 +147,7 @@ private fun PagerBody(entryId: String, pages: List<ViewerPage>, page: Int, zoome
                     active = index == page,
                     near = abs(index - page) <= ViewerConstants.ORIGINAL_WINDOW,
                     onZoomChange = { onAction(ViewerAction.ZoomChanged(it)) },
+                    onTap = onPhotoTap,
                 )
                 MediaKind.VIDEO -> VideoPage(entryId, item, index, video?.takeIf { it.position == index }, onAction)
                 MediaKind.AUDIO -> Unit
@@ -156,7 +187,7 @@ private fun rememberThumbnail(entryId: String, mediaId: String): ImageBitmap? {
 }
 
 @Composable
-private fun PhotoPage(entryId: String, page: ViewerPage, position: Int, active: Boolean, near: Boolean, onZoomChange: (Boolean) -> Unit) {
+private fun PhotoPage(entryId: String, page: ViewerPage, position: Int, active: Boolean, near: Boolean, onZoomChange: (Boolean) -> Unit, onTap: () -> Unit) {
     val images = LocalViewerImages.current
     val thumbnail = rememberThumbnail(entryId, page.mediaId)
     var attempt by remember(page.mediaId) { mutableIntStateOf(0) }
@@ -174,7 +205,7 @@ private fun PhotoPage(entryId: String, page: ViewerPage, position: Int, active: 
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {
-        ZoomablePhoto((original as? OriginalImage.Loaded)?.bitmap ?: thumbnail, page, position, active, onZoomChange)
+        ZoomablePhoto((original as? OriginalImage.Loaded)?.bitmap ?: thumbnail, page, position, active, onZoomChange, onTap)
         val downloading = progress
         when {
             original == OriginalImage.Missing -> MediaLabel(stringResource(R.string.viewer_showing_preview), TestTags.Viewer.SHOWING_PREVIEW)
@@ -220,7 +251,7 @@ private fun MediaLabelText(text: String, tag: String) {
 }
 
 @Composable
-private fun ZoomablePhoto(bitmap: ImageBitmap?, page: ViewerPage, position: Int, active: Boolean, onZoomChange: (Boolean) -> Unit) {
+private fun ZoomablePhoto(bitmap: ImageBitmap?, page: ViewerPage, position: Int, active: Boolean, onZoomChange: (Boolean) -> Unit, onTap: () -> Unit) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize().clipToBounds()) {
         val viewportWidth = constraints.maxWidth.toFloat()
         val viewportHeight = constraints.maxHeight.toFloat()
@@ -228,6 +259,7 @@ private fun ZoomablePhoto(bitmap: ImageBitmap?, page: ViewerPage, position: Int,
             PhotoZoomState(viewportWidth, viewportHeight, page.width.toFloat(), page.height.toFloat())
         }
         val currentOnZoomChange by rememberUpdatedState(onZoomChange)
+        val currentOnTap by rememberUpdatedState(onTap)
         val reporter = remember(zoom) { ZoomReporter(zoom) { currentOnZoomChange(it) } }
         LaunchedEffect(zoom, active) {
             if (!active && zoom.zoomed) {
@@ -254,6 +286,7 @@ private fun ZoomablePhoto(bitmap: ImageBitmap?, page: ViewerPage, position: Int,
                 }
                 .pointerInput(zoom) {
                     detectTapGestures(
+                        onTap = { currentOnTap() },
                         onDoubleTap = { position ->
                             zoom.doubleTap(position)
                             reporter.report()
